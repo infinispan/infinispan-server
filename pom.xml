@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2010, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-parent</artifactId>
+      <version>6-beta-2</version>
+    </parent>
+
+    <groupId>org.jboss.edg</groupId>
+    <artifactId>jboss-edg-parent</artifactId>
+    <version>6.0.0.Alpha1-SNAPSHOT</version>
+
+    <name>JBoss Enterprise Data Grid - Parent POM</name>
+    <description>JBoss Enterprise Data Grid - Parent POM</description>
+
+    <packaging>pom</packaging>
+
+    <properties>
+        <!-- Release Info -->
+        <jboss.edg.release.version>${project.version}</jboss.edg.release.version>
+        <jboss.edg.release.codename>(TBD)</jboss.edg.release.codename>
+
+	<jboss.edg.release.finalName>jboss-edg-${jboss.edg.release.version}</jboss.edg.release.finalName>
+
+	<!-- Dependency versions. Please keep alphabetical -->
+	<version.org.infinispan>5.0.0-SNAPSHOT</version.org.infinispan> <!-- Overriden -->
+	<version.org.jboss.as>7.0.0.Beta4-SNAPSHOT</version.org.jboss.as>
+    </properties>
+
+    <modules>
+      <module>external/as/build</module>
+      <module>dist-dir</module>
+      <module>dist-zip</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+	  <dependency>
+	    <groupId>org.infinispan</groupId>
+	    <artifactId>infinispan-server-hotrod</artifactId>
+	    <version>${version.org.infinispan}</version>
+	    <exclusions>
+	      <exclusion>
+	      	<groupId>org.rhq.helpers</groupId>
+		<artifactId>rhq-pluginAnnotations</artifactId>
+	      </exclusion>
+	    </exclusions>
+	  </dependency>
+	  <dependency>
+	    <groupId>org.infinispan</groupId>
+	    <artifactId>infinispan-server-memcached</artifactId>
+	    <version>${version.org.infinispan}</version>
+	    <exclusions>
+	      <exclusion>
+	      	<groupId>org.rhq.helpers</groupId>
+		<artifactId>rhq-pluginAnnotations</artifactId>
+	      </exclusion>
+	    </exclusions>
+	  </dependency>
+	  <dependency>
+	    <groupId>org.infinispan</groupId>
+	    <artifactId>infinispan-server-rest</artifactId>
+	    <version>${version.org.infinispan}</version>
+	    <exclusions>
+	      <exclusion>
+	      	<groupId>org.rhq.helpers</groupId>
+		<artifactId>rhq-pluginAnnotations</artifactId>
+	      </exclusion>
+	    </exclusions>
+	  </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
