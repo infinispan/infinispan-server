@@ -29,6 +29,7 @@ NOTE: Once you've gone through the step 1 ~ 4, you can build an individual
 TO-DO
 =====
 * Add Infinispan (modules, configuration, ..)
+* Port test suites (perhaps using Arquillian?)
 * Remove unused modules
 * Rebrand the distribution (AS -> EDG)
 
