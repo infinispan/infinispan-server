@@ -26,10 +26,27 @@ NOTE: Once you've gone through the step 1 ~ 4, you can build an individual
           $ cd dist-dir
           $ mvn package
 
+4) Run EDG:
+
+    $ cd dist-dir/target/jboss-datagrid-<version>/bin
+    $ sh standalone.sh
+
+    At this point you should be able to connect to 127.0.0.1:11222.
+
+NOTE: I couldn't find a way to create a new profile like 'datagrid', so I 
+      simply overwrote the standalone profile.  The configuration files
+      specific to Infinispan is located at standalone/configuration.
+
 TO-DO
 =====
-* Add Infinispan (modules, configuration, ..)
-* Port test suites (perhaps using Arquillian?)
+* Implement core subsystem
+* Modify Hot Rod subsystem to use the CacheManager defined in the core
+  subsystem (Currently, it just creates its own one.)
+* Implement memcached subsystem
+* Deploy REST server
+* Consider consolidating the current configuration files into standalone.xml
+* Figure out how to introduce a new profile 'datagrid' instead of overwriting
+  'standalone'
+* Rebrand the distribution (AS -> Data Grid)
 * Remove unused modules
-* Rebrand the distribution (AS -> EDG)
 
