@@ -22,23 +22,63 @@
 
 <project name="dist-dir" basedir="." default="clean">
 
-  <property name="output.dir" value="target/${jboss.edg.release.finalName}" />
+  <property name="output.dir" value="target/${jboss.datagrid.release.finalName}" />
+
+  <import file="${project.basedir}/../../external/as/build/lib.xml"/>
 
   <target name="clean">
     <delete dir="${output.dir}"/>
   </target>
 
   <target name="copy-files">
+    <!-- Copy the files from JBoss AS first -->
     <copy todir="${output.dir}">
       <fileset dir="${project.basedir}/../../external/as/build/target/jboss-${version.org.jboss.as}">
 	<include name="**"/>
       </fileset>
     </copy>
+
+    <!-- Delete unused profiles (domain and standalone) -->
+    <delete dir="${output.dir}/domain" />
+    <delete dir="${output.dir}/standalone" />
+
+    <!-- Copy the files specific to JBoss Enterprise Data Grid -->
+    <copy todir="${output.dir}/standalone">
+      <fileset dir="${project.basedir}/../src/main/resources/standalone">
+	<include name="**"/>
+      </fileset>
+    </copy>
+
   </target>
 
-  <target name="patch-files">
-    <!-- TODO transform AS to EDG -->
+  <target name="modules">
+
+    <delete dir="${output.dir}/modules/org/infinispan" />
+
+    <module-def name="org.jboss.datagrid">
+      <maven-resource group="org.jboss.datagrid" artifact="jboss-datagrid-integration"/>
+    </module-def>
+
+    <module-def name="org.infinispan">
+      <maven-resource group="org.infinispan" artifact="infinispan-core"/>
+    </module-def>
+
+    <module-def name="org.infinispan.server">
+      <maven-resource group="org.infinispan" artifact="infinispan-server-core"/>
+    </module-def>
+
+    <module-def name="org.infinispan.server.hotrod">
+      <maven-resource group="org.infinispan" artifact="infinispan-server-hotrod"/>
+    </module-def>
+
+    <module-def name="org.infinispan.server.memcached">
+      <maven-resource group="org.infinispan" artifact="infinispan-server-memcached"/>
+    </module-def>
+
+    <module-def name="org.scala-lang.library">
+      <maven-resource group="org.scala-lang" artifact="scala-library"/>
+    </module-def>
   </target>
 
-  <target name="all" depends="clean, copy-files, patch-files"/>
+  <target name="all" depends="clean, copy-files, modules"/>
 </project>
