@@ -44,6 +44,8 @@ TO-DO
   subsystem (Currently, it just creates its own one.)
 * Implement memcached subsystem
 * Deploy REST server
+* Make the configuration for the AS7's domain mode
+  (Currently only for standalone mode)
 * Consider consolidating the current configuration files into standalone.xml
 * Figure out how to introduce a new profile 'datagrid' instead of overwriting
   'standalone'
