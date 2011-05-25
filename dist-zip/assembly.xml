@@ -9,7 +9,7 @@
 
     <fileSets>
         <fileSet>
-	  <directory>${project.basedir}/../dist-dir/target/${jboss.edg.release.finalName}</directory>
+	  <directory>${project.basedir}/../dist-dir/target/${jboss.datagrid.release.finalName}</directory>
             <outputDirectory/>
             <includes>
                 <include>**/**</include>

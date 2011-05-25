@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   ~ JBoss, Home of Professional Open Source.
   ~ Copyright 2010, Red Hat, Inc., and individual contributors
@@ -28,40 +27,42 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss</groupId>
-    <artifactId>jboss-parent</artifactId>
-    <version>6-beta-2</version>
+    <groupId>org.jboss.datagrid</groupId>
+    <artifactId>jboss-datagrid-parent</artifactId>
+    <version>6.0.0.Alpha1-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.jboss.datagrid</groupId>
-  <artifactId>jboss-datagrid-parent</artifactId>
-  <version>6.0.0.Alpha1-SNAPSHOT</version>
+  <artifactId>jboss-datagrid-integration</artifactId>
+  <name>JBoss Enterprise Data Grid - Integration with JBoss AS</name>
 
-  <name>JBoss Enterprise Data Grid - Parent POM</name>
-  <description>JBoss Enterprise Data Grid - Parent POM</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.msc</groupId>
+      <artifactId>jboss-msc</artifactId>
+      <version>${version.org.jboss.msc}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-server</artifactId>
+      <version>${version.org.jboss.as}</version>
+    </dependency>
 
-  <packaging>pom</packaging>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-server-hotrod</artifactId>
+      <version>${version.org.infinispan}</version>
+    </dependency>
 
-  <properties>
-    <!-- Release Info -->
-    <jboss.datagrid.release.version>${project.version}</jboss.datagrid.release.version>
-    <jboss.datagrid.release.codename>(TBD)</jboss.datagrid.release.codename>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-server-memcached</artifactId>
+      <version>${version.org.infinispan}</version>
+    </dependency>
 
-    <jboss.datagrid.release.finalName>jboss-datagrid-${jboss.datagrid.release.version}</jboss.datagrid.release.finalName>
-
-    <!-- Dependency versions. Please keep alphabetical -->
-    <version.junit>4.8.2</version.junit>
-    <version.org.infinispan>5.0.0-SNAPSHOT</version.org.infinispan> <!-- Overriden -->
-    <version.org.jboss.as>7.0.0.Beta4-SNAPSHOT</version.org.jboss.as>
-    <version.org.jboss.jandex>1.0.0.Beta7</version.org.jboss.jandex>
-    <version.org.jboss.msc>1.0.0.Beta8</version.org.jboss.msc>
-    <version.org.scala-lang>2.8.1</version.org.scala-lang>
-  </properties>
-
-  <modules>
-    <module>integration</module>
-    <module>external/as/build</module>
-    <module>dist-dir</module>
-    <module>dist-zip</module>
-  </modules>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${version.junit}</version>
+    </dependency>
+  </dependencies>
 </project>

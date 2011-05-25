@@ -28,13 +28,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.edg</groupId>
-    <artifactId>jboss-edg-parent</artifactId>
+    <groupId>org.jboss.datagrid</groupId>
+    <artifactId>jboss-datagrid-parent</artifactId>
     <version>6.0.0.Alpha1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>jboss-edg-dist-dir</artifactId>
+  <artifactId>jboss-datagrid-dist-dir</artifactId>
 
   <name>JBoss Enterprise Data Grid - Distribution (Directory)</name>
   <description>JBoss Enterprise Data Grid - Distribution (Directory)</description>
@@ -47,6 +47,66 @@
       <artifactId>jboss-as-build</artifactId>
       <version>${version.org.jboss.as}</version>
       <type>pom</type>
+    </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jboss-datagrid-integration</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-core</artifactId>
+      <version>${version.org.infinispan}</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.rhq.helpers</groupId>
+	  <artifactId>rhq-pluginAnnotations</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-server-core</artifactId>
+      <version>${version.org.infinispan}</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.rhq.helpers</groupId>
+	  <artifactId>rhq-pluginAnnotations</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-server-hotrod</artifactId>
+      <version>${version.org.infinispan}</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.rhq.helpers</groupId>
+	  <artifactId>rhq-pluginAnnotations</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-server-memcached</artifactId>
+      <version>${version.org.infinispan}</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.rhq.helpers</groupId>
+	  <artifactId>rhq-pluginAnnotations</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${version.org.scala-lang}</version>
     </dependency>
   </dependencies>
 
@@ -70,6 +130,13 @@
 	    </configuration>
 	  </execution>
 	</executions>
+	<dependencies>
+	  <dependency>
+	    <groupId>org.jboss</groupId>
+	    <artifactId>jandex</artifactId>
+	    <version>${version.org.jboss.jandex}</version>
+	  </dependency>
+	</dependencies>
       </plugin>
     </plugins>
   </build>
