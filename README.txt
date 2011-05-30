@@ -39,10 +39,6 @@ NOTE: I couldn't find a way to create a new profile like 'datagrid', so I
 
 TO-DO
 =====
-* Implement core subsystem
-* Modify Hot Rod subsystem to use the CacheManager defined in the core
-  subsystem (Currently, it just creates its own one.)
-* Implement memcached subsystem
 * Deploy REST server
 * Make the configuration for the AS7's domain mode
   (Currently only for standalone mode)
