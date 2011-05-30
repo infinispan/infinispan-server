@@ -44,14 +44,5 @@
         <module name="org.jboss.marshalling"/>
         <module name="org.jboss.marshalling.river" services="import"/>
         <module name="org.jgroups"/>
-      <!--
-        <module name="system" export="false">
-            <exports>
-                <include-set>
-                    <path name="com/sun/org/apache/xerces/internal"/>
-                </include-set>
-            </exports>
-        </module>
-        -->
     </dependencies>
 </module>
