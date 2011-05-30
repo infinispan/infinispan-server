@@ -74,12 +74,14 @@ abstract class DataGridSubsystemAdd implements ModelAddOperationHandler {
 
                     // Add the service
                     final ServiceBuilder<?> serviceBuilder = serviceTarget.addService(serviceName, service)
-                            .addDependency(DependencyType.OPTIONAL, ServiceName.JBOSS.append("mbean", "server"), MBeanServer.class, service.getMBeanServer());
+                            .addDependency(DependencyType.REQUIRED, ServiceName.JBOSS.append("mbean", "server"), MBeanServer.class, service.getMBeanServer());
 
                     // Create path services
                     serviceBuilder.addDependency(createConfigPathService(operation, serviceTarget),
                             String.class, service.getConfigPathInjector());
 
+                    buildService(service, serviceBuilder);
+                    
                     // Install the service
                     serviceBuilder.install();
 
@@ -93,6 +95,10 @@ abstract class DataGridSubsystemAdd implements ModelAddOperationHandler {
     }
 
     protected abstract DataGridService<?> createService();
+
+    protected void buildService(DataGridService<?> service, ServiceBuilder<?> builder) {
+        // Do nothing by default
+    }
 
     ServiceName createConfigPathService(final ModelNode operation, final ServiceTarget serviceTarget) {
         ModelNode path = operation.get(DataGridConstants.CONFIG_PATH);

@@ -1,6 +1,8 @@
 package org.jboss.datagrid.endpoint.hotrod;
 
+import org.infinispan.manager.EmbeddedCacheManager;
 import org.jboss.datagrid.*;
+import org.jboss.msc.service.ServiceBuilder;
 
 public class HotRodExtension extends DataGridExtension {
 
@@ -14,5 +16,15 @@ public class HotRodExtension extends DataGridExtension {
     @Override
     protected DataGridService<?> createService() {
         return new HotRodService();
+    }
+
+    @Override
+    protected void buildService(DataGridService<?> service, ServiceBuilder<?> builder) {
+        super.buildService(service, builder);
+        builder.addDependency(
+                ServiceBuilder.DependencyType.REQUIRED,
+                DataGridConstants.SN_CACHEMANAGER,
+                EmbeddedCacheManager.class,
+                ((HotRodService) service).getCacheManager());
     }
 }

@@ -14,10 +14,10 @@
       -->
       <globalJmxStatistics enabled="true" jmxDomain="infinispan" />
 
-      <transport clusterName="${jboss.infinispan.partition.name:DatagridPartition}-Infinispan">
+      <transport clusterName="DataGridPartition">
          <properties>
             <property name="configurationFile"
-                      value="${jboss.infinispan.jgroups.config:jgroups-datagrid-udp.xml}"
+                      value="${jboss.server.base.dir}/configuration/jgroups-datagrid-udp.xml"
                       />
          </properties>
       </transport>

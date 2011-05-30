@@ -6,6 +6,7 @@ import org.jboss.as.controller.SubsystemRegistration;
 import org.jboss.as.controller.parsing.ExtensionParsingContext;
 import org.jboss.as.controller.registry.ModelNodeRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
+import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceName;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -30,11 +31,21 @@ public abstract class DataGridExtension implements Extension {
             protected DataGridService<?> createService() {
                 return DataGridExtension.this.createService();
             }
+
+            @Override
+            protected void buildService(DataGridService<?> service, ServiceBuilder<?> builder) {
+                super.buildService(service, builder);
+                DataGridExtension.this.buildService(service, builder);
+            }
         };
         subsystemDescribe = new DataGridSubsystemDescribe();
     }
 
     protected abstract DataGridService<?> createService();
+
+    protected void buildService(DataGridService<?> service, ServiceBuilder<?> builder) {
+        // Do nothing by default.
+    }
 
     @Override
     public final void initialize(ExtensionContext context) {

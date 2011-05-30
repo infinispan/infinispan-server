@@ -2,13 +2,13 @@ package org.jboss.datagrid.endpoint.memcached;
 
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.server.memcached.MemcachedServer;
-import org.jboss.datagrid.DataGridService;
+import org.jboss.datagrid.endpoint.EndpointService;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-class MemcachedService extends DataGridService<MemcachedServer> {
+class MemcachedService extends EndpointService<MemcachedServer> {
 
     @Override
     protected MemcachedServer doStart(String configPath) throws Exception {
@@ -21,7 +21,7 @@ class MemcachedService extends DataGridService<MemcachedServer> {
         }
 
         MemcachedServer server = new MemcachedServer();
-        server.start(props, new DefaultCacheManager(true));
+        server.start(props, getCacheManager().getValue());
         return server;
     }
 
