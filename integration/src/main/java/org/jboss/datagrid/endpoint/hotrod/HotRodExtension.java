@@ -23,7 +23,6 @@ public class HotRodExtension implements Extension {
 
     @Override
     public void initialize(ExtensionContext context) {
-        log.info("XXXXXXXXXXXXXXXXX");
         final SubsystemRegistration subsystem = context.registerSubsystem(SUBSYSTEM_NAME);
         final ModelNodeRegistration registration = subsystem.registerSubsystemModel(HotRodSubsystemProviders.SUBSYSTEM);
         registration.registerOperationHandler(ADD, HotRodSubsystemAdd.INSTANCE, HotRodSubsystemProviders.SUBSYSTEM_ADD, false);
@@ -34,7 +33,6 @@ public class HotRodExtension implements Extension {
 
     @Override
     public void initializeParsers(ExtensionParsingContext context) {
-        log.info("YYYYYYYYYYYYYYYYYYY");
         context.setSubsystemXmlMapping(DataGridNamespaces.HOTROD_1_0, PARSER);
     }
 
