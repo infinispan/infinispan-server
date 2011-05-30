@@ -14,6 +14,9 @@ NOTE: We could later set up CI to manage our own Maven repository that has
     $ cd external/as
     $ mvn install
 
+NOTE: If the build fails after 'svn up', try to wipe the 'external/as' directory
+      and build from scratch.
+
 3) Build EDG:
 
     $ cd ../..
