@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.datagrid.endpoint.hotrod;
+package org.jboss.datagrid;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
@@ -31,15 +31,14 @@ import org.jboss.as.controller.OperationResult;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.ResultHandler;
 import org.jboss.as.controller.operations.common.Util;
-import org.jboss.datagrid.endpoint.EndpointAttributes;
 import org.jboss.dmr.ModelNode;
 
 /**
  * @author Emanuel Muckenhuber
  */
-class HotRodSubsystemDescribe implements ModelQueryOperationHandler {
+class DataGridSubsystemDescribe implements ModelQueryOperationHandler {
 
-    static final HotRodSubsystemDescribe INSTANCE = new HotRodSubsystemDescribe();
+    static final DataGridSubsystemDescribe INSTANCE = new DataGridSubsystemDescribe();
 
     @Override
     public OperationResult execute(final OperationContext context, final ModelNode operation, final ResultHandler resultHandler) {
@@ -50,8 +49,8 @@ class HotRodSubsystemDescribe implements ModelQueryOperationHandler {
         subsystemAdd.get(OP).set(ADD);
         subsystemAdd.get(OP_ADDR).set(rootAddress.toModelNode());
 
-        if (subModel.hasDefined(EndpointAttributes.CONFIG_PATH)) {
-            subsystemAdd.get(EndpointAttributes.CONFIG_PATH).set(subModel.get(EndpointAttributes.CONFIG_PATH));
+        if (subModel.hasDefined(DataGridConstants.CONFIG_PATH)) {
+            subsystemAdd.get(DataGridConstants.CONFIG_PATH).set(subModel.get(DataGridConstants.CONFIG_PATH));
         }
 
         final ModelNode result = new ModelNode();

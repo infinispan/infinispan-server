@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.datagrid.endpoint;
+package org.jboss.datagrid;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 import static org.jboss.as.controller.parsing.ParseUtils.*;
@@ -32,7 +32,9 @@ import javax.xml.stream.XMLStreamException;
 
 import org.jboss.as.controller.parsing.ParseUtils;
 import org.jboss.as.controller.persistence.SubsystemMarshallingContext;
+import org.jboss.datagrid.DataGridConstants;
 import org.jboss.dmr.ModelNode;
+import org.jboss.msc.service.ServiceName;
 import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.staxmapper.XMLElementWriter;
 import org.jboss.staxmapper.XMLExtendedStreamReader;
@@ -44,12 +46,12 @@ import org.jboss.staxmapper.XMLExtendedStreamWriter;
  * @author scott.stark@jboss.org
  * @author Emanuel Muckenhuber
  */
-public class ServerSubsystemParser implements XMLStreamConstants, XMLElementReader<List<ModelNode>>, XMLElementWriter<SubsystemMarshallingContext> {
+class DataGridSubsystemParser implements XMLStreamConstants, XMLElementReader<List<ModelNode>>, XMLElementWriter<SubsystemMarshallingContext> {
 
     private final String subsystemName;
     private final String namespaceUri;
 
-    public ServerSubsystemParser(String subsystemName, String namespaceUri) {
+    DataGridSubsystemParser(String subsystemName, String namespaceUri) {
         this.subsystemName = subsystemName;
         this.namespaceUri = namespaceUri;
     }
@@ -68,14 +70,14 @@ public class ServerSubsystemParser implements XMLStreamConstants, XMLElementRead
             int tag = reader.nextTag();
             if (tag == XMLStreamConstants.START_ELEMENT) {
                 localName = reader.getLocalName();
-                if (EndpointAttributes.CONFIG_PATH.equals(localName)) {
+                if (DataGridConstants.CONFIG_PATH.equals(localName)) {
                     final ModelNode path = parseConfigPath(reader);
-                    operation.get(EndpointAttributes.CONFIG_PATH).set(path);
+                    operation.get(DataGridConstants.CONFIG_PATH).set(path);
                 } else {
                     throw ParseUtils.unexpectedElement(reader);
                 }
             }
-        } while (reader.hasNext() && localName.equals("subsystem") == false);
+        } while (reader.hasNext() && !localName.equals("subsystem"));
     }
 
     static ModelNode parseConfigPath(XMLExtendedStreamReader reader) throws XMLStreamException {
@@ -84,9 +86,9 @@ public class ServerSubsystemParser implements XMLStreamConstants, XMLElementRead
         for (int i = 0; i < count; i++) {
             String localName = reader.getAttributeLocalName(i);
             String value = reader.getAttributeValue(i);
-            if (EndpointAttributes.RELATIVE_TO.equals(localName)) {
+            if (DataGridConstants.RELATIVE_TO.equals(localName)) {
                 configPath.get(RELATIVE_TO).set(value);
-            } else if (EndpointAttributes.PATH.equals(localName)) {
+            } else if (DataGridConstants.PATH.equals(localName)) {
                 configPath.get(PATH).set(value);
             } else {
                 throw unexpectedAttribute(reader, i);
@@ -96,24 +98,23 @@ public class ServerSubsystemParser implements XMLStreamConstants, XMLElementRead
         return configPath;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void writeContent(final XMLExtendedStreamWriter writer, final SubsystemMarshallingContext context) throws XMLStreamException {
         context.startSubsystemElement(namespaceUri, false);
         final ModelNode node = context.getModelNode();
-        if (has(node, EndpointAttributes.CONFIG_PATH)) {
+        if (has(node, DataGridConstants.CONFIG_PATH)) {
             writeConfigPath(writer, node);
         }
         writer.writeEndElement();
     }
 
     static void writeConfigPath(final XMLExtendedStreamWriter writer, ModelNode node) throws XMLStreamException {
-        if(node.has(EndpointAttributes.CONFIG_PATH)) {
-            node = node.get(EndpointAttributes.CONFIG_PATH);
+        if(node.has(DataGridConstants.CONFIG_PATH)) {
+            node = node.get(DataGridConstants.CONFIG_PATH);
             final String path = node.has(PATH) ? node.get(PATH).asString() : null;
             final String relativeTo = node.has(RELATIVE_TO) ? node.get(RELATIVE_TO).asString() : null;
             if(path != null || relativeTo != null) {
-                writer.writeEmptyElement(EndpointAttributes.CONFIG_PATH);
+                writer.writeEmptyElement(DataGridConstants.CONFIG_PATH);
                 if(path != null) {
                     writer.writeAttribute(PATH, path);
                 }

@@ -6,12 +6,12 @@ import java.util.Properties;
 
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.server.hotrod.HotRodServer;
-import org.jboss.datagrid.endpoint.EndpointService;
+import org.jboss.datagrid.DataGridService;
 
-class HotRodService extends EndpointService<HotRodServer> {
+class HotRodService extends DataGridService<HotRodServer> {
 
     @Override
-    protected HotRodServer startServer(String configPath) throws Exception {
+    protected HotRodServer doStart(String configPath) throws Exception {
         Properties props = new Properties();
         InputStream in = new FileInputStream(configPath);
         try {
@@ -26,7 +26,7 @@ class HotRodService extends EndpointService<HotRodServer> {
     }
 
     @Override
-    protected void stopServer(HotRodServer server) throws Exception {
+    protected void doStop(HotRodServer server) throws Exception {
         server.stop();
     }
 }

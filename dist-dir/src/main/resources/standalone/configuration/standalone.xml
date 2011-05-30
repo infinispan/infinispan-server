@@ -45,8 +45,9 @@
                             urn:jboss:domain:deployment-scanner:1.0 jboss-deployment-scanner.xsd
                             urn:jboss:domain:security:1.0 jboss-security.xsd
                             urn:jboss:domain:webservices:1.0 jboss-webservices.xsd
-			    urn:jboss:domain:weld:1.0 jboss-weld.xsd
-			    urn:jboss:domain:datagrid:endpoint:hotrod:1.0 jboss-datagrid-endpoint-hotrod.xsd">
+                            urn:jboss:domain:weld:1.0 jboss-weld.xsd
+                            urn:jboss:domain:datagrid:endpoint:hotrod:1.0 jboss-datagrid-endpoint-hotrod.xsd
+                            urn:jboss:domain:datagrid:endpoint:memcached:1.0 jboss-datagrid-endpoint-memcached.xsd">
 
     <extensions>
         <extension module="org.jboss.as.arquillian.service"/>
@@ -70,7 +71,7 @@
         <extension module="org.jboss.as.web" />
         <extension module="org.jboss.as.webservices" />
         <extension module="org.jboss.as.weld" />
-	<extension module="org.jboss.datagrid" />
+        <extension module="org.jboss.datagrid" />
     </extensions>
 
     <paths>
@@ -185,8 +186,12 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:sar:1.0"/>
         <subsystem xmlns="urn:jboss:domain:transactions:1.0">
-            <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
-            <core-environment socket-binding="txn-socket-process-id"/>
+          <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
+          <core-environment>
+              <process-id>
+                  <uuid />
+              </process-id>
+          </core-environment>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:connector:1.0">
             <archive-validation enabled="false" />
@@ -344,10 +349,12 @@
              <wsdl-secure-port>8443</wsdl-secure-port>
              -->
         </subsystem>
-	<subsystem xmlns="urn:jboss:domain:datagrid:endpoint:hotrod:1.0">
-	  <config-path relative-to="jboss.server.base.dir" path="configuration/datagrid-endpoint-hotrod.properties" />
-	</subsystem>
-	
+        <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:hotrod:1.0">
+          <config-path relative-to="jboss.server.base.dir" path="configuration/datagrid-endpoint-hotrod.properties" />
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:memcached:1.0">
+          <config-path relative-to="jboss.server.base.dir" path="configuration/datagrid-endpoint-memcached.properties" />
+        </subsystem>
     </profile>
 
     <interfaces>

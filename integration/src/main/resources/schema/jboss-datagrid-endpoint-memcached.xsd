@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ JBoss, Home of Professional Open Source.
   ~ Copyright 2010, Red Hat, Inc., and individual contributors
@@ -20,27 +19,18 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-<module xmlns="urn:jboss:module:1.0" name="org.jboss.datagrid">
-    <main-class name="org.jboss.as.server.Main"/>
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:jboss:domain:datagrid:endpoint:memcached:1.0"
+            xmlns="urn:jboss:domain:datagrid:endpoint:memcached:1.0"
+            elementFormDefault="unqualified" 
+            attributeFormDefault="unqualified"
+            version="1.0">
 
-    <resources>
-        <!-- Insert resources here -->
-    </resources>
+   <xs:element name="subsystem" type="subsystemType" />
 
-    <dependencies>
-        <module name="javax.api"/>
-        <module name="org.infinispan"/>
-        <module name="org.infinispan.server.hotrod"/>
-        <module name="org.infinispan.server.memcached"/>
-        <module name="org.jboss.netty"/>
-        <module name="org.jboss.staxmapper"/>
-        <module name="org.jboss.as.controller"/>
-        <module name="org.jboss.as.naming"/>
-        <module name="org.jboss.as.server" export="true"/>
-        <module name="org.jboss.msc"/>
-        <module name="org.jboss.logging"/>
-        <module name="org.jboss.marshalling"/>
-        <module name="org.jboss.marshalling.river" services="import"/>
-        <module name="org.jgroups"/>
-    </dependencies>
-</module>
+   <xs:complexType name="subsystemType">
+      <xs:sequence>
+         <xs:element name="configPath" maxOccurs="1" minOccurs="1" type="xs:string" />
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

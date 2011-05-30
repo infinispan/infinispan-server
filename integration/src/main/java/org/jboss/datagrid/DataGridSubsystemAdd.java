@@ -20,42 +20,38 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.datagrid.endpoint.hotrod;
+package org.jboss.datagrid;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
-
-import javax.management.MBeanServer;
-
-import org.infinispan.server.hotrod.HotRodServer;
-import org.jboss.as.controller.BasicOperationResult;
-import org.jboss.as.controller.ModelAddOperationHandler;
-import org.jboss.as.controller.OperationContext;
-import org.jboss.as.controller.OperationFailedException;
-import org.jboss.as.controller.OperationResult;
-import org.jboss.as.controller.ResultHandler;
-import org.jboss.as.controller.RuntimeTask;
-import org.jboss.as.controller.RuntimeTaskContext;
+import org.jboss.as.controller.*;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.as.server.services.path.RelativePathService;
-import org.jboss.datagrid.endpoint.EndpointAttributes;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceBuilder.DependencyType;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceTarget;
 
+import javax.management.MBeanServer;
+
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+
 /**
  * @author Emanuel Muckenhuber
  */
-class HotRodSubsystemAdd implements ModelAddOperationHandler {
+abstract class DataGridSubsystemAdd implements ModelAddOperationHandler {
 
-    private static final String DEFAULT_PATH = "configuration/datagrid-endpoint-hotrod.properties";
     private static final String DEFAULT_RELATIVE_TO = "jboss.server.base.dir";
-    private static final ServiceName PATH_BASE = HotRodServiceNames.HOTROD.append("paths");
 
-    static final HotRodSubsystemAdd INSTANCE = new HotRodSubsystemAdd();
+    private final ServiceName serviceName;
+    private final ServiceName pathBase;
+    private final String defaultPath;
 
-    /** {@inheritDoc} */
+    DataGridSubsystemAdd(ServiceName serviceName, String defaultConfigFileName) {
+        this.serviceName = serviceName;
+        pathBase = serviceName.append("paths");
+        defaultPath = "configuration/" + defaultConfigFileName;
+    }
+
     @Override
     public OperationResult execute(final OperationContext context, final ModelNode operation, final ResultHandler resultHandler) {
 
@@ -64,8 +60,8 @@ class HotRodSubsystemAdd implements ModelAddOperationHandler {
         // Populate subModel
         final ModelNode subModel = context.getSubModel();
         subModel.setEmptyObject();
-        if (operation.hasDefined(EndpointAttributes.CONFIG_PATH)) {
-            subModel.get(EndpointAttributes.CONFIG_PATH).set(operation.get(EndpointAttributes.CONFIG_PATH));
+        if (operation.hasDefined(DataGridConstants.CONFIG_PATH)) {
+            subModel.get(DataGridConstants.CONFIG_PATH).set(operation.get(DataGridConstants.CONFIG_PATH));
         }
 
         if (context.getRuntimeContext() != null) {
@@ -74,10 +70,10 @@ class HotRodSubsystemAdd implements ModelAddOperationHandler {
                 public void execute(RuntimeTaskContext context) throws OperationFailedException {
                     final ServiceTarget serviceTarget = context.getServiceTarget();
                     // Create the service
-                    final HotRodService service = new HotRodService();
+                    final DataGridService<?> service = createService();
 
                     // Add the service
-                    final ServiceBuilder<HotRodServer> serviceBuilder = serviceTarget.addService(HotRodServiceNames.HOTROD, service)
+                    final ServiceBuilder<?> serviceBuilder = serviceTarget.addService(serviceName, service)
                             .addDependency(DependencyType.OPTIONAL, ServiceName.JBOSS.append("mbean", "server"), MBeanServer.class, service.getMBeanServer());
 
                     // Create path services
@@ -96,11 +92,13 @@ class HotRodSubsystemAdd implements ModelAddOperationHandler {
         return new BasicOperationResult(compensatingOperation);
     }
 
-    static ServiceName createConfigPathService(final ModelNode operation, final ServiceTarget serviceTarget) {
-        ModelNode path = operation.get(EndpointAttributes.CONFIG_PATH);
-        final ServiceName serviceName = PATH_BASE.append(EndpointAttributes.CONFIG_PATH);
+    protected abstract DataGridService<?> createService();
+
+    ServiceName createConfigPathService(final ModelNode operation, final ServiceTarget serviceTarget) {
+        ModelNode path = operation.get(DataGridConstants.CONFIG_PATH);
+        final ServiceName serviceName = pathBase.append(DataGridConstants.CONFIG_PATH);
         final String relativeTo = path.hasDefined(RELATIVE_TO) ? path.get(RELATIVE_TO).asString() : DEFAULT_RELATIVE_TO;
-        final String pathName = path.hasDefined(PATH) ? path.get(PATH).asString() : DEFAULT_PATH;
+        final String pathName = path.hasDefined(PATH) ? path.get(PATH).asString() : defaultPath;
         RelativePathService.addService(serviceName, pathName, relativeTo, serviceTarget);
         return serviceName;
     }
