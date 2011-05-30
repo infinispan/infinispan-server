@@ -1,0 +1,72 @@
+<config>
+   <!--  UDP transport config meant to be shared between different channels,
+         Message bundling is disabled, as it can add latency to synchronous
+         group RPCs. When data grid is configured for asynchronous RPCs (e.g.
+         REPL_ASYNC, DIST_ASYNC, or INVALIDATION_ASYNC) and do so in high
+         volume may be able to improve performance by configuring the data
+         grid to use the udp-async configuration.
+         When data grid is configured for synchronous RPCs (e.g.
+         REPL_SYNC, DIST_SYNC, or INVALIDATION_SYNC) may be able
+         to improve performance by using the udp-sync configuration which
+         does not include flow control.
+   -->
+   <UDP
+         singleton_name="shared-udp"
+         mcast_port="${jboss.jgroups.udp.mcast_port:45688}"
+         mcast_addr="${jboss.jgroups.udp.mcast_addr:228.11.11.11}"
+         bind_port="${jboss.jgroups.udp.bind_port:55200}"
+         tos="8"
+         ucast_recv_buf_size="20000000"
+         ucast_send_buf_size="640000"
+         mcast_recv_buf_size="25000000"
+         mcast_send_buf_size="640000"
+         loopback="true"
+         discard_incompatible_packets="true"
+         enable_bundling="false"
+         ip_ttl="${jgroups.udp.ip_ttl:2}"
+         thread_naming_pattern="cl"
+         enable_diagnostics="${jboss.jgroups.enable_diagnostics:true}"
+         diagnostics_addr="${jboss.jgroups.diagnostics_addr:224.0.75.75}"
+         diagnostics_port="${jboss.jgroups.diagnostics_port:7500}"
+
+         thread_pool.enabled="true"
+         thread_pool.min_threads="20"
+         thread_pool.max_threads="200"
+         thread_pool.keep_alive_time="5000"
+         thread_pool.queue_enabled="true"
+         thread_pool.queue_max_size="1000"
+         thread_pool.rejection_policy="discard"
+
+         oob_thread_pool.enabled="true"
+         oob_thread_pool.min_threads="20"
+         oob_thread_pool.max_threads="200"
+         oob_thread_pool.keep_alive_time="1000"
+         oob_thread_pool.queue_enabled="false"
+         oob_thread_pool.rejection_policy="discard"/>
+   <PING timeout="2000" num_initial_members="3"/>
+   <MERGE2 max_interval="100000" min_interval="20000"/>
+   <FD_SOCK start_port="${jboss.jgroups.udp.fd_sock_port:54200}"/>
+   <!-- Shun deprecated and ignored, hence it was not copied across -->
+   <FD timeout="6000" max_tries="5"/>
+   <VERIFY_SUSPECT timeout="1500"/>
+   <BARRIER/>
+   <pbcast.NAKACK use_mcast_xmit="true" gc_lag="0"
+                  retransmit_timeout="300,600,1200,2400,4800"
+                  discard_delivered_msgs="true"/>
+   <UNICAST timeout="300,600,1200,2400,3600"/>
+   <pbcast.STABLE stability_delay="1000" desired_avg_gossip="50000"
+                  max_bytes="400000"/>
+   <VIEW_SYNC avg_send_interval="10000"/>
+   <!-- Shun deprecated and ignored, hence it was not copied across -->
+   <pbcast.GMS print_local_addr="true"
+               join_timeout="3000"
+               view_bundling="true"
+               view_ack_collection_timeout="5000"
+               resume_task_timeout="7500"/>
+   <FC max_credits="2000000" min_threshold="0.10"
+       ignore_synchronous_response="true"/>
+   <FRAG2 frag_size="60000"/>
+   <!-- Non blocking state transfer in Infinispan requires streaming state transfer -->
+   <pbcast.STREAMING_STATE_TRANSFER/>
+   <pbcast.FLUSH timeout="0" start_flush_timeout="10000"/>
+</config>

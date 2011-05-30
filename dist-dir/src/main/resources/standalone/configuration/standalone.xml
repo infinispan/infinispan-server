@@ -46,6 +46,7 @@
                             urn:jboss:domain:security:1.0 jboss-security.xsd
                             urn:jboss:domain:webservices:1.0 jboss-webservices.xsd
                             urn:jboss:domain:weld:1.0 jboss-weld.xsd
+                            urn:jboss:domain:datagrid:cachemanager:1.0 jboss-datagrid-cachemanager.xsd
                             urn:jboss:domain:datagrid:endpoint:hotrod:1.0 jboss-datagrid-endpoint-hotrod.xsd
                             urn:jboss:domain:datagrid:endpoint:memcached:1.0 jboss-datagrid-endpoint-memcached.xsd">
 
@@ -348,6 +349,10 @@
              <wsdl-port>8080</wsdl-port>
              <wsdl-secure-port>8443</wsdl-secure-port>
              -->
+        </subsystem>
+
+        <subsystem xmlns="urn:jboss:domain:datagrid:cachemanager:1.0">
+          <config-path relative-to="jboss.server.base.dir" path="configuration/infinispan-configuration.xml" />
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:hotrod:1.0">
           <config-path relative-to="jboss.server.base.dir" path="configuration/datagrid-endpoint-hotrod.properties" />

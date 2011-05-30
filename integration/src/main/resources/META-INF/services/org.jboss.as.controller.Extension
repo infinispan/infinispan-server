@@ -20,5 +20,6 @@
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 #
 
+org.jboss.datagrid.cachemanager.CacheManagerExtension
 org.jboss.datagrid.endpoint.hotrod.HotRodExtension
 org.jboss.datagrid.endpoint.memcached.MemcachedExtension

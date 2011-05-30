@@ -9,7 +9,7 @@ import java.security.PrivilegedAction;
  * @author Scott.Stark@jboss.org
  * @version $Id $
  */
-class SecurityActions {
+public class SecurityActions {
     interface TCLAction {
         class UTIL {
             static TCLAction getTCLAction() {
@@ -118,11 +118,11 @@ class SecurityActions {
         void setContextClassLoader(Thread thread, ClassLoader cl);
     }
 
-    static ClassLoader getContextClassLoader() {
+    public static ClassLoader getContextClassLoader() {
         return TCLAction.UTIL.getContextClassLoader();
     }
 
-    static void setContextClassLoader(ClassLoader loader) {
+    public static void setContextClassLoader(ClassLoader loader) {
         TCLAction.UTIL.setContextClassLoader(loader);
     }
 }

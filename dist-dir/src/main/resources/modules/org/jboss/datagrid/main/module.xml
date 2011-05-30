@@ -29,6 +29,8 @@
 
     <dependencies>
         <module name="javax.api"/>
+        <module name="javax.xml.bind.api" />
+        <module name="org.apache.xerces" services="import"/>
         <module name="org.infinispan"/>
         <module name="org.infinispan.server.hotrod"/>
         <module name="org.infinispan.server.memcached"/>
@@ -42,5 +44,14 @@
         <module name="org.jboss.marshalling"/>
         <module name="org.jboss.marshalling.river" services="import"/>
         <module name="org.jgroups"/>
+      <!--
+        <module name="system" export="false">
+            <exports>
+                <include-set>
+                    <path name="com/sun/org/apache/xerces/internal"/>
+                </include-set>
+            </exports>
+        </module>
+        -->
     </dependencies>
 </module>
