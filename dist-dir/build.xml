@@ -23,8 +23,9 @@
 <project name="dist-dir" basedir="." default="clean">
 
   <property name="output.dir" value="target/${jboss.datagrid.release.finalName}" />
+  <property name="asbuild.dir" value="${project.basedir}/../../thirdparty/as-build-${version.org.jboss.as}" />
 
-  <import file="${project.basedir}/../../external/as/build/lib.xml"/>
+  <import file="${asbuild.dir}/lib.xml"/>
 
   <target name="clean">
     <delete dir="${output.dir}"/>
@@ -33,7 +34,7 @@
   <target name="copy-files">
     <!-- Copy the files from JBoss AS first -->
     <copy todir="${output.dir}">
-      <fileset dir="${project.basedir}/../../external/as/build/target/jboss-${version.org.jboss.as}">
+      <fileset dir="${asbuild.dir}/target/jboss-${version.org.jboss.as}">
 	<include name="**"/>
       </fileset>
     </copy>
