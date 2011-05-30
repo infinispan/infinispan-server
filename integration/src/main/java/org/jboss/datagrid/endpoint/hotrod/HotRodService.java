@@ -6,9 +6,9 @@ import java.util.Properties;
 
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.server.hotrod.HotRodServer;
-import org.jboss.datagrid.DataGridService;
+import org.jboss.datagrid.endpoint.EndpointService;
 
-class HotRodService extends DataGridService<HotRodServer> {
+class HotRodService extends EndpointService<HotRodServer> {
 
     @Override
     protected HotRodServer doStart(String configPath) throws Exception {
@@ -21,7 +21,7 @@ class HotRodService extends DataGridService<HotRodServer> {
         }
 
         HotRodServer server = new HotRodServer();
-        server.start(props, new DefaultCacheManager(true));
+        server.start(props, getCacheManager().getValue());
         return server;
     }
 
