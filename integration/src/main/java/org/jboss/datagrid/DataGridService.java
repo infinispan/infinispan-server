@@ -1,11 +1,10 @@
-package org.jboss.datagrid.endpoint;
+package org.jboss.datagrid;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.management.MBeanServer;
 
-import org.jboss.datagrid.SecurityActions;
 import org.jboss.msc.inject.InjectionException;
 import org.jboss.msc.inject.Injector;
 import org.jboss.msc.service.Service;
@@ -20,7 +19,7 @@ import org.jboss.msc.value.InjectedValue;
  * @author scott.stark@jboss.org
  * @author Emanuel Muckenhuber
  */
-public abstract class EndpointService<S> implements Service<S> {
+public abstract class DataGridService<S> implements Service<S> {
 
     String configPath;
 
@@ -32,12 +31,12 @@ public abstract class EndpointService<S> implements Service<S> {
 
             @Override
             public void inject(String configPath) throws InjectionException {
-                EndpointService.this.configPath = configPath;
+                DataGridService.this.configPath = configPath;
             }
 
             @Override
             public void uninject() {
-                EndpointService.this.configPath = null;
+                DataGridService.this.configPath = null;
             }
         };
     }
@@ -57,7 +56,7 @@ public abstract class EndpointService<S> implements Service<S> {
             }
 
             if (server == null) {
-                server = startServer(configPath);
+                server = doStart(configPath);
                 done = true;
             }
         } catch (Exception e) {
@@ -71,13 +70,13 @@ public abstract class EndpointService<S> implements Service<S> {
         }
     }
 
-    protected abstract S startServer(String configPath) throws Exception;
+    protected abstract S doStart(String configPath) throws Exception;
 
     @Override
     public synchronized void stop(final StopContext context) {
         try {
             if (server != null) {
-                stopServer(server);
+                doStop(server);
                 server = null;
             }
         } catch (Exception e) {
@@ -85,7 +84,7 @@ public abstract class EndpointService<S> implements Service<S> {
         }
     }
 
-    protected abstract void stopServer(S server) throws Exception;
+    protected abstract void doStop(S server) throws Exception;
 
     @Override
     public synchronized S getValue() throws IllegalStateException {

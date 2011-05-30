@@ -21,3 +21,4 @@
 #
 
 org.jboss.datagrid.endpoint.hotrod.HotRodExtension
+org.jboss.datagrid.endpoint.memcached.MemcachedExtension

@@ -1,13 +1,14 @@
 /**
  *
  */
-package org.jboss.datagrid.endpoint;
+package org.jboss.datagrid;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.jboss.datagrid.DataGridConstants;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
@@ -17,12 +18,12 @@ import org.jboss.dmr.ModelType;
  *
  * @author Brian Stansberry (c) 2011 Red Hat Inc.
  */
-public class EndpointDescriptions {
+class DataGridSubsystemDescriptions {
 
     private final String subsystemName;
     private final String resourceName;
 
-    public EndpointDescriptions(String subsystemName, Package pkg) {
+    DataGridSubsystemDescriptions(String subsystemName, Package pkg) {
         this.subsystemName = subsystemName;
         resourceName = pkg.getName() + ".LocalDescriptions";
     }
@@ -34,36 +35,36 @@ public class EndpointDescriptions {
         return ResourceBundle.getBundle(resourceName, locale);
     }
 
-    public ModelNode getRootResource(Locale locale) {
+    ModelNode getRootResource(Locale locale) {
         final ResourceBundle bundle = getResourceBundle(locale);
 
         final ModelNode node = new ModelNode();
         node.get(TYPE).set(ModelType.OBJECT);
         node.get(DESCRIPTION).set(bundle.getString(subsystemName));
 
-        node.get(ATTRIBUTES, EndpointAttributes.CONFIG_PATH).set(
-                getPathDescription(EndpointAttributes.CONFIG_PATH, bundle));
+        node.get(ATTRIBUTES, DataGridConstants.CONFIG_PATH).set(
+                getPathDescription(DataGridConstants.CONFIG_PATH, bundle));
 
         return node;
     }
 
-    public ModelNode getSubsystemAdd(Locale locale) {
+    ModelNode getSubsystemAdd(Locale locale) {
         final ResourceBundle bundle = getResourceBundle(locale);
 
         final ModelNode node = new ModelNode();
         node.get(OPERATION_NAME).set(ADD);
         node.get(DESCRIPTION).set(bundle.getString(subsystemName + ".add"));
-        node.get(REQUEST_PROPERTIES, EndpointAttributes.CONFIG_PATH).set(
-                getPathDescription(EndpointAttributes.CONFIG_PATH, bundle));
+        node.get(REQUEST_PROPERTIES, DataGridConstants.CONFIG_PATH).set(
+                getPathDescription(DataGridConstants.CONFIG_PATH, bundle));
 
         return node;
     }
 
-    public ModelNode getSubsystemRemove(@SuppressWarnings("unused") Locale locale) {
+    ModelNode getSubsystemRemove(@SuppressWarnings("unused") Locale locale) {
         return new ModelNode();
     }
 
-    public ModelNode getSubsystemDescribe(@SuppressWarnings("unused") Locale locale) {
+    ModelNode getSubsystemDescribe(@SuppressWarnings("unused") Locale locale) {
         return new ModelNode();
     }
 
