@@ -1,12 +1,11 @@
 package org.jboss.datagrid.endpoint.memcached;
 
-import org.infinispan.manager.DefaultCacheManager;
-import org.infinispan.server.memcached.MemcachedServer;
-import org.jboss.datagrid.endpoint.EndpointService;
-
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.infinispan.server.memcached.MemcachedServer;
+import org.jboss.datagrid.endpoint.EndpointService;
 
 class MemcachedService extends EndpointService<MemcachedServer> {
 
