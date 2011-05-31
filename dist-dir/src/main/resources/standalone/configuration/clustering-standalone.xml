@@ -1,8 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ JBoss, Home of Professional Open Source.
-  ~ Copyright 2010, Red Hat, Inc., and individual contributors
-  ~ as indicated by the @author tags. See the copyright.txt file in the
-  ~ distribution for a full listing of individual contributors.
+  ~ Copyright 2011 Red Hat, Inc. and/or its affiliates.
   ~
   ~ This is free software; you can redistribute it and/or modify it
   ~ under the terms of the GNU Lesser General Public License as
@@ -11,15 +9,14 @@
   ~
   ~ This software is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   ~ Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
-  ~ License along with this software; if not, write to the Free
-  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA
   -->
-
 <server name="example"
         xmlns="urn:jboss:domain:1.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -46,7 +43,10 @@
                             urn:jboss:domain:deployment-scanner:1.0 jboss-deployment-scanner.xsd
                             urn:jboss:domain:security:1.0 jboss-security.xsd
                             urn:jboss:domain:webservices:1.0 jboss-webservices.xsd
-                            urn:jboss:domain:weld:1.0 jboss-weld.xsd">
+                            urn:jboss:domain:weld:1.0 jboss-weld.xsd
+                            urn:jboss:domain:datagrid:cachemanager:1.0 jboss-datagrid-cachemanager.xsd
+                            urn:jboss:domain:datagrid:endpoint:hotrod:1.0 jboss-datagrid-endpoint-hotrod.xsd
+                            urn:jboss:domain:datagrid:endpoint:memcached:1.0 jboss-datagrid-endpoint-memcached.xsd">
 
     <extensions>
         <extension module="org.jboss.as.arquillian.service"/>
@@ -70,6 +70,7 @@
         <extension module="org.jboss.as.web" />
         <extension module="org.jboss.as.webservices" />
         <extension module="org.jboss.as.weld" />
+        <extension module="org.jboss.datagrid" />
     </extensions>
 
     <paths>
@@ -160,9 +161,7 @@
             <jmx-connector registry-binding="jmx-connector-registry" server-binding="jmx-connector-server" />
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:jaxrs:1.0"/>
-        <subsystem xmlns="urn:jboss:domain:jpa:1.0">
-            <jpa default-datasource=""/>
-        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:jpa:1.0"/>
         <subsystem xmlns="urn:jboss:domain:sar:1.0"/>
         <subsystem xmlns="urn:jboss:domain:transactions:1.0">
             <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
@@ -195,15 +194,15 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:resourceadapters:1.0">
                 <!--  <resource-adapters>
-				  <resource-adapter>
-				    <archive>ra16out.rar</archive>
-				    <connection-definitions>
-				      <connection-definition jndi-name="java:/eis/ra16out-raxml"
-				                             class-name="org.jboss.jca.test.deployers.spec.rars.ra16out.TestManagedConnectionFactory">
-				      </connection-definition>
-				    </connection-definitions>
-				  </resource-adapter>
-				</resource-adapters>-->
+                  <resource-adapter>
+                    <archive>ra16out.rar</archive>
+                    <connection-definitions>
+                      <connection-definition jndi-name="java:/eis/ra16out-raxml"
+                                             class-name="org.jboss.jca.test.deployers.spec.rars.ra16out.TestManagedConnectionFactory">
+                      </connection-definition>
+                    </connection-definitions>
+                  </resource-adapter>
+                </resource-adapters>-->
        </subsystem>
 <subsystem xmlns="urn:jboss:domain:osgi:1.0" activation="lazy">
             <configuration pid="org.apache.felix.webconsole.internal.servlet.OsgiManager">
@@ -332,12 +331,12 @@
             <deployment-scanner scan-interval="5000" relative-to="jboss.server.base.dir" path="deployments" />
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:webservices:1.0">
-             <modify-wsdl-address>true</modify-wsdl-address>
-             <wsdl-host>localhost</wsdl-host>
-             <!--
-             <wsdl-port>8080</wsdl-port>
-             <wsdl-secure-port>8443</wsdl-secure-port>
-             -->
+           <configuration>
+              <webServiceHost>localhost</webServiceHost>
+              <modifySOAPAddress>true</modifySOAPAddress>
+              <!-- <webServiceSecurePort>8443</webServiceSecurePort>
+                 <webServicePort>8080</webServicePort> -->
+           </configuration>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:jgroups:1.0" default-stack="udp">
             <stack name="udp">
@@ -416,6 +415,15 @@
                 </replicated-cache>
             </cache-container>
         </subsystem>
+        <subsystem xmlns="urn:jboss:domain:datagrid:cachemanager:1.0">
+          <config-path relative-to="jboss.server.base.dir" path="configuration/infinispan-configuration.xml" />
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:hotrod:1.0">
+          <config-path relative-to="jboss.server.base.dir" path="configuration/datagrid-endpoint-hotrod.properties" />
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:memcached:1.0">
+          <config-path relative-to="jboss.server.base.dir" path="configuration/datagrid-endpoint-memcached.properties" />
+        </subsystem>
     </profile>
 
     <interfaces>
@@ -464,4 +472,3 @@
         <property name="key" value="value"/>
     </system-properties>
 </server>
-
