@@ -32,9 +32,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.jboss.as.controller.parsing.ParseUtils;
 import org.jboss.as.controller.persistence.SubsystemMarshallingContext;
-import org.jboss.datagrid.DataGridConstants;
 import org.jboss.dmr.ModelNode;
-import org.jboss.msc.service.ServiceName;
 import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.staxmapper.XMLElementWriter;
 import org.jboss.staxmapper.XMLExtendedStreamReader;

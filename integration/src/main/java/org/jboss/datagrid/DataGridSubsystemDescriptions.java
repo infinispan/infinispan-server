@@ -8,7 +8,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.jboss.datagrid.DataGridConstants;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 

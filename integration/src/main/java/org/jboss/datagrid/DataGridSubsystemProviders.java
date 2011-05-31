@@ -22,11 +22,11 @@
 
 package org.jboss.datagrid;
 
+import java.util.Locale;
+
 import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.dmr.ModelNode;
-
-import java.util.Locale;
 
 /**
  * @author Emanuel Muckenhuber

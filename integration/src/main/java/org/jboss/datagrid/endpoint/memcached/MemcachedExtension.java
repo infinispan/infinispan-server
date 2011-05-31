@@ -5,9 +5,6 @@ import org.jboss.datagrid.DataGridConstants;
 import org.jboss.datagrid.DataGridExtension;
 import org.jboss.datagrid.DataGridService;
 import org.jboss.msc.service.ServiceBuilder;
-import org.jboss.msc.service.ServiceName;
-
-import javax.management.MBeanServer;
 
 public class MemcachedExtension extends DataGridExtension {
 

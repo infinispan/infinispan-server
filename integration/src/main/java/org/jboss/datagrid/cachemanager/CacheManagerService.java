@@ -1,5 +1,11 @@
 package org.jboss.datagrid.cachemanager;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Properties;
+
+import javax.management.MBeanServer;
+
 import org.infinispan.config.Configuration;
 import org.infinispan.config.ConfigurationValidatingVisitor;
 import org.infinispan.config.GlobalConfiguration;
@@ -9,12 +15,6 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.jboss.datagrid.DataGridService;
 import org.jboss.datagrid.SecurityActions;
-
-import javax.management.MBeanServer;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Map;
-import java.util.Properties;
 
 class CacheManagerService extends DataGridService<EmbeddedCacheManager> {
 
