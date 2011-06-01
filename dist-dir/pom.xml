@@ -50,6 +50,22 @@
       <version>${project.version}</version>
     </dependency>
 
+    <!--
+      Infinispan uses more recent version of JBoss Marshalling
+      Once AS 7 upgrades to the latest version, we can safely remove
+      this dependency and src/main/resources/modules/org/jboss/marshalling
+    -->
+    <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>jboss-marshalling</artifactId>
+      <version>${version.org.jboss.marshalling}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>jboss-marshalling-river</artifactId>
+      <version>${version.org.jboss.marshalling}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-core</artifactId>
