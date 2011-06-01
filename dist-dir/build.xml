@@ -50,6 +50,16 @@
 
   <target name="modules">
 
+    <delete dir="${output.dir}/modules/org/jboss/marshalling" />
+
+    <module-def name="org.jboss.marshalling">
+      <maven-resource group="org.jboss.marshalling" artifact="jboss-marshalling"/>
+    </module-def>
+
+    <module-def name="org.jboss.marshalling.river">
+      <maven-resource group="org.jboss.marshalling" artifact="jboss-marshalling-river"/>
+    </module-def>
+
     <delete dir="${output.dir}/modules/org/infinispan" />
 
     <module-def name="org.jboss.datagrid">

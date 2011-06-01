@@ -23,12 +23,14 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.infinispan.server.memcached.MemcachedServer;
+import org.jboss.datagrid.SecurityActions;
 import org.jboss.datagrid.endpoint.EndpointService;
 
 class MemcachedService extends EndpointService<MemcachedServer> {
 
     @Override
     protected MemcachedServer doStart(String configPath) throws Exception {
+        SecurityActions.setContextClassLoader(MemcachedServer.class.getClassLoader());
         Properties props = new Properties();
         InputStream in = new FileInputStream(configPath);
         try {
