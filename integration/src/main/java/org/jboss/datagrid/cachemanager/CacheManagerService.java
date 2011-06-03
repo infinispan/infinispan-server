@@ -24,10 +24,7 @@ import java.util.Properties;
 
 import javax.management.MBeanServer;
 
-import org.infinispan.config.Configuration;
-import org.infinispan.config.ConfigurationValidatingVisitor;
 import org.infinispan.config.GlobalConfiguration;
-import org.infinispan.config.InfinispanConfiguration;
 import org.infinispan.jmx.MBeanServerLookup;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
@@ -42,21 +39,15 @@ class CacheManagerService extends DataGridService<EmbeddedCacheManager> {
         InputStream in = new FileInputStream(configPath);
         EmbeddedCacheManager cacheManager;
         try {
-            InfinispanConfiguration configuration =
-                    InfinispanConfiguration.newInfinispanConfiguration(
-                            in, InfinispanConfiguration.findSchemaInputStream(),
-                            new ConfigurationValidatingVisitor());
-
-            GlobalConfiguration gcfg = configuration.parseGlobalConfiguration();
-            Configuration dcfg = configuration.parseDefaultConfiguration();
-            gcfg.fluent().globalJmxStatistics().mBeanServerLookup(new MBeanServerLookup() {
+            cacheManager = new DefaultCacheManager(in, false);
+            GlobalConfiguration cfg = cacheManager.getGlobalConfiguration();
+            cfg.fluent().globalJmxStatistics().mBeanServerLookup(new MBeanServerLookup() {
                 @Override
                 public MBeanServer getMBeanServer(Properties properties) {
                     return CacheManagerService.this.getMBeanServer().getValue();
                 }
             });
-
-            cacheManager = new DefaultCacheManager(gcfg, dcfg);
+            cacheManager.start();
         } finally {
             in.close();
         }
