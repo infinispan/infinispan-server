@@ -115,10 +115,28 @@
     </dependency>
     
     <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+      <version>${version.org.codehaus.jackson}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>${version.org.codehaus.jackson}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>${version.com.thoughtworks.xstream}</version>
+    </dependency>
+    
+    <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
       <version>${version.org.scala-lang}</version>
     </dependency>
+    
+    
   </dependencies>
 
   <build>
