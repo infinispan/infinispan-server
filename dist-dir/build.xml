@@ -20,6 +20,7 @@
 
   <property name="output.dir" value="target/${jboss.datagrid.release.finalName}" />
   <property name="asbuild.dir" value="${project.basedir}/../../thirdparty/as-build-${version.org.jboss.as}" />
+  <property name="rest.war" value="${project.basedir}/../../rest/target/jboss-datagrid-rest-${project.version}.war" />
 
   <import file="${asbuild.dir}/lib.xml"/>
 
@@ -52,6 +53,9 @@
 	<include name="**"/>
       </fileset>
     </copy>
+
+    <!-- Copy the REST server WAR -->
+    <copy file="${rest.war}" tofile="${output.dir}/standalone/deployments/datagrid.war" />
 
   </target>
 
