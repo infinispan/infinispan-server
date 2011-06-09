@@ -46,6 +46,13 @@
     
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>jboss-datagrid-rest</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jboss-datagrid-integration</artifactId>
       <version>${project.version}</version>
     </dependency>
