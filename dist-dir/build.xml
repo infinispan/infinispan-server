@@ -35,6 +35,13 @@
       </fileset>
     </copy>
 
+    <!-- Make shell scripts executable -->
+    <chmod perm="ugo+x">
+      <fileset dir="${output.dir}/bin">
+	<include name="*.sh" />
+      </fileset>
+    </chmod>
+
     <!-- Delete unused profiles (domain and standalone) -->
     <delete dir="${output.dir}/domain" />
     <delete dir="${output.dir}/standalone" />
