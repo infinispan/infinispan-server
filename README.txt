@@ -50,7 +50,7 @@ TO-DO
 HOW TO UPGRADE AS 7
 ===================
 To upgrade the current JBoss AS build to a newer version, you have to copy
-the 'jboss-as-build module' to the 'thirdparty' directory.
+the 'jboss-as-build' module to the 'thirdparty' directory.
 
 1) Visit https://github.com/jbossas/jboss-as
 2) Click the 'Downloads' button
@@ -62,6 +62,11 @@ the 'jboss-as-build module' to the 'thirdparty' directory.
 
     $ cd jbossas-jboss-as-xxxxxx
     $ cp -R build <EDG6_trunk>/thirdparty/as-build-7.0.0.CR1
+
+NOTE: Please keep in mind that you should never modify any files under
+      the 'thirdparty' directory because we are not going to fork AS 7,
+      but simply consuming it to generate an AS 7 distribution and repackage
+      it into EDG 6.
 
 7) Modify the parent POM of EDG 6 to reflect the change.
 
