@@ -80,19 +80,7 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
         try {
             loadConnectorProperties(config);
             loadTopologyStateTransferProperties(config);
-            
-            // There has to be at least one connector defined.
-            if (connectorPropertiesMap.isEmpty()) {
-                throw new StartException("no connector is defined in the endpoint subsystem");
-            }
-            
-            // 'hotrod' and 'memcached' are the only supported protocols.
-            Set<String> protocols = new LinkedHashSet<String>(connectorPropertiesMap.keySet());
-            protocols.remove(HOTROD);
-            protocols.remove(MEMCACHED);
-            if (!protocols.isEmpty()) {
-                throw new StartException("unknown connector protocol(s): " + protocols);
-            }
+            validateConfiguration();
             
             // Log translated properties for debugging purposes
             for (Map.Entry<String, Properties> entry: connectorPropertiesMap.entrySet()) {
@@ -100,34 +88,13 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
             }
             log.debugf("Topology state transfer properties: %s", topologyStateTransferProperties);
 
-            // Retrieve the current cache manager from the application server
-            EmbeddedCacheManager cacheManager = getCacheManager().getValue();
+            // Start the connectors
+            startProtocolServer(HOTROD, HotRodServer.class);
+            startProtocolServer(MEMCACHED, MemcachedServer.class);
             
-            // Start Hot Rod server
-            Properties hotrodProperties = connectorPropertiesMap.get(HOTROD);
-            if (hotrodProperties != null) {
-                hotrodProperties = new Properties(hotrodProperties);
-                hotrodProperties.putAll(topologyStateTransferProperties);
-                
-                SecurityActions.setContextClassLoader(HotRodServer.class.getClassLoader());
-                HotRodServer hotrod = new HotRodServer();
-                log.infof("Starting connector: %s", HOTROD);
-                hotrod.start(hotrodProperties, cacheManager);
-                protocolServers.put(HOTROD, hotrod);
-            }
-            
-            // Start memcached server
-            Properties memcachedProperties = connectorPropertiesMap.get(MEMCACHED);
-            if (memcachedProperties != null) {
-                memcachedProperties = new Properties(memcachedProperties);
-                
-                SecurityActions.setContextClassLoader(MemcachedServer.class.getClassLoader());
-                MemcachedServer memcached = new MemcachedServer();
-                log.infof("Starting connector: %s", MEMCACHED);
-                memcached.start(memcachedProperties, cacheManager);
-                protocolServers.put(MEMCACHED, memcached);
-            }
             done = true;
+        } catch (StartException e) {
+            throw e;
         } catch (Exception e) {
             throw new StartException("failed to start service", e);
         } finally {
@@ -139,16 +106,67 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
         }
     }
 
+    private void validateConfiguration() throws StartException {
+        // There has to be at least one connector defined.
+        if (connectorPropertiesMap.isEmpty()) {
+            throw new StartException("no connector is defined in the endpoint subsystem");
+        }
+        
+        // 'hotrod' and 'memcached' are the only supported protocols.
+        Set<String> protocols = new LinkedHashSet<String>(connectorPropertiesMap.keySet());
+        protocols.remove(HOTROD);
+        protocols.remove(MEMCACHED);
+        if (!protocols.isEmpty()) {
+            throw new StartException("unknown connector protocol(s): " + protocols);
+        }
+    }
+
+    private void startProtocolServer(
+            String protocol,
+            Class<? extends ProtocolServer> serverType) throws StartException {
+        
+        Properties props = copy(connectorPropertiesMap.get(protocol));
+        if (props == null) {
+            return;
+        }
+        
+        // Merge topology state transfer settings
+        props.putAll(topologyStateTransferProperties);
+        
+        // Start the server and record it
+        log.debugf("Starting connector: %s", protocol);
+        SecurityActions.setContextClassLoader(serverType.getClassLoader());
+        ProtocolServer server;
+        try {
+            server = serverType.newInstance();
+        } catch (Exception e) {
+            throw new StartException(
+                    "failed to instantiate the server: " + serverType.getName(), e);
+        }
+        server.start(props, getCacheManager().getValue());
+        protocolServers.put(protocol, server);
+    }
+
     @Override
     public synchronized void stop(final StopContext context) {
         doStop();
     }
     
     private void doStop() {
-        protocolServers.clear();
-        socketBindings.clear();
-        connectorPropertiesMap.clear();
-        topologyStateTransferProperties.clear();
+        try {
+            for (Map.Entry<String, ProtocolServer> entry: protocolServers.entrySet()) {
+                log.debugf("Stopping connector: %s", entry.getKey());
+                try {
+                    entry.getValue().stop();
+                } catch (Exception e) {
+                    log.warnf("failed to stop connector: " + entry.getKey(), e);
+                }
+            }
+        } finally {
+            protocolServers.clear();
+            connectorPropertiesMap.clear();
+            topologyStateTransferProperties.clear();
+        }
     }
 
     @Override
@@ -273,5 +291,14 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
                     Main.PROP_KEY_TOPOLOGY_STATE_TRANSFER(),
                     Boolean.toString(!config.get(DataGridConstants.LAZY_RETRIEVAL).asBoolean(false)));
         }
+    }
+    
+    private static Properties copy(Properties p) {
+        if (p == null) {
+            return null;
+        }
+        Properties newProps = new Properties();
+        newProps.putAll(p);
+        return newProps;
     }
 }
