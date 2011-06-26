@@ -27,19 +27,16 @@ import org.jboss.msc.service.ServiceName;
 public class DataGridConstants {
 
     private static final ServiceName DATAGRID = ServiceName.JBOSS.append("datagrid");
-    private static final ServiceName ENDPOINT = DATAGRID.append("endpoint");
 
     // Service names (SN_*)
 
     public static final ServiceName SN_CACHEMANAGER = DATAGRID.append("cachemanager");
-    public static final ServiceName SN_HOTROD = ENDPOINT.append("hotrod");
-    public static final ServiceName SN_MEMCACHED = ENDPOINT.append("memcached");
+    public static final ServiceName SN_ENDPOINT = DATAGRID.append("endpoint");
 
     // XML namespaces (NS_*)
 
     public static final String NS_CACHEMANAGER_1_0 = "urn:jboss:domain:datagrid:cachemanager:1.0";
-    public static final String NS_HOTROD_1_0 = "urn:jboss:domain:datagrid:endpoint:hotrod:1.0";
-    public static final String NS_MEMCACHED_1_0 = "urn:jboss:domain:datagrid:endpoint:memcached:1.0";
+    public static final String NS_ENDPOINT_1_0 = "urn:jboss:domain:datagrid:endpoint:1.0";
 
     // XML elements and attributes
 
@@ -47,12 +44,27 @@ public class DataGridConstants {
     public static final String PATH ="path";
     public static final String RELATIVE_TO ="relative-to";
     public static final String SUBSYSTEM ="subsystem";
+    
+    public static final String CONNECTOR = "connector";
+    public static final String PROTOCOL = "protocol"; // 'hotrod' or 'memcached'
+    public static final String SOCKET_BINDING = "socket-binding"; // string
+    public static final String WORKER_THREADS = "worker-threads"; // integer
+    public static final String IDLE_TIMEOUT = "idle-timeout"; // integer
+    public static final String TCP_NODELAY = "tcp-nodelay"; // 'true' or 'false'
+    public static final String SEND_BUFFER_SIZE = "send-buffer-size"; // integer
+    public static final String RECEIVE_BUFFER_SIZE = "receive-buffer-size"; // integer
+    
+    public static final String TOPOLOGY_STATE_TRANSFER = "topology-state-transfer";
+    public static final String LOCK_TIMEOUT = "lock-timeout"; // integer
+    public static final String REPLICATION_TIMEOUT = "replication-timeout"; // integer
+    public static final String UPDATE_TIMEOUT = "update-timeout"; // integer
+    public static final String EXTERNAL_HOST = "external-host"; // string
+    public static final String EXTERNAL_PORT = "external-port"; // integer
+    public static final String LAZY_RETRIEVAL = "lazy-retrieval"; // 'true' or 'false'
 
     // Default configuration file names
 
     public static final String CF_CACHEMANAGER = "infinispan-configuration.xml";
-    public static final String CF_HOTROD = "datagrid-endpoint-hotrod.properties";
-    public static final String CF_MEMCACHED = "datagrid-endpoint-memcached.properties";
 
     private DataGridConstants() {
         // Constant table

@@ -18,5 +18,4 @@
 #
 
 org.jboss.datagrid.cachemanager.CacheManagerExtension
-org.jboss.datagrid.endpoint.hotrod.HotRodExtension
-org.jboss.datagrid.endpoint.memcached.MemcachedExtension
+org.jboss.datagrid.endpoint.EndpointExtension

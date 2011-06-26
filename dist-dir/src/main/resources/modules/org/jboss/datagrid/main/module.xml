@@ -29,6 +29,7 @@
         <module name="javax.xml.bind.api" />
         <module name="org.apache.xerces" services="import"/>
         <module name="org.infinispan"/>
+        <module name="org.infinispan.server"/>
         <module name="org.infinispan.server.hotrod"/>
         <module name="org.infinispan.server.memcached"/>
         <module name="org.jboss.netty"/>
