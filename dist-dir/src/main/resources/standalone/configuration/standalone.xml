@@ -43,8 +43,7 @@
                             urn:jboss:domain:webservices:1.0 jboss-webservices.xsd
                             urn:jboss:domain:weld:1.0 jboss-weld.xsd
                             urn:jboss:domain:datagrid:cachemanager:1.0 jboss-datagrid-cachemanager.xsd
-                            urn:jboss:domain:datagrid:endpoint:hotrod:1.0 jboss-datagrid-endpoint-hotrod.xsd
-                            urn:jboss:domain:datagrid:endpoint:memcached:1.0 jboss-datagrid-endpoint-memcached.xsd">
+                            urn:jboss:domain:datagrid:endpoint:1.0 jboss-datagrid-endpoint.xsd">
 
     <extensions>
         <extension module="org.jboss.as.arquillian.service"/>
@@ -333,11 +332,31 @@
         <subsystem xmlns="urn:jboss:domain:datagrid:cachemanager:1.0">
           <config-path relative-to="jboss.server.base.dir" path="configuration/infinispan-configuration.xml" />
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:hotrod:1.0">
-          <config-path relative-to="jboss.server.base.dir" path="configuration/datagrid-endpoint-hotrod.properties" />
-        </subsystem>
-        <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:memcached:1.0">
-          <config-path relative-to="jboss.server.base.dir" path="configuration/datagrid-endpoint-memcached.properties" />
+        <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:1.0">
+           <!-- Start the two servers with the default settings -->
+           <connector protocol="hotrod" socket-binding="hotrod" />
+           <connector protocol="memcached" socket-binding="memcached" />
+           
+           <!-- Specify attributes to override the default socket settings -->
+           <!-- 
+           <connector protocol="hotrod"
+                      socket-binding="hotrod"
+                      worker-threads="16"
+                      idle-timeout="-1"
+                      tcp-nodelay="true"
+                      send-buffer-size="0"
+                      receive-buffer-size"0" />
+           -->
+           
+           <!-- Override the default topology state transfer settings -->
+           <!--
+           <topology-state-transfer lock-timeout="10000"
+                                    replication-timeout="10000"
+                                    update-timeout="30000"
+                                    external-host=""
+                                    external-port=""
+                                    lazy-retrieval="false" />
+           -->
         </subsystem>
     </profile>
 
@@ -374,6 +393,8 @@
            <socket-binding name="txn-socket-process-id" port="4714"/>
            <socket-binding name="messaging" port="5445" />
            <socket-binding name="messaging-throughput" port="5455"/>
+           <socket-binding name="hotrod" port="11222" />
+           <socket-binding name="memcached" port="11211" />
         </socket-binding-group>
 
     <system-properties>
