@@ -27,6 +27,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.infinispan.server.hotrod.HotRodServer;
+import org.infinispan.server.memcached.MemcachedServer;
+
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.server.core.Main;
 import org.infinispan.server.core.ProtocolServer;
@@ -97,18 +100,33 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
             }
             log.debugf("Topology state transfer properties: %s", topologyStateTransferProperties);
 
-//            SecurityActions.setContextClassLoader(MemcachedServer.class.getClassLoader());
-//            Properties props = new Properties();
-//            InputStream in = new FileInputStream(configPath);
-//            try {
-//                props.load(in);
-//            } finally {
-//                in.close();
-//            }
-//
-//            MemcachedServer server = new MemcachedServer();
-//            server.start(props, getCacheManager().getValue());
-
+            // Retrieve the current cache manager from the application server
+            EmbeddedCacheManager cacheManager = getCacheManager().getValue();
+            
+            // Start Hot Rod server
+            Properties hotrodProperties = connectorPropertiesMap.get(HOTROD);
+            if (hotrodProperties != null) {
+                hotrodProperties = new Properties(hotrodProperties);
+                hotrodProperties.putAll(topologyStateTransferProperties);
+                
+                SecurityActions.setContextClassLoader(HotRodServer.class.getClassLoader());
+                HotRodServer hotrod = new HotRodServer();
+                log.infof("Starting connector: %s", HOTROD);
+                hotrod.start(hotrodProperties, cacheManager);
+                protocolServers.put(HOTROD, hotrod);
+            }
+            
+            // Start memcached server
+            Properties memcachedProperties = connectorPropertiesMap.get(MEMCACHED);
+            if (memcachedProperties != null) {
+                memcachedProperties = new Properties(memcachedProperties);
+                
+                SecurityActions.setContextClassLoader(MemcachedServer.class.getClassLoader());
+                MemcachedServer memcached = new MemcachedServer();
+                log.infof("Starting connector: %s", MEMCACHED);
+                memcached.start(memcachedProperties, cacheManager);
+                protocolServers.put(MEMCACHED, memcached);
+            }
             done = true;
         } catch (Exception e) {
             throw new StartException("failed to start service", e);
