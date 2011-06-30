@@ -34,7 +34,7 @@
         <module name="org.jboss.marshalling"/>
         <module name="org.jboss.marshalling.river" services="import"/>
         <module name="org.jboss.netty"/>
-	<module name="org.scala-lang.library"/>
+        <module name="org.scala-lang.library"/>
         <module name="org.jgroups"/>
     </dependencies>
 </module>

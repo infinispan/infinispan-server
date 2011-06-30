@@ -20,31 +20,43 @@ package org.jboss.datagrid;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
+import java.util.List;
+import java.util.Locale;
+
 import javax.management.MBeanServer;
 
-import org.jboss.as.controller.BasicOperationResult;
-import org.jboss.as.controller.ModelAddOperationHandler;
+import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
-import org.jboss.as.controller.OperationResult;
-import org.jboss.as.controller.ResultHandler;
-import org.jboss.as.controller.RuntimeTask;
-import org.jboss.as.controller.RuntimeTaskContext;
+import org.jboss.as.controller.ServiceVerificationHandler;
+import org.jboss.as.controller.descriptions.DescriptionProvider;
+import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.as.server.services.path.RelativePathService;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceBuilder.DependencyType;
+import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceTarget;
 
 /**
  * @author Emanuel Muckenhuber
  */
-abstract class DataGridSubsystemAdd implements ModelAddOperationHandler {
+abstract class DataGridSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
 
     private static final String DEFAULT_RELATIVE_TO = "jboss.server.base.dir";
 
+    static ModelNode createOperation(ModelNode address, ModelNode existing) {
+        ModelNode operation = Util.getEmptyOperation(ModelDescriptionConstants.ADD, address);
+        populate(existing, operation);
+        return operation;
+    }
+    
+    private static void populate(ModelNode source, ModelNode target) {
+        target.get(DataGridConstants.CONFIG_PATH).set(source.require(DataGridConstants.CONFIG_PATH));
+    }
+    
     private final ServiceName serviceName;
     private final ServiceName pathBase;
     private final String defaultPath;
@@ -56,45 +68,45 @@ abstract class DataGridSubsystemAdd implements ModelAddOperationHandler {
     }
 
     @Override
-    public OperationResult execute(final OperationContext context, final ModelNode operation, final ResultHandler resultHandler) {
+    protected boolean requiresRuntimeVerification() {
+        return false;
+    }
 
-        final ModelNode compensatingOperation = Util.getResourceRemoveOperation(operation.require(OP_ADDR));
+    @Override
+    public ModelNode getModelDescription(Locale locale) {
+        // TODO Generate localized model description.
+        return new ModelNode();
+    }
 
-        // Populate subModel
-        final ModelNode subModel = context.getSubModel();
-        subModel.setEmptyObject();
-        if (operation.hasDefined(DataGridConstants.CONFIG_PATH)) {
-            subModel.get(DataGridConstants.CONFIG_PATH).set(operation.get(DataGridConstants.CONFIG_PATH));
-        }
+    @Override
+    protected void populateModel(ModelNode source, ModelNode target)
+            throws OperationFailedException {
+        populate(source, target);
+    }
 
-        if (context.getRuntimeContext() != null) {
-            context.getRuntimeContext().setRuntimeTask(new RuntimeTask() {
-                @Override
-                public void execute(RuntimeTaskContext context) throws OperationFailedException {
-                    final ServiceTarget serviceTarget = context.getServiceTarget();
-                    // Create the service
-                    final DataGridService<?> service = createService();
+    @Override
+    protected void performRuntime(OperationContext context,
+            ModelNode operation, ModelNode model,
+            ServiceVerificationHandler verificationHandler,
+            List<ServiceController<?>> newControllers)
+            throws OperationFailedException {
 
-                    // Add the service
-                    final ServiceBuilder<?> serviceBuilder = serviceTarget.addService(serviceName, service)
-                            .addDependency(DependencyType.REQUIRED, ServiceName.JBOSS.append("mbean", "server"), MBeanServer.class, service.getMBeanServer());
+        final ServiceTarget serviceTarget = context.getServiceTarget();
+        // Create the service
+        final DataGridService<?> service = createService();
 
-                    // Create path services
-                    serviceBuilder.addDependency(createConfigPathService(operation, serviceTarget),
-                            String.class, service.getConfigPathInjector());
+        // Add the service
+        final ServiceBuilder<?> serviceBuilder = serviceTarget.addService(serviceName, service)
+                .addDependency(DependencyType.REQUIRED, ServiceName.JBOSS.append("mbean", "server"), MBeanServer.class, service.getMBeanServer());
 
-                    buildService(service, serviceBuilder);
+        // Create path services
+        serviceBuilder.addDependency(createConfigPathService(operation, serviceTarget),
+                String.class, service.getConfigPathInjector());
 
-                    // Install the service
-                    serviceBuilder.install();
+        buildService(service, serviceBuilder);
 
-                    resultHandler.handleResultComplete();
-                }
-            });
-        } else {
-            resultHandler.handleResultComplete();
-        }
-        return new BasicOperationResult(compensatingOperation);
+        // Install the service
+        serviceBuilder.install();
     }
 
     protected abstract DataGridService<?> createService();
@@ -103,7 +115,7 @@ abstract class DataGridSubsystemAdd implements ModelAddOperationHandler {
         // Do nothing by default
     }
 
-    ServiceName createConfigPathService(final ModelNode operation, final ServiceTarget serviceTarget) {
+    private ServiceName createConfigPathService(final ModelNode operation, final ServiceTarget serviceTarget) {
         ModelNode path = operation.get(DataGridConstants.CONFIG_PATH);
         final ServiceName serviceName = pathBase.append(DataGridConstants.CONFIG_PATH);
         final String relativeTo = path.hasDefined(RELATIVE_TO) ? path.get(RELATIVE_TO).asString() : DEFAULT_RELATIVE_TO;
