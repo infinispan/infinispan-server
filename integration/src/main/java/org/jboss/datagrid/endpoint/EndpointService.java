@@ -27,13 +27,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.infinispan.server.hotrod.HotRodServer;
-import org.infinispan.server.memcached.MemcachedServer;
-
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.server.core.Main;
 import org.infinispan.server.core.ProtocolServer;
-import org.jboss.as.server.services.net.SocketBinding;
+import org.infinispan.server.hotrod.HotRodServer;
+import org.infinispan.server.memcached.MemcachedServer;
+import org.jboss.as.network.SocketBinding;
 import org.jboss.datagrid.DataGridConstants;
 import org.jboss.datagrid.SecurityActions;
 import org.jboss.dmr.ModelNode;

@@ -18,29 +18,45 @@
  */
 package org.jboss.datagrid.endpoint;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import java.util.List;
+import java.util.Locale;
 
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.jboss.as.controller.BasicOperationResult;
-import org.jboss.as.controller.ModelAddOperationHandler;
+import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
-import org.jboss.as.controller.OperationResult;
-import org.jboss.as.controller.ResultHandler;
-import org.jboss.as.controller.RuntimeTask;
-import org.jboss.as.controller.RuntimeTaskContext;
+import org.jboss.as.controller.ServiceVerificationHandler;
+import org.jboss.as.controller.descriptions.DescriptionProvider;
+import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.operations.common.Util;
-import org.jboss.as.server.services.net.SocketBinding;
+import org.jboss.as.network.SocketBinding;
 import org.jboss.datagrid.DataGridConstants;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceBuilder;
+import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
  */
-class EndpointSubsystemAdd implements ModelAddOperationHandler {
+class EndpointSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
 
+    static ModelNode createOperation(ModelNode address, ModelNode existing) {
+        ModelNode operation = Util.getEmptyOperation(ModelDescriptionConstants.ADD, address);
+        populate(existing, operation);
+        return operation;
+    }
+    
+    private static void populate(ModelNode source, ModelNode target) {
+        target.setEmptyObject();
+        if (source.hasDefined(DataGridConstants.CONNECTOR)) {
+            target.get(DataGridConstants.CONNECTOR).set(source.get(DataGridConstants.CONNECTOR));
+        }
+        if (source.hasDefined(DataGridConstants.TOPOLOGY_STATE_TRANSFER)) {
+            target.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER).set(source.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER));
+        }
+    }
+    
     private final ServiceName serviceName;
 
     EndpointSubsystemAdd(ServiceName serviceName) {
@@ -48,48 +64,44 @@ class EndpointSubsystemAdd implements ModelAddOperationHandler {
     }
 
     @Override
-    public OperationResult execute(final OperationContext context, final ModelNode operation, final ResultHandler resultHandler) {
+    public ModelNode getModelDescription(Locale locale) {
+        return new ModelNode();
+    }
 
-        final ModelNode compensatingOperation = Util.getResourceRemoveOperation(operation.require(OP_ADDR));
+    @Override
+    protected void performRuntime(OperationContext context,
+            ModelNode operation, ModelNode model,
+            ServiceVerificationHandler verificationHandler,
+            List<ServiceController<?>> newControllers)
+            throws OperationFailedException {
+        
+        // Create the service
+        final EndpointService service = new EndpointService(operation);
 
-        // Populate subModel
-        final ModelNode subModel = context.getSubModel();
-        subModel.setEmptyObject();
-        if (operation.hasDefined(DataGridConstants.CONNECTOR)) {
-            subModel.get(DataGridConstants.CONNECTOR).set(operation.get(DataGridConstants.CONNECTOR));
+        // Add and install the service
+        ServiceBuilder<?> builder = context.getServiceTarget().addService(serviceName, service);
+        builder.addDependency(
+                ServiceBuilder.DependencyType.REQUIRED,
+                DataGridConstants.SN_CACHEMANAGER,
+                EmbeddedCacheManager.class,
+                service.getCacheManager());
+        
+        for (final String socketBinding: service.getRequiredSocketBindingNames()) {
+            final ServiceName socketName = SocketBinding.JBOSS_BINDING_NAME.append(socketBinding);
+            builder.addDependency(socketName, SocketBinding.class, service.getSocketBinding(socketBinding));
         }
-        if (operation.hasDefined(DataGridConstants.TOPOLOGY_STATE_TRANSFER)) {
-            subModel.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER).set(operation.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER));
-        }
+        
+        builder.install();
+    }
 
-        if (context.getRuntimeContext() != null) {
-            context.getRuntimeContext().setRuntimeTask(new RuntimeTask() {
-                @Override
-                public void execute(RuntimeTaskContext context) throws OperationFailedException {
-                    // Create the service
-                    final EndpointService service = new EndpointService(operation);
+    @Override
+    protected void populateModel(ModelNode source, ModelNode target)
+            throws OperationFailedException {
+        populate(source, target);
+    }
 
-                    // Add and install the service
-                    ServiceBuilder<?> builder = context.getServiceTarget().addService(serviceName, service);
-                    builder.addDependency(
-                            ServiceBuilder.DependencyType.REQUIRED,
-                            DataGridConstants.SN_CACHEMANAGER,
-                            EmbeddedCacheManager.class,
-                            service.getCacheManager());
-                    
-                    for (final String socketBinding: service.getRequiredSocketBindingNames()) {
-                        final ServiceName socketName = SocketBinding.JBOSS_BINDING_NAME.append(socketBinding);
-                        builder.addDependency(socketName, SocketBinding.class, service.getSocketBinding(socketBinding));
-                    }
-                    
-                    builder.install();
-
-                    resultHandler.handleResultComplete();
-                }
-            });
-        } else {
-            resultHandler.handleResultComplete();
-        }
-        return new BasicOperationResult(compensatingOperation);
+    @Override
+    protected boolean requiresRuntimeVerification() {
+        return false;
     }
 }

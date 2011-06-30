@@ -18,9 +18,12 @@
  */
 package org.jboss.datagrid.cachemanager;
 
+import java.util.Locale;
+
 import org.jboss.datagrid.DataGridConstants;
 import org.jboss.datagrid.DataGridExtension;
 import org.jboss.datagrid.DataGridService;
+import org.jboss.dmr.ModelNode;
 
 public class CacheManagerExtension extends DataGridExtension {
 
@@ -34,5 +37,10 @@ public class CacheManagerExtension extends DataGridExtension {
     @Override
     protected DataGridService<?> createService() {
         return new CacheManagerService();
+    }
+
+    @Override
+    public ModelNode getModelDescription(Locale locale) {
+        return new ModelNode();
     }
 }

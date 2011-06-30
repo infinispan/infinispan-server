@@ -23,18 +23,18 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.ExtensionContext;
 import org.jboss.as.controller.SubsystemRegistration;
+import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.as.controller.parsing.ExtensionParsingContext;
-import org.jboss.as.controller.registry.ModelNodeRegistration;
+import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceName;
 
-public abstract class DataGridExtension implements Extension {
+public abstract class DataGridExtension implements Extension, DescriptionProvider {
 
     private final String subsystemName;
     private final String namespaceUri;
     private final DataGridSubsystemParser parser;
-    private final DataGridSubsystemProviders providers;
     private final DataGridSubsystemAdd subsystemAdd;
     private final DataGridSubsystemDescribe subsystemDescribe;
 
@@ -42,7 +42,6 @@ public abstract class DataGridExtension implements Extension {
         subsystemName = serviceName.getSimpleName();
         this.namespaceUri = namespaceUri;
         parser = new DataGridSubsystemParser(subsystemName, namespaceUri);
-        providers = new DataGridSubsystemProviders(subsystemName, getClass());
         subsystemAdd = new DataGridSubsystemAdd(serviceName, defaultConfigFileName) {
             @Override
             protected DataGridService<?> createService() {
@@ -67,9 +66,9 @@ public abstract class DataGridExtension implements Extension {
     @Override
     public final void initialize(ExtensionContext context) {
         final SubsystemRegistration subsystem = context.registerSubsystem(subsystemName);
-        final ModelNodeRegistration registration = subsystem.registerSubsystemModel(providers.subsystem());
-        registration.registerOperationHandler(ADD, subsystemAdd, providers.subsystemAdd(), false);
-        registration.registerOperationHandler(DESCRIBE, subsystemDescribe, providers.subsystemDescribe(), false, OperationEntry.EntryType.PRIVATE);
+        final ManagementResourceRegistration registration = subsystem.registerSubsystemModel(this);
+        registration.registerOperationHandler(ADD, subsystemAdd, subsystemAdd, false);
+        registration.registerOperationHandler(DESCRIBE, subsystemDescribe, subsystemDescribe, false, OperationEntry.EntryType.PRIVATE);
 
         subsystem.registerXMLElementWriter(parser);
     }

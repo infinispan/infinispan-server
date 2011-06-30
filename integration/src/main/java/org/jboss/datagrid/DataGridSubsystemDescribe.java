@@ -20,39 +20,40 @@ package org.jboss.datagrid;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
-import org.jboss.as.controller.BasicOperationResult;
-import org.jboss.as.controller.ModelQueryOperationHandler;
+import java.util.Locale;
+
 import org.jboss.as.controller.OperationContext;
-import org.jboss.as.controller.OperationResult;
+import org.jboss.as.controller.OperationFailedException;
+import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.ResultHandler;
+import org.jboss.as.controller.descriptions.DescriptionProvider;
+import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.dmr.ModelNode;
 
 /**
  * @author Emanuel Muckenhuber
  */
-class DataGridSubsystemDescribe implements ModelQueryOperationHandler {
+class DataGridSubsystemDescribe implements OperationStepHandler, DescriptionProvider {
 
     static final DataGridSubsystemDescribe INSTANCE = new DataGridSubsystemDescribe();
 
     @Override
-    public OperationResult execute(final OperationContext context, final ModelNode operation, final ResultHandler resultHandler) {
+    public ModelNode getModelDescription(Locale locale) {
+        return new ModelNode();
+    }
 
-        final ModelNode subsystemAdd = new ModelNode();
-        final ModelNode subModel = context.getSubModel();
-        PathAddress rootAddress = PathAddress.pathAddress(PathAddress.pathAddress(operation.require(OP_ADDR)).getLastElement());
-        subsystemAdd.get(OP).set(ADD);
-        subsystemAdd.get(OP_ADDR).set(rootAddress.toModelNode());
+    @Override
+    public void execute(OperationContext context, ModelNode operation)
+            throws OperationFailedException {
 
-        if (subModel.hasDefined(DataGridConstants.CONFIG_PATH)) {
-            subsystemAdd.get(DataGridConstants.CONFIG_PATH).set(subModel.get(DataGridConstants.CONFIG_PATH));
-        }
-
-        final ModelNode result = new ModelNode();
-        result.add(subsystemAdd);
-        resultHandler.handleResultFragment(Util.NO_LOCATION, result);
-        resultHandler.handleResultComplete();
-        return new BasicOperationResult();
+        ModelNode result = context.getResult();
+        
+        PathAddress rootAddress = PathAddress.pathAddress(PathAddress.pathAddress(operation.require(ModelDescriptionConstants.OP_ADDR)).getLastElement());
+        ModelNode subModel = context.readModel(PathAddress.EMPTY_ADDRESS);
+        
+        result.add(DataGridSubsystemAdd.createOperation(rootAddress.toModelNode(), subModel));
+        
+        context.completeStep();
     }
 }

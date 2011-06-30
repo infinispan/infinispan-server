@@ -20,16 +20,20 @@ package org.jboss.datagrid.endpoint;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
+import java.util.Locale;
+
 import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.ExtensionContext;
 import org.jboss.as.controller.SubsystemRegistration;
+import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.as.controller.parsing.ExtensionParsingContext;
-import org.jboss.as.controller.registry.ModelNodeRegistration;
+import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
 import org.jboss.datagrid.DataGridConstants;
+import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceName;
 
-public class EndpointExtension implements Extension {
+public class EndpointExtension implements Extension, DescriptionProvider {
 
     private final ServiceName serviceName = DataGridConstants.SN_ENDPOINT;
     private final String subsystemName = serviceName.getSimpleName();
@@ -42,9 +46,9 @@ public class EndpointExtension implements Extension {
     @Override
     public final void initialize(ExtensionContext context) {
         final SubsystemRegistration subsystem = context.registerSubsystem(subsystemName);
-        final ModelNodeRegistration registration = subsystem.registerSubsystemModel(providers.subsystem());
-        registration.registerOperationHandler(ADD, subsystemAdd, providers.subsystemAdd(), false);
-        registration.registerOperationHandler(DESCRIBE, subsystemDescribe, providers.subsystemDescribe(), false, OperationEntry.EntryType.PRIVATE);
+        final ManagementResourceRegistration registration = subsystem.registerSubsystemModel(this);
+        registration.registerOperationHandler(ADD, subsystemAdd, subsystemAdd, false);
+        registration.registerOperationHandler(DESCRIBE, subsystemDescribe, subsystemDescribe, false, OperationEntry.EntryType.PRIVATE);
 
         subsystem.registerXMLElementWriter(parser);
     }
@@ -52,5 +56,10 @@ public class EndpointExtension implements Extension {
     @Override
     public final void initializeParsers(ExtensionParsingContext context) {
         context.setSubsystemXmlMapping(namespaceUri, parser);
+    }
+
+    @Override
+    public ModelNode getModelDescription(Locale arg0) {
+        return new ModelNode();
     }
 }

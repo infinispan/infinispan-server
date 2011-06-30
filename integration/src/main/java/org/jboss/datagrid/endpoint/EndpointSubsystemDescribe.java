@@ -18,45 +18,40 @@
  */
 package org.jboss.datagrid.endpoint;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import java.util.Locale;
 
-import org.jboss.as.controller.BasicOperationResult;
-import org.jboss.as.controller.ModelQueryOperationHandler;
 import org.jboss.as.controller.OperationContext;
-import org.jboss.as.controller.OperationResult;
+import org.jboss.as.controller.OperationFailedException;
+import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.ResultHandler;
-import org.jboss.as.controller.operations.common.Util;
-import org.jboss.datagrid.DataGridConstants;
+import org.jboss.as.controller.descriptions.DescriptionProvider;
+import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.dmr.ModelNode;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
  */
-class EndpointSubsystemDescribe implements ModelQueryOperationHandler {
+class EndpointSubsystemDescribe implements OperationStepHandler, DescriptionProvider {
 
     static final EndpointSubsystemDescribe INSTANCE = new EndpointSubsystemDescribe();
 
     @Override
-    public OperationResult execute(final OperationContext context, final ModelNode operation, final ResultHandler resultHandler) {
+    public ModelNode getModelDescription(Locale locale) {
+        return new ModelNode();
+    }
 
-        final ModelNode subsystemAdd = new ModelNode();
-        final ModelNode subModel = context.getSubModel();
-        PathAddress rootAddress = PathAddress.pathAddress(PathAddress.pathAddress(operation.require(OP_ADDR)).getLastElement());
-        subsystemAdd.get(OP).set(ADD);
-        subsystemAdd.get(OP_ADDR).set(rootAddress.toModelNode());
+    @Override
+    public void execute(OperationContext context, ModelNode operation)
+            throws OperationFailedException {
 
-        if(subModel.hasDefined(DataGridConstants.CONNECTOR)) {
-            subsystemAdd.get(DataGridConstants.CONNECTOR).set(subModel.get(DataGridConstants.CONNECTOR));
-        }
-        if(subModel.hasDefined(DataGridConstants.TOPOLOGY_STATE_TRANSFER)) {
-            subsystemAdd.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER).set(subModel.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER));
-        }
+        ModelNode result = context.getResult();
+        
+        PathAddress rootAddress = PathAddress.pathAddress(PathAddress.pathAddress(operation.require(ModelDescriptionConstants.OP_ADDR)).getLastElement());
+        ModelNode subModel = context.readModel(PathAddress.EMPTY_ADDRESS);
+        
+        result.add(EndpointSubsystemAdd.createOperation(rootAddress.toModelNode(), subModel));
+        
+        context.completeStep();
 
-        final ModelNode result = new ModelNode();
-        result.add(subsystemAdd);
-        resultHandler.handleResultFragment(Util.NO_LOCATION, result);
-        resultHandler.handleResultComplete();
-        return new BasicOperationResult();
     }
 }
