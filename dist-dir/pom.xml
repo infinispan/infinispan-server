@@ -45,6 +45,12 @@
     </dependency>
     
     <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-clustering-infinispan</artifactId>
+      <version>${version.org.jboss.as}</version>
+    </dependency>
+    
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jboss-datagrid-rest</artifactId>
       <version>${project.version}</version>
@@ -55,22 +61,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>jboss-datagrid-integration</artifactId>
       <version>${project.version}</version>
-    </dependency>
-
-    <!--
-      Infinispan uses more recent version of JBoss Marshalling
-      Once AS 7 upgrades to the latest version, we can safely remove
-      this dependency and src/main/resources/modules/org/jboss/marshalling
-    -->
-    <dependency>
-      <groupId>org.jboss.marshalling</groupId>
-      <artifactId>jboss-marshalling</artifactId>
-      <version>${version.org.jboss.marshalling}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.marshalling</groupId>
-      <artifactId>jboss-marshalling-river</artifactId>
-      <version>${version.org.jboss.marshalling}</version>
     </dependency>
 
     <dependency>
@@ -122,16 +112,6 @@
     </dependency>
     
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-      <version>${version.org.codehaus.jackson}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <version>${version.org.codehaus.jackson}</version>
-    </dependency>
-    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <version>${version.com.thoughtworks.xstream}</version>
@@ -142,7 +122,6 @@
       <artifactId>scala-library</artifactId>
       <version>${version.org.scala-lang}</version>
     </dependency>
-    
     
   </dependencies>
 

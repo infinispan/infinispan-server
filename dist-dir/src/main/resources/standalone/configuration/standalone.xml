@@ -23,24 +23,37 @@
 <server xmlns="urn:jboss:domain:1.0">
 
     <extensions>
+        <extension module="org.jboss.as.clustering.jgroups"/>
         <extension module="org.jboss.as.clustering.infinispan"/>
+        <!--
         <extension module="org.jboss.as.connector"/>
+        -->
         <extension module="org.jboss.as.deployment-scanner"/>
         <extension module="org.jboss.as.ee"/>
+        <!--
         <extension module="org.jboss.as.ejb3"/>
+        -->
         <extension module="org.jboss.as.jaxrs"/>
         <extension module="org.jboss.as.jmx"/>
+        <!--
         <extension module="org.jboss.as.jpa"/>
+        -->
         <extension module="org.jboss.as.logging"/>
         <extension module="org.jboss.as.naming"/>
+        <!--
         <extension module="org.jboss.as.osgi"/>
+        -->
         <extension module="org.jboss.as.remoting"/>
+        <!--
         <extension module="org.jboss.as.sar"/>
+        -->
         <extension module="org.jboss.as.security"/>
         <extension module="org.jboss.as.threads"/>
         <extension module="org.jboss.as.transactions"/>
         <extension module="org.jboss.as.web" />
+        <!-- 
         <extension module="org.jboss.as.weld" />
+        -->
         <extension module="org.jboss.datagrid" />
     </extensions>
 
@@ -94,6 +107,7 @@
                 </handlers>
             </root-logger>
         </subsystem>
+        <!--
         <subsystem xmlns="urn:jboss:domain:datasources:1.0">
             <datasources>
                 <datasource jndi-name="java:jboss/datasources/ExampleDS" enabled="true" use-java-context="true" pool-name="H2DS">
@@ -115,27 +129,16 @@
                 </drivers>
             </datasources>
         </subsystem>
+        -->
         <subsystem xmlns="urn:jboss:domain:deployment-scanner:1.0">
             <deployment-scanner scan-interval="5000" relative-to="jboss.server.base.dir" path="deployments" />
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:ee:1.0" />
+        <!--
         <subsystem xmlns="urn:jboss:domain:ejb3:1.0" />
-        <subsystem xmlns="urn:jboss:domain:infinispan:1.0" default-cache-container="hibernate">
-            <cache-container name="hibernate" default-cache="local-query">
-                <local-cache name="entity">
-                    <eviction strategy="LRU" max-entries="10000"/>
-                    <expiration max-idle="100000"/>
-                </local-cache>
-                <local-cache name="local-query">
-                    <eviction strategy="LRU" max-entries="10000"/>
-                    <expiration max-idle="100000"/>
-                </local-cache>
-                <local-cache name="timestamps">
-                    <eviction strategy="NONE"/>
-                </local-cache>
-            </cache-container>
-        </subsystem>
+        -->
         <subsystem xmlns="urn:jboss:domain:jaxrs:1.0"/>
+        <!--
         <subsystem xmlns="urn:jboss:domain:jca:1.0">
             <archive-validation enabled="false" />
             <bean-validation enabled="false" />
@@ -154,77 +157,23 @@
                 </long-running-threads>
             </default-workmanager>
         </subsystem>
+        -->
         <subsystem xmlns="urn:jboss:domain:jmx:1.0">
             <jmx-connector registry-binding="jmx-connector-registry" server-binding="jmx-connector-server" />
         </subsystem>
+        <!--
         <subsystem xmlns="urn:jboss:domain:jpa:1.0">
             <jpa default-datasource=""/>
         </subsystem>
+        -->
         <subsystem xmlns="urn:jboss:domain:naming:1.0" />
-        <subsystem xmlns="urn:jboss:domain:osgi:1.0" activation="lazy">
-            <configuration pid="org.apache.felix.webconsole.internal.servlet.OsgiManager">
-                <property name="manager.root">jboss-osgi</property>
-            </configuration>
-            <properties>
-                <!--
-                    A comma seperated list of module identifiers. Each system module
-                    is added as a dependency to the OSGi framework module. The packages
-                    from these system modules can be made visible as framework system packages.
-                    http://www.osgi.org/javadoc/r4v42/org/osgi/framework/Constants.html#FRAMEWORK_SYSTEMPACKAGES_EXTRA
-                -->
-                <property name="org.jboss.osgi.system.modules">
-                org.apache.commons.logging,
-                org.apache.log4j,
-                org.jboss.as.osgi,
-                org.slf4j,
-                </property>
-                <!--
-                    Framework environment property identifying extra packages which the system bundle
-                    must export from the current execution environment
-                -->
-                <property name="org.osgi.framework.system.packages.extra">
-                org.apache.commons.logging;version=1.1.1,
-                org.apache.log4j;version=1.2,
-                org.jboss.as.osgi.service;version=7.0,
-                org.jboss.osgi.deployment.interceptor;version=1.0,
-                org.jboss.osgi.spi.capability;version=1.0,
-                org.jboss.osgi.spi.util;version=1.0,
-                org.jboss.osgi.testing;version=1.0,
-                org.jboss.osgi.vfs;version=1.0,
-                org.slf4j;version=1.5.10,
-                </property>
-                <!-- Specifies the beginning start level of the framework -->
-                <property name="org.osgi.framework.startlevel.beginning">1</property>
-            </properties>
-            <modules>
-                <!-- modules registered with the OSGi layer on startup -->
-                <module identifier="javaee.api"/>
-                <module identifier="org.jboss.logging"/>
-                <!-- bundles installed on startup -->
-                <module identifier="org.apache.aries.util"/>
-                <module identifier="org.jboss.osgi.webconsole"/>
-                <module identifier="org.osgi.compendium"/>
-                <!-- bundles started in startlevel 1 -->
-                <module identifier="org.apache.felix.log" startlevel="1"/>
-                <module identifier="org.jboss.osgi.logging" startlevel="1"/>
-                <module identifier="org.apache.felix.configadmin" startlevel="1"/>
-                <module identifier="org.jboss.as.osgi.configadmin" startlevel="1"/>
-                <!-- bundles started in startlevel 2 -->
-                <module identifier="org.apache.aries.jmx" startlevel="2"/>
-                <module identifier="org.apache.felix.eventadmin" startlevel="2"/>
-                <module identifier="org.apache.felix.metatype" startlevel="2"/>
-                <module identifier="org.apache.felix.webconsole" startlevel="2"/>
-                <module identifier="org.jboss.osgi.jmx" startlevel="2"/>
-                <module identifier="org.jboss.osgi.http" startlevel="2"/>
-                <!-- bundles started in startlevel 3 -->
-                <module identifier="org.jboss.osgi.blueprint" startlevel="3"/>
-                <module identifier="org.jboss.osgi.webapp" startlevel="3"/>
-                <module identifier="org.jboss.osgi.xerces" startlevel="3"/>
-            </modules>
-        </subsystem>
         <subsystem xmlns="urn:jboss:domain:remoting:1.0"/>
+        <!--
         <subsystem xmlns="urn:jboss:domain:resource-adapters:1.0" />
+        -->
+        <!--
         <subsystem xmlns="urn:jboss:domain:sar:1.0"/>
+        -->
         <subsystem xmlns="urn:jboss:domain:security:1.0">
             <security-domains>
                 <security-domain name="other" cache-type="default">
@@ -234,7 +183,61 @@
                 </security-domain>
             </security-domains>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:threads:1.0"/>
+        <subsystem xmlns="urn:jboss:domain:threads:1.0">
+            <thread-factory name="jgroups-factory" group-name="jgroups" />
+            <thread-factory name="infinispan-factory" group-name="infinispan" />
+            
+            <!--
+                FIXME: Configure JGroups and Infinispan thread pools correctly with sensible defaults.
+                
+                thread_pool.enabled="true"
+                thread_pool.min_threads="20"
+                thread_pool.max_threads="200"
+                thread_pool.keep_alive_time="5000"
+                thread_pool.queue_enabled="true"
+                thread_pool.queue_max_size="1000"
+                thread_pool.rejection_policy="discard"
+        
+                oob_thread_pool.enabled="true"
+                oob_thread_pool.min_threads="20"
+                oob_thread_pool.max_threads="200"
+                oob_thread_pool.keep_alive_time="1000"
+                oob_thread_pool.queue_enabled="false"
+                oob_thread_pool.rejection_policy="discard"/>
+            -->
+            <unbounded-queue-thread-pool name="jgroups">
+                <max-threads count="100" per-cpu="0" />
+                <keepalive-time time="1000" unit="MILLISECONDS"/>
+                <thread-factory name="jgroups-factory"/>
+            </unbounded-queue-thread-pool>
+            <unbounded-queue-thread-pool name="jgroups-oob">
+                <max-threads count="100" per-cpu="0" />
+                <keepalive-time time="1000" unit="MILLISECONDS"/>
+                <thread-factory name="jgroups-factory"/>
+            </unbounded-queue-thread-pool>
+            <scheduled-thread-pool name="jgroups-timer">
+                <max-threads count="1" per-cpu="0" />
+                <thread-factory name="jgroups-factory"/>
+            </scheduled-thread-pool>
+            <unbounded-queue-thread-pool name="infinispan-transport">
+                <max-threads count="100" per-cpu="0" />
+                <keepalive-time time="1000" unit="MILLISECONDS"/>
+                <thread-factory name="infinispan-factory"/>
+            </unbounded-queue-thread-pool>
+            <scheduled-thread-pool name="infinispan-repl-queue">
+                <max-threads count="1" per-cpu="0" />
+                <thread-factory name="infinispan-factory"/>
+            </scheduled-thread-pool>
+            <unbounded-queue-thread-pool name="infinispan-listener">
+                <max-threads count="100" per-cpu="0" />
+                <keepalive-time time="1000" unit="MILLISECONDS"/>
+                <thread-factory name="infinispan-factory"/>
+            </unbounded-queue-thread-pool>
+            <scheduled-thread-pool name="infinispan-eviction">
+                <max-threads count="1" per-cpu="0"/>
+                <thread-factory name="infinispan-factory"/>
+            </scheduled-thread-pool>
+        </subsystem>
         <subsystem xmlns="urn:jboss:domain:transactions:1.0">
             <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
             <core-environment>
@@ -250,7 +253,70 @@
                 <alias name="example.com" />
             </virtual-server>
         </subsystem>
+        <!-- 
         <subsystem xmlns="urn:jboss:domain:weld:1.0" />
+        -->
+        
+        <subsystem xmlns="urn:jboss:domain:jgroups:1.0" default-stack="tcp">
+            <stack name="udp">
+                <transport type="UDP"
+                           socket-binding="jgroups-udp"
+                           diagnostics-socket-binding="jgroups-diagnostics"
+                           default-executor="jgroups"
+                           oob-executor="jgroups-oob"
+                           timer-executor="jgroups-timer"/>
+                <protocol type="PING"/>
+                <protocol type="MERGE2"/>
+                <protocol type="FD_SOCK" socket-binding="jgroups-udp-fd"/>
+                <protocol type="FD"/>
+                <protocol type="VERIFY_SUSPECT"/>
+                <protocol type="BARRIER"/>
+                <protocol type="pbcast.NAKACK"/>
+                <protocol type="UNICAST"/>
+                <protocol type="pbcast.STABLE"/>
+                <protocol type="VIEW_SYNC"/>
+                <protocol type="pbcast.GMS"/>
+                <protocol type="UFC"/>
+                <protocol type="MFC"/>
+                <protocol type="FRAG2"/>
+                <protocol type="pbcast.STREAMING_STATE_TRANSFER"/>
+                <protocol type="pbcast.FLUSH"/>
+            </stack>
+            <stack name="tcp">
+                <transport type="TCP"
+                           socket-binding="jgroups-tcp"
+                           diagnostics-socket-binding="jgroups-diagnostics"
+                           default-executor="jgroups"
+                           oob-executor="jgroups-oob"
+                           timer-executor="jgroups-timer"/>
+                <protocol type="MPING" socket-binding="jgroups-mping"/>
+                <protocol type="MERGE2"/>
+                <protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd"/>
+                <protocol type="FD"/>
+                <protocol type="VERIFY_SUSPECT"/>
+                <protocol type="BARRIER"/>
+                <protocol type="pbcast.NAKACK"/>
+                <protocol type="UNICAST"/>
+                <protocol type="pbcast.STABLE"/>
+                <protocol type="VIEW_SYNC"/>
+                <protocol type="pbcast.GMS"/>
+                <protocol type="UFC"/>
+                <protocol type="MFC"/>
+                <protocol type="FRAG2"/>
+                <protocol type="pbcast.STREAMING_STATE_TRANSFER"/>
+                <protocol type="pbcast.FLUSH"/>
+            </stack>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:infinispan:1.0" default-cache-container="default">
+            <cache-container name="default"
+                             default-cache="default"
+                             listener-executor="infinispan-listener"
+                             eviction-executor="infinispan-eviction"
+                             replication-queue-executor="infinispan-repl-queue">
+                <transport executor="infinispan-transport"/>
+                <replicated-cache name="default" start="EAGER" mode="SYNC" batching="true"></replicated-cache>
+            </cache-container>
+        </subsystem>
         <subsystem xmlns="urn:jboss:domain:datagrid:cachemanager:1.0">
             <config-path relative-to="jboss.server.base.dir" path="configuration/infinispan-configuration.xml" />
         </subsystem>
@@ -297,10 +363,19 @@
         <socket-binding name="jmx-connector-registry" port="1090"/>
         <socket-binding name="jmx-connector-server" port="1091"/>
         <socket-binding name="jndi" port="1099"/>
+        <!--
         <socket-binding name="osgi-http" port="8090"/>
+        -->
         <socket-binding name="remoting" port="4447"/>
         <socket-binding name="txn-recovery-environment" port="4712"/>
         <socket-binding name="txn-status-manager" port="4713"/>
+        
+        <socket-binding name="jgroups-tcp-fd" port="57600"/>
+        <socket-binding name="jgroups-tcp" port="7600" />
+        <socket-binding name="jgroups-udp-fd" port="54200"/>
+        <socket-binding name="jgroups-udp" port="55200" />
+        <socket-binding name="jgroups-mping" port="45700" />
+        <socket-binding name="jgroups-diagnostics" port="7500" />
         <socket-binding name="hotrod" port="11222"/>
         <socket-binding name="memcached" port="11211"/>
     </socket-binding-group>

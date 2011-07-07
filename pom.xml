@@ -44,14 +44,12 @@
 
     <jboss.datagrid.release.finalName>jboss-datagrid-${jboss.datagrid.release.version}</jboss.datagrid.release.finalName>
 
-    <!-- Dependency versions. Please keep alphabetical -->
+    <!-- Dependency versions. Please keep alphabetical and identical with what AS 7 uses -->
     <version.com.thoughtworks.xstream>1.3.1</version.com.thoughtworks.xstream>
     <version.junit>4.8.2</version.junit>
-    <version.org.codehaus.jackson>1.6.3</version.org.codehaus.jackson>
-    <version.org.infinispan>5.0.0.CR6</version.org.infinispan> <!-- Overriden -->
+    <version.org.infinispan>5.0.0.CR6</version.org.infinispan>
     <version.org.jboss.as>7.0.0.CR1</version.org.jboss.as>
     <version.org.jboss.jandex>1.0.0.Beta7</version.org.jboss.jandex>
-    <version.org.jboss.marshalling>1.3.0.CR9</version.org.jboss.marshalling>
     <version.org.jboss.msc>1.0.0.CR2</version.org.jboss.msc>
     <version.org.scala-lang>2.8.1</version.org.scala-lang>
   </properties>
