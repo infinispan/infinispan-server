@@ -67,9 +67,14 @@
 
     <delete dir="${output.dir}/modules/org/infinispan" />
     <delete dir="${output.dir}/modules/org/jboss/as/clustering/infinispan" />
+    <delete dir="${output.dir}/modules/org/jboss/as/clustering/jgroups" />
 
     <module-def name="org.jboss.as.clustering.infinispan">
       <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan"/>
+    </module-def>
+
+    <module-def name="org.jboss.as.clustering.jgroups">
+      <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-jgroups"/>
     </module-def>
 
     <module-def name="org.jboss.datagrid">

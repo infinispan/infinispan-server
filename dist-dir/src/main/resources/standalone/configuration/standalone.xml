@@ -184,8 +184,8 @@
             </security-domains>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:threads:1.0">
-            <thread-factory name="jgroups-factory" group-name="jgroups" />
-            <thread-factory name="infinispan-factory" group-name="infinispan" />
+            <thread-factory name="jgroups-factory" group-name="jgroups" priority="5" />
+            <thread-factory name="infinispan-factory" group-name="infinispan" priority="5" />
             
             <!--
                 FIXME: Configure JGroups and Infinispan thread pools correctly with sensible defaults.
@@ -257,7 +257,7 @@
         <subsystem xmlns="urn:jboss:domain:weld:1.0" />
         -->
         
-        <subsystem xmlns="urn:jboss:domain:jgroups:1.0" default-stack="tcp">
+        <subsystem xmlns="urn:jboss:domain:jgroups:1.0" default-stack="udp">
             <stack name="udp">
                 <transport type="UDP"
                            socket-binding="jgroups-udp"
@@ -314,7 +314,7 @@
                              eviction-executor="infinispan-eviction"
                              replication-queue-executor="infinispan-repl-queue">
                 <transport executor="infinispan-transport"/>
-                <replicated-cache name="default" start="EAGER" mode="SYNC" batching="true"></replicated-cache>
+                <distributed-cache name="default" start="EAGER" mode="SYNC" />
             </cache-container>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:datagrid:cachemanager:1.0">
