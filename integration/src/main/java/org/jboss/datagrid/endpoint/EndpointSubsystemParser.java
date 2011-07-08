@@ -66,7 +66,7 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
             if (tag != XMLStreamConstants.START_ELEMENT) {
                 continue;
             }
-            
+
             elemName = reader.getLocalName();
             if (DataGridConstants.CONNECTOR.equals(elemName)) {
                 readConnector(reader, operation);
@@ -80,21 +80,21 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
 
     private void readConnector(final XMLExtendedStreamReader reader,
             final ModelNode operation) {
-        
+
         // Handle required attributes first.
         String protocol = reader.getAttributeValue(null, DataGridConstants.PROTOCOL);
         if (protocol == null) {
             ParseUtils.missingRequired(reader, Collections.singleton(DataGridConstants.PROTOCOL));
         }
-        
+
         String socketBinding = reader.getAttributeValue(null, DataGridConstants.SOCKET_BINDING);
         if (socketBinding == null) {
             ParseUtils.missingRequired(reader, Collections.singleton(DataGridConstants.SOCKET_BINDING));
         }
-        
+
         ModelNode connector = operation.get(DataGridConstants.CONNECTOR).get(protocol);
         connector.set(DataGridConstants.SOCKET_BINDING, socketBinding);
-        
+
         int attrCnt = reader.getAttributeCount();
         for (int i = 0; i < attrCnt; i ++) {
             String attrName = reader.getAttributeLocalName(i);
@@ -123,7 +123,7 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
 
     private void readTopologyStateTransfer(final XMLExtendedStreamReader reader, final ModelNode operation) {
         ModelNode topologyStateTransfer = operation.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER);
-        
+
         int attrCnt = reader.getAttributeCount();
         for (int i = 0; i < attrCnt; i ++) {
             String attrName = reader.getAttributeLocalName(i);

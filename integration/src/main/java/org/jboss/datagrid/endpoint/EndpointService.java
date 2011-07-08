@@ -53,37 +53,37 @@ import org.jboss.msc.value.InjectedValue;
 class EndpointService implements Service<Map<String, ProtocolServer>> {
 
     private static final Logger log = Logger.getLogger(EndpointService.class);
-    
+
     private static final String HOTROD = "hotrod";
     private static final String MEMCACHED = "memcached";
-    
+
     private final InjectedValue<EmbeddedCacheManager> cacheManager = new InjectedValue<EmbeddedCacheManager>();
     private final InjectedValue<CacheContainer> cacheContainer = new InjectedValue<CacheContainer>();
-    
+
     private final ModelNode config;
     private final Map<String, InjectedValue<SocketBinding>> socketBindings = new HashMap<String, InjectedValue<SocketBinding>>();
     private final Map<String, Properties> connectorPropertiesMap = new LinkedHashMap<String, Properties>();
     private final Properties topologyStateTransferProperties = new Properties();
-    
+
     private final Map<String, ProtocolServer> protocolServers = new LinkedHashMap<String, ProtocolServer>();
-    
+
     EndpointService(ModelNode config) {
         this.config = config.clone();
     }
-    
+
     @Override
     public synchronized void start(final StartContext context) throws StartException {
-        
+
         assert connectorPropertiesMap.isEmpty();
         assert topologyStateTransferProperties.isEmpty();
-        
+
         ClassLoader origTCCL = SecurityActions.getContextClassLoader();
         boolean done = false;
         try {
             loadConnectorProperties(config);
             loadTopologyStateTransferProperties(config);
             validateConfiguration();
-            
+
             // Log translated properties for debugging purposes
             for (Map.Entry<String, Properties> entry: connectorPropertiesMap.entrySet()) {
                 log.debugf("Connector properties for '%s': %s", entry.getKey(), entry.getValue());
@@ -93,7 +93,7 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
             // Start the connectors
             startProtocolServer(HOTROD, HotRodServer.class);
             startProtocolServer(MEMCACHED, MemcachedServer.class);
-            
+
             done = true;
         } catch (StartException e) {
             throw e;
@@ -113,7 +113,7 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
         if (connectorPropertiesMap.isEmpty()) {
             throw new StartException("no connector is defined in the endpoint subsystem");
         }
-        
+
         // 'hotrod' and 'memcached' are the only supported protocols.
         Set<String> protocols = new LinkedHashSet<String>(connectorPropertiesMap.keySet());
         protocols.remove(HOTROD);
@@ -126,15 +126,15 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
     private void startProtocolServer(
             String protocol,
             Class<? extends ProtocolServer> serverType) throws StartException {
-        
+
         Properties props = copy(connectorPropertiesMap.get(protocol));
         if (props == null) {
             return;
         }
-        
+
         // Merge topology state transfer settings
         props.putAll(topologyStateTransferProperties);
-        
+
         // Start the server and record it
         log.debugf("Starting connector: %s", protocol);
         SecurityActions.setContextClassLoader(serverType.getClassLoader());
@@ -153,7 +153,7 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
     public synchronized void stop(final StopContext context) {
         doStop();
     }
-    
+
     private void doStop() {
         try {
             for (Map.Entry<String, ProtocolServer> entry: protocolServers.entrySet()) {
@@ -178,27 +178,27 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
         }
         return Collections.unmodifiableMap(protocolServers);
     }
-    
+
     InjectedValue<EmbeddedCacheManager> getCacheManager() {
         return cacheManager;
     }
-    
+
     InjectedValue<CacheContainer> getCacheContainer() {
         return cacheContainer;
     }
-    
+
     String getCacheContainerName() {
         if (!config.hasDefined(DataGridConstants.CACHE_CONTAINER)) {
             return null;
         }
         return config.get(DataGridConstants.CACHE_CONTAINER).asString();
     }
-    
+
     Set<String> getRequiredSocketBindingNames() {
         if (!config.hasDefined(DataGridConstants.CONNECTOR)) {
             return Collections.emptySet();
         }
-        
+
         Set<String> socketBindings = new HashSet<String>();
         for (Property property: config.get(DataGridConstants.CONNECTOR).asPropertyList()) {
             ModelNode connector = property.getValue();
@@ -206,10 +206,10 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
                 socketBindings.add(connector.get(DataGridConstants.SOCKET_BINDING).asString());
             }
         }
-        
+
         return socketBindings;
     }
-    
+
     InjectedValue<SocketBinding> getSocketBinding(String socketBindingName) {
         InjectedValue<SocketBinding> socketBinding = socketBindings.get(socketBindingName);
         if (socketBinding == null) {
@@ -223,13 +223,13 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
         if (!config.hasDefined(DataGridConstants.CONNECTOR)) {
             return;
         }
-        
+
         for (Property property: config.get(DataGridConstants.CONNECTOR).asPropertyList()) {
             String protocol = property.getName();
             ModelNode connector = property.getValue();
             Properties connectorProperties = new Properties();
             connectorPropertiesMap.put(protocol, connectorProperties);
-            
+
             if (connector.hasDefined(DataGridConstants.SOCKET_BINDING)) {
                 SocketBinding socketBinding = getSocketBinding(
                         connector.get(DataGridConstants.SOCKET_BINDING).asString()).getValue();
@@ -267,12 +267,12 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
             }
         }
     }
-    
+
     private void loadTopologyStateTransferProperties(ModelNode config) {
         if (!config.hasDefined(DataGridConstants.TOPOLOGY_STATE_TRANSFER)) {
             return;
         }
-        
+
         config = config.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER);
         if (config.hasDefined(DataGridConstants.LOCK_TIMEOUT)) {
             topologyStateTransferProperties.setProperty(
@@ -305,7 +305,7 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
                     Boolean.toString(!config.get(DataGridConstants.LAZY_RETRIEVAL).asBoolean(false)));
         }
     }
-    
+
     private static Properties copy(Properties p) {
         if (p == null) {
             return null;

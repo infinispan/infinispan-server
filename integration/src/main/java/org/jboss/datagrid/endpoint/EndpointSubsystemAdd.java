@@ -46,7 +46,7 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
         populate(existing, operation);
         return operation;
     }
-    
+
     private static void populate(ModelNode source, ModelNode target) {
         target.setEmptyObject();
         if (source.hasDefined(DataGridConstants.CONNECTOR)) {
@@ -56,7 +56,7 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
             target.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER).set(source.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER));
         }
     }
-    
+
     private final ServiceName serviceName;
 
     EndpointSubsystemAdd(ServiceName serviceName) {
@@ -74,30 +74,30 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
             ServiceVerificationHandler verificationHandler,
             List<ServiceController<?>> newControllers)
             throws OperationFailedException {
-        
+
         // Create the service
         final EndpointService service = new EndpointService(operation);
 
         // Add and install the service
         ServiceBuilder<?> builder = context.getServiceTarget().addService(serviceName, service);
-        
+
         String cacheContainerName = service.getCacheContainerName();
         ServiceName cacheContainerServiceName = ServiceName.JBOSS.append("infinispan");
         if (cacheContainerName != null) {
             cacheContainerServiceName = cacheContainerServiceName.append(cacheContainerName);
         }
-        
+
         builder.addDependency(
                 ServiceBuilder.DependencyType.REQUIRED,
                 cacheContainerServiceName,
                 EmbeddedCacheManager.class,
                 service.getCacheManager());
-        
+
         for (final String socketBinding: service.getRequiredSocketBindingNames()) {
             final ServiceName socketName = SocketBinding.JBOSS_BINDING_NAME.append(socketBinding);
             builder.addDependency(socketName, SocketBinding.class, service.getSocketBinding(socketBinding));
         }
-        
+
         builder.install();
     }
 
