@@ -80,9 +80,16 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
 
         // Add and install the service
         ServiceBuilder<?> builder = context.getServiceTarget().addService(serviceName, service);
+        
+        String cacheContainerName = service.getCacheContainerName();
+        ServiceName cacheContainerServiceName = ServiceName.JBOSS.append("infinispan");
+        if (cacheContainerName != null) {
+            cacheContainerServiceName = cacheContainerServiceName.append(cacheContainerName);
+        }
+        
         builder.addDependency(
                 ServiceBuilder.DependencyType.REQUIRED,
-                DataGridConstants.SN_CACHEMANAGER,
+                cacheContainerServiceName,
                 EmbeddedCacheManager.class,
                 service.getCacheManager());
         

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.server.core.Main;
 import org.infinispan.server.core.ProtocolServer;
@@ -57,6 +58,7 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
     private static final String MEMCACHED = "memcached";
     
     private final InjectedValue<EmbeddedCacheManager> cacheManager = new InjectedValue<EmbeddedCacheManager>();
+    private final InjectedValue<CacheContainer> cacheContainer = new InjectedValue<CacheContainer>();
     
     private final ModelNode config;
     private final Map<String, InjectedValue<SocketBinding>> socketBindings = new HashMap<String, InjectedValue<SocketBinding>>();
@@ -71,6 +73,7 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
     
     @Override
     public synchronized void start(final StartContext context) throws StartException {
+        
         assert connectorPropertiesMap.isEmpty();
         assert topologyStateTransferProperties.isEmpty();
         
@@ -178,6 +181,17 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
     
     InjectedValue<EmbeddedCacheManager> getCacheManager() {
         return cacheManager;
+    }
+    
+    InjectedValue<CacheContainer> getCacheContainer() {
+        return cacheContainer;
+    }
+    
+    String getCacheContainerName() {
+        if (!config.hasDefined(DataGridConstants.CACHE_CONTAINER)) {
+            return null;
+        }
+        return config.get(DataGridConstants.CACHE_CONTAINER).asString();
     }
     
     Set<String> getRequiredSocketBindingNames() {

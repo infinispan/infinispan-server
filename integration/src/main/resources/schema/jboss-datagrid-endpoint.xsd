@@ -38,6 +38,7 @@
    <xs:complexType name="connectorType">
       <xs:attribute name="protocol" type="xs:string" use="required" />
       <xs:attribute name="socket-binding" type="xs:string" use="required" />
+      <xs:attribute name="cache-container" type="xs:string" use="optional" />
       <xs:attribute name="worker-threads" type="xs:int" use="optional" />
       <xs:attribute name="idle-timeout" type="xs:int" use="optional" />
       <xs:attribute name="tcp-nodelay" type="xs:boolean" use="optional" />

@@ -47,6 +47,8 @@ class EndpointSubsystemDescribe implements OperationStepHandler, DescriptionProv
         ModelNode result = context.getResult();
         
         PathAddress rootAddress = PathAddress.pathAddress(PathAddress.pathAddress(operation.require(ModelDescriptionConstants.OP_ADDR)).getLastElement());
+        
+        @SuppressWarnings("deprecation")
         ModelNode subModel = context.readModel(PathAddress.EMPTY_ADDRESS);
         
         result.add(EndpointSubsystemAdd.createOperation(rootAddress.toModelNode(), subModel));

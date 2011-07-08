@@ -17,5 +17,4 @@
 # 02110-1301 USA
 #
 
-org.jboss.datagrid.cachemanager.CacheManagerExtension
 org.jboss.datagrid.endpoint.EndpointExtension

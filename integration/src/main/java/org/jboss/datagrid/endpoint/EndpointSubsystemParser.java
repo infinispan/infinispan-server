@@ -99,7 +99,9 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
         for (int i = 0; i < attrCnt; i ++) {
             String attrName = reader.getAttributeLocalName(i);
             String attrValue = reader.getAttributeValue(i);
-            if (DataGridConstants.WORKER_THREADS.equals(attrName)) {
+            if (DataGridConstants.CACHE_CONTAINER.equals(attrName)) {
+                connector.set(DataGridConstants.CACHE_CONTAINER, attrValue);
+            } else if (DataGridConstants.WORKER_THREADS.equals(attrName)) {
                 connector.set(DataGridConstants.WORKER_THREADS, Integer.parseInt(attrValue));
             } else if (DataGridConstants.IDLE_TIMEOUT.equals(attrName)) {
                 connector.set(DataGridConstants.IDLE_TIMEOUT, Integer.parseInt(attrValue));
