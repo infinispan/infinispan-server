@@ -25,35 +25,17 @@
     <extensions>
         <extension module="org.jboss.as.clustering.jgroups"/>
         <extension module="org.jboss.as.clustering.infinispan"/>
-        <!--
-        <extension module="org.jboss.as.connector"/>
-        -->
         <extension module="org.jboss.as.deployment-scanner"/>
         <extension module="org.jboss.as.ee"/>
-        <!--
-        <extension module="org.jboss.as.ejb3"/>
-        -->
         <extension module="org.jboss.as.jaxrs"/>
         <extension module="org.jboss.as.jmx"/>
-        <!--
-        <extension module="org.jboss.as.jpa"/>
-        -->
         <extension module="org.jboss.as.logging"/>
         <extension module="org.jboss.as.naming"/>
-        <!--
-        <extension module="org.jboss.as.osgi"/>
-        -->
         <extension module="org.jboss.as.remoting"/>
-        <!--
-        <extension module="org.jboss.as.sar"/>
-        -->
         <extension module="org.jboss.as.security"/>
         <extension module="org.jboss.as.threads"/>
         <extension module="org.jboss.as.transactions"/>
         <extension module="org.jboss.as.web" />
-        <!-- 
-        <extension module="org.jboss.as.weld" />
-        -->
         <extension module="org.jboss.datagrid" />
     </extensions>
 
@@ -107,73 +89,16 @@
                 </handlers>
             </root-logger>
         </subsystem>
-        <!--
-        <subsystem xmlns="urn:jboss:domain:datasources:1.0">
-            <datasources>
-                <datasource jndi-name="java:jboss/datasources/ExampleDS" enabled="true" use-java-context="true" pool-name="H2DS">
-                    <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>
-                    <driver>h2</driver>
-                    <pool></pool>
-                    <security>
-                        <user-name>sa</user-name>
-                        <password>sa</password>
-                    </security>
-                    <validation></validation>
-                    <timeout></timeout>
-                    <statement></statement>
-                </datasource>
-                <drivers>
-                    <driver name="h2" module="com.h2database.h2">
-                        <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
-                    </driver>
-                </drivers>
-            </datasources>
-        </subsystem>
-        -->
         <subsystem xmlns="urn:jboss:domain:deployment-scanner:1.0">
             <deployment-scanner scan-interval="5000" relative-to="jboss.server.base.dir" path="deployments" />
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:ee:1.0" />
-        <!--
-        <subsystem xmlns="urn:jboss:domain:ejb3:1.0" />
-        -->
         <subsystem xmlns="urn:jboss:domain:jaxrs:1.0"/>
-        <!--
-        <subsystem xmlns="urn:jboss:domain:jca:1.0">
-            <archive-validation enabled="false" />
-            <bean-validation enabled="false" />
-            <default-workmanager>
-                <short-running-threads blocking="true">
-                <core-threads count="10" per-cpu="20"/>
-                        <queue-length count="10" per-cpu="20"/>
-                        <max-threads count="10" per-cpu="20"/>
-                        <keepalive-time time="10" unit="seconds"/>
-                </short-running-threads>
-                <long-running-threads blocking="true">
-                        <core-threads count="10" per-cpu="20"/>
-                        <queue-length count="10" per-cpu="20"/>
-                        <max-threads count="10" per-cpu="20"/>
-                        <keepalive-time time="10" unit="seconds"/>
-                </long-running-threads>
-            </default-workmanager>
-        </subsystem>
-        -->
         <subsystem xmlns="urn:jboss:domain:jmx:1.0">
             <jmx-connector registry-binding="jmx-connector-registry" server-binding="jmx-connector-server" />
         </subsystem>
-        <!--
-        <subsystem xmlns="urn:jboss:domain:jpa:1.0">
-            <jpa default-datasource=""/>
-        </subsystem>
-        -->
         <subsystem xmlns="urn:jboss:domain:naming:1.0" />
         <subsystem xmlns="urn:jboss:domain:remoting:1.0"/>
-        <!--
-        <subsystem xmlns="urn:jboss:domain:resource-adapters:1.0" />
-        -->
-        <!--
-        <subsystem xmlns="urn:jboss:domain:sar:1.0"/>
-        -->
         <subsystem xmlns="urn:jboss:domain:security:1.0">
             <security-domains>
                 <security-domain name="other" cache-type="default">
@@ -253,10 +178,6 @@
                 <alias name="example.com" />
             </virtual-server>
         </subsystem>
-        <!-- 
-        <subsystem xmlns="urn:jboss:domain:weld:1.0" />
-        -->
-        
         <subsystem xmlns="urn:jboss:domain:jgroups:1.0" default-stack="udp">
             <stack name="udp">
                 <transport type="UDP"
@@ -317,11 +238,6 @@
                 <distributed-cache name="default" start="EAGER" mode="SYNC" />
             </cache-container>
         </subsystem>
-        <!--
-        <subsystem xmlns="urn:jboss:domain:datagrid:cachemanager:1.0">
-            <config-path relative-to="jboss.server.base.dir" path="configuration/infinispan-configuration.xml" />
-        </subsystem>
-        -->
         <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:1.0">
              <!-- Start the two servers with the default settings -->
              <connector protocol="hotrod" socket-binding="hotrod" />
