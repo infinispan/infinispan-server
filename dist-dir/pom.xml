@@ -51,6 +51,12 @@
     </dependency>
     
     <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-clustering-jgroups</artifactId>
+      <version>${version.org.jboss.as}</version>
+    </dependency>
+    
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jboss-datagrid-rest</artifactId>
       <version>${project.version}</version>
