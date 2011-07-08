@@ -39,7 +39,7 @@ public class DataGridConstants {
     // XML elements and attributes
 
     public static final String SUBSYSTEM ="subsystem";
-    
+
     public static final String CONNECTOR = "connector";
     public static final String PROTOCOL = "protocol"; // 'hotrod' or 'memcached'
     public static final String SOCKET_BINDING = "socket-binding"; // string
@@ -49,7 +49,7 @@ public class DataGridConstants {
     public static final String TCP_NODELAY = "tcp-nodelay"; // 'true' or 'false'
     public static final String SEND_BUFFER_SIZE = "send-buffer-size"; // integer
     public static final String RECEIVE_BUFFER_SIZE = "receive-buffer-size"; // integer
-    
+
     public static final String TOPOLOGY_STATE_TRANSFER = "topology-state-transfer";
     public static final String LOCK_TIMEOUT = "lock-timeout"; // integer
     public static final String REPLICATION_TIMEOUT = "replication-timeout"; // integer
