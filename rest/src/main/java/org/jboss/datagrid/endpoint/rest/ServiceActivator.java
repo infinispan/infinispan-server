@@ -37,7 +37,7 @@ import org.jboss.msc.service.ServiceTarget;
 public class ServiceActivator implements org.jboss.msc.service.ServiceActivator {
 
     private static final ServiceName SN_CACHEMANAGER =
-        ServiceName.JBOSS.append("datagrid", "cachemanager");
+        ServiceName.JBOSS.append("infinispan"); // Use the default cache container
 
     private static final ServiceName SN_REST =
         ServiceName.JBOSS.append("datagrid", "rest");

@@ -317,9 +317,11 @@
                 <distributed-cache name="default" start="EAGER" mode="SYNC" />
             </cache-container>
         </subsystem>
+        <!--
         <subsystem xmlns="urn:jboss:domain:datagrid:cachemanager:1.0">
             <config-path relative-to="jboss.server.base.dir" path="configuration/infinispan-configuration.xml" />
         </subsystem>
+        -->
         <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:1.0">
              <!-- Start the two servers with the default settings -->
              <connector protocol="hotrod" socket-binding="hotrod" />
@@ -329,6 +331,7 @@
              <!-- 
              <connector protocol="hotrod"
                         socket-binding="hotrod"
+                        cache-container="my-cache-container"
                         worker-threads="16"
                         idle-timeout="-1"
                         tcp-nodelay="true"

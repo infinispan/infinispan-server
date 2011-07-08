@@ -30,24 +30,20 @@ public class DataGridConstants {
 
     // Service names (SN_*)
 
-    public static final ServiceName SN_CACHEMANAGER = DATAGRID.append("cachemanager");
     public static final ServiceName SN_ENDPOINT = DATAGRID.append("endpoint");
 
     // XML namespaces (NS_*)
 
-    public static final String NS_CACHEMANAGER_1_0 = "urn:jboss:domain:datagrid:cachemanager:1.0";
     public static final String NS_ENDPOINT_1_0 = "urn:jboss:domain:datagrid:endpoint:1.0";
 
     // XML elements and attributes
 
-    public static final String CONFIG_PATH = "config-path";
-    public static final String PATH ="path";
-    public static final String RELATIVE_TO ="relative-to";
     public static final String SUBSYSTEM ="subsystem";
     
     public static final String CONNECTOR = "connector";
     public static final String PROTOCOL = "protocol"; // 'hotrod' or 'memcached'
     public static final String SOCKET_BINDING = "socket-binding"; // string
+    public static final String CACHE_CONTAINER = "cache-container"; // string
     public static final String WORKER_THREADS = "worker-threads"; // integer
     public static final String IDLE_TIMEOUT = "idle-timeout"; // integer
     public static final String TCP_NODELAY = "tcp-nodelay"; // 'true' or 'false'
@@ -61,10 +57,6 @@ public class DataGridConstants {
     public static final String EXTERNAL_HOST = "external-host"; // string
     public static final String EXTERNAL_PORT = "external-port"; // integer
     public static final String LAZY_RETRIEVAL = "lazy-retrieval"; // 'true' or 'false'
-
-    // Default configuration file names
-
-    public static final String CF_CACHEMANAGER = "infinispan-configuration.xml";
 
     private DataGridConstants() {
         // Constant table
