@@ -39,7 +39,6 @@ public class EndpointExtension implements Extension, DescriptionProvider {
     private final String subsystemName = serviceName.getSimpleName();
     private final String namespaceUri = DataGridConstants.NS_ENDPOINT_1_0;
     private final EndpointSubsystemParser parser = new EndpointSubsystemParser(subsystemName, namespaceUri);
-    private final EndpointSubsystemProviders providers = new EndpointSubsystemProviders();
     private final EndpointSubsystemAdd subsystemAdd = new EndpointSubsystemAdd(serviceName);
     private final EndpointSubsystemDescribe subsystemDescribe = new EndpointSubsystemDescribe();
 
