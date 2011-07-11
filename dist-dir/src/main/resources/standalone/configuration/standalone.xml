@@ -182,13 +182,12 @@
             <stack name="udp">
                 <transport type="UDP"
                            socket-binding="jgroups-udp"
-                           diagnostics-socket-binding="jgroups-diagnostics"
                            default-executor="jgroups"
                            oob-executor="jgroups-oob"
                            timer-executor="jgroups-timer"/>
                 <protocol type="PING"/>
                 <protocol type="MERGE2"/>
-                <protocol type="FD_SOCK" socket-binding="jgroups-udp-fd"/>
+                <protocol type="FD_SOCK"/>
                 <protocol type="FD"/>
                 <protocol type="VERIFY_SUSPECT"/>
                 <protocol type="BARRIER"/>
@@ -206,13 +205,12 @@
             <stack name="tcp">
                 <transport type="TCP"
                            socket-binding="jgroups-tcp"
-                           diagnostics-socket-binding="jgroups-diagnostics"
                            default-executor="jgroups"
                            oob-executor="jgroups-oob"
                            timer-executor="jgroups-timer"/>
                 <protocol type="MPING" socket-binding="jgroups-mping"/>
                 <protocol type="MERGE2"/>
-                <protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd"/>
+                <protocol type="FD_SOCK"/>
                 <protocol type="FD"/>
                 <protocol type="VERIFY_SUSPECT"/>
                 <protocol type="BARRIER"/>
@@ -285,15 +283,11 @@
         <socket-binding name="remoting" port="4447"/>
         <socket-binding name="txn-recovery-environment" port="4712"/>
         <socket-binding name="txn-status-manager" port="4713"/>
-        
-        <socket-binding name="jgroups-tcp-fd" port="57600"/>
-        <socket-binding name="jgroups-tcp" port="7600" />
-        <socket-binding name="jgroups-udp-fd" port="54200"/>
-        <socket-binding name="jgroups-udp" port="55200" />
-        <socket-binding name="jgroups-mping" port="45700" />
-        <socket-binding name="jgroups-diagnostics" port="7500" />
+
+        <socket-binding name="jgroups-tcp" port="7800" />
+        <socket-binding name="jgroups-udp" multicast-address="228.6.7.8" multicast-port="46655" port="0" />
+        <socket-binding name="jgroups-mping" multicast-address="228.6.7.8" multicast-port="46655" port="0" />
         <socket-binding name="hotrod" port="11222"/>
         <socket-binding name="memcached" port="11211"/>
     </socket-binding-group>
-
 </server>
