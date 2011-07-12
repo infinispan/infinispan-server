@@ -185,46 +185,131 @@
                            socket-binding="jgroups-udp"
                            default-executor="jgroups"
                            oob-executor="jgroups-oob"
-                           timer-executor="jgroups-timer"/>
-                <protocol type="PING"/>
-                <protocol type="MERGE2"/>
+                           timer-executor="jgroups-timer">
+                    <property name="tos">8</property>
+                    <property name="ucast_recv_buf_size">20000000</property>
+                    <property name="ucast_send_buf_size">640000</property>
+                    <property name="mcast_recv_buf_size">25000000</property>
+                    <property name="mcast_send_buf_size">640000</property>
+                    <property name="loopback">true</property>
+                    <property name="discard_incompatible_packets">true</property>
+                    <property name="max_bundle_size">64000</property>
+                    <property name="max_bundle_timeout">30</property>
+                    <property name="ip_ttl">2</property>
+                    <property name="enable_bundling">true</property>
+                    <property name="enable_diagnostics">false</property>
+                </transport>
+                <protocol type="PING">
+                    <property name="timeout">3000</property>
+                    <property name="num_initial_members">3</property>
+                </protocol>
+                <protocol type="MERGE2">
+                    <property name="max_interval">30000</property>
+                    <property name="min_interval">10000</property>
+                </protocol>
                 <protocol type="FD_SOCK"/>
-                <protocol type="FD"/>
-                <protocol type="VERIFY_SUSPECT"/>
+                <protocol type="FD_ALL"/>
                 <protocol type="BARRIER"/>
-                <protocol type="pbcast.NAKACK"/>
-                <protocol type="UNICAST"/>
-                <protocol type="pbcast.STABLE"/>
-                <protocol type="VIEW_SYNC"/>
-                <protocol type="pbcast.GMS"/>
-                <protocol type="UFC"/>
-                <protocol type="MFC"/>
-                <protocol type="FRAG2"/>
+                <protocol type="pbcast.NAKACK">
+                    <property name="use_stats_for_retransmission">true</property>
+                    <property name="exponential_backoff">0</property>
+                    <property name="use_mcast_xmit">true</property>
+                    <property name="gc_lag">0</property>
+                    <property name="retransmit_timeout">300,600,1200</property>
+                    <property name="discard_delivered_msgs">true</property>
+                </protocol>
+                <protocol type="UNICAST">
+                    <property name="timeout">300,600,1200</property>
+                </protocol>
+                <protocol type="pbcast.STABLE">
+                    <property name="stability_delay">1000</property>
+                    <property name="desired_avg_gossip">50000</property>
+                    <property name="max_bytes">1000000</property>
+                </protocol>
+                <protocol type="pbcast.GMS">
+                    <property name="print_local_addr">true</property>
+                    <property name="join_timeout">3000</property>
+                    <property name="view_bundling">true</property>
+                </protocol>
+                <protocol type="UFC">
+                    <property name="max_credits">500000</property>
+                    <property name="min_threshold">0.20</property>
+                </protocol>
+                <protocol type="MFC">
+                    <property name="max_credits">500000</property>
+                    <property name="min_threshold">0.20</property>
+                </protocol>
+                <protocol type="FRAG2">
+                    <property name="frag_size">60000</property>
+                </protocol>
                 <protocol type="pbcast.STREAMING_STATE_TRANSFER"/>
-                <protocol type="pbcast.FLUSH"/>
             </stack>
             <stack name="tcp">
                 <transport type="TCP"
                            socket-binding="jgroups-tcp"
                            default-executor="jgroups"
                            oob-executor="jgroups-oob"
-                           timer-executor="jgroups-timer"/>
-                <protocol type="MPING" socket-binding="jgroups-mping"/>
-                <protocol type="MERGE2"/>
+                           timer-executor="jgroups-timer">
+                    <property name="loopback">true</property>
+                    <property name="port_range">30</property>
+                    <property name="recv_buf_size">20000000</property>
+                    <property name="send_buf_size">640000</property>
+                    <property name="discard_incompatible_packets">true</property>
+                    <property name="max_bundle_size">64000</property>
+                    <property name="max_bundle_timeout">30</property>
+                    <property name="enable_bundling">true</property>
+                    <property name="use_send_queues">true</property>
+                    <property name="sock_conn_timeout">300</property>
+                    <property name="enable_diagnostics">false</property>
+                </transport>
+                <protocol type="MPING" socket-binding="jgroups-mping">
+                    <property name="break_on_coord_rsp">true</property>
+                    <property name="ip_ttl">2</property>
+                    <property name="num_initial_members">3</property>
+                </protocol>
+                <protocol type="MERGE2">
+                    <property name="max_interval">30000</property>
+                    <property name="min_interval">10000</property>
+                </protocol>
                 <protocol type="FD_SOCK"/>
-                <protocol type="FD"/>
-                <protocol type="VERIFY_SUSPECT"/>
-                <protocol type="BARRIER"/>
-                <protocol type="pbcast.NAKACK"/>
-                <protocol type="UNICAST"/>
-                <protocol type="pbcast.STABLE"/>
-                <protocol type="VIEW_SYNC"/>
-                <protocol type="pbcast.GMS"/>
-                <protocol type="UFC"/>
-                <protocol type="MFC"/>
-                <protocol type="FRAG2"/>
+                <protocol type="FD">
+                    <property name="timeout">3000</property>
+                    <property name="max_tries">3</property>
+                </protocol>
+                <protocol type="VERIFY_SUSPECT">
+                    <property name="timeout">1500</property>
+                </protocol>
+                <protocol type="pbcast.NAKACK">
+                    <property name="use_mcast_xmit">false</property>
+                    <property name="gc_lag">0</property>
+                    <property name="retransmit_timeout">300,600,1200,2400,4800</property>
+                    <property name="discard_delivered_msgs">false</property>
+                </protocol>
+                <protocol type="UNICAST">
+                    <property name="timeout">300,600,1200</property>
+                </protocol>
+                <protocol type="pbcast.STABLE">
+                    <property name="stability_delay">1000</property>
+                    <property name="desired_avg_gossip">50000</property>
+                    <property name="max_bytes">400000</property>
+                </protocol>
+                <protocol type="pbcast.GMS">
+                    <property name="print_local_addr">true</property>
+                    <property name="join_timeout">7000</property>
+                    <property name="view_bundling">true</property>
+                </protocol>
+                <protocol type="UFC">
+                    <property name="max_credits">2000000</property>
+                    <property name="min_threshold">0.10</property>
+                </protocol>
+                <protocol type="MFC">
+                    <property name="max_credits">2000000</property>
+                    <property name="min_threshold">0.10</property>
+                </protocol>
+                <protocol type="FRAG2">
+                    <property name="frag_size">60000</property>
+                </protocol>
                 <protocol type="pbcast.STREAMING_STATE_TRANSFER"/>
-                <protocol type="pbcast.FLUSH"/>
             </stack>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:infinispan:1.0" default-cache-container="default">
