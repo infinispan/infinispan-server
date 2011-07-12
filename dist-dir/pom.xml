@@ -53,7 +53,10 @@
     <dependency>
       <groupId>org.jboss.as</groupId>
       <artifactId>jboss-as-clustering-jgroups</artifactId>
+      <version>7.0.0.CR1</version>
+      <!-- Downgrading as a workaround for AS7-1260.
       <version>${version.org.jboss.as}</version>
+      -->
     </dependency>
     
     <dependency>
@@ -72,7 +75,10 @@
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-core</artifactId>
+      <version>5.0.0.CR7</version>
+      <!--
       <version>${version.org.infinispan}</version>
+      -->
       <exclusions>
 	<exclusion>
 	  <groupId>org.rhq.helpers</groupId>
