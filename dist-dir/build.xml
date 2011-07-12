@@ -31,7 +31,7 @@
   <target name="copy-files">
     <!-- Copy the files from JBoss AS first -->
     <copy todir="${output.dir}">
-      <fileset dir="${asbuild.dir}/target/jboss-${version.org.jboss.as}">
+      <fileset dir="${asbuild.dir}/target/jboss-as-${version.org.jboss.as}">
 	<include name="**"/>
       </fileset>
     </copy>
