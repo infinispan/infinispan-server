@@ -318,14 +318,31 @@
                              listener-executor="infinispan-listener"
                              eviction-executor="infinispan-eviction"
                              replication-queue-executor="infinispan-repl-queue">
-                <transport executor="infinispan-transport"/>
-                <distributed-cache name="default" start="EAGER" mode="SYNC" />
+                <transport executor="infinispan-transport"
+                           lock-timeout="240000"/>
+                <distributed-cache name="default"
+                                   start="EAGER"
+                                   mode="SYNC"
+                                   virtual-nodes="1" 
+                                   owners="2" 
+                                   batching="false" 
+                                   indexing="NONE" 
+                                   l1-lifespan="0" 
+                                   remote-timeout="30000">
+                    <locking isolation="REPEATABLE_READ" 
+                             acquire-timeout="30000" 
+                             concurrency-level="1000" 
+                             striping="false" />
+                    <rehashing enabled="true" 
+                               timeout="600000" />
+                </distributed-cache>
             </cache-container>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:1.0">
              <!-- Start the two servers with the default settings -->
              <connector protocol="hotrod" socket-binding="hotrod" />
              <connector protocol="memcached" socket-binding="memcached" />
+             <topology-state-transfer replication-timeout="240000" />
              
              <!-- Specify attributes to override the default socket settings -->
              <!-- 
