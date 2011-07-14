@@ -47,6 +47,11 @@
     <delete dir="${output.dir}/domain" />
     <delete dir="${output.dir}/standalone" />
 
+    <!-- Delete unused files and directories -->
+    <delete file="${output.dir}/README.txt" />
+    <delete dir="${output.dir}/bundles" />
+    <delete dir="${output.dir}/welcome-content" />
+    
     <!-- Copy the files specific to JBoss Enterprise Data Grid -->
     <copy todir="${output.dir}/standalone">
       <fileset dir="${project.basedir}/../src/main/resources/standalone">
