@@ -1,103 +1,171 @@
 <!--
-  ~ JBoss, Home of Professional Open Source
-  ~ Copyright 2009 Red Hat Inc. and/or its affiliates and other
-  ~ contributors as indicated by the @author tags. All rights reserved.
-  ~ See the copyright.txt in the distribution for a full listing of
-  ~ individual contributors.
-  ~
-  ~ This is free software; you can redistribute it and/or modify it
-  ~ under the terms of the GNU Lesser General Public License as
-  ~ published by the Free Software Foundation; either version 2.1 of
-  ~ the License, or (at your option) any later version.
-  ~
-  ~ This software is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  ~ Lesser General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Lesser General Public
-  ~ License along with this software; if not, write to the Free
-  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  -->
+ ~ Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ ~
+ ~ This is free software; you can redistribute it and/or modify it
+ ~ under the terms of the GNU Lesser General Public License as
+ ~ published by the Free Software Foundation; either version 2.1 of
+ ~ the License, or (at your option) any later version.
+ ~
+ ~ This software is distributed in the hope that it will be useful,
+ ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ ~ Lesser General Public License for more details.
+ ~
+ ~ You should have received a copy of the GNU Lesser General Public
+ ~ License along with this library; if not, write to the Free Software
+ ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ ~ 02110-1301 USA
+-->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
    <head>
       <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-      <meta content="Infinispan is a highly scalable platform for distributed data grids." name="description">
-      <meta content="Scalable, jsr107, cache, caching, distributed, grid, data grid, infinispan, nosql" name="keywords">
       <meta content="all" name="robots">
       <meta content="no-cache" http-equiv="cache-control">
       <meta content="no-cache" http-equiv="pragma">
-      <link href="http://jboss.org/infinispan/orgLayoutBody/favicon/favicon.png" rel="Shortcut Icon">
-      <title>I N F I N I S P A N:  REST Server</title>
+      <title>Red Hat Enterprise Data Grid: REST Server</title>
       <style type="text/css">
-         body{
-            background: #CCCCCC;
-            font-family: 'Lucida Sans', 'Lucida Sans Unicode', 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif;
-            font-size: 12px;
-            padding: 10px auto 10px auto;
 
-            }
+body, h1, h2, h3, h4, h5, h6, pre, li, div {
+  line-height: 1.29em;
+}
+         
+body {
+  background-color: white;
+  font-family: "liberation sans", "Myriad ", "Bitstream Vera Sans", "Lucida Grande", "Luxi Sans", "Trebuchet MS", helvetica, verdana, arial, sans-serif;
+  font-size: 12px;
+  padding: 10px auto 10px auto;
+  color:black;
+}
 
-         .main{
-            width: 600px;
-            background: white;
-            padding: 30px 30px 30px 30px;
-            align: left;
-            margin: 0px auto 0px auto;
-            -moz-border-radius: 12px;
-  	         -webkit-border-radius: 12px;
-  	         -khtml-border-radius: 12px;
-  	         border-radius: 12px;
-            }
+/*headings*/
+h1, h2, h3, h4, h5, h6 {
+  color: #a70000;
+  margin-bottom: 1em;
+  background-color: transparent;
+}
 
-         h1{font-weight: bold; font-size: 2.2em; display: block; color: #991133;}
-         h2{font-weight: bold; font-size: 1.8em; display: block; color: #4A5D75;}
-         h3{font-weight: bold; font-size: 1.6em; display: block; color: #4A5D75;}
-         h4{font-weight: bold; font-size: 1.5em; display: block; color: #4A5D75;}
-         h5{font-weight: bold; font-size: 1.3em; display: block; color: #4A5D75;}
-         h6{font-weight: bold; font-size: 1.2em; display: block; color: #4A5D75;}
+h1 {
+  font-size:2.0em;
+  margin: 0;
+}
 
-         a:link, a:visited {
-            color: #355491;
-            text-decoration: none;
-         }
+h2 {
+  font-size:1.6em;
+}
+h3 {
+  font-size:1.3em;
+}
+h4 {
+  font-size:1.1em;
+}
 
-         a:hover {
-            color: #355491;
-            text-decoration: underline;
-         }
+h5 {
+  font-size:1em;
+}
 
-         tt {font-family: "Courier New", Courier, mono; color: #444444; font-weight: bold; padding: 0 2px 0 2px;}
-         table {align: center; border: 1px #404040 solid;}
-         th {background: #404040; color: #cccccc; text-align: left; border: 1px #404040 solid; padding: 4px 4px 4px 4px;}
-         td {text-align: left; border: 1px #404040 solid; padding: 4px 4px 4px 4px;}
+h6 {
+  font-size:1em;
+}
+
+.banner {
+  width: 600px;
+  background: white;
+  height: 42px;
+  margin: 0px auto 0px auto;
+}
+
+.title {
+  width: 600px;
+  background: white;
+  padding: 0;
+  align: left;
+  text-align: center;
+  margin: 1em auto 1em auto;
+  font-size: 3.0em;
+}
+
+.main {
+  width: 600px;
+  background: white;
+  padding: 0; //30px 30px 30px 30px;
+  align: left;
+  margin: 0px auto 0px auto;
+}
+
+a:link {
+  color:#0066cc;
+}
+
+a:visited {
+  color:#6699cc;
+}
+
+a:hover {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+tt {
+  font-family: "liberation mono", "bitstream vera mono", "dejavu mono", monospace;
+  color: #444444;
+  font-weight: bold;
+  padding: 0 2px 0 2px;
+}
+
+table {
+  align: center;
+  border:1px solid #aaa;
+  width:100%;
+  border-collapse:collapse;
+}
+
+th {
+  background: #900;
+  color: white;
+  text-align: left;
+  border: 1px #404040 solid;
+  padding: 4px 4px 4px 4px;
+}
+
+td {
+  text-align: left;
+  border: 1px solid #aaa;
+  padding: .15em .5em;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
     </style>
    </head>
 
    <body>
-   <p align="center">
-      <a href="http://www.infinispan.org"><img src="banner.png" border="0"></a>
-        </p>
+     <p class="banner">
+     <a class="left" href="http://www.redhat.com"><img src="image_left.png" alt="Product Site" /></a><a class="right" href="http://docs.redhat.com"><img src="image_right.png" alt="Documentation Site" /></a>
+     </p>
+     <h1 class="title">
+        Red Hat Enterprise Data Grid
+     </h1>
      <div class="main">
-      <h1>Welcome to the Infinispan REST Server</h1>
+      <h2>Welcome to the EDG REST Server</h2>
       <p>This server provides easy to use <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">RESTful</a>
-         access to the Infinispan data grid. See below for usage details.</p>
+         access to the Enterprise Data Grid. See below for usage details.</p>
 
       <h4>1. Configuration</h4>
-      <p>Out of the box, Infinispan will use its local mode cache. To set a custom configuration, create an Infinispan
-         XML configuration file and set the PATH to it in your <tt>web.xml</tt> file, under the key <tt>infinispan.config</tt>.
-         See the sample <tt>web.xml</tt> file for details.  The value should be a path to your config file.</p>
+      <p>Out of the box, Enterprise Data Grid will use its default cache defined in <tt>&lt;EDG_HOME&gt;/standalone/configuration/standalone.xml</tt>.
+         To set a custom configuration, modify the configuration file and restart Enterprise Data Grid.</p>
 
          <p>Please note that the REST server
          only allows interaction with either the default cache, named <tt>___defaultcache</tt> or one of the named caches
          in the configuration file. This is because the REST server starts default and pre-defined caches on startup in
-         order to provide a more consistent behaivour. So, if you don't pass any configuration file, you'll only be able
-         to interact with the default cache. To interact with more caches, pass a configuration file with the desired
-         named caches.</p>
+         order to provide a more consistent behaivour.</p>
 
-        <p><a href="http://community.jboss.org/wiki/InfinispanRESTserver">This chapter</a> in the Infinispan user guide has more details.</p>
+        <p><a href="http://community.jboss.org/wiki/InfinispanRESTserver">This chapter</a> in the community user guide has more details.</p>
 
     <h4>2. Putting data in</h4>
       <p>HTTP PUT and POST methods are used to place data in the cache - the data being the body of the request (the data
@@ -152,7 +220,7 @@
       <p>An <a href="http://en.wikipedia.org/wiki/HTTP_ETag">ETag</a> will be returned unique for each entry, as will
          the <tt>Last-Modified</tt> header field indicating the state of the data at the given URL.  ETags allow browsers (and
          other clients) to ask for data only in the case where it has changed (to save on bandwidth) - this is standard
-         HTTP and is honored by Infinispan.
+         HTTP and is honored by Enterprise Data Grid.
       </p>
       <h6>HEAD /{cacheName}/{cacheKey}</h6>
         <p>The same as GET, only no content is returned (only the header fields).</p>
@@ -169,11 +237,11 @@
     Any HTTP client will do - from any language.  See <a href="http://www.jboss.org/community/wiki/InfinispanRESTserver">here</a> for more details.
 
     <h4>6. Deployment</h4>
-    As Infinispan is a distributed data grid, it shouldn't matter how many or which instance of the Server you access,
-    as long as it is part of the Infinispan cluster, it will find your data, and manage it. You can have as many
+    Enterprise Data Grid is a distributed data grid, it shouldn't matter how many or which instance of the Server you access,
+    as long as it is part of the Enterprise Data Grid cluster, it will find your data, and manage it. You can have as many
     instances (including the one you are looking at) as you need.
 
    <h4>6. Further reading</h4>
-   <p>Please visit Infinispan's <a href="http://community.jboss.org/wiki/Infinispan">public wiki</a> for more information including a full user guide, frequently asked questions,
+   <p>Please visit the <a href="http://community.jboss.org/wiki/Infinispan">public community wiki</a> for more information including a full user guide, frequently asked questions,
       tutorials, demos and examples, and other resources.</p>
 </div></body></html>
