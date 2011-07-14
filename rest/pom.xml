@@ -67,7 +67,7 @@
         <!-- Use a newer plugin version to use manifestEntries. -->
         <version>2.1.1</version>
         <configuration>
-          <packagingExcludes>WEB-INF/classes/sample*.*,WEB-INF/lib/*.jar</packagingExcludes>
+          <packagingExcludes>WEB-INF/classes/sample*.*,WEB-INF/lib/*.jar,banner.png</packagingExcludes>
           <archive>
             <manifestEntries>
               <Dependencies>org.infinispan,org.infinispan.server,org.jboss.resteasy.resteasy-jaxrs,org.jboss.marshalling,org.jboss.marshalling.river,org.codehaus.jackson.jackson-core-asl,org.codehaus.jackson.jackson-mapper-asl,org.codehaus.jackson.jackson-jaxrs,org.codehaus.jackson.jackson-xc,com.thoughtworks.xstream,org.scala-lang.library</Dependencies>
