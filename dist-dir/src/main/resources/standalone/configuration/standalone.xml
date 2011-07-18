@@ -38,6 +38,10 @@
         <extension module="org.jboss.as.web" />
         <extension module="org.jboss.datagrid" />
     </extensions>
+    
+    <system-properties>
+    	<property name="udpGroup" value="234.99.54.14"/>
+    </system-properties>
 
     <management>
         <security-realms>
@@ -79,6 +83,9 @@
             </logger>
             <logger category="sun.rmi">
                 <level name="WARN"/>
+            </logger>
+            <logger category="org.infinispan">
+                <level name="INFO"/>
             </logger>
 
             <root-logger>
@@ -173,7 +180,7 @@
             <coordinator-environment default-timeout="300"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:web:1.0" default-virtual-server="default-host">
-            <connector name="http" scheme="http" protocol="HTTP/1.1" socket-binding="http"/>
+            <connector name="http" scheme="http" protocol="HTTP/1.1" socket-binding="http" max-connections="1000" />
             <virtual-server name="default-host" enable-welcome-root="false">
                 <alias name="localhost" />
                 <alias name="example.com" />
@@ -185,7 +192,8 @@
                            socket-binding="jgroups-udp"
                            default-executor="jgroups"
                            oob-executor="jgroups-oob"
-                           timer-executor="jgroups-timer">
+                           timer-executor="jgroups-timer"
+                           diagnostics-socket-binding="jgroups-diag">
                     <property name="tos">8</property>
                     <property name="ucast_recv_buf_size">20000000</property>
                     <property name="ucast_send_buf_size">640000</property>
@@ -193,179 +201,106 @@
                     <property name="mcast_send_buf_size">640000</property>
                     <property name="loopback">true</property>
                     <property name="discard_incompatible_packets">true</property>
-                    <property name="max_bundle_size">64000</property>
-                    <property name="max_bundle_timeout">30</property>
+                    <property name="enable_bundling">false</property>
                     <property name="ip_ttl">2</property>
-                    <property name="enable_bundling">true</property>
-                    <property name="enable_diagnostics">false</property>
+                    <property name="enable_diagnostics">true</property>
                 </transport>
                 <protocol type="PING">
-                    <property name="timeout">3000</property>
+                    <property name="timeout">2000</property>
                     <property name="num_initial_members">3</property>
                 </protocol>
                 <protocol type="MERGE2">
-                    <property name="max_interval">30000</property>
-                    <property name="min_interval">10000</property>
+                    <property name="max_interval">100000</property>
+                    <property name="min_interval">20000</property>
                 </protocol>
-                <protocol type="FD_SOCK"/>
-                <protocol type="FD_ALL"/>
-                <protocol type="BARRIER"/>
-                <protocol type="pbcast.NAKACK">
-                    <property name="use_stats_for_retransmission">true</property>
-                    <property name="exponential_backoff">0</property>
-                    <property name="use_mcast_xmit">true</property>
-                    <property name="gc_lag">0</property>
-                    <property name="retransmit_timeout">300,600,1200</property>
-                    <property name="discard_delivered_msgs">true</property>
-                </protocol>
-                <protocol type="UNICAST">
-                    <property name="timeout">300,600,1200</property>
-                </protocol>
-                <protocol type="pbcast.STABLE">
-                    <property name="stability_delay">1000</property>
-                    <property name="desired_avg_gossip">50000</property>
-                    <property name="max_bytes">1000000</property>
-                </protocol>
-                <protocol type="pbcast.GMS">
-                    <property name="print_local_addr">true</property>
-                    <property name="join_timeout">3000</property>
-                    <property name="view_bundling">true</property>
-                </protocol>
-                <protocol type="UFC">
-                    <property name="max_credits">500000</property>
-                    <property name="min_threshold">0.20</property>
-                </protocol>
-                <protocol type="MFC">
-                    <property name="max_credits">500000</property>
-                    <property name="min_threshold">0.20</property>
-                </protocol>
-                <protocol type="FRAG2">
-                    <property name="frag_size">60000</property>
-                </protocol>
-                <protocol type="pbcast.STREAMING_STATE_TRANSFER"/>
-            </stack>
-            <stack name="tcp">
-                <transport type="TCP"
-                           socket-binding="jgroups-tcp"
-                           default-executor="jgroups"
-                           oob-executor="jgroups-oob"
-                           timer-executor="jgroups-timer">
-                    <property name="loopback">true</property>
-                    <property name="port_range">30</property>
-                    <property name="recv_buf_size">20000000</property>
-                    <property name="send_buf_size">640000</property>
-                    <property name="discard_incompatible_packets">true</property>
-                    <property name="max_bundle_size">64000</property>
-                    <property name="max_bundle_timeout">30</property>
-                    <property name="enable_bundling">true</property>
-                    <property name="use_send_queues">true</property>
-                    <property name="sock_conn_timeout">300</property>
-                    <property name="enable_diagnostics">false</property>
-                </transport>
-                <protocol type="MPING" socket-binding="jgroups-mping">
-                    <property name="break_on_coord_rsp">true</property>
-                    <property name="ip_ttl">2</property>
-                    <property name="num_initial_members">3</property>
-                </protocol>
-                <protocol type="MERGE2">
-                    <property name="max_interval">30000</property>
-                    <property name="min_interval">10000</property>
-                </protocol>
-                <protocol type="FD_SOCK"/>
+                <protocol type="FD_SOCK" socket-binding="jgroups-fdsock"/>
                 <protocol type="FD">
-                    <property name="timeout">3000</property>
-                    <property name="max_tries">3</property>
+                    <property name="timeout">6000</property>
+                    <property name="max_tries">5</property>
                 </protocol>
                 <protocol type="VERIFY_SUSPECT">
                     <property name="timeout">1500</property>
                 </protocol>
+                <protocol type="BARRIER"/>
                 <protocol type="pbcast.NAKACK">
-                    <property name="use_mcast_xmit">false</property>
+                    <property name="use_mcast_xmit">true</property>
                     <property name="gc_lag">0</property>
                     <property name="retransmit_timeout">300,600,1200,2400,4800</property>
-                    <property name="discard_delivered_msgs">false</property>
+                    <property name="discard_delivered_msgs">true</property>
                 </protocol>
                 <protocol type="UNICAST">
-                    <property name="timeout">300,600,1200</property>
+                    <property name="timeout">300,600,1200,2400,3600</property>
                 </protocol>
                 <protocol type="pbcast.STABLE">
                     <property name="stability_delay">1000</property>
                     <property name="desired_avg_gossip">50000</property>
                     <property name="max_bytes">400000</property>
                 </protocol>
+                <protocol type="VIEW_SYNC">
+                    <property name="avg_send_interval">10000</property>
+                </protocol>
                 <protocol type="pbcast.GMS">
                     <property name="print_local_addr">true</property>
-                    <property name="join_timeout">7000</property>
+                    <property name="join_timeout">3000</property>
                     <property name="view_bundling">true</property>
+                    <property name="view_ack_collection_timeout">5000</property>
+                    <property name="resume_task_timeout">7500</property>
                 </protocol>
-                <protocol type="UFC">
+                <protocol type="FC">
                     <property name="max_credits">2000000</property>
                     <property name="min_threshold">0.10</property>
-                </protocol>
-                <protocol type="MFC">
-                    <property name="max_credits">2000000</property>
-                    <property name="min_threshold">0.10</property>
+                    <property name="ignore_synchronous_response">true</property>
                 </protocol>
                 <protocol type="FRAG2">
                     <property name="frag_size">60000</property>
                 </protocol>
                 <protocol type="pbcast.STREAMING_STATE_TRANSFER"/>
+                <protocol type="pbcast.FLUSH">
+                    <property name="timeout">0</property>
+                    <property name="start_flush_timeout">10000</property>
+                </protocol>
             </stack>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:infinispan:1.0" default-cache-container="default">
-            <cache-container name="default"
-                             default-cache="default"
-                             listener-executor="infinispan-listener"
-                             eviction-executor="infinispan-eviction"
-                             replication-queue-executor="infinispan-repl-queue">
-                <transport executor="infinispan-transport"
-                           lock-timeout="240000"/>
-                <distributed-cache name="default"
-                                   start="EAGER"
-                                   mode="SYNC"
-                                   virtual-nodes="1" 
-                                   owners="2" 
-                                   batching="false" 
-                                   indexing="NONE" 
-                                   l1-lifespan="0" 
-                                   remote-timeout="30000">
-                    <locking isolation="REPEATABLE_READ" 
-                             acquire-timeout="30000" 
-                             concurrency-level="1000" 
-                             striping="false" />
-                    <rehashing enabled="true" 
-                               timeout="600000" />
+            <cache-container 
+                name="default"
+                default-cache="default"
+                listener-executor="infinispan-listener"
+                eviction-executor="infinispan-eviction"
+                replication-queue-executor="infinispan-repl-queue">
+                <transport 
+                    executor="infinispan-transport"
+                    lock-timeout="240000"/>
+                <distributed-cache 
+                    name="default" 
+                    start="EAGER" 
+                    mode="SYNC" 
+                    virtual-nodes="1" 
+                    owners="2" 
+                    batching="false" 
+                    indexing="NONE" 
+                    l1-lifespan="0" 
+                    remote-timeout="30000" >
+                    <locking 
+                        isolation="REPEATABLE_READ" 
+                        acquire-timeout="30000" 
+                        concurrency-level="1000" 
+                        striping="false" />
+                    <rehashing 
+                        enabled="true" 
+                        timeout="600000" />
                 </distributed-cache>
+                <distributed-cache 
+                    name="namedCache"
+                    mode="SYNC" />
             </cache-container>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:1.0">
-             <!-- Start the two servers with the default settings -->
+        <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:1.0" >
              <connector protocol="hotrod" socket-binding="hotrod" />
              <connector protocol="memcached" socket-binding="memcached" />
              <topology-state-transfer replication-timeout="240000" />
-             
-             <!-- Specify attributes to override the default socket settings -->
-             <!-- 
-             <connector protocol="hotrod"
-                        socket-binding="hotrod"
-                        cache-container="my-cache-container"
-                        worker-threads="16"
-                        idle-timeout="-1"
-                        tcp-nodelay="true"
-                        send-buffer-size="0"
-                        receive-buffer-size"0" />
-             -->
-             
-             <!-- Override the default topology state transfer settings -->
-             <!--
-             <topology-state-transfer lock-timeout="10000"
-                                      replication-timeout="10000"
-                                      update-timeout="30000"
-                                      external-host=""
-                                      external-port=""
-                                      lazy-retrieval="false" />
-             -->
         </subsystem>
+    
     </profile>
 
     <interfaces>
@@ -373,6 +308,9 @@
             <inet-address value="127.0.0.1"/>
         </interface>
         <interface name="public">
+           <inet-address value="127.0.0.1"/>
+        </interface>
+        <interface name="clustering">
            <inet-address value="127.0.0.1"/>
         </interface>
     </interfaces>
@@ -387,9 +325,9 @@
         <socket-binding name="txn-recovery-environment" port="4712"/>
         <socket-binding name="txn-status-manager" port="4713"/>
 
-        <socket-binding name="jgroups-tcp" port="7800" />
-        <socket-binding name="jgroups-udp" multicast-address="228.6.7.8" multicast-port="46655" port="0" />
-        <socket-binding name="jgroups-mping" multicast-address="228.6.7.8" multicast-port="46655" port="0" />
+        <socket-binding name="jgroups-udp" interface="clustering" multicast-address="${udpGroup}" multicast-port="45688" port="55200" />
+        <socket-binding name="jgroups-diag" interface="clustering" multicast-address="224.0.75.75" multicast-port="7500" port="7500" />
+        <socket-binding name="jgroups-fdsock" port="54200" interface="clustering" />
         <socket-binding name="hotrod" port="11222"/>
         <socket-binding name="memcached" port="11211"/>
     </socket-binding-group>
