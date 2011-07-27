@@ -65,16 +65,6 @@
                     <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
                 </formatter>
             </console-handler>
-
-            <periodic-rotating-file-handler name="FILE">
-                <level name="INFO"/>
-                <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
-                </formatter>
-                <file relative-to="jboss.server.log.dir" path="server.log"/>
-                <suffix value=".yyyy-MM-dd"/>
-            </periodic-rotating-file-handler>
-
             <logger category="com.arjuna">
                 <level name="WARN"/>
             </logger>
@@ -87,12 +77,10 @@
             <logger category="org.infinispan">
                 <level name="INFO"/>
             </logger>
-
             <root-logger>
                 <level name="INFO"/>
                 <handlers>
                     <handler name="CONSOLE"/>
-                    <handler name="FILE"/>
                 </handlers>
             </root-logger>
         </subsystem>
@@ -118,57 +106,31 @@
         <subsystem xmlns="urn:jboss:domain:threads:1.0">
             <thread-factory name="jgroups-factory" group-name="jgroups" priority="5" />
             <thread-factory name="infinispan-factory" group-name="infinispan" priority="5" />
-            
-            <!--
-                FIXME: Configure JGroups and Infinispan thread pools correctly with sensible defaults.
-                
-                thread_pool.enabled="true"
-                thread_pool.min_threads="20"
-                thread_pool.max_threads="200"
-                thread_pool.keep_alive_time="5000"
-                thread_pool.queue_enabled="true"
-                thread_pool.queue_max_size="1000"
-                thread_pool.rejection_policy="discard"
-        
-                oob_thread_pool.enabled="true"
-                oob_thread_pool.min_threads="20"
-                oob_thread_pool.max_threads="200"
-                oob_thread_pool.keep_alive_time="1000"
-                oob_thread_pool.queue_enabled="false"
-                oob_thread_pool.rejection_policy="discard"/>
-            -->
             <unbounded-queue-thread-pool name="jgroups">
-                <max-threads count="100" per-cpu="0" />
-                <keepalive-time time="1000" unit="MILLISECONDS"/>
+                <max-threads count="200" per-cpu="0" />
+                <keepalive-time time="5000000000" unit="milliseconds"/>
                 <thread-factory name="jgroups-factory"/>
             </unbounded-queue-thread-pool>
             <unbounded-queue-thread-pool name="jgroups-oob">
-                <max-threads count="100" per-cpu="0" />
-                <keepalive-time time="1000" unit="MILLISECONDS"/>
+                <max-threads count="200" per-cpu="0" />
+                <keepalive-time time="1000000000" unit="milliseconds"/>
                 <thread-factory name="jgroups-factory"/>
             </unbounded-queue-thread-pool>
             <scheduled-thread-pool name="jgroups-timer">
-                <max-threads count="1" per-cpu="0" />
+                <max-threads count="4" per-cpu="0" />
+                <keepalive-time time="5000000000" unit="milliseconds"/>
                 <thread-factory name="jgroups-factory"/>
             </scheduled-thread-pool>
             <unbounded-queue-thread-pool name="infinispan-transport">
-                <max-threads count="100" per-cpu="0" />
-                <keepalive-time time="1000" unit="MILLISECONDS"/>
+                <max-threads count="25" per-cpu="0" />
+                <keepalive-time time="0" unit="milliseconds"/>
                 <thread-factory name="infinispan-factory"/>
             </unbounded-queue-thread-pool>
-            <scheduled-thread-pool name="infinispan-repl-queue">
-                <max-threads count="1" per-cpu="0" />
-                <thread-factory name="infinispan-factory"/>
-            </scheduled-thread-pool>
             <unbounded-queue-thread-pool name="infinispan-listener">
-                <max-threads count="100" per-cpu="0" />
-                <keepalive-time time="1000" unit="MILLISECONDS"/>
+                <max-threads count="1" per-cpu="0" />
+                <keepalive-time time="0" unit="milliseconds"/>
                 <thread-factory name="infinispan-factory"/>
             </unbounded-queue-thread-pool>
-            <scheduled-thread-pool name="infinispan-eviction">
-                <max-threads count="1" per-cpu="0"/>
-                <thread-factory name="infinispan-factory"/>
-            </scheduled-thread-pool>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:transactions:1.0">
             <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
@@ -187,6 +149,7 @@
             </virtual-server>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:jgroups:1.0" default-stack="udp">
+        	<!-- see defaults in https://github.com/jbossas/jboss-as/blob/7.0.0.Final/clustering/jgroups/src/main/resources/jgroups-defaults.xml -->
             <stack name="udp">
                 <transport type="UDP"
                            socket-binding="jgroups-udp"
@@ -195,79 +158,35 @@
                            timer-executor="jgroups-timer"
                            diagnostics-socket-binding="jgroups-diag">
                     <property name="tos">8</property>
-                    <property name="ucast_recv_buf_size">20000000</property>
-                    <property name="ucast_send_buf_size">640000</property>
-                    <property name="mcast_recv_buf_size">25000000</property>
-                    <property name="mcast_send_buf_size">640000</property>
                     <property name="loopback">true</property>
-                    <property name="discard_incompatible_packets">true</property>
-                    <property name="enable_bundling">false</property>
-                    <property name="ip_ttl">2</property>
-                    <property name="enable_diagnostics">true</property>
+                    <property name="timer.num_threads">1</property>
                 </transport>
-                <protocol type="PING">
-                    <property name="timeout">2000</property>
-                    <property name="num_initial_members">3</property>
-                </protocol>
-                <protocol type="MERGE2">
-                    <property name="max_interval">100000</property>
-                    <property name="min_interval">20000</property>
-                </protocol>
+                <protocol type="PING"/>
+                <protocol type="MERGE2"/>
                 <protocol type="FD_SOCK" socket-binding="jgroups-fdsock"/>
-                <protocol type="FD">
-                    <property name="timeout">6000</property>
-                    <property name="max_tries">5</property>
-                </protocol>
-                <protocol type="VERIFY_SUSPECT">
-                    <property name="timeout">1500</property>
-                </protocol>
+                <protocol type="FD"/>
+                <protocol type="VERIFY_SUSPECT"/>
                 <protocol type="BARRIER"/>
-                <protocol type="pbcast.NAKACK">
-                    <property name="use_mcast_xmit">true</property>
-                    <property name="gc_lag">0</property>
-                    <property name="retransmit_timeout">300,600,1200,2400,4800</property>
-                    <property name="discard_delivered_msgs">true</property>
-                </protocol>
-                <protocol type="UNICAST">
-                    <property name="timeout">300,600,1200,2400,3600</property>
-                </protocol>
-                <protocol type="pbcast.STABLE">
-                    <property name="stability_delay">1000</property>
-                    <property name="desired_avg_gossip">50000</property>
-                    <property name="max_bytes">400000</property>
-                </protocol>
-                <protocol type="VIEW_SYNC">
-                    <property name="avg_send_interval">10000</property>
-                </protocol>
-                <protocol type="pbcast.GMS">
-                    <property name="print_local_addr">true</property>
-                    <property name="join_timeout">3000</property>
-                    <property name="view_bundling">true</property>
-                    <property name="view_ack_collection_timeout">5000</property>
-                    <property name="resume_task_timeout">7500</property>
-                </protocol>
+                <protocol type="pbcast.NAKACK"/>
+                <protocol type="UNICAST"/>
+                <protocol type="pbcast.STABLE"/>
+                <protocol type="VIEW_SYNC"/>
+                <protocol type="pbcast.GMS"/>
                 <protocol type="FC">
                     <property name="max_credits">2000000</property>
                     <property name="min_threshold">0.10</property>
                     <property name="ignore_synchronous_response">true</property>
                 </protocol>
-                <protocol type="FRAG2">
-                    <property name="frag_size">60000</property>
-                </protocol>
+                <protocol type="FRAG2"/>
                 <protocol type="pbcast.STREAMING_STATE_TRANSFER"/>
-                <protocol type="pbcast.FLUSH">
-                    <property name="timeout">0</property>
-                    <property name="start_flush_timeout">10000</property>
-                </protocol>
+                <protocol type="pbcast.FLUSH"/>
             </stack>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:infinispan:1.0" default-cache-container="default">
             <cache-container 
                 name="default"
                 default-cache="default"
-                listener-executor="infinispan-listener"
-                eviction-executor="infinispan-eviction"
-                replication-queue-executor="infinispan-repl-queue">
+                listener-executor="infinispan-listener" >
                 <transport 
                     executor="infinispan-transport"
                     lock-timeout="240000"/>
@@ -282,10 +201,11 @@
                     l1-lifespan="0" 
                     remote-timeout="30000" >
                     <locking 
-                        isolation="REPEATABLE_READ" 
+                        isolation="READ_COMMITTED" 
                         acquire-timeout="30000" 
                         concurrency-level="1000" 
                         striping="false" />
+                    <transaction mode="NON_DURABLE_XA"/>
                     <rehashing 
                         enabled="true" 
                         timeout="600000" />
