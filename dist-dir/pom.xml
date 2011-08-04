@@ -53,10 +53,7 @@
     <dependency>
       <groupId>org.jboss.as</groupId>
       <artifactId>jboss-as-clustering-jgroups</artifactId>
-      <version>7.0.0.CR1</version>
-      <!-- Downgrading as a workaround for AS7-1260.
-      <version>${version.org.jboss.as}</version>
-      -->
+       <version>${version.org.jboss.as}</version>
     </dependency>
     
     <dependency>
