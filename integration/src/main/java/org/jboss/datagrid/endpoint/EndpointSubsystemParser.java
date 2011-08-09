@@ -93,24 +93,24 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
         }
 
         ModelNode connector = operation.get(DataGridConstants.CONNECTOR).get(protocol);
-        connector.set(DataGridConstants.SOCKET_BINDING, socketBinding);
+        connector.get(DataGridConstants.SOCKET_BINDING).set(socketBinding);
 
         int attrCnt = reader.getAttributeCount();
         for (int i = 0; i < attrCnt; i ++) {
             String attrName = reader.getAttributeLocalName(i);
             String attrValue = reader.getAttributeValue(i);
             if (DataGridConstants.CACHE_CONTAINER.equals(attrName)) {
-                connector.set(DataGridConstants.CACHE_CONTAINER, attrValue);
+                connector.get(DataGridConstants.CACHE_CONTAINER).set(attrValue);
             } else if (DataGridConstants.WORKER_THREADS.equals(attrName)) {
-                connector.set(DataGridConstants.WORKER_THREADS, Integer.parseInt(attrValue));
+                connector.get(DataGridConstants.WORKER_THREADS).set(Integer.parseInt(attrValue));
             } else if (DataGridConstants.IDLE_TIMEOUT.equals(attrName)) {
-                connector.set(DataGridConstants.IDLE_TIMEOUT, Integer.parseInt(attrValue));
+                connector.get(DataGridConstants.IDLE_TIMEOUT).set(Integer.parseInt(attrValue));
             } else if (DataGridConstants.TCP_NODELAY.equals(attrName)) {
-                connector.set(DataGridConstants.TCP_NODELAY, Boolean.parseBoolean(attrValue));
+                connector.get(DataGridConstants.TCP_NODELAY).set(Boolean.parseBoolean(attrValue));
             } else if (DataGridConstants.SEND_BUFFER_SIZE.equals(attrName)) {
-                connector.set(DataGridConstants.SEND_BUFFER_SIZE, Integer.parseInt(attrValue));
+                connector.get(DataGridConstants.SEND_BUFFER_SIZE).set(Integer.parseInt(attrValue));
             } else if (DataGridConstants.RECEIVE_BUFFER_SIZE.equals(attrName)) {
-                connector.set(DataGridConstants.RECEIVE_BUFFER_SIZE, Integer.parseInt(attrValue));
+                connector.get(DataGridConstants.RECEIVE_BUFFER_SIZE).set(Integer.parseInt(attrValue));
             } else if (DataGridConstants.PROTOCOL.equals(attrName)) {
                 // Handled already
             } else if (DataGridConstants.SOCKET_BINDING.equals(attrName)) {
@@ -129,17 +129,17 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
             String attrName = reader.getAttributeLocalName(i);
             String attrValue = reader.getAttributeValue(i);
             if (DataGridConstants.LOCK_TIMEOUT.equals(attrName)) {
-                topologyStateTransfer.set(DataGridConstants.LOCK_TIMEOUT, Integer.parseInt(attrValue));
+                topologyStateTransfer.get(DataGridConstants.LOCK_TIMEOUT).set(Integer.parseInt(attrValue));
             } else if (DataGridConstants.REPLICATION_TIMEOUT.equals(attrName)) {
-                topologyStateTransfer.set(DataGridConstants.REPLICATION_TIMEOUT, Integer.parseInt(attrValue));
+                topologyStateTransfer.get(DataGridConstants.REPLICATION_TIMEOUT).set(Integer.parseInt(attrValue));
             } else if (DataGridConstants.UPDATE_TIMEOUT.equals(attrName)) {
-                topologyStateTransfer.set(DataGridConstants.UPDATE_TIMEOUT, Integer.parseInt(attrValue));
+                topologyStateTransfer.get(DataGridConstants.UPDATE_TIMEOUT).set(Integer.parseInt(attrValue));
             } else if (DataGridConstants.EXTERNAL_HOST.equals(attrName)) {
-                topologyStateTransfer.set(DataGridConstants.EXTERNAL_HOST, attrValue);
+                topologyStateTransfer.get(DataGridConstants.EXTERNAL_HOST).set(attrValue);
             } else if (DataGridConstants.EXTERNAL_PORT.equals(attrName)) {
-                topologyStateTransfer.set(DataGridConstants.EXTERNAL_PORT, Integer.parseInt(attrValue));
+                topologyStateTransfer.get(DataGridConstants.EXTERNAL_PORT).set(Integer.parseInt(attrValue));
             } else if (DataGridConstants.LAZY_RETRIEVAL.equals(attrName)) {
-                topologyStateTransfer.set(DataGridConstants.LAZY_RETRIEVAL, Boolean.parseBoolean(attrValue));
+                topologyStateTransfer.get(DataGridConstants.LAZY_RETRIEVAL).set(Boolean.parseBoolean(attrValue));
             } else {
                 ParseUtils.unexpectedAttribute(reader, i);
             }
