@@ -105,6 +105,27 @@
     <module-def name="org.scala-lang.library">
       <maven-resource group="org.scala-lang" artifact="scala-library"/>
     </module-def>
+
+    <module-def name="org.infinispan.loaders.jdbc">
+      <maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc"/>
+    </module-def>
+
+    <module-def name="c3p0.c3p0">
+      <maven-resource group="c3p0" artifact="c3p0"/>
+    </module-def>
+
+    <module-def name="org.infinispan.loaders.remote">
+      <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote"/>
+    </module-def>
+
+    <module-def name="org.infinispan.client.hotrod">
+      <maven-resource group="org.infinispan" artifact="infinispan-client-hotrod"/>
+    </module-def>
+
+    <module-def name="org.apache.commons-pool">
+      <maven-resource group="commons-pool" artifact="commons-pool"/>
+    </module-def>
+
   </target>
 
   <target name="all" depends="clean, copy-files, modules"/>

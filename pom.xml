@@ -52,6 +52,8 @@
     <version.org.jboss.jandex>1.0.0.Final</version.org.jboss.jandex>
     <version.org.jboss.msc>1.0.0.GA</version.org.jboss.msc>
     <version.org.scala-lang>2.8.1</version.org.scala-lang>
+    <version.c3p0>0.9.1.2</version.c3p0>
+    <version.org.apache.commons.pool>1.5.4</version.org.apache.commons.pool>
   </properties>
 
   <modules>
