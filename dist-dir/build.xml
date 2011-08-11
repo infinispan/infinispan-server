@@ -59,6 +59,13 @@
       </fileset>
     </copy>
 
+    <!-- Copy EDG's readme file -->
+    <copy todir="${output.dir}">
+       <fileset dir="${project.basedir}/../src/main/resources">
+          <include name="README.txt"/>
+       </fileset>
+    </copy>
+
     <!-- Copy the REST server WAR -->
     <copy file="${rest.war}" tofile="${output.dir}/standalone/deployments/datagrid.war" />
 
