@@ -30,7 +30,7 @@
 
   <groupId>org.jboss.datagrid</groupId>
   <artifactId>jboss-datagrid-parent</artifactId>
-  <version>6.0.0.Alpha1-SNAPSHOT</version>
+  <version>6.0.0.ALPHA1</version>
 
   <name>JBoss Enterprise Data Grid - Parent POM</name>
   <description>JBoss Enterprise Data Grid - Parent POM</description>

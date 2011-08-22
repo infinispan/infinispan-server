@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.jboss.datagrid</groupId>
     <artifactId>jboss-datagrid-parent</artifactId>
-    <version>6.0.0.Alpha1-SNAPSHOT</version>
+    <version>6.0.0.ALPHA1</version>
   </parent>
 
   <artifactId>jboss-datagrid-integration</artifactId>
