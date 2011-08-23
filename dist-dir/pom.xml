@@ -23,16 +23,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.datagrid</groupId>
-    <artifactId>jboss-datagrid-parent</artifactId>
-    <version>6.0.0.Alpha1-SNAPSHOT</version>
+    <groupId>com.redhat.datagrid</groupId>
+    <artifactId>enterprise-datagrid-parent</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>jboss-datagrid-dist-dir</artifactId>
+  <artifactId>enterprise-datagrid-dist-dir</artifactId>
 
-  <name>JBoss Enterprise Data Grid - Distribution (Directory)</name>
-  <description>JBoss Enterprise Data Grid - Distribution (Directory)</description>
+  <name>Enterprise Data Grid - Distribution (Directory)</name>
+  <description>Enterprise Data Grid - Distribution (Directory)</description>
 
   <packaging>pom</packaging>
 
@@ -58,14 +58,14 @@
     
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>jboss-datagrid-rest</artifactId>
+      <artifactId>datagrid-rest</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>jboss-datagrid-integration</artifactId>
+      <artifactId>datagrid-integration</artifactId>
       <version>${project.version}</version>
     </dependency>
 

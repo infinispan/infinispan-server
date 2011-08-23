@@ -28,12 +28,12 @@
     <version>6-beta-2</version>
   </parent>
 
-  <groupId>org.jboss.datagrid</groupId>
-  <artifactId>jboss-datagrid-parent</artifactId>
-  <version>6.0.0.Alpha1-SNAPSHOT</version>
+  <groupId>com.redhat.datagrid</groupId>
+  <artifactId>enterprise-datagrid-parent</artifactId>
+  <version>6.0.0-SNAPSHOT</version>
 
-  <name>JBoss Enterprise Data Grid - Parent POM</name>
-  <description>JBoss Enterprise Data Grid - Parent POM</description>
+  <name>Enterprise Data Grid - Parent POM</name>
+  <description>Enterprise Data Grid - Parent POM</description>
 
   <packaging>pom</packaging>
 
@@ -42,7 +42,7 @@
     <jboss.datagrid.release.version>${project.version}</jboss.datagrid.release.version>
     <jboss.datagrid.release.codename>(TBD)</jboss.datagrid.release.codename>
 
-    <jboss.datagrid.release.finalName>jboss-datagrid-${jboss.datagrid.release.version}</jboss.datagrid.release.finalName>
+    <jboss.datagrid.release.finalName>enterprise-datagrid-${jboss.datagrid.release.version}</jboss.datagrid.release.finalName>
 
     <!-- Dependency versions. Please keep alphabetical and identical with what AS 7 uses -->
     <version.com.thoughtworks.xstream>1.3.1</version.com.thoughtworks.xstream>
