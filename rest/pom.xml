@@ -23,12 +23,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.redhat.datagrid</groupId>
-    <artifactId>enterprise-datagrid-parent</artifactId>
+    <groupId>org.jboss.datagrid</groupId>
+    <artifactId>jboss-datagrid-parent</artifactId>
     <version>6.0.0.ALPHA1</version>
   </parent>
 
-  <artifactId>enterprise-datagrid-rest</artifactId>
+  <artifactId>datagrid-rest</artifactId>
   <name>Enterprise Data Grid - REST server for JBoss AS 7</name>
   <packaging>war</packaging>
 

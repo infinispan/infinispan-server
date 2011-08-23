@@ -23,13 +23,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.redhat.datagrid</groupId>
-    <artifactId>enterprise-datagrid-parent</artifactId>
+    <groupId>org.jboss.datagrid</groupId>
+    <artifactId>jboss-datagrid-parent</artifactId>
     <version>6.0.0.ALPHA1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>enterprise-datagrid-dist-dir</artifactId>
+  <artifactId>jboss-datagrid-dist-dir</artifactId>
 
   <name>Enterprise Data Grid - Distribution (Directory)</name>
   <description>Enterprise Data Grid - Distribution (Directory)</description>
