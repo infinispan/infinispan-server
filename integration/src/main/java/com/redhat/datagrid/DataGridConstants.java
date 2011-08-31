@@ -60,6 +60,14 @@ public class DataGridConstants {
     public static final String EXTERNAL_PORT = "external-port"; // integer
     public static final String LAZY_RETRIEVAL = "lazy-retrieval"; // 'true' or 'false'
 
+   private static final String MAJOR = "6";
+   private static final String MINOR = "0";
+   private static final String MICRO = "0";
+   private static final String MODIFIER = "SNAPSHOT";
+   private static final boolean SNAPSHOT = true;
+    public static String VERSION = String.format(
+          "%s.%s.%s%s%s", MAJOR, MINOR, MICRO, SNAPSHOT ? "-" : ".", MODIFIER);
+
     private DataGridConstants() {
         // Constant table
     }
