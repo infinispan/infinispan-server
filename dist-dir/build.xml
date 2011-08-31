@@ -23,7 +23,7 @@
    <property name="asbuild.dir"
              value="${project.basedir}/../../thirdparty/as-build-${version.org.jboss.as}"/>
    <property name="rest.war"
-             value="${project.basedir}/../../rest/target/jboss-datagrid-rest-${project.version}.war"/>
+             value="${project.basedir}/../../rest/target/enterprise-datagrid-rest-${project.version}.war"/>
 
    <import file="${asbuild.dir}/lib.xml"/>
 
@@ -93,8 +93,8 @@
          <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-jgroups"/>
       </module-def>
 
-      <module-def name="org.jboss.datagrid">
-         <maven-resource group="org.jboss.datagrid" artifact="jboss-datagrid-integration"/>
+      <module-def name="com.redhat.datagrid">
+         <maven-resource group="com.redhat.datagrid" artifact="enterprise-datagrid-integration"/>
       </module-def>
 
       <module-def name="org.infinispan">

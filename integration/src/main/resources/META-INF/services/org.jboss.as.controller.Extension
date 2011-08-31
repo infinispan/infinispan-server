@@ -17,4 +17,4 @@
 # 02110-1301 USA
 #
 
-org.jboss.datagrid.endpoint.EndpointExtension
+com.redhat.datagrid.endpoint.EndpointExtension

@@ -26,7 +26,6 @@
     <groupId>com.redhat.datagrid</groupId>
     <artifactId>enterprise-datagrid-parent</artifactId>
     <version>6.0.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>enterprise-datagrid-dist-dir</artifactId>
@@ -58,14 +57,14 @@
     
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>datagrid-rest</artifactId>
+      <artifactId>enterprise-datagrid-rest</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>datagrid-integration</artifactId>
+      <artifactId>enterprise-datagrid-integration</artifactId>
       <version>${project.version}</version>
     </dependency>
 

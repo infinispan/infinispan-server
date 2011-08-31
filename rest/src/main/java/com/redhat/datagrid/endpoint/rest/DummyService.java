@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package org.jboss.datagrid.endpoint.rest;
+package com.redhat.datagrid.endpoint.rest;
 
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;

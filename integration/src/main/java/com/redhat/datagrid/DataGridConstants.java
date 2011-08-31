@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package org.jboss.datagrid;
+package com.redhat.datagrid;
 
 import org.jboss.msc.service.ServiceName;
 
@@ -26,7 +26,9 @@ import org.jboss.msc.service.ServiceName;
  */
 public class DataGridConstants {
 
-    private static final ServiceName DATAGRID = ServiceName.JBOSS.append("datagrid");
+    private static final ServiceName REDHAT = ServiceName.of("redhat");
+
+    public static final ServiceName DATAGRID = REDHAT.append("datagrid");
 
     // Service names (SN_*)
 
@@ -34,7 +36,7 @@ public class DataGridConstants {
 
     // XML namespaces (NS_*)
 
-    public static final String NS_ENDPOINT_1_0 = "urn:jboss:domain:datagrid:endpoint:1.0";
+    public static final String NS_ENDPOINT_1_0 = "urn:redhat:domain:datagrid:endpoint:1.0";
 
     // XML elements and attributes
 

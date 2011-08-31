@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package org.jboss.datagrid.endpoint.rest;
+package com.redhat.datagrid.endpoint.rest;
 
 import java.lang.reflect.Method;
 
@@ -40,7 +40,7 @@ public class ServiceActivator implements org.jboss.msc.service.ServiceActivator 
         ServiceName.JBOSS.append("infinispan"); // Use the default cache container
 
     private static final ServiceName SN_REST =
-        ServiceName.JBOSS.append("datagrid", "rest");
+        ServiceName.of("redhat", "datagrid", "rest");
 
     @Override
     public void activate(ServiceActivatorContext ctx)
