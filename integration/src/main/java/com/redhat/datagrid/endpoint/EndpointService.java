@@ -45,6 +45,8 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 
+import static com.redhat.datagrid.DataGridConstants.*;
+
 /**
  * The service that configures and starts the endpoints supported by data grid.
  *
@@ -73,6 +75,8 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
 
     @Override
     public synchronized void start(final StartContext context) throws StartException {
+        long startTime = System.currentTimeMillis();
+        log.infof("Enterprise Data Grid %s starting", VERSION);
 
         assert connectorPropertiesMap.isEmpty();
         assert topologyStateTransferProperties.isEmpty();
@@ -93,6 +97,10 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
             // Start the connectors
             startProtocolServer(HOTROD, HotRodServer.class);
             startProtocolServer(MEMCACHED, MemcachedServer.class);
+
+            long elapsedTime = Math.max(System.currentTimeMillis() - startTime, 0L);
+            log.infof("Enterprise Data Grid %s started in %dms",
+                      VERSION, Long.valueOf(elapsedTime));
 
             done = true;
         } catch (StartException e) {
@@ -155,6 +163,7 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
     }
 
     private void doStop() {
+        long stopTime = System.currentTimeMillis();
         try {
             for (Map.Entry<String, ProtocolServer> entry: protocolServers.entrySet()) {
                 log.debugf("Stopping connector: %s", entry.getKey());
@@ -168,6 +177,10 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
             protocolServers.clear();
             connectorPropertiesMap.clear();
             topologyStateTransferProperties.clear();
+
+            long elapsedTime = Math.max(System.currentTimeMillis() - stopTime, 0L);
+            log.infof("Enterprise Data Grid %s stopped in %dms",
+                      VERSION, Long.valueOf(elapsedTime));
         }
     }
 

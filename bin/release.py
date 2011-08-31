@@ -148,9 +148,42 @@ def updateVersions(version, workingDir, trunkDir):
   svn_conn.checkout(settings[svn_base_key] + "/tags/" + version, workingDir)
     
   pomsToPatch = get_poms_to_patch(workingDir)
-    
+
+  print "Patch poms: %s" % pomsToPatch
+
   for pom in pomsToPatch:
     patch(pom, version)
+
+  print "Update version in data grid constants file"
+  ## Now look for version in data grid constants
+  version_java = workingDir + "/integration/src/main/java/com/redhat/datagrid/DataGridConstants.java"
+
+  f_in = open(version_java)
+  f_out = open(version_java+".tmp", "w")
+
+  regexp = re.compile('\s*private static final (String (MAJOR|MINOR|MICRO|MODIFIER)|boolean SNAPSHOT)')
+  pieces = version.split('.')
+  try:
+    for l in f_in:
+      print "Check line %s" %l
+      if regexp.match(l):
+        if l.find('MAJOR') > -1:
+          f_out.write('   private static final String MAJOR = "%s";\n' % pieces[0])
+        elif l.find('MINOR') > -1:
+          f_out.write('   private static final String MINOR = "%s";\n' % pieces[1])
+        elif l.find('MICRO') > -1:
+          f_out.write('   private static final String MICRO = "%s";\n' % pieces[2])
+        elif l.find('MODIFIER') > -1:
+          f_out.write('   private static final String MODIFIER = "%s";\n' % pieces[3])
+        elif l.find('SNAPSHOT') > -1:
+          f_out.write('   private static final boolean SNAPSHOT = false;\n')
+      else:
+        f_out.write(l)
+  finally:
+    f_in.close()
+    f_out.close()
+
+  os.rename(version_java+".tmp", version_java)
 
   # Now make sure this goes back into SVN.
   checkInMessage = "EDG Release Script: Updated version numbers"
