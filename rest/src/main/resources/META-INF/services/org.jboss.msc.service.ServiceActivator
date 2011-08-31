@@ -17,4 +17,4 @@
 # 02110-1301 USA
 #
 
-org.jboss.datagrid.endpoint.rest.ServiceActivator
+com.redhat.datagrid.endpoint.rest.ServiceActivator

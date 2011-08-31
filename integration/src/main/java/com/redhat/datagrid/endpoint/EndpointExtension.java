@@ -16,12 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package org.jboss.datagrid.endpoint;
+package com.redhat.datagrid.endpoint;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
 import java.util.Locale;
 
+import com.redhat.datagrid.DataGridConstants;
 import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.ExtensionContext;
 import org.jboss.as.controller.SubsystemRegistration;
@@ -29,7 +30,6 @@ import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.as.controller.parsing.ExtensionParsingContext;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
-import org.jboss.datagrid.DataGridConstants;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceName;
 

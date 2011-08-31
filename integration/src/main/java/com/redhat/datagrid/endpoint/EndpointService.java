@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package org.jboss.datagrid.endpoint;
+package com.redhat.datagrid.endpoint;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.redhat.datagrid.DataGridConstants;
+import com.redhat.datagrid.SecurityActions;
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.server.core.Main;
@@ -34,8 +36,6 @@ import org.infinispan.server.core.ProtocolServer;
 import org.infinispan.server.hotrod.HotRodServer;
 import org.infinispan.server.memcached.MemcachedServer;
 import org.jboss.as.network.SocketBinding;
-import org.jboss.datagrid.DataGridConstants;
-import org.jboss.datagrid.SecurityActions;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.Property;
 import org.jboss.logging.Logger;

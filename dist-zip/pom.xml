@@ -30,7 +30,6 @@
   </parent>
 
   <artifactId>enterprise-datagrid-dist-zip</artifactId>
-
   <name>Enterprise Data Grid - Distribution (ZIP Archive)</name>
   <description>Enterprise Data Grid - Distribution (ZIP Archive)</description>
 
