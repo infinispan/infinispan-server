@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>6-beta-2</version>
+    <version>6</version>
   </parent>
 
   <groupId>com.redhat.datagrid</groupId>
@@ -54,17 +54,6 @@
     <version.org.scala-lang>2.8.1</version.org.scala-lang>
     <version.c3p0>0.9.1.2</version.c3p0>
     <version.org.apache.commons.pool>1.5.4</version.org.apache.commons.pool>
-    <version.jclouds>1.1.0</version.jclouds>
-    <version.net.oauth>20100527</version.net.oauth>
-    <version.aopalliance>1.0</version.aopalliance>
-    <version.com.sun.jersey>1.6</version.com.sun.jersey>
-    <version.com.google.inject>3.0</version.com.google.inject>
-    <version.javax.annotation.jsr250-api>1.0</version.javax.annotation.jsr250-api>
-    <version.com.google.code.gson>1.7.1</version.com.google.code.gson>
-    <version.com.google.guava>r09</version.com.google.guava>
-    <version.joda-time>1.6.2</version.joda-time>
-    <version.log4j>1.2.16</version.log4j>
-    <version.org.bouncycastle>1.46</version.org.bouncycastle>
   </properties>
 
   <modules>
