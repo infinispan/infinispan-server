@@ -1,0 +1,5 @@
+<subsystem xmlns="urn:redhat:domain:datagrid:endpoint:1.0">
+	<connector protocol="hotrod" socket-binding="hotrod" />
+	<connector protocol="memcached" socket-binding="memcached" />
+	<topology-state-transfer replication-timeout="240000" />
+</subsystem>
