@@ -18,6 +18,7 @@
  */
 package com.redhat.datagrid.endpoint;
 
+import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -220,7 +221,7 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
 
    InjectedValue<SocketBinding> getSocketBinding(String socketBindingName) {
       InjectedValue<SocketBinding> socketBinding = socketBindings.get(socketBindingName);
-      if (socketBinding == null) {
+      if (socketBinding == null) {         
          socketBinding = new InjectedValue<SocketBinding>();
          socketBindings.put(socketBindingName, socketBinding);
       }
@@ -241,10 +242,10 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
          if (connector.hasDefined(ModelKeys.SOCKET_BINDING)) {
             SocketBinding socketBinding = getSocketBinding(
                      connector.get(ModelKeys.SOCKET_BINDING).asString()).getValue();
-            connectorProperties.setProperty(Main.PROP_KEY_HOST(), socketBinding.getAddress()
-                     .getHostAddress());
+            InetSocketAddress socketAddress = socketBinding.getSocketAddress();
+            connectorProperties.setProperty(Main.PROP_KEY_HOST(), socketAddress.getAddress().getHostAddress());
             connectorProperties.setProperty(Main.PROP_KEY_PORT(),
-                     String.valueOf(socketBinding.getPort()));
+                     String.valueOf(socketAddress.getPort()));
          }
          if (connector.hasDefined(ModelKeys.WORKER_THREADS)) {
             connectorProperties.setProperty(Main.PROP_KEY_WORKER_THREADS(),
