@@ -42,7 +42,7 @@ import com.redhat.datagrid.DataGridConstants;
 
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
- * @author Tristan Tarrant
+ * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  */
 public class EndpointSubsystemParsingTestCase extends AbstractSubsystemTest {
 

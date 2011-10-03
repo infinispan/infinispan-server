@@ -18,210 +18,238 @@
   -->
 <project name="dist-dir" basedir="." default="clean">
 
-   <property name="output.dir"
-             value="target/${jboss.datagrid.release.finalName}"/>
-   <property name="asbuild.dir"
-             value="${project.basedir}/../../thirdparty/as-build-${version.org.jboss.as}"/>
-   <property name="rest.war"
-             value="${project.basedir}/../../rest/target/enterprise-datagrid-rest-${project.version}.war"/>
+	<property name="output.dir" value="target/${jboss.datagrid.release.finalName}" />
+	<property name="asbuild.dir" value="${project.basedir}/../../thirdparty/as-build-${version.org.jboss.as}" />
+	<property name="rest.war" value="${project.basedir}/../../rest/target/enterprise-datagrid-rest-${project.version}.war" />
 
-   <import file="${asbuild.dir}/lib.xml"/>
+	<import file="${asbuild.dir}/lib.xml" />
 
-   <target name="clean">
-      <delete dir="${output.dir}"/>
-   </target>
+	<scriptdef name="substring" language="javascript">
+		<attribute name="string" />
+		<attribute name="start" />
+		<attribute name="end" />
+		<attribute name="property" />
+		<![CDATA[
+         var s = attributes.get("string");
+         var start = attributes.get("start");
+         var end = attributes.get("end") || s.length();
+         project.setProperty(attributes.get("property"), s.substring(start, end));
+      ]]>
+	</scriptdef>
 
-   <target name="copy-files">
-      <!-- Copy the files from JBoss AS first -->
-      <copy todir="${output.dir}">
-         <fileset dir="${asbuild.dir}/target/jboss-as-${version.org.jboss.as}">
-            <include name="**"/>
-         </fileset>
-      </copy>
+	<target name="clean">
+		<delete dir="${output.dir}" />
+	</target>
 
-      <!-- Make shell scripts executable -->
-      <chmod perm="ugo+x">
-         <fileset dir="${output.dir}/bin">
-            <include name="*.sh"/>
-         </fileset>
-      </chmod>
+	<target name="copy-files">
+		<!-- Copy the files from JBoss AS first -->
+		<copy todir="${output.dir}">
+			<fileset dir="${asbuild.dir}/target/jboss-as-${version.org.jboss.as}">
+				<include name="**" />
+			</fileset>
+		</copy>
 
-      <!-- Delete unused profiles (domain and standalone) -->
-      <delete dir="${output.dir}/domain"/>
-      <delete dir="${output.dir}/standalone"/>
+		<!-- Make shell scripts executable -->
+		<chmod perm="ugo+x">
+			<fileset dir="${output.dir}/bin">
+				<include name="*.sh" />
+			</fileset>
+		</chmod>
 
-      <!-- Delete unused files and directories -->
-      <delete file="${output.dir}/README.txt"/>
-      <delete dir="${output.dir}/bundles"/>
-      <delete dir="${output.dir}/welcome-content"/>
+		<!-- Delete unused profiles (domain and standalone) -->
+		<delete dir="${output.dir}/domain" />
+		<delete dir="${output.dir}/standalone" />
 
-      <!-- Copy the files specific to JBoss Enterprise Data Grid -->
-      <copy todir="${output.dir}/standalone">
-         <fileset dir="${project.basedir}/../src/main/resources/standalone">
-            <include name="**"/>
-         </fileset>
-      </copy>
+		<!-- Delete unused files and directories -->
+		<delete file="${output.dir}/README.txt" />
+		<delete dir="${output.dir}/bundles" />
+		<delete dir="${output.dir}/welcome-content" />
 
-      <!-- Copy EDG's readme file -->
-      <copy todir="${output.dir}">
-         <fileset dir="${project.basedir}/../src/main/resources">
-            <include name="README.txt"/>
-         </fileset>
-      </copy>
 
-      <!-- Copy the REST server WAR -->
-      <copy file="${rest.war}"
-            tofile="${output.dir}/standalone/deployments/datagrid.war"/>
 
-   </target>
+		<!-- Copy the files specific to JBoss Enterprise Data Grid -->
+		<copy todir="${output.dir}/standalone">
+			<fileset dir="${project.basedir}/../src/main/resources/standalone">
+				<include name="**" />
+			</fileset>
+		</copy>
 
-   <target name="modules">
+		<checksum file="${rest.war}" algorithm="SHA1" property="rest.war.checksum" />
+		<echo message="Checksum: ${rest.war.checksum}" />
+		<substring string="${rest.war.checksum}" start="0" end="2" property="rest.war.checksum.prefix" />
+		<substring string="${rest.war.checksum}" start="2" property="rest.war.checksum.suffix" />
 
-      <module-def name="com.thoughtworks.xstream">
-         <maven-resource group="com.thoughtworks.xstream" artifact="xstream"/>
-      </module-def>
 
-      <delete dir="${output.dir}/modules/org/infinispan"/>
-      <delete dir="${output.dir}/modules/org/jboss/as/clustering/infinispan"/>
-      <delete dir="${output.dir}/modules/org/jboss/as/clustering/jgroups"/>
+		<copy todir="${output.dir}/domain">
+			<fileset dir="${project.basedir}/../src/main/resources/domain">
+				<include name="**" />
+			</fileset>
+			<filterset>
+				<filter token="rest.war.checksum" value="${rest.war.checksum}" />
+			</filterset>
+		</copy>
 
-      <module-def name="org.jboss.as.clustering.infinispan">
-         <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan"/>
-      </module-def>
+		<!-- Copy EDG's readme file -->
+		<copy todir="${output.dir}">
+			<fileset dir="${project.basedir}/../src/main/resources">
+				<include name="README.txt" />
+			</fileset>
+		</copy>
 
-      <module-def name="org.jboss.as.clustering.jgroups">
-         <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-jgroups"/>
-      </module-def>
+		<!-- Copy the REST server WAR -->
+		<copy file="${rest.war}" tofile="${output.dir}/standalone/deployments/datagrid.war" />
+		<mkdir dir="${output.dir}/domain/content/${rest.war.checksum.prefix}/${rest.war.checksum.suffix}" />
+		<copy file="${rest.war}" tofile="${output.dir}/domain/content/${rest.war.checksum.prefix}/${rest.war.checksum.suffix}/content" />
 
-      <module-def name="com.redhat.datagrid">
-         <maven-resource group="com.redhat.datagrid" artifact="enterprise-datagrid-integration"/>
-      </module-def>
+	</target>
 
-      <module-def name="org.infinispan">
-         <maven-resource group="org.infinispan" artifact="infinispan-core"/>
-      </module-def>
+	<target name="modules">
 
-      <module-def name="org.infinispan.server">
-         <maven-resource group="org.infinispan" artifact="infinispan-server-core"/>
-      </module-def>
+		<module-def name="com.thoughtworks.xstream">
+			<maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
+		</module-def>
 
-      <module-def name="org.infinispan.server.hotrod">
-         <maven-resource group="org.infinispan" artifact="infinispan-server-hotrod"/>
-      </module-def>
+		<delete dir="${output.dir}/modules/org/infinispan" />
+		<delete dir="${output.dir}/modules/org/jboss/as/clustering/infinispan" />
+		<delete dir="${output.dir}/modules/org/jboss/as/clustering/jgroups" />
 
-      <module-def name="org.infinispan.server.memcached">
-         <maven-resource group="org.infinispan" artifact="infinispan-server-memcached"/>
-      </module-def>
+		<module-def name="org.jboss.as.clustering.infinispan">
+			<maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
+		</module-def>
 
-      <module-def name="org.scala-lang.library">
-         <maven-resource group="org.scala-lang" artifact="scala-library"/>
-      </module-def>
+		<module-def name="org.jboss.as.clustering.jgroups">
+			<maven-resource group="org.jboss.as" artifact="jboss-as-clustering-jgroups" />
+		</module-def>
 
-      <module-def name="org.infinispan.loaders.jdbc">
-         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc"/>
-      </module-def>
+		<module-def name="com.redhat.datagrid">
+			<maven-resource group="com.redhat.datagrid" artifact="enterprise-datagrid-integration" />
+		</module-def>
 
-      <module-def name="c3p0.c3p0">
-         <maven-resource group="c3p0" artifact="c3p0"/>
-      </module-def>
+		<module-def name="org.infinispan">
+			<maven-resource group="org.infinispan" artifact="infinispan-core" />
+		</module-def>
 
-      <module-def name="org.infinispan.loaders.remote">
-         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote"/>
-      </module-def>
+		<module-def name="org.infinispan.server">
+			<maven-resource group="org.infinispan" artifact="infinispan-server-core" />
+		</module-def>
 
-      <module-def name="org.infinispan.client.hotrod">
-         <maven-resource group="org.infinispan" artifact="infinispan-client-hotrod"/>
-      </module-def>
+		<module-def name="org.infinispan.server.hotrod">
+			<maven-resource group="org.infinispan" artifact="infinispan-server-hotrod" />
+		</module-def>
 
-      <module-def name="org.apache.commons-pool">
-         <maven-resource group="commons-pool" artifact="commons-pool"/>
-      </module-def>
+		<module-def name="org.infinispan.server.memcached">
+			<maven-resource group="org.infinispan" artifact="infinispan-server-memcached" />
+		</module-def>
 
-      <module-def name="org.infinispan.loaders.cloud">
-         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-cloud"/>
-      </module-def>
+		<module-def name="org.scala-lang.library">
+			<maven-resource group="org.scala-lang" artifact="scala-library" />
+		</module-def>
 
-      <module-def name="org.jclouds.blobstore">
-         <maven-resource group="org.jclouds" artifact="jclouds-blobstore"/>
-      </module-def>
+		<module-def name="org.infinispan.loaders.jdbc">
+			<maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc" />
+		</module-def>
 
-      <module-def name="org.jclouds.enterprise">
-         <maven-resource group="org.jclouds.driver" artifact="jclouds-enterprise"/>
-      </module-def>
+		<module-def name="c3p0.c3p0">
+			<maven-resource group="c3p0" artifact="c3p0" />
+		</module-def>
 
-      <module-def name="org.jclouds.log4j">
-         <maven-resource group="org.jclouds.driver" artifact="jclouds-log4j"/>
-      </module-def>
+		<module-def name="org.infinispan.loaders.remote">
+			<maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
+		</module-def>
 
-      <module-def name="org.jclouds.s3">
-         <maven-resource group="org.jclouds.api" artifact="s3"/>
-      </module-def>
+		<module-def name="org.infinispan.client.hotrod">
+			<maven-resource group="org.infinispan" artifact="infinispan-client-hotrod" />
+		</module-def>
 
-      <module-def name="org.jclouds.aws-s3">
-         <maven-resource group="org.jclouds.provider" artifact="aws-s3"/>
-      </module-def>
+		<module-def name="org.apache.commons-pool">
+			<maven-resource group="commons-pool" artifact="commons-pool" />
+		</module-def>
 
-      <module-def name="org.jclouds.core">
-         <maven-resource group="org.jclouds" artifact="jclouds-core"/>
-      </module-def>
+		<module-def name="org.infinispan.loaders.cloud">
+			<maven-resource group="org.infinispan" artifact="infinispan-cachestore-cloud" />
+		</module-def>
 
-      <module-def name="org.jclouds.joda">
-         <maven-resource group="org.jclouds.driver" artifact="jclouds-joda"/>
-      </module-def>
+		<module-def name="org.jclouds.blobstore">
+			<maven-resource group="org.jclouds" artifact="jclouds-blobstore" />
+		</module-def>
 
-      <module-def name="org.jclouds.netty">
-         <maven-resource group="org.jclouds.driver" artifact="jclouds-netty"/>
-      </module-def>
+		<module-def name="org.jclouds.enterprise">
+			<maven-resource group="org.jclouds.driver" artifact="jclouds-enterprise" />
+		</module-def>
 
-      <module-def name="org.jclouds.bouncycastle">
-         <maven-resource group="org.jclouds.driver" artifact="jclouds-bouncycastle"/>
-      </module-def>
+		<module-def name="org.jclouds.log4j">
+			<maven-resource group="org.jclouds.driver" artifact="jclouds-log4j" />
+		</module-def>
 
-      <module-def name="net.oauth.core">
-         <maven-resource group="net.oauth.core" artifact="oauth"/>
-      </module-def>
+		<module-def name="org.jclouds.s3">
+			<maven-resource group="org.jclouds.api" artifact="s3" />
+		</module-def>
 
-      <module-def name="aopalliance">
-         <maven-resource group="aopalliance" artifact="aopalliance"/>
-      </module-def>
+		<module-def name="org.jclouds.aws-s3">
+			<maven-resource group="org.jclouds.provider" artifact="aws-s3" />
+		</module-def>
 
-      <module-def name="com.sun.jersey">
-         <maven-resource group="com.sun.jersey" artifact="jersey-core"/>
-      </module-def>
+		<module-def name="org.jclouds.core">
+			<maven-resource group="org.jclouds" artifact="jclouds-core" />
+		</module-def>
 
-      <module-def name="com.google.inject.extensions.guice-assistedinject">
-         <maven-resource group="com.google.inject.extensions" artifact="guice-assistedinject"/>
-      </module-def>
+		<module-def name="org.jclouds.joda">
+			<maven-resource group="org.jclouds.driver" artifact="jclouds-joda" />
+		</module-def>
 
-      <module-def name="com.google.inject.guice">
-         <maven-resource group="com.google.inject" artifact="guice"/>
-      </module-def>
+		<module-def name="org.jclouds.netty">
+			<maven-resource group="org.jclouds.driver" artifact="jclouds-netty" />
+		</module-def>
 
-      <module-def name="javax.annotation.jsr250-api">
-         <maven-resource group="javax.annotation" artifact="jsr250-api"/>
-      </module-def>
+		<module-def name="org.jclouds.bouncycastle">
+			<maven-resource group="org.jclouds.driver" artifact="jclouds-bouncycastle" />
+		</module-def>
 
-      <module-def name="com.google.code.gson">
-         <maven-resource group="com.google.code.gson" artifact="gson"/>
-      </module-def>
+		<module-def name="net.oauth.core">
+			<maven-resource group="net.oauth.core" artifact="oauth" />
+		</module-def>
 
-      <module-def name="com.google.guava">
-         <maven-resource group="com.google.guava" artifact="guava"/>
-      </module-def>
+		<module-def name="aopalliance">
+			<maven-resource group="aopalliance" artifact="aopalliance" />
+		</module-def>
 
-      <module-def name="joda.time">
-         <maven-resource group="joda-time" artifact="joda-time"/>
-      </module-def>
+		<module-def name="com.sun.jersey">
+			<maven-resource group="com.sun.jersey" artifact="jersey-core" />
+		</module-def>
 
-      <module-def name="log4j">
-         <maven-resource group="log4j" artifact="log4j"/>
-      </module-def>
+		<module-def name="com.google.inject.extensions.guice-assistedinject">
+			<maven-resource group="com.google.inject.extensions" artifact="guice-assistedinject" />
+		</module-def>
 
-      <module-def name="org.bouncycastle.bcprov-jdk16">
-         <maven-resource group="org.bouncycastle" artifact="bcprov-jdk16"/>
-      </module-def>
+		<module-def name="com.google.inject.guice">
+			<maven-resource group="com.google.inject" artifact="guice" />
+		</module-def>
 
-   </target>
+		<module-def name="javax.annotation.jsr250-api">
+			<maven-resource group="javax.annotation" artifact="jsr250-api" />
+		</module-def>
 
-   <target name="all" depends="clean, copy-files, modules"/>
+		<module-def name="com.google.code.gson">
+			<maven-resource group="com.google.code.gson" artifact="gson" />
+		</module-def>
+
+		<module-def name="com.google.guava">
+			<maven-resource group="com.google.guava" artifact="guava" />
+		</module-def>
+
+		<module-def name="joda.time">
+			<maven-resource group="joda-time" artifact="joda-time" />
+		</module-def>
+
+		<module-def name="log4j">
+			<maven-resource group="log4j" artifact="log4j" />
+		</module-def>
+
+		<module-def name="org.bouncycastle.bcprov-jdk16">
+			<maven-resource group="org.bouncycastle" artifact="bcprov-jdk16" />
+		</module-def>
+
+	</target>
+
+	<target name="all" depends="clean, copy-files, modules" />
 </project>

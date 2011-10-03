@@ -18,6 +18,11 @@
  */
 package com.redhat.datagrid.endpoint;
 
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
+
 import java.util.Locale;
 
 import org.jboss.as.controller.OperationContext;
@@ -25,35 +30,50 @@ import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.descriptions.DescriptionProvider;
-import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.dmr.ModelNode;
+
+import com.redhat.datagrid.DataGridConstants;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
+ * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  */
 class EndpointSubsystemDescribe implements OperationStepHandler, DescriptionProvider {
 
-    static final EndpointSubsystemDescribe INSTANCE = new EndpointSubsystemDescribe();
+   static final EndpointSubsystemDescribe INSTANCE = new EndpointSubsystemDescribe();
 
-    @Override
-    public ModelNode getModelDescription(Locale locale) {
-        return new ModelNode();
-    }
+   @Override
+   public ModelNode getModelDescription(Locale locale) {
+      return EndpointSubsystemProviders.SUBSYSTEM_DESCRIBE.getModelDescription(locale);
+   }
 
-    @Override
-    public void execute(OperationContext context, ModelNode operation)
+   private static ModelNode createEmptyAddOperation() {
+      final ModelNode subsystem = new ModelNode();
+      subsystem.get(OP).set(ADD);
+      subsystem.get(OP_ADDR).add(SUBSYSTEM, DataGridConstants.SN_ENDPOINT.getSimpleName());
+      return subsystem;
+   }
+
+   @Override
+   public void execute(OperationContext context, ModelNode operation)
             throws OperationFailedException {
 
-        ModelNode result = context.getResult();
+      ModelNode add = createEmptyAddOperation();
 
-        PathAddress rootAddress = PathAddress.pathAddress(PathAddress.pathAddress(operation.require(ModelDescriptionConstants.OP_ADDR)).getLastElement());
+      final ModelNode model = context.readModel(PathAddress.EMPTY_ADDRESS);
 
-        @SuppressWarnings("deprecation")
-        ModelNode subModel = context.readModel(PathAddress.EMPTY_ADDRESS);
+      // result.add(EndpointSubsystemAdd.createOperation(rootAddress.toModelNode(), subModel));
+      if (model.hasDefined(ModelKeys.CONNECTOR)) {
+         add.get(ModelKeys.CONNECTOR).set(model.get(ModelKeys.CONNECTOR));
+      }
+      if (model.hasDefined(ModelKeys.TOPOLOGY_STATE_TRANSFER)) {
+         add.get(ModelKeys.TOPOLOGY_STATE_TRANSFER).set(
+                  model.get(ModelKeys.TOPOLOGY_STATE_TRANSFER));
+      }
+      
+      context.getResult().add(add);
 
-        result.add(EndpointSubsystemAdd.createOperation(rootAddress.toModelNode(), subModel));
+      context.completeStep();
 
-        context.completeStep();
-
-    }
+   }
 }

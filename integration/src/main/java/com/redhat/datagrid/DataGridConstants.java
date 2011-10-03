@@ -22,7 +22,6 @@ import org.jboss.msc.service.ServiceName;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
- * @version $Rev$, $Date$
  */
 public class DataGridConstants {
 
@@ -39,8 +38,6 @@ public class DataGridConstants {
    public static final String NS_ENDPOINT_1_0 = "urn:redhat:domain:datagrid:endpoint:1.0";
 
    // XML elements and attributes
-
-   public static final String SUBSYSTEM = "subsystem";
 
    private static final String MAJOR = "6";
    private static final String MINOR = "0";
