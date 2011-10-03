@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.redhat.datagrid.DataGridConstants;
 import com.redhat.datagrid.SecurityActions;
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.EmbeddedCacheManager;
@@ -201,22 +200,22 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
     }
 
     String getCacheContainerName() {
-        if (!config.hasDefined(DataGridConstants.CACHE_CONTAINER)) {
+        if (!config.hasDefined(ModelKeys.CACHE_CONTAINER)) {
             return null;
         }
-        return config.get(DataGridConstants.CACHE_CONTAINER).asString();
+        return config.get(ModelKeys.CACHE_CONTAINER).asString();
     }
 
     Set<String> getRequiredSocketBindingNames() {
-        if (!config.hasDefined(DataGridConstants.CONNECTOR)) {
+        if (!config.hasDefined(ModelKeys.CONNECTOR)) {
             return Collections.emptySet();
         }
 
         Set<String> socketBindings = new HashSet<String>();
-        for (Property property: config.get(DataGridConstants.CONNECTOR).asPropertyList()) {
+        for (Property property: config.get(ModelKeys.CONNECTOR).asPropertyList()) {
             ModelNode connector = property.getValue();
-            if (connector.hasDefined(DataGridConstants.SOCKET_BINDING)) {
-                socketBindings.add(connector.get(DataGridConstants.SOCKET_BINDING).asString());
+            if (connector.hasDefined(ModelKeys.SOCKET_BINDING)) {
+                socketBindings.add(connector.get(ModelKeys.SOCKET_BINDING).asString());
             }
         }
 
@@ -233,19 +232,19 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
     }
 
     private void loadConnectorProperties(ModelNode config) {
-        if (!config.hasDefined(DataGridConstants.CONNECTOR)) {
+        if (!config.hasDefined(ModelKeys.CONNECTOR)) {
             return;
         }
 
-        for (Property property: config.get(DataGridConstants.CONNECTOR).asPropertyList()) {
+        for (Property property: config.get(ModelKeys.CONNECTOR).asPropertyList()) {
             String protocol = property.getName();
             ModelNode connector = property.getValue();
             Properties connectorProperties = new Properties();
             connectorPropertiesMap.put(protocol, connectorProperties);
 
-            if (connector.hasDefined(DataGridConstants.SOCKET_BINDING)) {
+            if (connector.hasDefined(ModelKeys.SOCKET_BINDING)) {
                 SocketBinding socketBinding = getSocketBinding(
-                        connector.get(DataGridConstants.SOCKET_BINDING).asString()).getValue();
+                        connector.get(ModelKeys.SOCKET_BINDING).asString()).getValue();
                 connectorProperties.setProperty(
                         Main.PROP_KEY_HOST(),
                         socketBinding.getAddress().getHostAddress());
@@ -253,69 +252,69 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
                         Main.PROP_KEY_PORT(),
                         String.valueOf(socketBinding.getPort()));
             }
-            if (connector.hasDefined(DataGridConstants.WORKER_THREADS)) {
+            if (connector.hasDefined(ModelKeys.WORKER_THREADS)) {
                 connectorProperties.setProperty(
                         Main.PROP_KEY_WORKER_THREADS(),
-                        connector.get(DataGridConstants.WORKER_THREADS).asString());
+                        connector.get(ModelKeys.WORKER_THREADS).asString());
             }
-            if (connector.hasDefined(DataGridConstants.IDLE_TIMEOUT)) {
+            if (connector.hasDefined(ModelKeys.IDLE_TIMEOUT)) {
                 connectorProperties.setProperty(
                         Main.PROP_KEY_IDLE_TIMEOUT(),
-                        connector.get(DataGridConstants.IDLE_TIMEOUT).asString());
+                        connector.get(ModelKeys.IDLE_TIMEOUT).asString());
             }
-            if (connector.hasDefined(DataGridConstants.TCP_NODELAY)) {
+            if (connector.hasDefined(ModelKeys.TCP_NODELAY)) {
                 connectorProperties.setProperty(
                         Main.PROP_KEY_TCP_NO_DELAY(),
-                        connector.get(DataGridConstants.TCP_NODELAY).asString());
+                        connector.get(ModelKeys.TCP_NODELAY).asString());
             }
-            if (connector.hasDefined(DataGridConstants.SEND_BUFFER_SIZE)) {
+            if (connector.hasDefined(ModelKeys.SEND_BUFFER_SIZE)) {
                 connectorProperties.setProperty(
                         Main.PROP_KEY_SEND_BUF_SIZE(),
-                        connector.get(DataGridConstants.SEND_BUFFER_SIZE).asString());
+                        connector.get(ModelKeys.SEND_BUFFER_SIZE).asString());
             }
-            if (connector.hasDefined(DataGridConstants.RECEIVE_BUFFER_SIZE)) {
+            if (connector.hasDefined(ModelKeys.RECEIVE_BUFFER_SIZE)) {
                 connectorProperties.setProperty(
                         Main.PROP_KEY_RECV_BUF_SIZE(),
-                        connector.get(DataGridConstants.RECEIVE_BUFFER_SIZE).asString());
+                        connector.get(ModelKeys.RECEIVE_BUFFER_SIZE).asString());
             }
         }
     }
 
     private void loadTopologyStateTransferProperties(ModelNode config) {
-        if (!config.hasDefined(DataGridConstants.TOPOLOGY_STATE_TRANSFER)) {
+        if (!config.hasDefined(ModelKeys.TOPOLOGY_STATE_TRANSFER)) {
             return;
         }
 
-        config = config.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER);
-        if (config.hasDefined(DataGridConstants.LOCK_TIMEOUT)) {
+        config = config.get(ModelKeys.TOPOLOGY_STATE_TRANSFER);
+        if (config.hasDefined(ModelKeys.LOCK_TIMEOUT)) {
             topologyStateTransferProperties.setProperty(
                     Main.PROP_KEY_TOPOLOGY_LOCK_TIMEOUT(),
-                    config.get(DataGridConstants.LOCK_TIMEOUT).asString());
+                    config.get(ModelKeys.LOCK_TIMEOUT).asString());
         }
-        if (config.hasDefined(DataGridConstants.REPLICATION_TIMEOUT)) {
+        if (config.hasDefined(ModelKeys.REPLICATION_TIMEOUT)) {
             topologyStateTransferProperties.setProperty(
                     Main.PROP_KEY_TOPOLOGY_REPL_TIMEOUT(),
-                    config.get(DataGridConstants.REPLICATION_TIMEOUT).asString());
+                    config.get(ModelKeys.REPLICATION_TIMEOUT).asString());
         }
-        if (config.hasDefined(DataGridConstants.UPDATE_TIMEOUT)) {
+        if (config.hasDefined(ModelKeys.UPDATE_TIMEOUT)) {
             topologyStateTransferProperties.setProperty(
                     Main.PROP_KEY_TOPOLOGY_UPDATE_TIMEOUT(),
-                    config.get(DataGridConstants.UPDATE_TIMEOUT).asString());
+                    config.get(ModelKeys.UPDATE_TIMEOUT).asString());
         }
-        if (config.hasDefined(DataGridConstants.EXTERNAL_HOST)) {
+        if (config.hasDefined(ModelKeys.EXTERNAL_HOST)) {
             topologyStateTransferProperties.setProperty(
                     Main.PROP_KEY_PROXY_HOST(),
-                    config.get(DataGridConstants.EXTERNAL_HOST).asString());
+                    config.get(ModelKeys.EXTERNAL_HOST).asString());
         }
-        if (config.hasDefined(DataGridConstants.EXTERNAL_PORT)) {
+        if (config.hasDefined(ModelKeys.EXTERNAL_PORT)) {
             topologyStateTransferProperties.setProperty(
                     Main.PROP_KEY_PROXY_PORT(),
-                    config.get(DataGridConstants.EXTERNAL_PORT).asString());
+                    config.get(ModelKeys.EXTERNAL_PORT).asString());
         }
-        if (config.hasDefined(DataGridConstants.LAZY_RETRIEVAL)) {
+        if (config.hasDefined(ModelKeys.LAZY_RETRIEVAL)) {
             topologyStateTransferProperties.setProperty(
                     Main.PROP_KEY_TOPOLOGY_STATE_TRANSFER(),
-                    Boolean.toString(!config.get(DataGridConstants.LAZY_RETRIEVAL).asBoolean(false)));
+                    Boolean.toString(!config.get(ModelKeys.LAZY_RETRIEVAL).asBoolean(false)));
         }
     }
 
