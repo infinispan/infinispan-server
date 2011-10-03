@@ -42,10 +42,18 @@ NOTE: In case of startup failure, AS 7 might mark datagrid.war deployment
 TO-DO
 =====
 * Consolidate the current configuration files into standalone.xml
-* Figure out how to introduce a new profile 'datagrid' instead of overwriting
-  'standalone'
+* Provide a domain configuration
 * Rebrand the distribution (AS -> Data Grid)
-* Remove unused modules
+* Remove unused modules and irrelevant files (e.g. some scripts in bin/)
+* Customize jboss CLI by removing irrelevant commands (e.g. jms queue
+  management)
+* add EULA
+* Reorganize the distribution as follows:
+
+[root]
+ - edg
+ - docs
+ - client
 
 HOW TO UPGRADE AS 7
 ===================
