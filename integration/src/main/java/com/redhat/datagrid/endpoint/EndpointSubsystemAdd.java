@@ -21,7 +21,6 @@ package com.redhat.datagrid.endpoint;
 import java.util.List;
 import java.util.Locale;
 
-import com.redhat.datagrid.DataGridConstants;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.OperationContext;
@@ -36,79 +35,81 @@ import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 
+import com.redhat.datagrid.DataGridConstants;
+
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
+ * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  */
 class EndpointSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
 
-    static ModelNode createOperation(ModelNode address, ModelNode existing) {
-        ModelNode operation = Util.getEmptyOperation(ModelDescriptionConstants.ADD, address);
-        populate(existing, operation);
-        return operation;
-    }
+   static final EndpointSubsystemAdd INSTANCE = new EndpointSubsystemAdd(
+            DataGridConstants.SN_ENDPOINT);
 
-    private static void populate(ModelNode source, ModelNode target) {
-        target.setEmptyObject();
-        if (source.hasDefined(DataGridConstants.CONNECTOR)) {
-            target.get(DataGridConstants.CONNECTOR).set(source.get(DataGridConstants.CONNECTOR));
-        }
-        if (source.hasDefined(DataGridConstants.TOPOLOGY_STATE_TRANSFER)) {
-            target.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER).set(source.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER));
-        }
-    }
+   static ModelNode createOperation(ModelNode address, ModelNode existing) {
+      ModelNode operation = Util.getEmptyOperation(ModelDescriptionConstants.ADD, address);
+      populate(existing, operation);
+      return operation;
+   }
 
-    private final ServiceName serviceName;
+   private static void populate(ModelNode source, ModelNode target) {
+      target.setEmptyObject();
+      if (source.hasDefined(ModelKeys.CONNECTOR)) {
+         target.get(ModelKeys.CONNECTOR).set(source.get(ModelKeys.CONNECTOR));
+      }
+      if (source.hasDefined(ModelKeys.TOPOLOGY_STATE_TRANSFER)) {
+         target.get(ModelKeys.TOPOLOGY_STATE_TRANSFER).set(
+                  source.get(ModelKeys.TOPOLOGY_STATE_TRANSFER));
+      }
+   }
 
-    EndpointSubsystemAdd(ServiceName serviceName) {
-        this.serviceName = serviceName;
-    }
+   private final ServiceName serviceName;
 
-    @Override
-    public ModelNode getModelDescription(Locale locale) {
-        return new ModelNode();
-    }
+   EndpointSubsystemAdd(ServiceName serviceName) {
+      this.serviceName = serviceName;
+   }
 
-    @Override
-    protected void performRuntime(OperationContext context,
-            ModelNode operation, ModelNode model,
+   @Override
+   public ModelNode getModelDescription(Locale locale) {
+      return EndpointSubsystemProviders.SUBSYTEM_ADD.getModelDescription(locale);
+   }
+
+   @Override
+   protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model,
             ServiceVerificationHandler verificationHandler,
-            List<ServiceController<?>> newControllers)
-            throws OperationFailedException {
+            List<ServiceController<?>> newControllers) throws OperationFailedException {
 
-        // Create the service
-        final EndpointService service = new EndpointService(operation);
+      // Create the service
+      final EndpointService service = new EndpointService(operation);
 
-        // Add and install the service
-        ServiceBuilder<?> builder = context.getServiceTarget().addService(serviceName, service);
+      // Add and install the service
+      ServiceBuilder<?> builder = context.getServiceTarget().addService(serviceName, service);
 
-        String cacheContainerName = service.getCacheContainerName();
-        ServiceName cacheContainerServiceName = ServiceName.JBOSS.append("infinispan");
-        if (cacheContainerName != null) {
-            cacheContainerServiceName = cacheContainerServiceName.append(cacheContainerName);
-        }
+      String cacheContainerName = service.getCacheContainerName();
+      ServiceName cacheContainerServiceName = ServiceName.JBOSS.append("infinispan");
+      if (cacheContainerName != null) {
+         cacheContainerServiceName = cacheContainerServiceName.append(cacheContainerName);
+      }
 
-        builder.addDependency(
-                ServiceBuilder.DependencyType.REQUIRED,
-                cacheContainerServiceName,
-                EmbeddedCacheManager.class,
-                service.getCacheManager());
+      builder.addDependency(ServiceBuilder.DependencyType.REQUIRED, cacheContainerServiceName,
+               EmbeddedCacheManager.class, service.getCacheManager());
 
-        for (final String socketBinding: service.getRequiredSocketBindingNames()) {
-            final ServiceName socketName = SocketBinding.JBOSS_BINDING_NAME.append(socketBinding);
-            builder.addDependency(socketName, SocketBinding.class, service.getSocketBinding(socketBinding));
-        }
+      for (final String socketBinding : service.getRequiredSocketBindingNames()) {
+         final ServiceName socketName = SocketBinding.JBOSS_BINDING_NAME.append(socketBinding);
+         builder.addDependency(socketName, SocketBinding.class,
+                  service.getSocketBinding(socketBinding));
+      }
 
-        builder.install();
-    }
+      builder.install();
+   }
 
-    @Override
-    protected void populateModel(ModelNode source, ModelNode target)
-            throws OperationFailedException {
-        populate(source, target);
-    }
+   @Override
+   protected void populateModel(ModelNode source, ModelNode target) throws OperationFailedException {
+      populate(source, target);
+   }
 
-    @Override
-    protected boolean requiresRuntimeVerification() {
-        return false;
-    }
+   @Override
+   protected boolean requiresRuntimeVerification() {
+      return false;
+   }
 }

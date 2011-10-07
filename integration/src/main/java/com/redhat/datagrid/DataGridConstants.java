@@ -22,53 +22,32 @@ import org.jboss.msc.service.ServiceName;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
- * @version $Rev$, $Date$
  */
 public class DataGridConstants {
 
-    private static final ServiceName REDHAT = ServiceName.of("redhat");
+   private static final ServiceName REDHAT = ServiceName.of("redhat");
 
-    public static final ServiceName DATAGRID = REDHAT.append("datagrid");
+   public static final ServiceName DATAGRID = REDHAT.append("datagrid");
 
-    // Service names (SN_*)
+   // Service names (SN_*)
 
-    public static final ServiceName SN_ENDPOINT = DATAGRID.append("endpoint");
+   public static final ServiceName SN_ENDPOINT = DATAGRID.append("endpoint");
 
-    // XML namespaces (NS_*)
+   // XML namespaces (NS_*)
 
-    public static final String NS_ENDPOINT_1_0 = "urn:redhat:domain:datagrid:endpoint:1.0";
+   public static final String NS_ENDPOINT_1_0 = "urn:redhat:domain:datagrid:endpoint:1.0";
 
-    // XML elements and attributes
-
-    public static final String SUBSYSTEM ="subsystem";
-
-    public static final String CONNECTOR = "connector";
-    public static final String PROTOCOL = "protocol"; // 'hotrod' or 'memcached'
-    public static final String SOCKET_BINDING = "socket-binding"; // string
-    public static final String CACHE_CONTAINER = "cache-container"; // string
-    public static final String WORKER_THREADS = "worker-threads"; // integer
-    public static final String IDLE_TIMEOUT = "idle-timeout"; // integer
-    public static final String TCP_NODELAY = "tcp-nodelay"; // 'true' or 'false'
-    public static final String SEND_BUFFER_SIZE = "send-buffer-size"; // integer
-    public static final String RECEIVE_BUFFER_SIZE = "receive-buffer-size"; // integer
-
-    public static final String TOPOLOGY_STATE_TRANSFER = "topology-state-transfer";
-    public static final String LOCK_TIMEOUT = "lock-timeout"; // integer
-    public static final String REPLICATION_TIMEOUT = "replication-timeout"; // integer
-    public static final String UPDATE_TIMEOUT = "update-timeout"; // integer
-    public static final String EXTERNAL_HOST = "external-host"; // string
-    public static final String EXTERNAL_PORT = "external-port"; // integer
-    public static final String LAZY_RETRIEVAL = "lazy-retrieval"; // 'true' or 'false'
+   // XML elements and attributes
 
    private static final String MAJOR = "6";
    private static final String MINOR = "0";
    private static final String MICRO = "0";
    private static final String MODIFIER = "SNAPSHOT";
    private static final boolean SNAPSHOT = true;
-    public static String VERSION = String.format(
-          "%s.%s.%s%s%s", MAJOR, MINOR, MICRO, SNAPSHOT ? "-" : ".", MODIFIER);
+   public static String VERSION = String.format("%s.%s.%s%s%s", MAJOR, MINOR, MICRO, SNAPSHOT ? "-"
+            : ".", MODIFIER);
 
-    private DataGridConstants() {
-        // Constant table
-    }
+   private DataGridConstants() {
+      // Constant table
+   }
 }
