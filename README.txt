@@ -2,6 +2,13 @@ HOW TO BUILD
 ============
 
 1) Check out the source code.
+2) Run 
+
+    $ git submodule init
+    $ git submodule update
+
+   to initialize your local configuration file, and to fetch the AS7 submodule
+
 2) Build EDG:
 
     $ mvn clean install
@@ -49,26 +56,11 @@ TO-DO
 
 HOW TO UPGRADE AS 7
 ===================
-To upgrade the current JBoss AS build to a newer version, you have to copy
-the 'jboss-as-build' module to the 'thirdparty' directory.
+JBoss AS 7 is included in the build via git submodules. Therefore to change
+version/branch/etc go into the jboss-as directory and perform the appropriate
+checkout. Then perform the following steps:
 
-1) Visit https://github.com/jbossas/jboss-as
-2) Click the 'Downloads' button
-3) Download the desired download package (e.g. 7.0.0.CR1) by clicking the
-   version in the 'download packages' section.
-5) Unzip the downloaded package.  You will find a directoy
-   'jbossas-jboss-as-xxxxxx'.
-6) Copy the 'build' directory to 'thirdparty' with proper name:
-
-    $ cd jbossas-jboss-as-xxxxxx
-    $ cp -R build <EDG6_trunk>/thirdparty/as-build-7.0.0.CR1
-
-NOTE: Please keep in mind that you should never modify any files under
-      the 'thirdparty' directory because we are not going to fork AS 7,
-      but simply consuming it to generate an AS 7 distribution and repackage
-      it into EDG 6.
-
-7) Modify the parent POM of EDG 6 to reflect the change.
+1) Modify the parent POM of EDG 6 to reflect the change.
 
     <properties>
       ...
@@ -76,20 +68,15 @@ NOTE: Please keep in mind that you should never modify any files under
       ...
     </properties>
 
-8) Make sure everything builds OK after upgrade.  Fix the compilation errors
+2) Make sure everything builds OK after upgrade.  Fix the compilation errors
    if found.
-9) Make sure everything runs OK after upgrade.  It will probably fail because
+3) Make sure everything runs OK after upgrade.  It will probably fail because
    of the changes in the XML schema of some subsystems.  Compare the difference
    between EDG 6 configuration and AS 7 configuration, and replace the
    offending subsystem's configuration with the new one.
 
-    $ diff -uN dist-dir/src/main/resources/standalone/configuration/standalone.xml thirdparty/as-build-7.0.0.Beta3/src/main/resources/standalone/configuration/standalone.xml 
+    $ diff -uN dist-dir/src/main/resources/standalone/configuration/standalone.xml jboss-as/build/src/main/resources/standalone/configuration/standalone.xml 
 
-10) If it still does not work, there might have been some changes in module
+4) If it still does not work, there might have been some changes in module
     versions and metadata, which require more in-depth review.
-
-    If it works, commit the changes:
-
-     $ svn add thirdparty/as-build-7.0.0.CR1
-     $ svn commit
 

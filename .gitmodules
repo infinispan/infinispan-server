@@ -1,0 +1,3 @@
+[submodule "jboss-as"]
+	path = jboss-as
+	url = git://github.com/jbossas/jboss-as.git
