@@ -59,7 +59,7 @@
   <modules>
     <module>rest</module>
     <module>integration</module>
-    <module>thirdparty/as-build-${version.org.jboss.as}</module>
+    <module>jboss-as</module>
     <module>dist-dir</module>
     <module>dist-zip</module>
   </modules>

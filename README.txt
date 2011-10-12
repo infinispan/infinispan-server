@@ -11,7 +11,7 @@ HOW TO BUILD
 
 2) Build EDG:
 
-    $ mvn clean install
+    $ mvn clean install -DskipTests
 
 NOTE: Once you've built EDG successfully, you can build an individual
       module to save the build time.  For example, you can avoid assembling
