@@ -21,7 +21,7 @@
    <property name="output.dir"
              value="target/${jboss.datagrid.release.finalName}"/>
    <property name="asbuild.dir"
-             value="${project.basedir}/../../thirdparty/as-build-${version.org.jboss.as}"/>
+             value="${project.basedir}/../../jboss-as/build"/>
    <property name="rest.war"
              value="${project.basedir}/../../rest/target/enterprise-datagrid-rest-${project.version}.war"/>
 
