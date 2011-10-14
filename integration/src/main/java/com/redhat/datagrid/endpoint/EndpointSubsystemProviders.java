@@ -28,40 +28,40 @@ import org.jboss.dmr.ModelNode;
  */
 class EndpointSubsystemProviders {
 
-    private final DescriptionProvider subsystem;
-    private final DescriptionProvider subsystemAdd;
-    private final DescriptionProvider subsystemDescribe;
+   private final DescriptionProvider subsystem;
+   private final DescriptionProvider subsystemAdd;
+   private final DescriptionProvider subsystemDescribe;
 
-    EndpointSubsystemProviders() {
-        subsystem = new DescriptionProvider() {
-            @Override
-            public ModelNode getModelDescription(final Locale locale) {
-                return new ModelNode();
-            }
-        };
-        subsystemAdd = new DescriptionProvider() {
-            @Override
-            public ModelNode getModelDescription(final Locale locale) {
-                return new ModelNode();
-            }
-        };
-        subsystemDescribe = new DescriptionProvider() {
-            @Override
-            public ModelNode getModelDescription(Locale locale) {
-                return new ModelNode();
-            }
-        };
-    }
+   EndpointSubsystemProviders() {
+      subsystem = new DescriptionProvider() {
+         @Override
+         public ModelNode getModelDescription(final Locale locale) {
+            return new ModelNode();
+         }
+      };
+      subsystemAdd = new DescriptionProvider() {
+         @Override
+         public ModelNode getModelDescription(final Locale locale) {
+            return new ModelNode();
+         }
+      };
+      subsystemDescribe = new DescriptionProvider() {
+         @Override
+         public ModelNode getModelDescription(Locale locale) {
+            return new ModelNode();
+         }
+      };
+   }
 
-    public DescriptionProvider subsystem() {
-        return subsystem;
-    }
+   public DescriptionProvider subsystem() {
+      return subsystem;
+   }
 
-    public DescriptionProvider subsystemAdd() {
-        return subsystemAdd;
-    }
+   public DescriptionProvider subsystemAdd() {
+      return subsystemAdd;
+   }
 
-    public DescriptionProvider subsystemDescribe() {
-        return subsystemDescribe;
-    }
+   public DescriptionProvider subsystemDescribe() {
+      return subsystemDescribe;
+   }
 }

@@ -17,195 +17,194 @@
   ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   ~ 02110-1301 USA
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.redhat.datagrid</groupId>
-    <artifactId>enterprise-datagrid-parent</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>com.redhat.datagrid</groupId>
+		<artifactId>enterprise-datagrid-parent</artifactId>
+		<version>6.0.0-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>enterprise-datagrid-dist-dir</artifactId>
+	<artifactId>enterprise-datagrid-dist-dir</artifactId>
 
-  <name>Enterprise Data Grid - Distribution (Directory)</name>
-  <description>Enterprise Data Grid - Distribution (Directory)</description>
+	<name>Enterprise Data Grid - Distribution (Directory)</name>
+	<description>Enterprise Data Grid - Distribution (Directory)</description>
 
-  <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-build</artifactId>
-      <version>${version.org.jboss.as}</version>
-      <type>pom</type>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-clustering-infinispan</artifactId>
-      <version>${version.org.jboss.as}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-clustering-jgroups</artifactId>
-       <version>${version.org.jboss.as}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>enterprise-datagrid-rest</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>enterprise-datagrid-integration</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-core</artifactId>
-      <version>${version.org.infinispan}</version>
-      <exclusions>
-	<exclusion>
-	  <groupId>org.rhq.helpers</groupId>
-	  <artifactId>rhq-pluginAnnotations</artifactId>
-	</exclusion>
-      </exclusions>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-server-core</artifactId>
-      <version>${version.org.infinispan}</version>
-      <exclusions>
-	<exclusion>
-	  <groupId>org.rhq.helpers</groupId>
-	  <artifactId>rhq-pluginAnnotations</artifactId>
-	</exclusion>
-      </exclusions>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-server-hotrod</artifactId>
-      <version>${version.org.infinispan}</version>
-      <exclusions>
-	<exclusion>
-	  <groupId>org.rhq.helpers</groupId>
-	  <artifactId>rhq-pluginAnnotations</artifactId>
-	</exclusion>
-      </exclusions>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-server-memcached</artifactId>
-      <version>${version.org.infinispan}</version>
-      <exclusions>
-	<exclusion>
-	  <groupId>org.rhq.helpers</groupId>
-	  <artifactId>rhq-pluginAnnotations</artifactId>
-	</exclusion>
-      </exclusions>
-    </dependency>
-    
-    <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <version>${version.com.thoughtworks.xstream}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>${version.org.scala-lang}</version>
-    </dependency>
-
-     <dependency>
-       <groupId>org.infinispan</groupId>
-       <artifactId>infinispan-cachestore-jdbc</artifactId>
-       <version>${version.org.infinispan}</version>
-       <exclusions>
-    <exclusion>
-      <groupId>org.rhq.helpers</groupId>
-      <artifactId>rhq-pluginAnnotations</artifactId>
-    </exclusion>
-       </exclusions>
-     </dependency>
-
-     <dependency>
-        <groupId>c3p0</groupId>
-        <artifactId>c3p0</artifactId>
-        <version>${version.c3p0}</version>
-     </dependency>
-
-     <dependency>
-       <groupId>org.infinispan</groupId>
-       <artifactId>infinispan-cachestore-remote</artifactId>
-       <version>${version.org.infinispan}</version>
-       <exclusions>
-    <exclusion>
-      <groupId>org.rhq.helpers</groupId>
-      <artifactId>rhq-pluginAnnotations</artifactId>
-    </exclusion>
-       </exclusions>
-     </dependency>
-
-     <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-client-hotrod</artifactId>
-        <version>${version.org.infinispan}</version>
-        <exclusions>
-     <exclusion>
-       <groupId>org.rhq.helpers</groupId>
-       <artifactId>rhq-pluginAnnotations</artifactId>
-     </exclusion>
-        </exclusions>
-     </dependency>
-
-     <dependency>
-        <groupId>commons-pool</groupId>
-        <artifactId>commons-pool</artifactId>
-        <version>${version.org.apache.commons.pool}</version>
-     </dependency>
-
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-	<artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-	  <execution>
-	    <id>build-dist-dir</id>
-	    <goals>
-	      <goal>run</goal>
-	    </goals>
-	    <phase>package</phase>
-	    <configuration>
-	      <target>
-		<ant antfile="build.xml"  inheritRefs="true">
-		  <target name="all"/>
-		</ant>
-	      </target>
-	    </configuration>
-	  </execution>
-	</executions>
 	<dependencies>
-	  <dependency>
-	    <groupId>org.jboss</groupId>
-	    <artifactId>jandex</artifactId>
-	    <version>${version.org.jboss.jandex}</version>
-	  </dependency>
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-build</artifactId>
+			<version>${version.org.jboss.as}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-clustering-infinispan</artifactId>
+			<version>${version.org.jboss.as}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-clustering-jgroups</artifactId>
+			<version>${version.org.jboss.as}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>enterprise-datagrid-rest</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>enterprise-datagrid-integration</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-core</artifactId>
+			<version>${version.org.infinispan}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.rhq.helpers</groupId>
+					<artifactId>rhq-pluginAnnotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-server-core</artifactId>
+			<version>${version.org.infinispan}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.rhq.helpers</groupId>
+					<artifactId>rhq-pluginAnnotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-server-hotrod</artifactId>
+			<version>${version.org.infinispan}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.rhq.helpers</groupId>
+					<artifactId>rhq-pluginAnnotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-server-memcached</artifactId>
+			<version>${version.org.infinispan}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.rhq.helpers</groupId>
+					<artifactId>rhq-pluginAnnotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>${version.com.thoughtworks.xstream}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${version.org.scala-lang}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-cachestore-jdbc</artifactId>
+			<version>${version.org.infinispan}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.rhq.helpers</groupId>
+					<artifactId>rhq-pluginAnnotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>${version.c3p0}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-cachestore-remote</artifactId>
+			<version>${version.org.infinispan}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.rhq.helpers</groupId>
+					<artifactId>rhq-pluginAnnotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-client-hotrod</artifactId>
+			<version>${version.org.infinispan}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.rhq.helpers</groupId>
+					<artifactId>rhq-pluginAnnotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>${version.org.apache.commons.pool}</version>
+		</dependency>
+
 	</dependencies>
-      </plugin>
-    </plugins>
-  </build>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>build-dist-dir</id>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<ant antfile="build.xml" inheritRefs="true">
+									<target name="all" />
+								</ant>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.jboss</groupId>
+						<artifactId>jandex</artifactId>
+						<version>${version.org.jboss.jandex}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
 </project>

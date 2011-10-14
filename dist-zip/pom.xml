@@ -17,54 +17,53 @@
   ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   ~ 02110-1301 USA
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.redhat.datagrid</groupId>
-    <artifactId>enterprise-datagrid-parent</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+	<parent>
+		<groupId>com.redhat.datagrid</groupId>
+		<artifactId>enterprise-datagrid-parent</artifactId>
+		<version>6.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
-  <artifactId>enterprise-datagrid-dist-zip</artifactId>
-  <name>Enterprise Data Grid - Distribution (ZIP Archive)</name>
-  <description>Enterprise Data Grid - Distribution (ZIP Archive)</description>
+	<artifactId>enterprise-datagrid-dist-zip</artifactId>
+	<name>Enterprise Data Grid - Distribution (ZIP Archive)</name>
+	<description>Enterprise Data Grid - Distribution (ZIP Archive)</description>
 
-  <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
-  <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>enterprise-datagrid-dist-dir</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
-    </dependency>
-  </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>enterprise-datagrid-dist-dir</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+	</dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-	<artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-	  <execution>
-	    <id>build-dist-zip</id>
-	    <goals>
-	      <goal>single</goal>
-	    </goals>
-	    <phase>package</phase>
-	    <configuration>
-	      <finalName>${jboss.datagrid.release.finalName}</finalName>
-	      <appendAssemblyId>false</appendAssemblyId>
-	      <descriptors>
-		<descriptor>${project.basedir}/assembly.xml</descriptor>
-	      </descriptors>
-	    </configuration>
-	  </execution>
-	</executions>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>build-dist-zip</id>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<finalName>${jboss.datagrid.release.finalName}</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<descriptors>
+								<descriptor>${project.basedir}/assembly.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
