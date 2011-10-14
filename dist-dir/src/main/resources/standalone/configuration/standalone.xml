@@ -25,7 +25,6 @@
     <extensions>
         <extension module="org.jboss.as.clustering.jgroups"/>
         <extension module="org.jboss.as.clustering.infinispan"/>
-        <extension module="org.jboss.as.deployment-scanner"/>
         <extension module="org.jboss.as.ee"/>
         <extension module="org.jboss.as.jaxrs"/>
         <extension module="org.jboss.as.jmx"/>
@@ -83,9 +82,6 @@
                     <handler name="CONSOLE"/>
                 </handlers>
             </root-logger>
-        </subsystem>
-        <subsystem xmlns="urn:jboss:domain:deployment-scanner:1.0">
-            <deployment-scanner scan-interval="0" relative-to="jboss.server.base.dir" path="deployments" />
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:ee:1.0" />
         <subsystem xmlns="urn:jboss:domain:jaxrs:1.0"/>
@@ -273,4 +269,11 @@
         <socket-binding name="hotrod" port="11222"/>
         <socket-binding name="memcached" port="11211"/>
     </socket-binding-group>
+    
+    <deployments>
+	   <deployment name="datagrid.war"
+	               runtime-name="datagrid.war">
+	       <content sha1="@rest.war.checksum@"/>
+	   </deployment>
+	</deployments>
 </server>
