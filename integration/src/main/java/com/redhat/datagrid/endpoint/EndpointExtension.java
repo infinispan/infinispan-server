@@ -35,6 +35,10 @@ import org.jboss.msc.service.ServiceName;
 
 import com.redhat.datagrid.DataGridConstants;
 
+/**
+ * @author <a href="http://gleamynode.net/">Trustin Lee</a>
+ * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ */
 public class EndpointExtension implements Extension, DescriptionProvider {
 
    private final ServiceName serviceName = DataGridConstants.SN_ENDPOINT;
@@ -42,18 +46,18 @@ public class EndpointExtension implements Extension, DescriptionProvider {
    private final String namespaceUri = DataGridConstants.NS_ENDPOINT_1_0;
    private final EndpointSubsystemParser parser = new EndpointSubsystemParser(subsystemName,
             namespaceUri);
-   private final EndpointSubsystemAdd subsystemAdd = new EndpointSubsystemAdd(serviceName);
-   private final EndpointSubsystemDescribe subsystemDescribe = new EndpointSubsystemDescribe();
 
    @Override
    public final void initialize(ExtensionContext context) {
-      final SubsystemRegistration subsystem = context.registerSubsystem(subsystemName);
-      final ManagementResourceRegistration registration = subsystem.registerSubsystemModel(this);
-      registration.registerOperationHandler(ADD, subsystemAdd, subsystemAdd, false);
-      registration.registerOperationHandler(DESCRIBE, subsystemDescribe, subsystemDescribe, false,
-               OperationEntry.EntryType.PRIVATE);
+      final SubsystemRegistration registration = context.registerSubsystem(subsystemName);
+      registration.registerXMLElementWriter(parser);
 
-      subsystem.registerXMLElementWriter(parser);
+      final ManagementResourceRegistration subsystem = registration.registerSubsystemModel(this);
+      subsystem.registerOperationHandler(ADD, EndpointSubsystemAdd.INSTANCE,
+               EndpointSubsystemAdd.INSTANCE, false);
+      subsystem.registerOperationHandler(DESCRIBE, EndpointSubsystemDescribe.INSTANCE,
+               EndpointSubsystemDescribe.INSTANCE, false, OperationEntry.EntryType.PRIVATE);
+
    }
 
    @Override
