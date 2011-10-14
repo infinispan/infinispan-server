@@ -19,39 +19,43 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="urn:redhat:domain:datagrid:endpoint:1.0"
-            xmlns="urn:redhat:domain:datagrid:endpoint:1.0"
-            elementFormDefault="qualified" 
-            attributeFormDefault="unqualified"
-            version="1.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="urn:redhat:domain:datagrid:endpoint:1.0" xmlns="urn:redhat:domain:datagrid:endpoint:1.0"
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	version="1.0">
 
-   <xs:element name="subsystem" type="subsystemType" />
+	<xs:element name="subsystem" type="subsystemType" />
 
-   <xs:complexType name="subsystemType">
-      <xs:all>
-         <xs:element name="connector" type="connectorType" minOccurs="1" maxOccurs="unbounded" />
-         <xs:element name="topology-state-transfer" type="topologyStateTransferType" minOccurs="0" maxOccurs"1" />
-      </xs:all>
-   </xs:complexType>
-   
-   <xs:complexType name="connectorType">
-      <xs:attribute name="protocol" type="xs:string" use="required" />
-      <xs:attribute name="socket-binding" type="xs:string" use="required" />
-      <xs:attribute name="cache-container" type="xs:string" use="optional" />
-      <xs:attribute name="worker-threads" type="xs:int" use="optional" />
-      <xs:attribute name="idle-timeout" type="xs:int" use="optional" />
-      <xs:attribute name="tcp-nodelay" type="xs:boolean" use="optional" />
-      <xs:attribute name="send-buffer-size" type="xs:int" use="optional" />
-      <xs:attribute name="receive-buffer-size" type="xs:int" use="optional" />
-   </xs:complexType>
-   
-   <xs:complexType name="topologyStateTransferType">
-      <xs:attribute name="lock-timeout" type="xs:int" use="optional" />
-      <xs:attribute name="replication-timeout" type="xs:int" use="optional" />
-      <xs:attribute name="update-timeout" type="xs:int" use="optional" />
-      <xs:attribute name="external-host" type="xs:string" use="optional" />
-      <xs:attribute name="external-port" type="xs:int" use="optional" />
-      <xs:attribute name="lazy-retrieval" type="xs:boolean" use="optional" />
-   </xs:complexType>
+	<xs:complexType name="subsystemType">
+		<xs:all>
+			<xs:element name="connector" type="connectorType"
+				minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="topology-state-transfer" type="topologyStateTransferType"
+				minOccurs="0" maxOccurs " />
+		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="connectorType">
+		<xs:attribute name="protocol" type="xs:string" use="required" />
+		<xs:attribute name="socket-binding" type="xs:string" use="required" />
+		<xs:attribute name="cache-container" type="xs:string"
+			use="optional" />
+		<xs:attribute name="worker-threads" type="xs:int" use="optional" />
+		<xs:attribute name="idle-timeout" type="xs:int" use="optional" />
+		<xs:attribute name="tcp-nodelay" type="xs:boolean" use="optional" />
+		<xs:attribute name="send-buffer-size" type="xs:int" use="optional" />
+		<xs:attribute name="receive-buffer-size" type="xs:int"
+			use="optional" />
+	</xs:complexType>
+
+	<xs:complexType name="topologyStateTransferType">
+		<xs:attribute name="lock-timeout" type="xs:int" use="optional" />
+		<xs:attribute name="replication-timeout" type="xs:int"
+			use="optional" />
+		<xs:attribute name="update-timeout" type="xs:int" use="optional" />
+		<xs:attribute name="external-host" type="xs:string" use="optional" />
+		<xs:attribute name="external-port" type="xs:int" use="optional" />
+		<xs:attribute name="lazy-retrieval" type="xs:boolean"
+			use="optional" />
+	</xs:complexType>
 </xs:schema>

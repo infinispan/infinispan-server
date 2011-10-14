@@ -18,10 +18,10 @@
   ~ 02110-1301 USA
   -->
 <module xmlns="urn:jboss:module:1.0" name="org.scala-lang.library">
-    <resources>
-        <!-- Insert resources here -->
-    </resources>
+	<resources>
+		<!-- Insert resources here -->
+	</resources>
 
-    <dependencies>
-    </dependencies>
+	<dependencies>
+	</dependencies>
 </module>

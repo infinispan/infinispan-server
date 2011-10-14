@@ -17,21 +17,23 @@
   ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   ~ 02110-1301 USA
   -->
-<assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:maven:assembly:1.1.0-SNAPSHOT">
-    <id>dist-zip</id>
-    <formats>
-       <format>zip</format>
-    </formats>
+<assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="urn:maven:assembly:1.1.0-SNAPSHOT">
+	<id>dist-zip</id>
+	<formats>
+		<format>zip</format>
+	</formats>
 
-    <includeBaseDirectory>true</includeBaseDirectory>
+	<includeBaseDirectory>true</includeBaseDirectory>
 
-    <fileSets>
-        <fileSet>
-	  <directory>${project.basedir}/../dist-dir/target/${jboss.datagrid.release.finalName}</directory>
-            <outputDirectory/>
-            <includes>
-                <include>**/**</include>
-            </includes>
-        </fileSet>
-    </fileSets>
+	<fileSets>
+		<fileSet>
+			<directory>${project.basedir}/../dist-dir/target/${jboss.datagrid.release.finalName}
+			</directory>
+			<outputDirectory />
+			<includes>
+				<include>**/**</include>
+			</includes>
+		</fileSet>
+	</fileSets>
 </assembly>

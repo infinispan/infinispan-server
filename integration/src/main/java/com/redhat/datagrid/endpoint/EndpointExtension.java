@@ -18,11 +18,11 @@
  */
 package com.redhat.datagrid.endpoint;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DESCRIBE;
 
 import java.util.Locale;
 
-import com.redhat.datagrid.DataGridConstants;
 import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.ExtensionContext;
 import org.jboss.as.controller.SubsystemRegistration;
@@ -33,32 +33,36 @@ import org.jboss.as.controller.registry.OperationEntry;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceName;
 
+import com.redhat.datagrid.DataGridConstants;
+
 public class EndpointExtension implements Extension, DescriptionProvider {
 
-    private final ServiceName serviceName = DataGridConstants.SN_ENDPOINT;
-    private final String subsystemName = serviceName.getSimpleName();
-    private final String namespaceUri = DataGridConstants.NS_ENDPOINT_1_0;
-    private final EndpointSubsystemParser parser = new EndpointSubsystemParser(subsystemName, namespaceUri);
-    private final EndpointSubsystemAdd subsystemAdd = new EndpointSubsystemAdd(serviceName);
-    private final EndpointSubsystemDescribe subsystemDescribe = new EndpointSubsystemDescribe();
+   private final ServiceName serviceName = DataGridConstants.SN_ENDPOINT;
+   private final String subsystemName = serviceName.getSimpleName();
+   private final String namespaceUri = DataGridConstants.NS_ENDPOINT_1_0;
+   private final EndpointSubsystemParser parser = new EndpointSubsystemParser(subsystemName,
+            namespaceUri);
+   private final EndpointSubsystemAdd subsystemAdd = new EndpointSubsystemAdd(serviceName);
+   private final EndpointSubsystemDescribe subsystemDescribe = new EndpointSubsystemDescribe();
 
-    @Override
-    public final void initialize(ExtensionContext context) {
-        final SubsystemRegistration subsystem = context.registerSubsystem(subsystemName);
-        final ManagementResourceRegistration registration = subsystem.registerSubsystemModel(this);
-        registration.registerOperationHandler(ADD, subsystemAdd, subsystemAdd, false);
-        registration.registerOperationHandler(DESCRIBE, subsystemDescribe, subsystemDescribe, false, OperationEntry.EntryType.PRIVATE);
+   @Override
+   public final void initialize(ExtensionContext context) {
+      final SubsystemRegistration subsystem = context.registerSubsystem(subsystemName);
+      final ManagementResourceRegistration registration = subsystem.registerSubsystemModel(this);
+      registration.registerOperationHandler(ADD, subsystemAdd, subsystemAdd, false);
+      registration.registerOperationHandler(DESCRIBE, subsystemDescribe, subsystemDescribe, false,
+               OperationEntry.EntryType.PRIVATE);
 
-        subsystem.registerXMLElementWriter(parser);
-    }
+      subsystem.registerXMLElementWriter(parser);
+   }
 
-    @Override
-    public final void initializeParsers(ExtensionParsingContext context) {
-        context.setSubsystemXmlMapping(namespaceUri, parser);
-    }
+   @Override
+   public final void initializeParsers(ExtensionParsingContext context) {
+      context.setSubsystemXmlMapping(namespaceUri, parser);
+   }
 
-    @Override
-    public ModelNode getModelDescription(Locale arg0) {
-        return new ModelNode();
-    }
+   @Override
+   public ModelNode getModelDescription(Locale arg0) {
+      return new ModelNode();
+   }
 }

@@ -18,20 +18,20 @@
   ~ 02110-1301 USA
   -->
 <module xmlns="urn:jboss:module:1.0" name="org.infinispan.loaders.jdbc">
-    <resources>
-        <!-- Insert resources here -->
-    </resources>
+	<resources>
+		<!-- Insert resources here -->
+	</resources>
 
-    <dependencies>
-        <module name="javax.api"/>
-        <module name="javax.transaction.api"/>
-        <module name="javax.xml.bind.api"/>
-        <module name="org.apache.xerces" services="import"/>
-        <module name="org.infinispan"/>
-        <module name="org.jboss.logging"/>
-        <module name="org.jboss.marshalling"/>
-        <module name="org.jboss.marshalling.river" services="import"/>
-        <module name="org.jgroups"/>
-        <module name="c3p0.c3p0"/>
-    </dependencies>
+	<dependencies>
+		<module name="javax.api" />
+		<module name="javax.transaction.api" />
+		<module name="javax.xml.bind.api" />
+		<module name="org.apache.xerces" services="import" />
+		<module name="org.infinispan" />
+		<module name="org.jboss.logging" />
+		<module name="org.jboss.marshalling" />
+		<module name="org.jboss.marshalling.river" services="import" />
+		<module name="org.jgroups" />
+		<module name="c3p0.c3p0" />
+	</dependencies>
 </module>

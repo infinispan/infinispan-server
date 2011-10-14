@@ -33,27 +33,28 @@ import org.jboss.dmr.ModelNode;
  */
 class EndpointSubsystemDescribe implements OperationStepHandler, DescriptionProvider {
 
-    static final EndpointSubsystemDescribe INSTANCE = new EndpointSubsystemDescribe();
+   static final EndpointSubsystemDescribe INSTANCE = new EndpointSubsystemDescribe();
 
-    @Override
-    public ModelNode getModelDescription(Locale locale) {
-        return new ModelNode();
-    }
+   @Override
+   public ModelNode getModelDescription(Locale locale) {
+      return new ModelNode();
+   }
 
-    @Override
-    public void execute(OperationContext context, ModelNode operation)
+   @Override
+   public void execute(OperationContext context, ModelNode operation)
             throws OperationFailedException {
 
-        ModelNode result = context.getResult();
+      ModelNode result = context.getResult();
 
-        PathAddress rootAddress = PathAddress.pathAddress(PathAddress.pathAddress(operation.require(ModelDescriptionConstants.OP_ADDR)).getLastElement());
+      PathAddress rootAddress = PathAddress.pathAddress(PathAddress.pathAddress(
+               operation.require(ModelDescriptionConstants.OP_ADDR)).getLastElement());
 
-        @SuppressWarnings("deprecation")
-        ModelNode subModel = context.readModel(PathAddress.EMPTY_ADDRESS);
+      @SuppressWarnings("deprecation")
+      ModelNode subModel = context.readModel(PathAddress.EMPTY_ADDRESS);
 
-        result.add(EndpointSubsystemAdd.createOperation(rootAddress.toModelNode(), subModel));
+      result.add(EndpointSubsystemAdd.createOperation(rootAddress.toModelNode(), subModel));
 
-        context.completeStep();
+      context.completeStep();
 
-    }
+   }
 }

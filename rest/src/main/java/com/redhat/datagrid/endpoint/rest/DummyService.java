@@ -29,19 +29,18 @@ import org.jboss.msc.service.StopContext;
  */
 class DummyService implements Service<Void> {
 
-    @Override
-    public Void getValue() throws IllegalStateException,
-            IllegalArgumentException {
-        return null;
-    }
+   @Override
+   public Void getValue() throws IllegalStateException, IllegalArgumentException {
+      return null;
+   }
 
-    @Override
-    public void start(StartContext context) throws StartException {
-        // NOOP
-    }
+   @Override
+   public void start(StartContext context) throws StartException {
+      // NOOP
+   }
 
-    @Override
-    public void stop(StopContext context) {
-        // NOOP
-    }
+   @Override
+   public void stop(StopContext context) {
+      // NOOP
+   }
 }

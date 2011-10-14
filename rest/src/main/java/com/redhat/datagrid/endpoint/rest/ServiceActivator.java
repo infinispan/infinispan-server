@@ -36,49 +36,52 @@ import org.jboss.msc.service.ServiceTarget;
  */
 public class ServiceActivator implements org.jboss.msc.service.ServiceActivator {
 
-    private static final ServiceName SN_CACHEMANAGER =
-        ServiceName.JBOSS.append("infinispan"); // Use the default cache container
+   private static final ServiceName SN_CACHEMANAGER = ServiceName.JBOSS.append("infinispan"); // Use
+                                                                                              // the
+                                                                                              // default
+                                                                                              // cache
+                                                                                              // container
 
-    private static final ServiceName SN_REST =
-        ServiceName.of("redhat", "datagrid", "rest");
+   private static final ServiceName SN_REST = ServiceName.of("redhat", "datagrid", "rest");
 
-    @Override
-    public void activate(ServiceActivatorContext ctx)
-            throws ServiceRegistryException {
-        final Method setter;
-        try {
-            Class<?> cls = Class.forName(
-                    "org.infinispan.rest.ManagerInstance", true, getClass().getClassLoader());
-            setter = cls.getMethod("instance_$eq", EmbeddedCacheManager.class);
-        } catch (Exception e) {
-            throw new ServiceRegistryException(
-                    "failed to locate ManagerInstance.instance", e);
-        }
+   @Override
+   public void activate(ServiceActivatorContext ctx) throws ServiceRegistryException {
+      final Method setter;
+      try {
+         Class<?> cls = Class.forName("org.infinispan.rest.ManagerInstance", true, getClass()
+                  .getClassLoader());
+         setter = cls.getMethod("instance_$eq", EmbeddedCacheManager.class);
+      } catch (Exception e) {
+         throw new ServiceRegistryException("failed to locate ManagerInstance.instance", e);
+      }
 
-        ServiceTarget serviceTarget = ctx.getServiceTarget();
-        ServiceBuilder<Void> serviceBuilder = serviceTarget.addService(SN_REST, new DummyService());
-        serviceBuilder.addDependency(SN_CACHEMANAGER, EmbeddedCacheManager.class, new Injector<EmbeddedCacheManager>() {
-            @Override
-            public void inject(EmbeddedCacheManager value)
-                    throws InjectionException {
-                if (value == null) {
-                    throw new InjectionException("value is null.");
-                }
-                try {
-                    setter.invoke(null, value);
-                } catch (Exception e) {
-                    throw new InjectionException("failed to inject ManagerInstance.instance", e);
-                }
-            }
+      ServiceTarget serviceTarget = ctx.getServiceTarget();
+      ServiceBuilder<Void> serviceBuilder = serviceTarget.addService(SN_REST, new DummyService());
+      serviceBuilder
+               .addDependency(SN_CACHEMANAGER, EmbeddedCacheManager.class,
+                        new Injector<EmbeddedCacheManager>() {
+                           @Override
+                           public void inject(EmbeddedCacheManager value) throws InjectionException {
+                              if (value == null) {
+                                 throw new InjectionException("value is null.");
+                              }
+                              try {
+                                 setter.invoke(null, value);
+                              } catch (Exception e) {
+                                 throw new InjectionException(
+                                          "failed to inject ManagerInstance.instance", e);
+                              }
+                           }
 
-            @Override
-            public void uninject() {
-                try {
-                    setter.invoke(null, (Object) null );
-                } catch (Exception e) {
-                    throw new InjectionException("failed to uninject ManagerInstance.instance", e);
-                }
-            }
-        }).setInitialMode(ServiceController.Mode.ACTIVE).install();
-    }
+                           @Override
+                           public void uninject() {
+                              try {
+                                 setter.invoke(null, (Object) null);
+                              } catch (Exception e) {
+                                 throw new InjectionException(
+                                          "failed to uninject ManagerInstance.instance", e);
+                              }
+                           }
+                        }).setInitialMode(ServiceController.Mode.ACTIVE).install();
+   }
 }
