@@ -39,8 +39,12 @@ import com.redhat.datagrid.DataGridConstants;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
+ * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  */
 class EndpointSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
+
+   static final EndpointSubsystemAdd INSTANCE = new EndpointSubsystemAdd(
+            DataGridConstants.SN_ENDPOINT);
 
    static ModelNode createOperation(ModelNode address, ModelNode existing) {
       ModelNode operation = Util.getEmptyOperation(ModelDescriptionConstants.ADD, address);
@@ -50,12 +54,12 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
 
    private static void populate(ModelNode source, ModelNode target) {
       target.setEmptyObject();
-      if (source.hasDefined(DataGridConstants.CONNECTOR)) {
-         target.get(DataGridConstants.CONNECTOR).set(source.get(DataGridConstants.CONNECTOR));
+      if (source.hasDefined(ModelKeys.CONNECTOR)) {
+         target.get(ModelKeys.CONNECTOR).set(source.get(ModelKeys.CONNECTOR));
       }
-      if (source.hasDefined(DataGridConstants.TOPOLOGY_STATE_TRANSFER)) {
-         target.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER).set(
-                  source.get(DataGridConstants.TOPOLOGY_STATE_TRANSFER));
+      if (source.hasDefined(ModelKeys.TOPOLOGY_STATE_TRANSFER)) {
+         target.get(ModelKeys.TOPOLOGY_STATE_TRANSFER).set(
+                  source.get(ModelKeys.TOPOLOGY_STATE_TRANSFER));
       }
    }
 
@@ -67,7 +71,7 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
 
    @Override
    public ModelNode getModelDescription(Locale locale) {
-      return new ModelNode();
+      return EndpointSubsystemProviders.SUBSYTEM_ADD.getModelDescription(locale);
    }
 
    @Override

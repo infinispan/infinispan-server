@@ -27,6 +27,19 @@
 
 	<import file="${asbuild.dir}/lib.xml"/>
 
+	<scriptdef name="substring" language="javascript">
+		<attribute name="string" />
+		<attribute name="start" />
+		<attribute name="end" />
+		<attribute name="property" />
+		<![CDATA[
+	         var s = attributes.get("string");
+	         var start = attributes.get("start");
+	         var end = attributes.get("end") || s.length();
+	         project.setProperty(attributes.get("property"), s.substring(start, end));
+	      ]]>
+	</scriptdef>
+
 	<target name="clean">
 		<delete dir="${output.dir}"/>
 	</target>
@@ -58,8 +71,23 @@
 		<!-- Copy the files specific to JBoss Enterprise Data Grid -->
 		<copy todir="${output.dir}/standalone">
 			<fileset dir="${project.basedir}/../src/main/resources/standalone">
-				<include name="**"/>
+				<include name="**" />
 			</fileset>
+		</copy>
+
+		<checksum file="${rest.war}" algorithm="SHA1" property="rest.war.checksum" />
+		<echo message="Checksum: ${rest.war.checksum}" />
+		<substring string="${rest.war.checksum}" start="0" end="2" property="rest.war.checksum.prefix" />
+		<substring string="${rest.war.checksum}" start="2" property="rest.war.checksum.suffix" />
+
+
+		<copy todir="${output.dir}/domain">
+			<fileset dir="${project.basedir}/../src/main/resources/domain">
+				<include name="**" />
+			</fileset>
+			<filterset>
+				<filter token="rest.war.checksum" value="${rest.war.checksum}" />
+			</filterset>
 		</copy>
 
 		<!-- Copy EDG's readme file -->
@@ -70,8 +98,9 @@
 		</copy>
 
 		<!-- Copy the REST server WAR -->
-		<copy file="${rest.war}"
-            tofile="${output.dir}/standalone/deployments/datagrid.war"/>
+		<copy file="${rest.war}" tofile="${output.dir}/standalone/deployments/datagrid.war"/>
+		<mkdir dir="${output.dir}/domain/content/${rest.war.checksum.prefix}/${rest.war.checksum.suffix}" />
+		<copy file="${rest.war}" tofile="${output.dir}/domain/content/${rest.war.checksum.prefix}/${rest.war.checksum.suffix}/content" />
 
 	</target>
 

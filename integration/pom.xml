@@ -59,5 +59,12 @@
 			<artifactId>junit</artifactId>
 			<version>${version.junit}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-subsystem-test</artifactId>
+			<version>${version.org.jboss.as}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
