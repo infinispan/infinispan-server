@@ -37,15 +37,7 @@ public class DataGridConstants {
 
    public static final String NS_ENDPOINT_1_0 = "urn:redhat:domain:datagrid:endpoint:1.0";
 
-   // XML elements and attributes
-
-   private static final String MAJOR = "6";
-   private static final String MINOR = "0";
-   private static final String MICRO = "0";
-   private static final String MODIFIER = "SNAPSHOT";
-   private static final boolean SNAPSHOT = true;
-   public static String VERSION = String.format("%s.%s.%s%s%s", MAJOR, MINOR, MICRO, SNAPSHOT ? "-"
-            : ".", MODIFIER);
+   public static String VERSION = DataGridConstants.class.getPackage().getImplementationVersion();
 
    private DataGridConstants() {
       // Constant table
