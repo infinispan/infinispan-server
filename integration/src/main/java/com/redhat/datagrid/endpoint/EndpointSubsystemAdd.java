@@ -30,6 +30,11 @@ import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.as.network.SocketBinding;
+import org.jboss.as.server.mgmt.HttpManagementService;
+import org.jboss.as.server.mgmt.domain.HttpManagement;
+import org.jboss.as.server.services.path.AbstractPathService;
+import org.jboss.as.web.VirtualHost;
+import org.jboss.as.web.WebSubsystemServices;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
@@ -45,6 +50,7 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
 
    static final EndpointSubsystemAdd INSTANCE = new EndpointSubsystemAdd(
             DataGridConstants.SN_ENDPOINT);
+   private static final String HOME_DIR = "jboss.home.dir";
 
    static ModelNode createOperation(ModelNode address, ModelNode existing) {
       ModelNode operation = Util.getEmptyOperation(ModelDescriptionConstants.ADD, address);
@@ -77,10 +83,10 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
    @Override
    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model,
             ServiceVerificationHandler verificationHandler,
-            List<ServiceController<?>> newControllers) throws OperationFailedException {
-
+            List<ServiceController<?>> newControllers) throws OperationFailedException {      
+      final String name = "default-host"; //FIXME: get it from the configuration
       // Create the service
-      final EndpointService service = new EndpointService(operation);
+      final EndpointProtocolService service = new EndpointProtocolService(operation);
 
       // Add and install the service
       ServiceBuilder<?> builder = context.getServiceTarget().addService(serviceName, service);
@@ -101,6 +107,17 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
       }
 
       builder.install();
+      
+      final EndpointRestService restService = new EndpointRestService();
+      
+      newControllers.add(context.getServiceTarget().addService(WebSubsystemServices.JBOSS_WEB.append(name).append("datagrid"), restService)
+              .addDependency(AbstractPathService.pathNameOf(HOME_DIR), String.class, restService.getPathInjector())
+              .addDependency(WebSubsystemServices.JBOSS_WEB_HOST.append(name), VirtualHost.class, restService.getHostInjector())
+              .addDependency(ServiceBuilder.DependencyType.OPTIONAL, HttpManagementService.SERVICE_NAME, HttpManagement.class, restService.getHttpManagementInjector())
+              .addDependency(ServiceBuilder.DependencyType.REQUIRED, cacheContainerServiceName, EmbeddedCacheManager.class, restService.getCacheManagerInjector())
+              .addListener(verificationHandler)
+              .setInitialMode(ServiceController.Mode.ACTIVE)
+              .install());
    }
 
    @Override

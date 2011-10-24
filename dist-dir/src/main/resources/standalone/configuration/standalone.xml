@@ -23,9 +23,9 @@
 <server xmlns="urn:jboss:domain:1.0">
 
     <extensions>
+    	<extension module="org.jboss.as.clustering.infinispan"/>
         <extension module="org.jboss.as.clustering.jgroups"/>
-        <extension module="org.jboss.as.clustering.infinispan"/>
-        <extension module="org.jboss.as.ee"/>
+        <extension module="org.jboss.as.connector" />   
         <extension module="org.jboss.as.jaxrs"/>
         <extension module="org.jboss.as.jmx"/>
         <extension module="org.jboss.as.logging"/>
@@ -82,14 +82,32 @@
                     <handler name="CONSOLE"/>
                 </handlers>
             </root-logger>
-        </subsystem>
-        <subsystem xmlns="urn:jboss:domain:ee:1.0" />
+        </subsystem>        
         <subsystem xmlns="urn:jboss:domain:jaxrs:1.0"/>
+        <subsystem xmlns="urn:jboss:domain:jca:1.0">
+            <archive-validation enabled="true"/>
+            <bean-validation enabled="true"/>
+            <default-workmanager>
+                <short-running-threads blocking="true">
+                    <core-threads count="10" per-cpu="20"/>
+                    <queue-length count="10" per-cpu="20"/>
+                    <max-threads count="10" per-cpu="20"/>
+                    <keepalive-time time="10" unit="seconds"/>
+                </short-running-threads>
+                <long-running-threads blocking="true">
+                    <core-threads count="10" per-cpu="20"/>
+                    <queue-length count="10" per-cpu="20"/>
+                    <max-threads count="10" per-cpu="20"/>
+                    <keepalive-time time="10" unit="seconds"/>
+                </long-running-threads>
+            </default-workmanager>
+        </subsystem>
         <subsystem xmlns="urn:jboss:domain:jmx:1.0">
             <jmx-connector registry-binding="jmx-connector-registry" server-binding="jmx-connector-server" />
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:naming:1.0" />
         <subsystem xmlns="urn:jboss:domain:remoting:1.0"/>
+        <subsystem xmlns="urn:jboss:domain:resource-adapters:1.0"/>
         <subsystem xmlns="urn:jboss:domain:security:1.0">
             <security-domains>
                 <security-domain name="other" cache-type="default">
@@ -152,10 +170,7 @@
                            default-executor="jgroups"
                            oob-executor="jgroups-oob"
                            timer-executor="jgroups-timer"
-                           diagnostics-socket-binding="jgroups-diag">
-                    <property name="tos">8</property>
-                    <property name="loopback">true</property>
-                    <property name="timer.num_threads">1</property>
+                           diagnostics-socket-binding="jgroups-diag">                    
                 </transport>
                 <protocol type="PING"/>
                 <protocol type="MERGE2"/>
@@ -164,18 +179,13 @@
                 <protocol type="VERIFY_SUSPECT"/>
                 <protocol type="BARRIER"/>
                 <protocol type="pbcast.NAKACK"/>
-                <protocol type="UNICAST"/>
-                <protocol type="pbcast.STABLE"/>
-                <protocol type="VIEW_SYNC"/>
+                <protocol type="UNICAST2"/>
+                <protocol type="pbcast.STABLE"/>                
                 <protocol type="pbcast.GMS"/>
-                <protocol type="FC">
-                    <property name="max_credits">2000000</property>
-                    <property name="min_threshold">0.10</property>
-                    <property name="ignore_synchronous_response">true</property>
-                </protocol>
+                <protocol type="UFC" />
+                <protocol type="MFC" />
                 <protocol type="FRAG2"/>
-                <protocol type="pbcast.STREAMING_STATE_TRANSFER"/>
-                <protocol type="pbcast.FLUSH"/>
+                <protocol type="pbcast.STATE_TRANSFER"/>
             </stack>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:infinispan:1.0" default-cache-container="default">
@@ -270,10 +280,4 @@
         <socket-binding name="memcached" port="11211"/>
     </socket-binding-group>
     
-    <deployments>
-	   <deployment name="datagrid.war"
-	               runtime-name="datagrid.war">
-	       <content sha1="@rest.war.checksum@"/>
-	   </deployment>
-	</deployments>
 </server>

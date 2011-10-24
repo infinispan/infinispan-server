@@ -25,8 +25,7 @@
     <extensions>
         <extension module="org.jboss.as.clustering.infinispan"/>
         <extension module="org.jboss.as.clustering.jgroups"/>
-        <extension module="org.jboss.as.connector" />
-        <extension module="org.jboss.as.ee"/>
+        <extension module="org.jboss.as.connector" />        
         <extension module="org.jboss.as.jaxrs"/>
         <extension module="org.jboss.as.jmx"/>
         <extension module="org.jboss.as.logging"/>
@@ -73,26 +72,7 @@
 	                    <handler name="CONSOLE"/>
 	                </handlers>
 	            </root-logger>
-	        </subsystem>
-            <subsystem xmlns="urn:jboss:domain:datasources:1.0">
-                <datasources>
-                    <datasource jndi-name="java:jboss/datasources/ExampleDS" enabled="true" use-java-context="true" pool-name="H2DS">
-                        <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>
-                        <driver>h2</driver>
-                        <pool></pool>
-                        <security>
-                            <user-name>sa</user-name>
-                            <password>sa</password>
-                        </security>
-                    </datasource>
-                    <drivers>
-                        <driver name="h2" module="com.h2database.h2">
-                            <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
-                        </driver>
-                    </drivers>
-                </datasources>
-            </subsystem>
-            <subsystem xmlns="urn:jboss:domain:ee:1.0"/>
+	        </subsystem>                   
             <subsystem xmlns="urn:jboss:domain:infinispan:1.0" default-cache-container="default">
 	            <cache-container 
 	                name="default"
@@ -175,10 +155,7 @@
 	                           default-executor="jgroups"
 	                           oob-executor="jgroups-oob"
 	                           timer-executor="jgroups-timer"
-	                           diagnostics-socket-binding="jgroups-diag">
-	                    <property name="tos">8</property>
-	                    <property name="loopback">true</property>
-	                    <property name="timer.num_threads">1</property>
+	                           diagnostics-socket-binding="jgroups-diag">                    
 	                </transport>
 	                <protocol type="PING"/>
 	                <protocol type="MERGE2"/>
@@ -187,18 +164,13 @@
 	                <protocol type="VERIFY_SUSPECT"/>
 	                <protocol type="BARRIER"/>
 	                <protocol type="pbcast.NAKACK"/>
-	                <protocol type="UNICAST"/>
-	                <protocol type="pbcast.STABLE"/>
-	                <protocol type="VIEW_SYNC"/>
+	                <protocol type="UNICAST2"/>
+	                <protocol type="pbcast.STABLE"/>                
 	                <protocol type="pbcast.GMS"/>
-	                <protocol type="FC">
-	                    <property name="max_credits">2000000</property>
-	                    <property name="min_threshold">0.10</property>
-	                    <property name="ignore_synchronous_response">true</property>
-	                </protocol>
+	                <protocol type="UFC" />
+	                <protocol type="MFC" />
 	                <protocol type="FRAG2"/>
-	                <protocol type="pbcast.STREAMING_STATE_TRANSFER"/>
-	                <protocol type="pbcast.FLUSH"/>
+	                <protocol type="pbcast.STATE_TRANSFER"/>
 	            </stack>
 	        </subsystem>
             <subsystem xmlns="urn:jboss:domain:jmx:1.0">
@@ -304,23 +276,13 @@
 	        <socket-binding name="memcached" port="11211"/>
 	    </socket-binding-group>
     </socket-binding-groups>
-    
-    <deployments>
-	   <deployment name="datagrid.war"
-	               runtime-name="datagrid.war">
-	       <content sha1="@rest.war.checksum@"/>
-	   </deployment>
-	</deployments>
 
     <server-groups>
         <server-group name="datagrid-server-group" profile="datagrid">
             <jvm name="default">
                <heap size="64m" max-size="512m"/>
             </jvm>
-            <socket-binding-group ref="standard-sockets"/>
-            <deployments>
-            	<deployment name="datagrid.war" runtime-name="datagrid.war" />
-            </deployments>
+            <socket-binding-group ref="standard-sockets"/>           
         </server-group>
     </server-groups>
 
