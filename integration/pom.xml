@@ -41,6 +41,18 @@
 			<artifactId>jboss-as-server</artifactId>
 			<version>${version.org.jboss.as}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-web</artifactId>
+			<version>${version.org.jboss.as}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jboss-logging-processor</artifactId>
+					<groupId>org.jboss.logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<dependency>
 			<groupId>org.infinispan</groupId>
@@ -52,6 +64,13 @@
 			<groupId>org.infinispan</groupId>
 			<artifactId>infinispan-server-memcached</artifactId>
 			<version>${version.org.infinispan}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-server-rest</artifactId>
+			<version>${version.org.infinispan}</version>
+			<classifier>classes</classifier>
 		</dependency>
 
 		<dependency>

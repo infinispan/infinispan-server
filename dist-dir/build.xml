@@ -27,19 +27,6 @@
 
 	<import file="${asbuild.dir}/lib.xml"/>
 
-	<scriptdef name="substring" language="javascript">
-		<attribute name="string" />
-		<attribute name="start" />
-		<attribute name="end" />
-		<attribute name="property" />
-		<![CDATA[
-	         var s = attributes.get("string");
-	         var start = attributes.get("start");
-	         var end = attributes.get("end") || s.length();
-	         project.setProperty(attributes.get("property"), s.substring(start, end));
-	      ]]>
-	</scriptdef>
-
 	<target name="clean">
 		<delete dir="${output.dir}"/>
 	</target>
@@ -67,11 +54,6 @@
 		<delete file="${output.dir}/README.txt"/>
 		<delete dir="${output.dir}/bundles"/>
 		<delete dir="${output.dir}/welcome-content"/>
-
-		<checksum file="${rest.war}" algorithm="SHA1" property="rest.war.checksum" />
-		<echo message="Checksum: ${rest.war.checksum}" />
-		<substring string="${rest.war.checksum}" start="0" end="2" property="rest.war.checksum.prefix" />
-		<substring string="${rest.war.checksum}" start="2" property="rest.war.checksum.suffix" />
 		
 		<!-- Copy the files specific to JBoss Enterprise Data Grid -->
 		<copy todir="${output.dir}/standalone">
@@ -91,6 +73,13 @@
 				<filter token="rest.war.checksum" value="${rest.war.checksum}" />
 			</filterset>
 		</copy>
+		
+		<!-- Copy the REST webapp elements -->
+		<copy todir="${output.dir}/rest">
+			<fileset dir="${project.basedir}/../src/main/resources/rest">
+				<include name="**"/>
+			</fileset>
+		</copy>
 
 		<!-- Copy EDG's readme file -->
 		<copy todir="${output.dir}">
@@ -98,13 +87,7 @@
 				<include name="README.txt"/>
 			</fileset>
 		</copy>
-
-		<!-- Copy the REST server WAR -->		
-		<mkdir dir="${output.dir}/standalone/data/content/${rest.war.checksum.prefix}/${rest.war.checksum.suffix}" />
-		<copy file="${rest.war}" tofile="${output.dir}/standalone/data/content/${rest.war.checksum.prefix}/${rest.war.checksum.suffix}/content" />
-		<mkdir dir="${output.dir}/domain/content/${rest.war.checksum.prefix}/${rest.war.checksum.suffix}" />
-		<copy file="${rest.war}" tofile="${output.dir}/domain/content/${rest.war.checksum.prefix}/${rest.war.checksum.suffix}/content" />
-
+		
 	</target>
 
 	<target name="modules">
@@ -143,6 +126,10 @@
 
 		<module-def name="org.infinispan.server.memcached">
 			<maven-resource group="org.infinispan" artifact="infinispan-server-memcached"/>
+		</module-def>
+		
+		<module-def name="org.infinispan.server.rest">
+			<maven-resource-with-classifier group="org.infinispan" artifact="infinispan-server-rest" classifier="classes" />
 		</module-def>
 
 		<module-def name="org.scala-lang.library">

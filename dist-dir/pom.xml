@@ -56,13 +56,6 @@
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>enterprise-datagrid-rest</artifactId>
-			<version>${project.version}</version>
-			<type>war</type>
-		</dependency>
-
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>enterprise-datagrid-integration</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -106,6 +99,19 @@
 		<dependency>
 			<groupId>org.infinispan</groupId>
 			<artifactId>infinispan-server-memcached</artifactId>
+			<version>${version.org.infinispan}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.rhq.helpers</groupId>
+					<artifactId>rhq-pluginAnnotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-server-rest</artifactId>
+			<classifier>classes</classifier>
 			<version>${version.org.infinispan}</version>
 			<exclusions>
 				<exclusion>

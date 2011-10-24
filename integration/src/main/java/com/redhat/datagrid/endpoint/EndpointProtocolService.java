@@ -52,9 +52,9 @@ import static com.redhat.datagrid.DataGridConstants.*;
  * 
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
  */
-class EndpointService implements Service<Map<String, ProtocolServer>> {
+class EndpointProtocolService implements Service<Map<String, ProtocolServer>> {
 
-   private static final Logger log = Logger.getLogger(EndpointService.class);
+   private static final Logger log = Logger.getLogger(EndpointProtocolService.class);
 
    private static final String HOTROD = "hotrod";
    private static final String MEMCACHED = "memcached";
@@ -69,7 +69,7 @@ class EndpointService implements Service<Map<String, ProtocolServer>> {
 
    private final Map<String, ProtocolServer> protocolServers = new LinkedHashMap<String, ProtocolServer>();
 
-   EndpointService(ModelNode config) {
+   EndpointProtocolService(ModelNode config) {
       this.config = config.clone();
    }
 
