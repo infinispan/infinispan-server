@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright 2011 Red Hat, Inc. and/or its affiliates.
-  ~
-  ~ This is free software; you can redistribute it and/or modify it
-  ~ under the terms of the GNU Lesser General Public License as
-  ~ published by the Free Software Foundation; either version 2.1 of
-  ~ the License, or (at your option) any later version.
-  ~
-  ~ This software is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  ~ Lesser General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Lesser General Public
-  ~ License along with this library; if not, write to the Free Software
-  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-  ~ 02110-1301 USA
-  -->
+<!-- ~ Copyright 2011 Red Hat, Inc. and/or its affiliates. ~ ~ This is free 
+	software; you can redistribute it and/or modify it ~ under the terms of the 
+	GNU Lesser General Public License as ~ published by the Free Software Foundation; 
+	either version 2.1 of ~ the License, or (at your option) any later version. 
+	~ ~ This software is distributed in the hope that it will be useful, ~ but 
+	WITHOUT ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY 
+	or FITNESS FOR A PARTICULAR PURPOSE. See the GNU ~ Lesser General Public 
+	License for more details. ~ ~ You should have received a copy of the GNU 
+	Lesser General Public ~ License along with this library; if not, write to 
+	the Free Software ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+	MA ~ 02110-1301 USA -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -36,6 +29,85 @@
 
 	<packaging>pom</packaging>
 
+	<build>
+		<plugins>
+			<!-- Ban bad dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>				
+				<executions>
+					<execution>
+						<id>ban-bad-dependencies</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<bannedDependencies>
+									<searchTransitive>true</searchTransitive>
+									<excludes>
+										<exclude>args4j:args4j</exclude>
+										<exclude>biz.aQute:bnd</exclude>
+										<exclude>com.fasterxml:classmate</exclude>
+										<exclude>com.google.gwt.inject:gin</exclude>
+										<exclude>com.google.inject:guice</exclude>
+										<exclude>com.gwtplatform:gwtp-all</exclude>																				
+										<exclude>concurrent:concurrent</exclude>
+										<exclude>javax.servlet:servlet-api</exclude>										
+										<exclude>javax.xml.soap:saaj-api</exclude>
+										<exclude>javax.xml.stream:stax-api</exclude>
+										<exclude>jboss:jboss-logging-spi</exclude>
+										<exclude>jboss:jboss-serialization</exclude>
+										<exclude>jboss.web:el-api</exclude>
+										<exclude>jboss.web:jsp-api</exclude>
+										<exclude>jboss.web:servlet-api</exclude>
+										<exclude>net.sf.kxml:kxml2</exclude>
+										<exclude>org.apache.aries.jmx:org.apache.aries.jmx.api</exclude>
+										<exclude>org.apache.xalan:serializer</exclude>
+										<exclude>org.apache.xalan:xalan</exclude>
+										<exclude>org.hibernate:ejb3-persistence</exclude>
+										<exclude>org.hibernate.java-persistence:jpa-api</exclude>
+										<exclude>org.jboss.integration:jboss-jca-spi</exclude>
+										<exclude>org.jboss.interceptor:jboss-interceptor-api</exclude>
+										<exclude>org.jboss.javaee:jboss-javaee</exclude>
+										<exclude>org.jboss.javaee:jboss-ejb-api</exclude>
+										<exclude>org.jboss.javaee:jboss-ejb-api_3.1</exclude>
+										<exclude>org.jboss.javaee:jboss-jacc-api</exclude>
+										<exclude>org.jboss.javaee:jboss-jad-api</exclude>
+										<exclude>org.jboss.javaee:jboss-jaspi-api</exclude>
+										<exclude>org.jboss.javaee:jboss-jca-api</exclude>
+										<exclude>org.jboss.javaee:jboss-jms-api</exclude>
+										<exclude>org.jboss.javaee:servlet-api</exclude>
+										<exclude>org.jboss.javaee:jsp-api</exclude>										
+										<exclude>org.jboss.logging:jboss-logging-spi</exclude>
+										<exclude>org.jboss.logging:jboss-logging-log4j</exclude>
+										<exclude>org.jboss.logging:jboss-logging-jdk</exclude>
+										<exclude>org.jboss.logging:jboss-logging-logmanager</exclude>
+										<exclude>org.jboss.slf4j:slf4j-jboss-logging</exclude>
+										<exclude>org.jboss.spec.javax.resource:jboss-connector-api_1.5_spec</exclude>
+										<exclude>org.opensaml:opensaml</exclude>
+										<exclude>org.ops4j.base</exclude>
+										<exclude>org.ops4j.pax.swissbox</exclude>
+										<exclude>org.ops4j.pax.web</exclude>
+										<exclude>org.slf4j:slf4j-nop</exclude>
+										<exclude>org.slf4j:slf4j-jdk14</exclude>
+										<exclude>org.slf4j:slf4j-log4j12</exclude>
+										<exclude>org.slf4j:slf4j-log4j13</exclude>
+										<exclude>oro:oro</exclude>
+										<exclude>sun-jaxb:jaxb-api</exclude>
+										<exclude>trove:trove</exclude>
+										<exclude>xml-apis:xml-apis</exclude>
+										<exclude>xml-resolver:xml-resolver</exclude>
+									</excludes>
+								</bannedDependencies>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 	<properties>
 		<!-- Release Info -->
 		<jboss.datagrid.release.version>${project.version}</jboss.datagrid.release.version>
@@ -50,13 +122,13 @@
 		<version.org.infinispan>5.1.0-SNAPSHOT</version.org.infinispan>
 		<version.org.jboss.as>7.1.0.Alpha2-SNAPSHOT</version.org.jboss.as>
 		<version.org.jboss.jandex>1.0.3.Final</version.org.jboss.jandex>
-		<version.org.jboss.msc>1.0.1.GA</version.org.jboss.msc>		
+		<version.org.jboss.msc>1.0.1.GA</version.org.jboss.msc>
 		<version.org.scala-lang>2.9.1</version.org.scala-lang>
 		<version.c3p0>0.9.1.2</version.c3p0>
 		<version.org.apache.commons.pool>1.5.4</version.org.apache.commons.pool>
 	</properties>
 
-	<modules>		
+	<modules>
 		<module>integration</module>
 		<module>jboss-as</module>
 		<module>dist-dir</module>
