@@ -25,9 +25,11 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DES
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DESCRIPTION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HEAD_COMMENT_ALLOWED;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MAX_OCCURS;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MODEL_DESCRIPTION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MIN_OCCURS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAMESPACE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OPERATION_NAME;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OPERATIONS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REPLY_PROPERTIES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REQUEST_PROPERTIES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REQUIRED;
@@ -58,20 +60,24 @@ public class EndpointSubsystemProviders {
          final ResourceBundle bundle = getResourceBundle(locale);
 
          final ModelNode node = new ModelNode();
-         node.get(DESCRIPTION).set(bundle.getString("endpoint"));
+         node.get(DESCRIPTION).set(bundle.getString("endpoint.description"));
          node.get(HEAD_COMMENT_ALLOWED).set(true);
          node.get(TAIL_COMMENT_ALLOWED).set(true);
          node.get(NAMESPACE).set(DataGridConstants.NS_ENDPOINT_1_0);
+         
+         node.get(OPERATIONS);
 
          node.get(CHILDREN, ModelKeys.CONNECTOR, DESCRIPTION).set(
                   bundle.getString("connector.description"));
          node.get(CHILDREN, ModelKeys.CONNECTOR, MIN_OCCURS).set(1);
          node.get(CHILDREN, ModelKeys.CONNECTOR, MAX_OCCURS).set(Integer.MAX_VALUE);
+         node.get(CHILDREN, ModelKeys.CONNECTOR, MODEL_DESCRIPTION).setEmptyObject();
 
          node.get(CHILDREN, ModelKeys.TOPOLOGY_STATE_TRANSFER, DESCRIPTION).set(
                   bundle.getString("topology-state-transfer.description"));
          node.get(CHILDREN, ModelKeys.TOPOLOGY_STATE_TRANSFER, MIN_OCCURS).set(0);
          node.get(CHILDREN, ModelKeys.TOPOLOGY_STATE_TRANSFER, MAX_OCCURS).set(1);
+         node.get(CHILDREN, ModelKeys.TOPOLOGY_STATE_TRANSFER, MODEL_DESCRIPTION).setEmptyObject();
 
          return node;
       }
@@ -105,37 +111,39 @@ public class EndpointSubsystemProviders {
 
          final ModelNode connectorNode = addNode(node.get(REQUEST_PROPERTIES), ModelKeys.CONNECTOR,
                   bundle.getString("connector.description"), ModelType.OBJECT, false);
-
-         addNode(connectorNode, ModelKeys.PROTOCOL, bundle.getString("connector.protocol"),
+         final ModelNode connectorNodeValue = connectorNode.get(VALUE_TYPE);
+            
+         addNode(connectorNodeValue, ModelKeys.PROTOCOL, bundle.getString("connector.protocol"),
                   ModelType.STRING, true);
-         addNode(connectorNode, ModelKeys.SOCKET_BINDING,
+         addNode(connectorNodeValue, ModelKeys.SOCKET_BINDING,
                   bundle.getString("connector.socket-binding"), ModelType.STRING, false);
-         addNode(connectorNode, ModelKeys.WORKER_THREADS,
+         addNode(connectorNodeValue, ModelKeys.WORKER_THREADS,
                   bundle.getString("connector.worker-threads"), ModelType.INT, false);
-         addNode(connectorNode, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"),
+         addNode(connectorNodeValue, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"),
                   ModelType.LONG, false);
-         addNode(connectorNode, ModelKeys.TCP_NODELAY, bundle.getString("connector.tcp-nodelay"),
+         addNode(connectorNodeValue, ModelKeys.TCP_NODELAY, bundle.getString("connector.tcp-nodelay"),
                   ModelType.BOOLEAN, false);
-         addNode(connectorNode, ModelKeys.RECEIVE_BUFFER_SIZE,
+         addNode(connectorNodeValue, ModelKeys.RECEIVE_BUFFER_SIZE,
                   bundle.getString("connector.receive-buffer-size"), ModelType.LONG, false);
-         addNode(connectorNode, ModelKeys.SEND_BUFFER_SIZE,
+         addNode(connectorNodeValue, ModelKeys.SEND_BUFFER_SIZE,
                   bundle.getString("connector.send-buffer-size"), ModelType.LONG, false);
 
          final ModelNode topologyNode = addNode(node.get(REQUEST_PROPERTIES),
                   ModelKeys.TOPOLOGY_STATE_TRANSFER,
                   bundle.getString("topology-state-transfer.description"), ModelType.OBJECT, false);
+         final ModelNode topologyNodeValue = topologyNode.get(VALUE_TYPE);
 
-         addNode(topologyNode, ModelKeys.EXTERNAL_HOST,
+         addNode(topologyNodeValue, ModelKeys.EXTERNAL_HOST,
                   bundle.getString("topology-state-transfer.external-host"), ModelType.STRING,
                   false);
-         addNode(topologyNode, ModelKeys.EXTERNAL_PORT,
+         addNode(topologyNodeValue, ModelKeys.EXTERNAL_PORT,
                   bundle.getString("topology-state-transfer.external-port"), ModelType.INT, false);
-         addNode(topologyNode, ModelKeys.LAZY_RETRIEVAL,
+         addNode(topologyNodeValue, ModelKeys.LAZY_RETRIEVAL,
                   bundle.getString("topology-state-transfer.lazy-retrieval"), ModelType.BOOLEAN,
                   false);
-         addNode(topologyNode, ModelKeys.LOCK_TIMEOUT,
+         addNode(topologyNodeValue, ModelKeys.LOCK_TIMEOUT,
                   bundle.getString("topology-state-transfer.lock-timeout"), ModelType.LONG, false);
-         addNode(topologyNode, ModelKeys.REPLICATION_TIMEOUT,
+         addNode(topologyNodeValue, ModelKeys.REPLICATION_TIMEOUT,
                   bundle.getString("topology-state-transfer.replication-timeout"), ModelType.LONG,
                   false);
 
