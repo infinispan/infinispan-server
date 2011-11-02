@@ -36,6 +36,7 @@
 			<artifactId>jboss-msc</artifactId>
 			<version>${version.org.jboss.msc}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.jboss.as</groupId>
 			<artifactId>jboss-as-server</artifactId>
@@ -48,8 +49,8 @@
 			<version>${version.org.jboss.as}</version>
 			<exclusions>
 				<exclusion>
-					<artifactId>jboss-logging-processor</artifactId>
-					<groupId>org.jboss.logging</groupId>
+					<artifactId>jboss-as-security</artifactId>
+					<groupId>org.jboss.as</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -77,13 +78,14 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${version.junit}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.as</groupId>
 			<artifactId>jboss-as-subsystem-test</artifactId>
 			<version>${version.org.jboss.as}</version>
-			<scope>test</scope>
+			<scope>test</scope>				
 		</dependency>
 	</dependencies>
 </project>

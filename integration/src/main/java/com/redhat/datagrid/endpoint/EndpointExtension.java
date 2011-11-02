@@ -66,7 +66,7 @@ public class EndpointExtension implements Extension, DescriptionProvider {
    }
 
    @Override
-   public ModelNode getModelDescription(Locale arg0) {
-      return new ModelNode();
+   public ModelNode getModelDescription(Locale locale) {
+      return EndpointSubsystemProviders.SUBSYSTEM.getModelDescription(locale);
    }
 }

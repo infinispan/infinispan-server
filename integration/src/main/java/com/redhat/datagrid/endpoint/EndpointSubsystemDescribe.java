@@ -61,8 +61,7 @@ class EndpointSubsystemDescribe implements OperationStepHandler, DescriptionProv
       ModelNode add = createEmptyAddOperation();
 
       final ModelNode model = context.readModel(PathAddress.EMPTY_ADDRESS);
-
-      // result.add(EndpointSubsystemAdd.createOperation(rootAddress.toModelNode(), subModel));
+ 
       if (model.hasDefined(ModelKeys.CONNECTOR)) {
          add.get(ModelKeys.CONNECTOR).set(model.get(ModelKeys.CONNECTOR));
       }
