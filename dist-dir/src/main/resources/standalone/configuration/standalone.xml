@@ -118,23 +118,7 @@
             </security-domains>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:threads:1.0">
-            <thread-factory name="jgroups-factory" group-name="jgroups" priority="5" />
-            <thread-factory name="infinispan-factory" group-name="infinispan" priority="5" />
-            <unbounded-queue-thread-pool name="jgroups">
-                <max-threads count="200" per-cpu="0" />
-                <keepalive-time time="5000000000" unit="milliseconds"/>
-                <thread-factory name="jgroups-factory"/>
-            </unbounded-queue-thread-pool>
-            <unbounded-queue-thread-pool name="jgroups-oob">
-                <max-threads count="200" per-cpu="0" />
-                <keepalive-time time="1000000000" unit="milliseconds"/>
-                <thread-factory name="jgroups-factory"/>
-            </unbounded-queue-thread-pool>
-            <scheduled-thread-pool name="jgroups-timer">
-                <max-threads count="4" per-cpu="0" />
-                <keepalive-time time="5000000000" unit="milliseconds"/>
-                <thread-factory name="jgroups-factory"/>
-            </scheduled-thread-pool>
+            <thread-factory name="infinispan-factory" group-name="infinispan" priority="5" />            
             <unbounded-queue-thread-pool name="infinispan-transport">
                 <max-threads count="25" per-cpu="0" />
                 <keepalive-time time="0" unit="milliseconds"/>
@@ -166,10 +150,7 @@
         	<!-- see defaults in https://github.com/jbossas/jboss-as/blob/7.0.0.Final/clustering/jgroups/src/main/resources/jgroups-defaults.xml -->
             <stack name="udp">
                 <transport type="UDP"
-                           socket-binding="jgroups-udp"
-                           default-executor="jgroups"
-                           oob-executor="jgroups-oob"
-                           timer-executor="jgroups-timer"
+                           socket-binding="jgroups-udp"                           
                            diagnostics-socket-binding="jgroups-diag">                    
                 </transport>
                 <protocol type="PING"/>
@@ -185,7 +166,7 @@
                 <protocol type="UFC" />
                 <protocol type="MFC" />
                 <protocol type="FRAG2"/>
-                <protocol type="pbcast.STATE_TRANSFER"/>
+                <protocol type="pbcast.STATE_TRANSFER"/>                
             </stack>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:infinispan:1.0" default-cache-container="default">
