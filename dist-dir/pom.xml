@@ -172,6 +172,18 @@
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>${version.org.apache.commons.pool}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-rhq-plugin</artifactId>
+			<version>${version.org.infinispan}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.rhq.helpers</groupId>
+					<artifactId>rhq-pluginAnnotations</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>		
 
 	</dependencies>
