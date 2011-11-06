@@ -53,7 +53,6 @@
 										<exclude>com.google.inject:guice</exclude>
 										<exclude>com.gwtplatform:gwtp-all</exclude>																				
 										<exclude>concurrent:concurrent</exclude>
-										<exclude>javax.servlet:servlet-api</exclude>										
 										<exclude>javax.xml.soap:saaj-api</exclude>
 										<exclude>javax.xml.stream:stax-api</exclude>
 										<exclude>jboss:jboss-logging-spi</exclude>

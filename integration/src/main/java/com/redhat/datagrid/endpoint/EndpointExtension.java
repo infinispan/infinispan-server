@@ -20,17 +20,15 @@ package com.redhat.datagrid.endpoint;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DESCRIBE;
-
-import java.util.Locale;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REMOVE;
 
 import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.ExtensionContext;
+import org.jboss.as.controller.PathElement;
 import org.jboss.as.controller.SubsystemRegistration;
-import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.as.controller.parsing.ExtensionParsingContext;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
-import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceName;
 
 import com.redhat.datagrid.DataGridConstants;
@@ -39,34 +37,38 @@ import com.redhat.datagrid.DataGridConstants;
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
  * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  */
-public class EndpointExtension implements Extension, DescriptionProvider {
+public class EndpointExtension implements Extension {
 
    private final ServiceName serviceName = DataGridConstants.SN_ENDPOINT;
    private final String subsystemName = serviceName.getSimpleName();
    private final String namespaceUri = DataGridConstants.NS_ENDPOINT_1_0;
-   private final EndpointSubsystemParser parser = new EndpointSubsystemParser(subsystemName,
-            namespaceUri);
+   private final EndpointSubsystemParser parser = new EndpointSubsystemParser(subsystemName, namespaceUri);
 
    @Override
    public final void initialize(ExtensionContext context) {
       final SubsystemRegistration registration = context.registerSubsystem(subsystemName);
       registration.registerXMLElementWriter(parser);
 
-      final ManagementResourceRegistration subsystem = registration.registerSubsystemModel(this);
-      subsystem.registerOperationHandler(ADD, EndpointSubsystemAdd.INSTANCE,
-               EndpointSubsystemAdd.INSTANCE, false);
-      subsystem.registerOperationHandler(DESCRIBE, EndpointSubsystemDescribe.INSTANCE,
-               EndpointSubsystemDescribe.INSTANCE, false, OperationEntry.EntryType.PRIVATE);
+      final ManagementResourceRegistration subsystem = registration.registerSubsystemModel(EndpointSubsystemProviders.SUBSYSTEM);
+      subsystem.registerOperationHandler(ADD, EndpointSubsystemAdd.INSTANCE, EndpointSubsystemAdd.INSTANCE, false);
+      subsystem.registerOperationHandler(DESCRIBE, EndpointSubsystemDescribe.INSTANCE, EndpointSubsystemDescribe.INSTANCE, false, OperationEntry.EntryType.PRIVATE);
+      
+      final ManagementResourceRegistration hotrodConnector = subsystem.registerSubModel(PathElement.pathElement(ModelKeys.HOTROD_CONNECTOR), EndpointSubsystemProviders.HOTROD_CONNECTOR_DESC);
+      hotrodConnector.registerOperationHandler(ADD, HotRodSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_HOTROD_CONNECTOR_DESC, false);
+      hotrodConnector.registerOperationHandler(REMOVE, HotRodSubsystemRemove.INSTANCE, EndpointSubsystemProviders.REMOVE_HOTROD_CONNECTOR_DESC, false);
+      
+      final ManagementResourceRegistration memcachedConnector = subsystem.registerSubModel(PathElement.pathElement(ModelKeys.MEMCACHED_CONNECTOR), EndpointSubsystemProviders.MEMCACHED_CONNECTOR_DESC);
+      memcachedConnector.registerOperationHandler(ADD, MemcachedSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_MEMCACHED_CONNECTOR_DESC, false);
+      memcachedConnector.registerOperationHandler(REMOVE, MemcachedSubsystemRemove.INSTANCE, EndpointSubsystemProviders.REMOVE_MEMCACHED_CONNECTOR_DESC, false);
+      
+      final ManagementResourceRegistration restConnector = subsystem.registerSubModel(PathElement.pathElement(ModelKeys.REST_CONNECTOR), EndpointSubsystemProviders.REST_CONNECTOR_DESC);
+      restConnector.registerOperationHandler(ADD, RestSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_REST_CONNECTOR_DESC, false);
+      restConnector.registerOperationHandler(REMOVE, RestSubsystemRemove.INSTANCE, EndpointSubsystemProviders.REMOVE_REST_CONNECTOR_DESC, false);
 
    }
 
    @Override
    public final void initializeParsers(ExtensionParsingContext context) {
       context.setSubsystemXmlMapping(namespaceUri, parser);
-   }
-
-   @Override
-   public ModelNode getModelDescription(Locale locale) {
-      return EndpointSubsystemProviders.SUBSYSTEM.getModelDescription(locale);
    }
 }

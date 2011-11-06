@@ -90,13 +90,11 @@
 
 		<copy todir="${output.dir}/client/java">
 			<fileset file="${org.infinispan:infinispan-client-hotrod:jar}" />
-			<fileset file="${org.infinispan:infinispan-core:jar}" />
-			<fileset file="${org.jgroups:jgroups:jar}" />
+			<fileset file="${org.infinispan:infinispan-commons:jar}" />			
+			<fileset file="${org.infinispan:infinispan-api:jar}" />
 			<fileset file="${org.jboss.marshalling:jboss-marshalling:jar}" />
 			<fileset file="${org.jboss.marshalling:jboss-marshalling-river:jar}" />
 			<fileset file="${org.jboss.logging:jboss-logging:jar}" />
-			<fileset file="${org.jboss:jandex:jar}" />
-			<fileset file="${org.jboss.javaee:jboss-transaction-api:jar}" />
 			<fileset file="${commons-pool:commons-pool:jar}" />
 			<mapper type="flatten" />
 		</copy>
