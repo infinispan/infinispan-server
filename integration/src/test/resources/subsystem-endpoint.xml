@@ -1,5 +1,12 @@
 <subsystem xmlns="urn:redhat:domain:datagrid:endpoint:1.0">
-	<connector protocol="hotrod" socket-binding="hotrod" />
-	<connector protocol="memcached" socket-binding="memcached" />
-	<topology-state-transfer replication-timeout="240000" />
+	<hotrod-connector name="hotrod1" socket-binding="hotrod" cache-container="default" idle-timeout="100" tcp-nodelay="true" worker-threads="5" receive-buffer-size="10000" send-buffer-size="10000">
+		<topology-state-transfer external-host="localhost" external-port="1234" lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000"/>
+	</hotrod-connector>
+	<hotrod-connector name="hotrod2" socket-binding="hotrod" cache-container="default" idle-timeout="100" tcp-nodelay="true" worker-threads="5" receive-buffer-size="10000" send-buffer-size="10000">
+		<topology-state-transfer external-host="localhost" external-port="1234" lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000"/>
+	</hotrod-connector>
+	<memcached-connector socket-binding="memcached" cache-container="default" idle-timeout="100" tcp-nodelay="true" worker-threads="5" receive-buffer-size="10000" send-buffer-size="10000">
+		<topology-state-transfer external-host="localhost" external-port="1234" lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000"/>
+	</memcached-connector>
+	<rest-connector cache-container="default" virtual-server="default-host" context-path="/" />
 </subsystem>

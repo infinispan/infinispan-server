@@ -21,7 +21,6 @@ package com.redhat.datagrid.endpoint;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 
 import java.util.Locale;
 
@@ -30,9 +29,10 @@ import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.descriptions.DescriptionProvider;
+import org.jboss.as.controller.descriptions.common.CommonDescriptions;
+import org.jboss.as.controller.operations.common.Util;
 import org.jboss.dmr.ModelNode;
-
-import com.redhat.datagrid.DataGridConstants;
+import org.jboss.dmr.Property;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
@@ -44,33 +44,39 @@ class EndpointSubsystemDescribe implements OperationStepHandler, DescriptionProv
 
    @Override
    public ModelNode getModelDescription(Locale locale) {
-      return EndpointSubsystemProviders.SUBSYSTEM_DESCRIBE.getModelDescription(locale);
-   }
-
-   private static ModelNode createEmptyAddOperation() {
-      final ModelNode subsystem = new ModelNode();
-      subsystem.get(OP).set(ADD);
-      subsystem.get(OP_ADDR).add(SUBSYSTEM, DataGridConstants.SN_ENDPOINT.getSimpleName());
-      return subsystem;
+       return CommonDescriptions.getSubsystemDescribeOperation(locale);
    }
 
    @Override
    public void execute(OperationContext context, ModelNode operation)
             throws OperationFailedException {
 
-      ModelNode add = createEmptyAddOperation();
+      final ModelNode result = context.getResult();
+      final PathAddress rootAddress = PathAddress.pathAddress(PathAddress.pathAddress(operation.require(OP_ADDR)).getLastElement());
+      final ModelNode subModel = context.readModel(PathAddress.EMPTY_ADDRESS);
 
-      final ModelNode model = context.readModel(PathAddress.EMPTY_ADDRESS);
+      final ModelNode subsystemAdd = new ModelNode();
+      subsystemAdd.get(OP).set(ADD);
+      subsystemAdd.get(OP_ADDR).set(rootAddress.toModelNode());
+
+      result.add(subsystemAdd);
  
-      if (model.hasDefined(ModelKeys.CONNECTOR)) {
-         add.get(ModelKeys.CONNECTOR).set(model.get(ModelKeys.CONNECTOR));
+      for(String connectorType : ModelKeys.CONNECTORS) {
+         if(subModel.hasDefined(connectorType)) {
+            for (final Property connector : subModel.get(connectorType).asPropertyList()) {
+               final ModelNode address = rootAddress.toModelNode();
+               address.add(connectorType, connector.getName());
+               final ModelNode addOperation = Util.getEmptyOperation(ADD, address);
+               for(String connectorAttribute : ModelKeys.CONNECTOR_ATTRIBUTES) {
+                  if(connector.getValue().hasDefined(connectorAttribute)) {
+                     addOperation.get(connectorAttribute).set(connector.getValue().get(connectorAttribute));
+                  }
+               }
+               
+               result.add(addOperation);
+            }
+         }
       }
-      if (model.hasDefined(ModelKeys.TOPOLOGY_STATE_TRANSFER)) {
-         add.get(ModelKeys.TOPOLOGY_STATE_TRANSFER).set(
-                  model.get(ModelKeys.TOPOLOGY_STATE_TRANSFER));
-      }
-      
-      context.getResult().add(add);
 
       context.completeStep();
 

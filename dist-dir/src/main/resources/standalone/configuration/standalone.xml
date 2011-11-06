@@ -147,7 +147,6 @@
             </virtual-server>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:jgroups:1.0" default-stack="udp">
-        	<!-- see defaults in https://github.com/jbossas/jboss-as/blob/7.0.0.Final/clustering/jgroups/src/main/resources/jgroups-defaults.xml -->
             <stack name="udp">
                 <transport type="UDP"
                            socket-binding="jgroups-udp"                           
@@ -225,9 +224,11 @@
             </cache-container>
         </subsystem>
         <subsystem xmlns="urn:redhat:domain:datagrid:endpoint:1.0" >
-             <connector protocol="hotrod" socket-binding="hotrod" />
-             <connector protocol="memcached" socket-binding="memcached" />
-             <topology-state-transfer replication-timeout="240000" />
+             <hotrod-connector socket-binding="hotrod">
+             	<topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000"/>
+             </hotrod-connector>
+             <memcached-connector socket-binding="memcached" />
+             <rest-connector virtual-server="default-host" />
         </subsystem>
     
     </profile>

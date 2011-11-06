@@ -18,22 +18,29 @@
  */
 package com.redhat.datagrid.endpoint;
 
+import static com.redhat.datagrid.endpoint.EndpointUtils.copyIfSet;
+
+import java.util.List;
 import java.util.Locale;
 
+import org.infinispan.server.memcached.MemcachedServer;
 import org.jboss.as.controller.AbstractAddStepHandler;
+import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
+import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.dmr.ModelNode;
+import org.jboss.msc.service.ServiceBuilder;
+import org.jboss.msc.service.ServiceController;
 
 /**
- * @author <a href="http://gleamynode.net/">Trustin Lee</a>
  * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  */
-class EndpointSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
+class MemcachedSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
 
-   static final EndpointSubsystemAdd INSTANCE = new EndpointSubsystemAdd();
+   static final MemcachedSubsystemAdd INSTANCE = new MemcachedSubsystemAdd();
 
    static ModelNode createOperation(ModelNode address, ModelNode existing) {
       ModelNode operation = Util.getEmptyOperation(ModelDescriptionConstants.ADD, address);
@@ -42,10 +49,16 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
    }
 
    private static void populate(ModelNode source, ModelNode target) {
-      //target.setEmptyObject();
-      for(String connectorType : ModelKeys.CONNECTORS) {
-         target.get(connectorType).setEmptyObject();
-      }
+      target.setEmptyObject();
+      
+      copyIfSet(ModelKeys.NAME, source, target);
+      copyIfSet(ModelKeys.CACHE_CONTAINER, source, target);
+      copyIfSet(ModelKeys.SOCKET_BINDING, source, target);
+      copyIfSet(ModelKeys.IDLE_TIMEOUT, source, target);
+      copyIfSet(ModelKeys.TCP_NODELAY, source, target);
+      copyIfSet(ModelKeys.RECEIVE_BUFFER_SIZE, source, target);
+      copyIfSet(ModelKeys.SEND_BUFFER_SIZE, source, target);
+      copyIfSet(ModelKeys.WORKER_THREADS, source, target); 
    }
 
    @Override
@@ -53,6 +66,18 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
       return EndpointSubsystemProviders.SUBSYTEM_ADD.getModelDescription(locale);
    }
 
+   @Override
+   protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model, ServiceVerificationHandler verificationHandler, List<ServiceController<?>> newControllers)
+            throws OperationFailedException {
+      // Create the service
+      final ProtocolServerService service = new ProtocolServerService(operation, MemcachedServer.class);
+
+      // Setup the various dependencies with injectors and install the service
+      ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "memcached"), service);
+      EndpointUtils.addCacheContainerDependency(builder, service.getCacheContainerName(), service.getCacheManager());
+      EndpointUtils.addSocketBindingDependency(builder, service.getRequiredSocketBindingName(), service.getSocketBinding());
+      builder.install();
+   }
 
    @Override
    protected void populateModel(ModelNode source, ModelNode target) throws OperationFailedException {

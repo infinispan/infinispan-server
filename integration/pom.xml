@@ -49,10 +49,10 @@
 			<version>${version.org.jboss.as}</version>
 			<exclusions>
 				<exclusion>
-					<artifactId>jboss-as-security</artifactId>
 					<groupId>org.jboss.as</groupId>
+					<artifactId>jboss-as-transactions</artifactId>
 				</exclusion>
-			</exclusions>
+			</exclusions>			
 		</dependency>
 
 		<dependency>

@@ -1,8 +1,5 @@
 /*
- * JBoss, Home of Professional Open Source.
- * Copyright 2011, Red Hat, Inc., and individual contributors
- * as indicated by the @author tags. See the copyright.txt file in the
- * distribution for a full listing of individual contributors.
+ * Copyright 2011 Red Hat, Inc. and/or its affiliates.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -11,25 +8,19 @@
  *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA
  */
 package com.redhat.datagrid.endpoint;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.naming.NamingException;
-import javax.ws.rs.core.Application;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Host;
@@ -41,11 +32,10 @@ import org.apache.catalina.deploy.ApplicationParameter;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.tomcat.InstanceManager;
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.jboss.as.server.mgmt.domain.HttpManagement;
 import org.jboss.as.web.VirtualHost;
 import org.jboss.as.web.deployment.WebCtxLoader;
+import org.jboss.dmr.ModelNode;
 import org.jboss.logging.Logger;
-import org.jboss.msc.inject.Injector;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.StartContext;
@@ -60,40 +50,55 @@ import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
  * 
  * @author Tristan Tarrant <ttarrant@redhat.com>
  */
-public class EndpointRestService implements Service<Context> {
-
+public class RestService implements Service<Context> {
+   private static final String DEFAULT_VIRTUAL_SERVER = "default-host";
    private static final Logger log = Logger.getLogger("com.redhat.datagrid");
+   private static final String DEFAULT_CONTEXT_PATH = "";
    private final StandardContext context;
    private final InjectedValue<String> pathInjector = new InjectedValue<String>();
    private final InjectedValue<VirtualHost> hostInjector = new InjectedValue<VirtualHost>();
-   private final InjectedValue<HttpManagement> httpManagementInjector = new InjectedValue<HttpManagement>();
    private final InjectedValue<EmbeddedCacheManager> cacheManagerInjector = new InjectedValue<EmbeddedCacheManager>();
    private Method cacheManagerSetter;
-   
+   private ModelNode config;
+   private String virtualServer;
+   private String path;
+   private String serverName;
 
-   public EndpointRestService() {
+   public RestService(ModelNode config) {
+      this.config = config.clone();
       this.context = new StandardContext();
+      virtualServer = this.config.hasDefined(ModelKeys.VIRTUAL_SERVER) ? this.config.get(ModelKeys.VIRTUAL_SERVER).asString() : DEFAULT_VIRTUAL_SERVER;
+      path = this.config.hasDefined(ModelKeys.CONTEXT_PATH) ? cleanContextPath(this.config.get(ModelKeys.CONTEXT_PATH).asString()) : DEFAULT_CONTEXT_PATH;
+      this.serverName = config.hasDefined(ModelKeys.NAME)?config.get(ModelKeys.NAME).asString():"";
 
+      // Obtain the setter for injecting the EmbbededCacheManager into the Rest server
       try {
-         Class<?> cls = Class.forName("org.infinispan.rest.ManagerInstance", true, getClass()
-                  .getClassLoader());
+         Class<?> cls = Class.forName("org.infinispan.rest.ManagerInstance", true, getClass().getClassLoader());
          cacheManagerSetter = cls.getMethod("instance_$eq", EmbeddedCacheManager.class);
       } catch (Exception e) {
          throw new ServiceRegistryException("failed to locate ManagerInstance.instance", e);
       }
    }
 
+   private static String cleanContextPath(String s) {
+      if(s.endsWith("/")) 
+         return s.substring(0, s.length()-1);
+      else
+         return s;
+   }
+
    /** {@inheritDoc} */
    public synchronized void start(StartContext startContext) throws StartException {
-      HttpManagement httpManagement = httpManagementInjector.getOptionalValue();
+      long startTime = System.currentTimeMillis();
+      log.infof("REST Server starting");
       EmbeddedCacheManager cacheManager = cacheManagerInjector.getValue();
       try {
          cacheManagerSetter.invoke(null, cacheManager);
       } catch (Exception e) {
-         throw new StartException("Could not set the cacheManager on the REST endpoint", e);
+         throw new StartException("Could not set the cacheManager on the REST Server", e);
       }
       try {
-         context.setPath("");
+         context.setPath(path);
          context.addLifecycleListener(new ContextConfig());
          context.setDocBase(pathInjector.getValue() + File.separatorChar + "rest");
 
@@ -101,12 +106,11 @@ public class EndpointRestService implements Service<Context> {
          Host host = hostInjector.getValue().getHost();
          loader.setContainer(host);
          context.setLoader(loader);
-         context.setInstanceManager(new LocalInstanceManager(httpManagement));
+         context.setInstanceManager(new LocalInstanceManager());
 
          // Configuration for Resteasy bootstrap
          addContextApplicationParameter(context, "resteasy.resources", "org.infinispan.rest.Server");
-         //addContextApplicationParameter(context, "javax.ws.rs.Application" , EndpointRestApplication.class.getName());
-         addContextApplicationParameter(context, "resteasy.use.builtin.providers", "true");         
+         addContextApplicationParameter(context, "resteasy.use.builtin.providers", "true");
 
          // Setup the Resteasy bootstrap listener
          context.addApplicationListener(ResteasyBootstrap.class.getName());
@@ -135,20 +139,24 @@ public class EndpointRestService implements Service<Context> {
          context.addServletMapping("/rest/*", "Resteasy");
 
          host.addChild(context);
-         context.create();
-         log.info("Started REST server");
+         context.create();         
       } catch (Exception e) {
-         throw new StartException("failed to create context", e);
+         throw new StartException("Failed to create context for REST Server "+serverName, e);
       }
       try {
          context.start();
+         long elapsedTime = Math.max(System.currentTimeMillis() - startTime, 0L);
+         log.infof("REST Server started in %dms", Long.valueOf(elapsedTime));
       } catch (LifecycleException e) {
-         throw new StartException("failed to start context", e);
+         throw new StartException("Failed to start context for REST Server "+serverName, e);
       }
    }
 
-   private static void addContextApplicationParameter(Context context, String paramName,
-            String paramValue) {
+   public String getVirtualServer() {
+      return virtualServer;
+   }
+
+   private static void addContextApplicationParameter(Context context, String paramName, String paramValue) {
       ApplicationParameter parameter = new ApplicationParameter();
       parameter.setName(paramName);
       parameter.setValue(paramValue);
@@ -170,6 +178,13 @@ public class EndpointRestService implements Service<Context> {
       }
    }
 
+   String getCacheContainerName() {
+      if (!config.hasDefined(ModelKeys.CACHE_CONTAINER)) {
+         return null;
+      }
+      return config.get(ModelKeys.CACHE_CONTAINER).asString();
+   }
+
    /** {@inheritDoc} */
    public synchronized Context getValue() throws IllegalStateException {
       final Context context = this.context;
@@ -187,50 +202,35 @@ public class EndpointRestService implements Service<Context> {
       return hostInjector;
    }
 
-   public Injector<HttpManagement> getHttpManagementInjector() {
-      return httpManagementInjector;
-   }
-
-   public InjectedValue<EmbeddedCacheManager> getCacheManagerInjector() {
+   public InjectedValue<EmbeddedCacheManager> getCacheManager() {
       return cacheManagerInjector;
    }
 
    private static class LocalInstanceManager implements InstanceManager {
-      private final HttpManagement httpManagement;
-
-      LocalInstanceManager(HttpManagement httpManagement) {
-         this.httpManagement = httpManagement;
-      }
 
       @Override
-      public Object newInstance(String className) throws IllegalAccessException,
-               InvocationTargetException, NamingException, InstantiationException,
-               ClassNotFoundException {
+      public Object newInstance(String className) throws IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException {
          return Class.forName(className).newInstance();
       }
 
       @Override
-      public Object newInstance(String fqcn, ClassLoader classLoader)
-               throws IllegalAccessException, InvocationTargetException, NamingException,
-               InstantiationException, ClassNotFoundException {
+      public Object newInstance(String fqcn, ClassLoader classLoader) throws IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException {
          return Class.forName(fqcn, false, classLoader).newInstance();
       }
 
       @Override
-      public Object newInstance(Class<?> c) throws IllegalAccessException,
-               InvocationTargetException, NamingException, InstantiationException {
+      public Object newInstance(Class<?> c) throws IllegalAccessException, InvocationTargetException, InstantiationException {
          return c.newInstance();
       }
 
       @Override
-      public void newInstance(Object o) throws IllegalAccessException, InvocationTargetException,
-               NamingException {
+      public void newInstance(Object o) throws IllegalAccessException, InvocationTargetException {
          throw new IllegalStateException();
       }
 
       @Override
-      public void destroyInstance(Object o) throws IllegalAccessException,
-               InvocationTargetException {
+      public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException {
       }
    }
+
 }
