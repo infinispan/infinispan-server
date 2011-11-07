@@ -150,14 +150,14 @@ class ProtocolServerService implements Service<ProtocolServer> {
    private void doStop() {
       long stopTime = System.currentTimeMillis();
       try {
-
-         log.debugf("Stopping connector: %s", serverName);
-         try {
-            protocolServer.stop();
-         } catch (Exception e) {
-            log.warnf(e, "failed to stop connector: %s", serverName);
+         if (protocolServer!=null) {
+             log.debugf("Stopping connector: %s", serverName);
+             try {
+                protocolServer.stop();
+             } catch (Exception e) {
+                log.warnf(e, "failed to stop connector: %s", serverName);
+             }
          }
-
       } finally {
          connectorProperties.clear();
          topologyStateTransferProperties.clear();
