@@ -90,7 +90,7 @@
 
 		<copy todir="${output.dir}/client/java">
 			<fileset file="${org.infinispan:infinispan-client-hotrod:jar}" />
-			<fileset file="${org.infinispan:infinispan-commons:jar}" />			
+			<fileset file="${org.infinispan:infinispan-commons:jar}" />
 			<fileset file="${org.infinispan:infinispan-api:jar}" />
 			<fileset file="${org.jboss.marshalling:jboss-marshalling:jar}" />
 			<fileset file="${org.jboss.marshalling:jboss-marshalling-river:jar}" />
@@ -106,7 +106,7 @@
 			<fileset file="${org.infinispan:infinispan-rhq-plugin:jar}" />
 			<mapper type="flatten" />
 		</copy>
-		
+
 	</target>
 
 	<target name="modules">
@@ -131,8 +131,28 @@
 			<maven-resource group="com.redhat.datagrid" artifact="enterprise-datagrid-integration" />
 		</module-def>
 
+		<module-def name="org.infinispan.api">
+			<maven-resource group="org.infinispan" artifact="infinispan-api" />
+		</module-def>
+
+		<module-def name="org.infinispan.commons">
+			<maven-resource group="org.infinispan" artifact="infinispan-commons" />
+		</module-def>
+
 		<module-def name="org.infinispan">
 			<maven-resource group="org.infinispan" artifact="infinispan-core" />
+		</module-def>
+
+		<module-def name="org.infinispan.cachestore.jdbc">
+			<maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc" />
+		</module-def>
+
+		<module-def name="org.infinispan.cachestore.remote">
+			<maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
+		</module-def>
+
+		<module-def name="org.infinispan.client.hotrod">
+			<maven-resource group="org.infinispan" artifact="infinispan-client-hotrod" />
 		</module-def>
 
 		<module-def name="org.infinispan.server">
@@ -153,22 +173,6 @@
 
 		<module-def name="org.scala-lang.library">
 			<maven-resource group="org.scala-lang" artifact="scala-library" />
-		</module-def>
-
-		<module-def name="org.infinispan.loaders.jdbc">
-			<maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc" />
-		</module-def>
-
-		<module-def name="c3p0.c3p0">
-			<maven-resource group="c3p0" artifact="c3p0" />
-		</module-def>
-
-		<module-def name="org.infinispan.loaders.remote">
-			<maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
-		</module-def>
-
-		<module-def name="org.infinispan.client.hotrod">
-			<maven-resource group="org.infinispan" artifact="infinispan-client-hotrod" />
 		</module-def>
 
 		<module-def name="org.apache.commons-pool">
