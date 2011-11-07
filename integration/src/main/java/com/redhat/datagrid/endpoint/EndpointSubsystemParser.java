@@ -45,8 +45,7 @@ import org.jboss.staxmapper.XMLExtendedStreamWriter;
  * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  * 
  */
-class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<List<ModelNode>>,
-         XMLElementWriter<SubsystemMarshallingContext> {
+class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<List<ModelNode>>, XMLElementWriter<SubsystemMarshallingContext> {
 
    private final String subsystemName;
    private final String namespaceUri;
@@ -57,15 +56,19 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
    }
 
    @Override
-   public void readElement(final XMLExtendedStreamReader reader, final List<ModelNode> list)
-            throws XMLStreamException {
+   public void readElement(final XMLExtendedStreamReader reader, final List<ModelNode> list) throws XMLStreamException {
 
-      final ModelNode operation = new ModelNode();
-      operation.get(OP).set(ADD);
-      operation.get(OP_ADDR).add(SUBSYSTEM, subsystemName);
-      list.add(operation);
+      final ModelNode address = new ModelNode();
+      address.add(SUBSYSTEM, subsystemName);
+      address.protect();
+
+      final ModelNode subsystem = new ModelNode();
+      subsystem.get(OP).set(ADD);
+      subsystem.get(OP_ADDR).set(address);
+      list.add(subsystem);
 
       // Handle elements
+      ModelNode op = null;
       String elemName = null;
       do {
          int tag = reader.nextTag();
@@ -74,60 +77,112 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
          }
 
          elemName = reader.getLocalName();
-         if (ModelKeys.CONNECTOR.equals(elemName)) {
-            readConnector(reader, operation);
+         if (ModelKeys.HOTROD_CONNECTOR.equals(elemName)) {
+            op = readServerConnector(reader, ModelKeys.HOTROD_CONNECTOR, address);
+            list.add(op);
+         } else if (ModelKeys.MEMCACHED_CONNECTOR.equals(elemName)) {
+            op = readServerConnector(reader, ModelKeys.MEMCACHED_CONNECTOR, address);
+            list.add(op);
+         } else if (ModelKeys.REST_CONNECTOR.equals(elemName)) {
+            op = readRestConnector(reader, ModelKeys.REST_CONNECTOR, address);
+            list.add(op);
          } else if (ModelKeys.TOPOLOGY_STATE_TRANSFER.equals(elemName)) {
-            readTopologyStateTransfer(reader, operation);
+            readTopologyStateTransfer(reader, op);
          } else {
             throw ParseUtils.unexpectedElement(reader);
          }
       } while (reader.hasNext() && !elemName.equals(SUBSYSTEM));
    }
 
-   private void readConnector(final XMLExtendedStreamReader reader, final ModelNode operation) {
+   /**
+    * Handle parsing of the hotrod and memcached connector configuration
+    * 
+    * @param reader
+    * @param connector
+    */
+   private ModelNode readServerConnector(final XMLExtendedStreamReader reader, final String name, ModelNode parentAddress) {
+      final ModelNode op = new ModelNode();
+      op.get(OP).set(ADD);
 
+      String providedName = name;
       // Handle required attributes first.
-      String protocol = reader.getAttributeValue(null, ModelKeys.PROTOCOL);
-      if (protocol == null) {
-         ParseUtils.missingRequired(reader, Collections.singleton(ModelKeys.PROTOCOL));
-      }
-
       String socketBinding = reader.getAttributeValue(null, ModelKeys.SOCKET_BINDING);
       if (socketBinding == null) {
          ParseUtils.missingRequired(reader, Collections.singleton(ModelKeys.SOCKET_BINDING));
       }
 
-      ModelNode connector = operation.get(ModelKeys.CONNECTOR).get(protocol);
-      connector.get(ModelKeys.SOCKET_BINDING).set(socketBinding);
+      op.get(ModelKeys.SOCKET_BINDING).set(socketBinding);
 
       int attrCnt = reader.getAttributeCount();
       for (int i = 0; i < attrCnt; i++) {
          String attrName = reader.getAttributeLocalName(i);
          String attrValue = reader.getAttributeValue(i);
-         if (ModelKeys.CACHE_CONTAINER.equals(attrName)) {
-            connector.get(ModelKeys.CACHE_CONTAINER).set(attrValue);
+         if (ModelKeys.NAME.equals(attrName)) {
+            op.get(ModelKeys.NAME).set(attrValue);
+            providedName = attrValue;
+         } else if (ModelKeys.CACHE_CONTAINER.equals(attrName)) {
+            op.get(ModelKeys.CACHE_CONTAINER).set(attrValue);
          } else if (ModelKeys.WORKER_THREADS.equals(attrName)) {
-            connector.get(ModelKeys.WORKER_THREADS).set(Integer.parseInt(attrValue));
+            op.get(ModelKeys.WORKER_THREADS).set(Integer.parseInt(attrValue));
          } else if (ModelKeys.IDLE_TIMEOUT.equals(attrName)) {
-            connector.get(ModelKeys.IDLE_TIMEOUT).set(Integer.parseInt(attrValue));
+            op.get(ModelKeys.IDLE_TIMEOUT).set(Integer.parseInt(attrValue));
          } else if (ModelKeys.TCP_NODELAY.equals(attrName)) {
-            connector.get(ModelKeys.TCP_NODELAY).set(Boolean.parseBoolean(attrValue));
+            op.get(ModelKeys.TCP_NODELAY).set(Boolean.parseBoolean(attrValue));
          } else if (ModelKeys.SEND_BUFFER_SIZE.equals(attrName)) {
-            connector.get(ModelKeys.SEND_BUFFER_SIZE).set(Integer.parseInt(attrValue));
+            op.get(ModelKeys.SEND_BUFFER_SIZE).set(Integer.parseInt(attrValue));
          } else if (ModelKeys.RECEIVE_BUFFER_SIZE.equals(attrName)) {
-            connector.get(ModelKeys.RECEIVE_BUFFER_SIZE).set(Integer.parseInt(attrValue));
-         } else if (ModelKeys.PROTOCOL.equals(attrName)) {
-            // Handled already
+            op.get(ModelKeys.RECEIVE_BUFFER_SIZE).set(Integer.parseInt(attrValue));
          } else if (ModelKeys.SOCKET_BINDING.equals(attrName)) {
             // Handled already
          } else {
             ParseUtils.unexpectedAttribute(reader, i);
          }
       }
+      
+      final ModelNode address = parentAddress.clone();
+      address.add(name, providedName);
+      address.protect();
+      op.get(OP_ADDR).set(address);
+      
+      return op;
    }
 
-   private void readTopologyStateTransfer(final XMLExtendedStreamReader reader,
-            final ModelNode operation) {
+   /**
+    * Handle parsing of the Rest connector configuration
+    * 
+    * @param reader
+    * @param connector
+    */
+   private ModelNode readRestConnector(final XMLExtendedStreamReader reader, final String name, ModelNode parentAddress) {
+      final ModelNode op = new ModelNode();
+      op.get(OP).set(ADD);
+
+      final ModelNode address = parentAddress.clone();
+      address.add(name, name);
+      address.protect();
+      op.get(OP_ADDR).set(address);
+
+      int attrCnt = reader.getAttributeCount();
+      for (int i = 0; i < attrCnt; i++) {
+         String attrName = reader.getAttributeLocalName(i);
+         String attrValue = reader.getAttributeValue(i);
+         if (ModelKeys.NAME.equals(attrName)) {
+            op.get(ModelKeys.NAME).set(attrValue);
+         } else if (ModelKeys.CACHE_CONTAINER.equals(attrName)) {
+            op.get(ModelKeys.CACHE_CONTAINER).set(attrValue);
+         } else if (ModelKeys.VIRTUAL_SERVER.equals(attrName)) {
+            op.get(ModelKeys.VIRTUAL_SERVER).set(attrValue);
+         } else if (ModelKeys.CONTEXT_PATH.equals(attrName)) {
+            op.get(ModelKeys.CONTEXT_PATH).set(attrValue);
+         } else {
+            ParseUtils.unexpectedAttribute(reader, i);
+         }
+      }
+
+      return op;
+   }
+
+   private void readTopologyStateTransfer(final XMLExtendedStreamReader reader, final ModelNode operation) {
       ModelNode topologyStateTransfer = operation.get(ModelKeys.TOPOLOGY_STATE_TRANSFER);
 
       int attrCnt = reader.getAttributeCount();
@@ -137,8 +192,7 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
          if (ModelKeys.LOCK_TIMEOUT.equals(attrName)) {
             topologyStateTransfer.get(ModelKeys.LOCK_TIMEOUT).set(Integer.parseInt(attrValue));
          } else if (ModelKeys.REPLICATION_TIMEOUT.equals(attrName)) {
-            topologyStateTransfer.get(ModelKeys.REPLICATION_TIMEOUT).set(
-                     Integer.parseInt(attrValue));
+            topologyStateTransfer.get(ModelKeys.REPLICATION_TIMEOUT).set(Integer.parseInt(attrValue));
          } else if (ModelKeys.UPDATE_TIMEOUT.equals(attrName)) {
             topologyStateTransfer.get(ModelKeys.UPDATE_TIMEOUT).set(Integer.parseInt(attrValue));
          } else if (ModelKeys.EXTERNAL_HOST.equals(attrName)) {
@@ -146,8 +200,7 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
          } else if (ModelKeys.EXTERNAL_PORT.equals(attrName)) {
             topologyStateTransfer.get(ModelKeys.EXTERNAL_PORT).set(Integer.parseInt(attrValue));
          } else if (ModelKeys.LAZY_RETRIEVAL.equals(attrName)) {
-            topologyStateTransfer.get(ModelKeys.LAZY_RETRIEVAL)
-                     .set(Boolean.parseBoolean(attrValue));
+            topologyStateTransfer.get(ModelKeys.LAZY_RETRIEVAL).set(Boolean.parseBoolean(attrValue));
          } else {
             ParseUtils.unexpectedAttribute(reader, i);
          }
@@ -155,77 +208,39 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
    }
 
    @Override
-   public void writeContent(final XMLExtendedStreamWriter writer,
-            final SubsystemMarshallingContext context) throws XMLStreamException {
+   public void writeContent(final XMLExtendedStreamWriter writer, final SubsystemMarshallingContext context) throws XMLStreamException {
       context.startSubsystemElement(namespaceUri, false);
       final ModelNode node = context.getModelNode();
-      writeConnectors(writer, node);
-      writeTopologyStateTransfer(writer, node);
+      writeConnectors(writer, node);      
       writer.writeEndElement();
    }
 
-   private void writeConnectors(final XMLExtendedStreamWriter writer, final ModelNode node)
-            throws XMLStreamException {
-      if (node.hasDefined(ModelKeys.CONNECTOR)) {
-         ModelNode connectors = node.get(ModelKeys.CONNECTOR);
-         for (Property property : connectors.asPropertyList()) {
-            ModelNode connector = property.getValue();
-            writer.writeEmptyElement(ModelKeys.CONNECTOR);
-            writer.writeAttribute(ModelKeys.PROTOCOL, property.getName());
-            writer.writeAttribute(ModelKeys.SOCKET_BINDING, connector.get(ModelKeys.SOCKET_BINDING)
-                     .asString());
-            if (connector.hasDefined(ModelKeys.WORKER_THREADS)) {
-               writer.writeAttribute(ModelKeys.WORKER_THREADS,
-                        connector.get(ModelKeys.WORKER_THREADS).asString());
-            }
-            if (connector.hasDefined(ModelKeys.IDLE_TIMEOUT)) {
-               writer.writeAttribute(ModelKeys.IDLE_TIMEOUT, connector.get(ModelKeys.IDLE_TIMEOUT)
-                        .asString());
-            }
-            if (connector.hasDefined(ModelKeys.TCP_NODELAY)) {
-               writer.writeAttribute(ModelKeys.TCP_NODELAY, connector.get(ModelKeys.TCP_NODELAY)
-                        .asString());
-            }
-            if (connector.hasDefined(ModelKeys.SEND_BUFFER_SIZE)) {
-               writer.writeAttribute(ModelKeys.SEND_BUFFER_SIZE,
-                        connector.get(ModelKeys.SEND_BUFFER_SIZE).asString());
-            }
-            if (connector.hasDefined(ModelKeys.RECEIVE_BUFFER_SIZE)) {
-               writer.writeAttribute(ModelKeys.RECEIVE_BUFFER_SIZE,
-                        connector.get(ModelKeys.RECEIVE_BUFFER_SIZE).asString());
+   private void writeConnectors(final XMLExtendedStreamWriter writer, final ModelNode node) throws XMLStreamException {
+      for (String connectorType : ModelKeys.CONNECTORS) {
+         if (node.hasDefined(connectorType)) {
+            ModelNode connectors = node.get(connectorType);
+            for (Property property : connectors.asPropertyList()) {
+               ModelNode connector = property.getValue();
+               writer.writeEmptyElement(connectorType);
+               for (String connectorAttribute : ModelKeys.CONNECTOR_ATTRIBUTES) {
+                  if (connector.hasDefined(connectorAttribute)) {
+                     writer.writeAttribute(connectorAttribute, connector.get(connectorAttribute).asString());
+                  }
+               }
+               writeTopologyStateTransfer(writer, connector);
             }
          }
       }
    }
 
-   private void writeTopologyStateTransfer(final XMLExtendedStreamWriter writer,
-            final ModelNode node) throws XMLStreamException {
+   private void writeTopologyStateTransfer(final XMLExtendedStreamWriter writer, final ModelNode node) throws XMLStreamException {
       if (node.hasDefined(ModelKeys.TOPOLOGY_STATE_TRANSFER)) {
          ModelNode topologyStateTransfer = node.get(ModelKeys.TOPOLOGY_STATE_TRANSFER);
          writer.writeEmptyElement(ModelKeys.TOPOLOGY_STATE_TRANSFER);
-         if (topologyStateTransfer.hasDefined(ModelKeys.LOCK_TIMEOUT)) {
-            writer.writeAttribute(ModelKeys.LOCK_TIMEOUT,
-                     topologyStateTransfer.get(ModelKeys.LOCK_TIMEOUT).asString());
-         }
-         if (topologyStateTransfer.hasDefined(ModelKeys.REPLICATION_TIMEOUT)) {
-            writer.writeAttribute(ModelKeys.REPLICATION_TIMEOUT,
-                     topologyStateTransfer.get(ModelKeys.REPLICATION_TIMEOUT).asString());
-         }
-         if (topologyStateTransfer.hasDefined(ModelKeys.UPDATE_TIMEOUT)) {
-            writer.writeAttribute(ModelKeys.UPDATE_TIMEOUT,
-                     topologyStateTransfer.get(ModelKeys.UPDATE_TIMEOUT).asString());
-         }
-         if (topologyStateTransfer.hasDefined(ModelKeys.EXTERNAL_HOST)) {
-            writer.writeAttribute(ModelKeys.EXTERNAL_HOST,
-                     topologyStateTransfer.get(ModelKeys.EXTERNAL_HOST).asString());
-         }
-         if (topologyStateTransfer.hasDefined(ModelKeys.EXTERNAL_PORT)) {
-            writer.writeAttribute(ModelKeys.EXTERNAL_PORT,
-                     topologyStateTransfer.get(ModelKeys.EXTERNAL_PORT).asString());
-         }
-         if (topologyStateTransfer.hasDefined(ModelKeys.LAZY_RETRIEVAL)) {
-            writer.writeAttribute(ModelKeys.LAZY_RETRIEVAL,
-                     topologyStateTransfer.get(ModelKeys.LAZY_RETRIEVAL).asString());
+         for (String connectorAttribute : ModelKeys.TOPOLOGY_ATTRIBUTES) {
+            if (topologyStateTransfer.hasDefined(connectorAttribute)) {
+               writer.writeAttribute(connectorAttribute, topologyStateTransfer.get(connectorAttribute).asString());
+            }
          }
       }
    }

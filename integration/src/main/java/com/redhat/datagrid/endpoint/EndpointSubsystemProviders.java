@@ -21,15 +21,15 @@ package com.redhat.datagrid.endpoint;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ATTRIBUTES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CHILDREN;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DESCRIBE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DESCRIPTION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HEAD_COMMENT_ALLOWED;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MAX_OCCURS;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MODEL_DESCRIPTION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MIN_OCCURS;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MODEL_DESCRIPTION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAMESPACE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OPERATION_NAME;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OPERATIONS;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REMOVE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REPLY_PROPERTIES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REQUEST_PROPERTIES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REQUIRED;
@@ -51,106 +51,240 @@ import com.redhat.datagrid.DataGridConstants;
  */
 public class EndpointSubsystemProviders {
 
-   static final String RESOURCE_NAME = EndpointSubsystemProviders.class.getPackage().getName()
-            + ".LocalDescriptions";
+   static final String RESOURCE_NAME = EndpointSubsystemProviders.class.getPackage().getName() + ".LocalDescriptions";
 
    static final DescriptionProvider SUBSYSTEM = new DescriptionProvider() {
 
       public ModelNode getModelDescription(final Locale locale) {
          final ResourceBundle bundle = getResourceBundle(locale);
-
          final ModelNode node = new ModelNode();
          node.get(DESCRIPTION).set(bundle.getString("endpoint.description"));
          node.get(HEAD_COMMENT_ALLOWED).set(true);
          node.get(TAIL_COMMENT_ALLOWED).set(true);
          node.get(NAMESPACE).set(DataGridConstants.NS_ENDPOINT_1_0);
-         
-         node.get(OPERATIONS);
 
-         node.get(CHILDREN, ModelKeys.CONNECTOR, DESCRIPTION).set(
-                  bundle.getString("connector.description"));
-         node.get(CHILDREN, ModelKeys.CONNECTOR, MIN_OCCURS).set(1);
-         node.get(CHILDREN, ModelKeys.CONNECTOR, MAX_OCCURS).set(Integer.MAX_VALUE);
-         node.get(CHILDREN, ModelKeys.CONNECTOR, MODEL_DESCRIPTION).setEmptyObject();
-
-         node.get(CHILDREN, ModelKeys.TOPOLOGY_STATE_TRANSFER, DESCRIPTION).set(
-                  bundle.getString("topology-state-transfer.description"));
-         node.get(CHILDREN, ModelKeys.TOPOLOGY_STATE_TRANSFER, MIN_OCCURS).set(0);
-         node.get(CHILDREN, ModelKeys.TOPOLOGY_STATE_TRANSFER, MAX_OCCURS).set(1);
-         node.get(CHILDREN, ModelKeys.TOPOLOGY_STATE_TRANSFER, MODEL_DESCRIPTION).setEmptyObject();
-
-         return node;
-      }
-   };
-
-   static final DescriptionProvider SUBSYSTEM_DESCRIBE = new DescriptionProvider() {
-
-      @Override
-      public ModelNode getModelDescription(final Locale locale) {
-         final ResourceBundle bundle = getResourceBundle(locale);
-         final ModelNode node = new ModelNode();
-         node.get(OPERATION_NAME).set(DESCRIBE);
-         node.get(DESCRIPTION).set(bundle.getString("endpoint.description"));
-         node.get(REQUEST_PROPERTIES).setEmptyObject();
-         node.get(REPLY_PROPERTIES, TYPE).set(ModelType.LIST);
-         node.get(REPLY_PROPERTIES, VALUE_TYPE).set(ModelType.OBJECT);
+         for (String connectorType : ModelKeys.CONNECTORS) {
+            node.get(CHILDREN, connectorType, DESCRIPTION).set(bundle.getString(connectorType + ".description"));
+            node.get(CHILDREN, connectorType, MIN_OCCURS).set(0);
+            node.get(CHILDREN, connectorType, MAX_OCCURS).set(Integer.MAX_VALUE);
+            node.get(CHILDREN, connectorType, MODEL_DESCRIPTION).setEmptyObject();
+         }
 
          return node;
       }
    };
 
    static final DescriptionProvider SUBSYTEM_ADD = new DescriptionProvider() {
-
+      @Override
       public ModelNode getModelDescription(Locale locale) {
          final ResourceBundle bundle = getResourceBundle(locale);
-
          final ModelNode node = new ModelNode();
-
          node.get(OPERATION_NAME).set(ADD);
          node.get(DESCRIPTION).set(bundle.getString("endpoint.add"));
+         node.get(REQUEST_PROPERTIES).setEmptyObject();
+         node.get(REPLY_PROPERTIES).setEmptyObject();
 
-         final ModelNode connectorNode = addNode(node.get(REQUEST_PROPERTIES), ModelKeys.CONNECTOR,
-                  bundle.getString("connector.description"), ModelType.OBJECT, false);
-         final ModelNode connectorNodeValue = connectorNode.get(VALUE_TYPE);
-            
-         addNode(connectorNodeValue, ModelKeys.PROTOCOL, bundle.getString("connector.protocol"),
-                  ModelType.STRING, true);
-         addNode(connectorNodeValue, ModelKeys.SOCKET_BINDING,
-                  bundle.getString("connector.socket-binding"), ModelType.STRING, false);
-         addNode(connectorNodeValue, ModelKeys.WORKER_THREADS,
-                  bundle.getString("connector.worker-threads"), ModelType.INT, false);
-         addNode(connectorNodeValue, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"),
-                  ModelType.LONG, false);
-         addNode(connectorNodeValue, ModelKeys.TCP_NODELAY, bundle.getString("connector.tcp-nodelay"),
-                  ModelType.BOOLEAN, false);
-         addNode(connectorNodeValue, ModelKeys.RECEIVE_BUFFER_SIZE,
-                  bundle.getString("connector.receive-buffer-size"), ModelType.LONG, false);
-         addNode(connectorNodeValue, ModelKeys.SEND_BUFFER_SIZE,
-                  bundle.getString("connector.send-buffer-size"), ModelType.LONG, false);
+         return node;
+      }
 
-         final ModelNode topologyNode = addNode(node.get(REQUEST_PROPERTIES),
-                  ModelKeys.TOPOLOGY_STATE_TRANSFER,
-                  bundle.getString("topology-state-transfer.description"), ModelType.OBJECT, false);
+   };
+
+   static DescriptionProvider HOTROD_CONNECTOR_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(DESCRIPTION).set(bundle.getString("hotrod-connector.description"));
+         node.get(HEAD_COMMENT_ALLOWED).set(true);
+         node.get(TAIL_COMMENT_ALLOWED).set(true);
+
+         addModelAttribute(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.SOCKET_BINDING, bundle.getString("connector.socket-binding"), ModelType.STRING, true);
+         addModelAttribute(node, ModelKeys.WORKER_THREADS, bundle.getString("connector.worker-threads"), ModelType.INT, false);
+         addModelAttribute(node, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"), ModelType.LONG, false);
+         addModelAttribute(node, ModelKeys.TCP_NODELAY, bundle.getString("connector.tcp-nodelay"), ModelType.BOOLEAN, false);
+         addModelAttribute(node, ModelKeys.RECEIVE_BUFFER_SIZE, bundle.getString("connector.receive-buffer-size"), ModelType.LONG, false);
+         addModelAttribute(node, ModelKeys.SEND_BUFFER_SIZE, bundle.getString("connector.send-buffer-size"), ModelType.LONG, false);
+         ModelNode topologyNode = addModelAttribute(node, ModelKeys.TOPOLOGY_STATE_TRANSFER, bundle.getString("topology-state-transfer.description"), ModelType.OBJECT, false);
          final ModelNode topologyNodeValue = topologyNode.get(VALUE_TYPE);
+         addNode(topologyNodeValue, ModelKeys.EXTERNAL_HOST, bundle.getString("topology-state-transfer.external-host"), ModelType.STRING, false);
+         addNode(topologyNodeValue, ModelKeys.EXTERNAL_PORT, bundle.getString("topology-state-transfer.external-port"), ModelType.INT, false);
+         addNode(topologyNodeValue, ModelKeys.LAZY_RETRIEVAL, bundle.getString("topology-state-transfer.lazy-retrieval"), ModelType.BOOLEAN, false);
+         addNode(topologyNodeValue, ModelKeys.LOCK_TIMEOUT, bundle.getString("topology-state-transfer.lock-timeout"), ModelType.LONG, false);
+         addNode(topologyNodeValue, ModelKeys.REPLICATION_TIMEOUT, bundle.getString("topology-state-transfer.replication-timeout"), ModelType.LONG, false);
 
-         addNode(topologyNodeValue, ModelKeys.EXTERNAL_HOST,
-                  bundle.getString("topology-state-transfer.external-host"), ModelType.STRING,
-                  false);
-         addNode(topologyNodeValue, ModelKeys.EXTERNAL_PORT,
-                  bundle.getString("topology-state-transfer.external-port"), ModelType.INT, false);
-         addNode(topologyNodeValue, ModelKeys.LAZY_RETRIEVAL,
-                  bundle.getString("topology-state-transfer.lazy-retrieval"), ModelType.BOOLEAN,
-                  false);
-         addNode(topologyNodeValue, ModelKeys.LOCK_TIMEOUT,
-                  bundle.getString("topology-state-transfer.lock-timeout"), ModelType.LONG, false);
-         addNode(topologyNodeValue, ModelKeys.REPLICATION_TIMEOUT,
-                  bundle.getString("topology-state-transfer.replication-timeout"), ModelType.LONG,
-                  false);
+         return node;
+      }
+   };
+
+   static DescriptionProvider ADD_HOTROD_CONNECTOR_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(final Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(OPERATION_NAME).set(ADD);
+         node.get(DESCRIPTION).set(bundle.getString("connector.add"));
+
+         addModelRequestProperty(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.SOCKET_BINDING, bundle.getString("connector.socket-binding"), ModelType.STRING, true);
+         addModelRequestProperty(node, ModelKeys.WORKER_THREADS, bundle.getString("connector.worker-threads"), ModelType.INT, false);
+         addModelRequestProperty(node, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"), ModelType.LONG, false);
+         addModelRequestProperty(node, ModelKeys.TCP_NODELAY, bundle.getString("connector.tcp-nodelay"), ModelType.BOOLEAN, false);
+         addModelRequestProperty(node, ModelKeys.RECEIVE_BUFFER_SIZE, bundle.getString("connector.receive-buffer-size"), ModelType.LONG, false);
+         addModelRequestProperty(node, ModelKeys.SEND_BUFFER_SIZE, bundle.getString("connector.send-buffer-size"), ModelType.LONG, false);
+         ModelNode topologyNode = addModelRequestProperty(node, ModelKeys.TOPOLOGY_STATE_TRANSFER, bundle.getString("topology-state-transfer.description"), ModelType.OBJECT, false);
+         final ModelNode topologyNodeValue = topologyNode.get(VALUE_TYPE);
+         addNode(topologyNodeValue, ModelKeys.EXTERNAL_HOST, bundle.getString("topology-state-transfer.external-host"), ModelType.STRING, false);
+         addNode(topologyNodeValue, ModelKeys.EXTERNAL_PORT, bundle.getString("topology-state-transfer.external-port"), ModelType.INT, false);
+         addNode(topologyNodeValue, ModelKeys.LAZY_RETRIEVAL, bundle.getString("topology-state-transfer.lazy-retrieval"), ModelType.BOOLEAN, false);
+         addNode(topologyNodeValue, ModelKeys.LOCK_TIMEOUT, bundle.getString("topology-state-transfer.lock-timeout"), ModelType.LONG, false);
+         addNode(topologyNodeValue, ModelKeys.REPLICATION_TIMEOUT, bundle.getString("topology-state-transfer.replication-timeout"), ModelType.LONG, false);
 
          node.get(REPLY_PROPERTIES).setEmptyObject();
          return node;
       }
+   };
 
+   static DescriptionProvider REMOVE_HOTROD_CONNECTOR_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(final Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(OPERATION_NAME).set(REMOVE);
+         node.get(DESCRIPTION).set(bundle.getString("connector.remove"));
+         node.get(REQUEST_PROPERTIES, NAME, DESCRIPTION).set(bundle.getString("connector.remove"));
+         node.get(REQUEST_PROPERTIES, NAME, TYPE).set(ModelType.STRING);
+         node.get(REQUEST_PROPERTIES, NAME, REQUIRED).set(true);
+         node.get(REPLY_PROPERTIES).setEmptyObject();
+         return node;
+      }
+   };
+
+   static DescriptionProvider MEMCACHED_CONNECTOR_DESC = new DescriptionProvider() {
+
+      @Override
+      public ModelNode getModelDescription(Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(DESCRIPTION).set(bundle.getString("memcached-connector.description"));
+         node.get(HEAD_COMMENT_ALLOWED).set(true);
+         node.get(TAIL_COMMENT_ALLOWED).set(true);
+
+         addModelAttribute(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.SOCKET_BINDING, bundle.getString("connector.socket-binding"), ModelType.STRING, true);
+         addModelAttribute(node, ModelKeys.WORKER_THREADS, bundle.getString("connector.worker-threads"), ModelType.INT, false);
+         addModelAttribute(node, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"), ModelType.LONG, false);
+         addModelAttribute(node, ModelKeys.TCP_NODELAY, bundle.getString("connector.tcp-nodelay"), ModelType.BOOLEAN, false);
+         addModelAttribute(node, ModelKeys.RECEIVE_BUFFER_SIZE, bundle.getString("connector.receive-buffer-size"), ModelType.LONG, false);
+         addModelAttribute(node, ModelKeys.SEND_BUFFER_SIZE, bundle.getString("connector.send-buffer-size"), ModelType.LONG, false);
+         ModelNode topologyNode = addModelAttribute(node, ModelKeys.TOPOLOGY_STATE_TRANSFER, bundle.getString("topology-state-transfer.description"), ModelType.OBJECT, false);
+         final ModelNode topologyNodeValue = topologyNode.get(VALUE_TYPE);
+         addNode(topologyNodeValue, ModelKeys.EXTERNAL_HOST, bundle.getString("topology-state-transfer.external-host"), ModelType.STRING, false);
+         addNode(topologyNodeValue, ModelKeys.EXTERNAL_PORT, bundle.getString("topology-state-transfer.external-port"), ModelType.INT, false);
+         addNode(topologyNodeValue, ModelKeys.LAZY_RETRIEVAL, bundle.getString("topology-state-transfer.lazy-retrieval"), ModelType.BOOLEAN, false);
+         addNode(topologyNodeValue, ModelKeys.LOCK_TIMEOUT, bundle.getString("topology-state-transfer.lock-timeout"), ModelType.LONG, false);
+         addNode(topologyNodeValue, ModelKeys.REPLICATION_TIMEOUT, bundle.getString("topology-state-transfer.replication-timeout"), ModelType.LONG, false);
+
+         return node;
+      }
+   };
+
+   static DescriptionProvider ADD_MEMCACHED_CONNECTOR_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(final Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(OPERATION_NAME).set(ADD);
+         node.get(DESCRIPTION).set(bundle.getString("connector.add"));
+
+         addModelRequestProperty(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.SOCKET_BINDING, bundle.getString("connector.socket-binding"), ModelType.STRING, true);
+         addModelRequestProperty(node, ModelKeys.WORKER_THREADS, bundle.getString("connector.worker-threads"), ModelType.INT, false);
+         addModelRequestProperty(node, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"), ModelType.LONG, false);
+         addModelRequestProperty(node, ModelKeys.TCP_NODELAY, bundle.getString("connector.tcp-nodelay"), ModelType.BOOLEAN, false);
+         addModelRequestProperty(node, ModelKeys.RECEIVE_BUFFER_SIZE, bundle.getString("connector.receive-buffer-size"), ModelType.LONG, false);
+         addModelRequestProperty(node, ModelKeys.SEND_BUFFER_SIZE, bundle.getString("connector.send-buffer-size"), ModelType.LONG, false);
+         ModelNode topologyNode = addModelRequestProperty(node, ModelKeys.TOPOLOGY_STATE_TRANSFER, bundle.getString("topology-state-transfer.description"), ModelType.OBJECT, false);
+         final ModelNode topologyNodeValue = topologyNode.get(VALUE_TYPE);
+         addNode(topologyNodeValue, ModelKeys.EXTERNAL_HOST, bundle.getString("topology-state-transfer.external-host"), ModelType.STRING, false);
+         addNode(topologyNodeValue, ModelKeys.EXTERNAL_PORT, bundle.getString("topology-state-transfer.external-port"), ModelType.INT, false);
+         addNode(topologyNodeValue, ModelKeys.LAZY_RETRIEVAL, bundle.getString("topology-state-transfer.lazy-retrieval"), ModelType.BOOLEAN, false);
+         addNode(topologyNodeValue, ModelKeys.LOCK_TIMEOUT, bundle.getString("topology-state-transfer.lock-timeout"), ModelType.LONG, false);
+         addNode(topologyNodeValue, ModelKeys.REPLICATION_TIMEOUT, bundle.getString("topology-state-transfer.replication-timeout"), ModelType.LONG, false);
+
+         node.get(REPLY_PROPERTIES).setEmptyObject();
+         return node;
+      }
+   };
+
+   static DescriptionProvider REMOVE_MEMCACHED_CONNECTOR_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(final Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(OPERATION_NAME).set(REMOVE);
+         node.get(DESCRIPTION).set(bundle.getString("connector.remove"));
+         node.get(REQUEST_PROPERTIES, NAME, DESCRIPTION).set(bundle.getString("connector.remove"));
+         node.get(REQUEST_PROPERTIES, NAME, TYPE).set(ModelType.STRING);
+         node.get(REQUEST_PROPERTIES, NAME, REQUIRED).set(true);
+         node.get(REPLY_PROPERTIES).setEmptyObject();
+         return node;
+      }
+   };
+
+   static DescriptionProvider REST_CONNECTOR_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(DESCRIPTION).set(bundle.getString("rest-connector.description"));
+         node.get(HEAD_COMMENT_ALLOWED).set(true);
+         node.get(TAIL_COMMENT_ALLOWED).set(true);
+
+         addModelAttribute(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.VIRTUAL_SERVER, bundle.getString("rest-connector.virtual-server"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.CONTEXT_PATH, bundle.getString("rest-connector.context-path"), ModelType.STRING, false);
+
+         return node;
+      }
+   };
+
+   static DescriptionProvider ADD_REST_CONNECTOR_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(final Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(OPERATION_NAME).set(ADD);
+         node.get(DESCRIPTION).set(bundle.getString("connector.add"));
+
+         addModelRequestProperty(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.VIRTUAL_SERVER, bundle.getString("rest-connector.virtual-server"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.CONTEXT_PATH, bundle.getString("rest-connector.context-path"), ModelType.STRING, false);
+
+         node.get(REPLY_PROPERTIES).setEmptyObject();
+         return node;
+      }
+   };
+
+   static DescriptionProvider REMOVE_REST_CONNECTOR_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(final Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(OPERATION_NAME).set(REMOVE);
+         node.get(DESCRIPTION).set(bundle.getString("connector.remove"));
+         node.get(REQUEST_PROPERTIES, NAME, DESCRIPTION).set(bundle.getString("connector.remove"));
+         node.get(REQUEST_PROPERTIES, NAME, TYPE).set(ModelType.STRING);
+         node.get(REQUEST_PROPERTIES, NAME, REQUIRED).set(true);
+         node.get(REPLY_PROPERTIES).setEmptyObject();
+         return node;
+      }
    };
 
    private static ResourceBundle getResourceBundle(Locale locale) {
@@ -160,8 +294,7 @@ public class EndpointSubsystemProviders {
       return ResourceBundle.getBundle(RESOURCE_NAME, locale);
    }
 
-   private static ModelNode addNode(ModelNode parent, String attribute, String description,
-            ModelType type, boolean required) {
+   private static ModelNode addNode(ModelNode parent, String attribute, String description, ModelType type, boolean required) {
       ModelNode node = parent.get(attribute);
       node.get(DESCRIPTION).set(description);
       node.get(TYPE).set(type);
@@ -170,13 +303,11 @@ public class EndpointSubsystemProviders {
       return node;
    }
 
-   private static void addModelAttribute(ModelNode node, String attribute, String description,
-            ModelType type, boolean required) {
-      addNode(node.get(ATTRIBUTES), attribute, description, type, required);
+   private static ModelNode addModelAttribute(ModelNode node, String attribute, String description, ModelType type, boolean required) {
+      return addNode(node.get(ATTRIBUTES), attribute, description, type, required);
    }
 
-   private static void addModelRequestProperty(ModelNode node, String attribute,
-            String description, ModelType type, boolean required) {
-      addNode(node.get(REQUEST_PROPERTIES), attribute, description, type, required);
+   private static ModelNode addModelRequestProperty(ModelNode node, String attribute, String description, ModelType type, boolean required) {
+      return addNode(node.get(REQUEST_PROPERTIES), attribute, description, type, required);
    }
 }
