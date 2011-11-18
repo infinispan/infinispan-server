@@ -80,3 +80,14 @@ checkout. Then perform the following steps:
 4) If it still does not work, there might have been some changes in module
     versions and metadata, which require more in-depth review.
 
+DEBUGGING
+=========
+
+To enable remote debugging of the standalone server or the domain controller, uncomment the appropriate line in bin/standalone.conf or bin/domain.conf respectively.
+To enable remote debugging of the domain hosts, add the following stanza to the <jvm> element declaration in domain/configuration/host.xml
+
+    <jvm-options>
+        <option value="-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n"/>
+    </jvm-options> 
+
+Make sure that different hosts use different ports (the address attribute above).

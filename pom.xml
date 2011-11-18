@@ -110,16 +110,16 @@
    <properties>
       <!-- Release Info -->
       <jboss.datagrid.release.version>${project.version}</jboss.datagrid.release.version>
-      <jboss.datagrid.release.codename>(TBD)</jboss.datagrid.release.codename>
+      <jboss.datagrid.release.codename>(Helvellyn)</jboss.datagrid.release.codename>
 
       <jboss.datagrid.release.finalName>enterprise-datagrid-${jboss.datagrid.release.version}</jboss.datagrid.release.finalName>
 
       <!-- Dependency versions. Please keep alphabetical and identical with 
-         what AS 7 uses -->
-      <version.com.thoughtworks.xstream>1.3.1</version.com.thoughtworks.xstream>
-      <version.junit>4.8.2</version.junit>
+         what Infinispan and AS7 use -->
+      <version.com.thoughtworks.xstream>1.4.1</version.com.thoughtworks.xstream>
+      <version.junit>4.10</version.junit>
       <version.org.infinispan>5.1.0-SNAPSHOT</version.org.infinispan>
-      <version.org.jboss.as>7.1.0.Alpha2-SNAPSHOT</version.org.jboss.as>
+      <version.org.jboss.as>7.1.0.Beta1</version.org.jboss.as>
       <version.org.jboss.jandex>1.0.3.Final</version.org.jboss.jandex>
       <version.org.jboss.msc>1.0.1.GA</version.org.jboss.msc>
       <version.org.scala-lang>2.9.1</version.org.scala-lang>

@@ -59,16 +59,23 @@
       <server name="server-one" group="datagrid-server-group">
          <!-- server-one inherits the default socket-group declared in the 
             server-group -->
-         <jvm name="default" />
+         <jvm name="default">
+            <!-- jvm-options>
+               <option value="-Xrunjdwp:transport=dt_socket,address=8788,server=y,suspend=y"/>
+            </jvm-options -->
+         </jvm>
       </server>
 
       <server name="server-two" group="datagrid-server-group"
          auto-start="true">
          <!-- server-two avoids port conflicts by incrementing the ports 
             in the default socket-group declared in the server-group -->
-         <socket-binding-group ref="standard-sockets"
-            port-offset="150" />
-         <jvm name="default" />
+         <socket-binding-group ref="standard-sockets" port-offset="150" />
+         <jvm name="default">
+            <!-- jvm-options>
+               <option value="-Xrunjdwp:transport=dt_socket,address=8789,server=y,suspend=y"/>
+            </jvm-options -->
+         </jvm>
       </server>
    </servers>
 </host>
