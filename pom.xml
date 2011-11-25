@@ -127,8 +127,8 @@
    </properties>
 
    <modules>
-      <module>integration</module>
       <module>jboss-as</module>
+      <module>integration</module>
       <module>dist-dir</module>
       <module>dist-zip</module>
    </modules>
