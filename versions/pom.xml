@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>com.redhat.datagrid</groupId>
+      <artifactId>enterprise-datagrid-parent</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>
+   </parent>
+
+   <artifactId>enterprise-datagrid-versions</artifactId>
+   <packaging>pom</packaging>
+
+   <name>Enterprise Data Grid - BOM</name>
+   <description>Enterprise Data Grid - BOM</description>
+
+   <properties>
+      <version.org.jboss.as>7.1.0.CR1-SNAPSHOT</version.org.jboss.as>
+      <version.com.thoughtworks.xstream>1.4.1</version.com.thoughtworks.xstream>
+      <version.junit>4.10</version.junit>
+      <version.org.infinispan>5.1.0.CR1</version.org.infinispan>
+      <version.org.jboss.jandex>1.0.3.Final</version.org.jboss.jandex>
+      <version.org.jboss.msc>1.0.1.GA</version.org.jboss.msc>
+      <version.org.jgroups>3.0.1.Final</version.org.jgroups>
+      <version.org.scala-lang>2.9.1</version.org.scala-lang>
+      <version.org.apache.commons.pool>1.5.4</version.org.apache.commons.pool>
+      <relocations></relocations>
+   </properties>
+
+   <dependencyManagement>
+      <dependencies>
+
+         <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>${version.com.thoughtworks.xstream}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-parent</artifactId>
+            <version>${version.org.jboss.as}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-server-core</artifactId>
+            <version>${version.org.infinispan}</version>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.rhq.helpers</groupId>
+                  <artifactId>rhq-pluginAnnotations</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-server-hotrod</artifactId>
+            <version>${version.org.infinispan}</version>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.rhq.helpers</groupId>
+                  <artifactId>rhq-pluginAnnotations</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-server-memcached</artifactId>
+            <version>${version.org.infinispan}</version>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.rhq.helpers</groupId>
+                  <artifactId>rhq-pluginAnnotations</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-server-rest</artifactId>
+            <version>${version.org.infinispan}</version>
+            <classifier>classes</classifier>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.rhq.helpers</groupId>
+                  <artifactId>rhq-pluginAnnotations</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-rhq-plugin</artifactId>
+            <version>${version.org.infinispan}</version>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.rhq.helpers</groupId>
+                  <artifactId>rhq-pluginAnnotations</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${version.org.scala-lang}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+</project>

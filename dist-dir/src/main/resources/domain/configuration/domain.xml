@@ -1,25 +1,16 @@
-<!-- ~ JBoss, Home of Professional Open Source. ~ Copyright 2010, Red Hat, 
-   Inc., and individual contributors ~ as indicated by the @author tags. See 
-   the copyright.txt file in the ~ distribution for a full listing of individual 
-   contributors. ~ ~ This is free software; you can redistribute it and/or modify 
-   it ~ under the terms of the GNU Lesser General Public License as ~ published 
-   by the Free Software Foundation; either version 2.1 of ~ the License, or 
-   (at your option) any later version. ~ ~ This software is distributed in the 
-   hope that it will be useful, ~ but WITHOUT ANY WARRANTY; without even the 
-   implied warranty of ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-   See the GNU ~ Lesser General Public License for more details. ~ ~ You should 
-   have received a copy of the GNU Lesser General Public ~ License along with 
-   this software; if not, write to the Free ~ Software Foundation, Inc., 51 
-   Franklin St, Fifth Floor, Boston, MA ~ 02110-1301 USA, or see the FSF site: 
-   http://www.fsf.org. -->
+<!-- ~ JBoss, Home of Professional Open Source. ~ Copyright 2010, Red Hat, Inc., and individual contributors ~ as indicated by the @author tags. See the copyright.txt 
+   file in the ~ distribution for a full listing of individual contributors. ~ ~ This is free software; you can redistribute it and/or modify it ~ under the terms of 
+   the GNU Lesser General Public License as ~ published by the Free Software Foundation; either version 2.1 of ~ the License, or (at your option) any later version. 
+   ~ ~ This software is distributed in the hope that it will be useful, ~ but WITHOUT ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY or FITNESS 
+   FOR A PARTICULAR PURPOSE. See the GNU ~ Lesser General Public License for more details. ~ ~ You should have received a copy of the GNU Lesser General Public ~ License 
+   along with this software; if not, write to the Free ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org. -->
 
-<domain xmlns="urn:jboss:domain:1.0">
+<domain xmlns="urn:jboss:domain:1.1">
 
    <extensions>
       <extension module="org.jboss.as.clustering.infinispan" />
       <extension module="org.jboss.as.clustering.jgroups" />
       <extension module="org.jboss.as.connector" />
-      <extension module="org.jboss.as.jaxrs" />
       <extension module="org.jboss.as.jmx" />
       <extension module="org.jboss.as.logging" />
       <extension module="org.jboss.as.modcluster" />
@@ -33,8 +24,7 @@
    </extensions>
 
    <system-properties>
-      <!-- IPv4 is not required, but setting this helps avoid unintended 
-         use of IPv6 -->
+      <!-- IPv4 is not required, but setting this helps avoid unintended use of IPv6 -->
       <property name="java.net.preferIPv4Stack" value="true" />
       <property name="udpGroup" value="234.99.54.14" />
    </system-properties>
@@ -45,16 +35,13 @@
             <console-handler name="CONSOLE">
                <level name="INFO" />
                <formatter>
-                  <pattern-formatter
-                     pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n" />
+                  <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n" />
                </formatter>
             </console-handler>
 
-            <periodic-rotating-file-handler
-               name="FILE">
+            <periodic-rotating-file-handler name="FILE">
                <formatter>
-                  <pattern-formatter
-                     pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n" />
+                  <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n" />
                </formatter>
                <file relative-to="jboss.server.log.dir" path="server.log" />
                <suffix value=".yyyy-MM-dd" />
@@ -72,8 +59,7 @@
             <logger category="jacorb">
                <level name="WARN" />
             </logger>
-            <!-- set jacorb.config to ERROR to avoid the "jacorb.properties 
-               not found" messages during startup -->
+            <!-- set jacorb.config to ERROR to avoid the "jacorb.properties not found" messages during startup -->
             <logger category="jacorb.config">
                <level name="ERROR" />
             </logger>
@@ -86,40 +72,27 @@
                </handlers>
             </root-logger>
          </subsystem>
-         <subsystem xmlns="urn:jboss:domain:infinispan:1.0"
-            default-cache-container="default">
-            <cache-container name="default"
-               default-cache="default" listener-executor="infinispan-listener">
-               <transport executor="infinispan-transport"
-                  lock-timeout="240000" />
-               <distributed-cache name="default"
-                  start="EAGER" mode="SYNC" virtual-nodes="1" owners="2"
-                  batching="false" indexing="NONE" l1-lifespan="0"
+         <subsystem xmlns="urn:jboss:domain:infinispan:1.1" default-cache-container="default">
+            <cache-container name="default" default-cache="default" listener-executor="infinispan-listener">
+               <transport executor="infinispan-transport" lock-timeout="240000" />
+               <distributed-cache name="default" mode="SYNC" virtual-nodes="1" owners="2" batching="false" indexing="NONE" l1-lifespan="0"
                   remote-timeout="30000">
-                  <locking isolation="READ_COMMITTED"
-                     acquire-timeout="30000" concurrency-level="1000"
-                     striping="false" />
+                  <locking isolation="READ_COMMITTED" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                   <transaction mode="NONE" />
                   <rehashing enabled="true" timeout="600000" />
                </distributed-cache>
 
-               <distributed-cache name="memcachedCache"
-                  start="EAGER" mode="SYNC" virtual-nodes="1" owners="2"
-                  batching="false" indexing="NONE" l1-lifespan="0"
+               <distributed-cache name="memcachedCache" mode="SYNC" virtual-nodes="1" owners="2" batching="false" indexing="NONE" l1-lifespan="0"
                   remote-timeout="30000">
-                  <locking isolation="READ_COMMITTED"
-                     acquire-timeout="30000" concurrency-level="1000"
-                     striping="false" />
+                  <locking isolation="READ_COMMITTED" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                   <transaction mode="NONE" />
                   <rehashing enabled="true" timeout="600000" />
                </distributed-cache>
 
-               <distributed-cache name="namedCache"
-                  mode="SYNC" />
+               <distributed-cache name="namedCache" mode="SYNC" />
             </cache-container>
          </subsystem>
-         <subsystem xmlns="urn:jboss:domain:jaxrs:1.0" />
-         <subsystem xmlns="urn:jboss:domain:jca:1.0">
+         <subsystem xmlns="urn:jboss:domain:jca:1.1">
             <archive-validation enabled="true" />
             <bean-validation enabled="true" />
             <default-workmanager>
@@ -137,11 +110,9 @@
                </long-running-threads>
             </default-workmanager>
          </subsystem>
-         <subsystem xmlns="urn:jboss:domain:jgroups:1.0"
-            default-stack="udp">
+         <subsystem xmlns="urn:jboss:domain:jgroups:1.0" default-stack="udp">
             <stack name="udp">
-               <transport type="UDP" socket-binding="jgroups-udp"
-                  diagnostics-socket-binding="jgroups-diag" >
+               <transport type="UDP" socket-binding="jgroups-udp" diagnostics-socket-binding="jgroups-diag">
                </transport>
                <protocol type="PING" />
                <protocol type="MERGE2" />
@@ -159,17 +130,16 @@
                <protocol type="pbcast.STATE_TRANSFER" />
             </stack>
          </subsystem>
-         <subsystem xmlns="urn:jboss:domain:jmx:1.0">
-            <jmx-connector registry-binding="jmx-connector-registry"
-               server-binding="jmx-connector-server" />
+         <subsystem xmlns="urn:jboss:domain:jmx:1.1">
+            <jmx-connector registry-binding="jmx-connector-registry" server-binding="jmx-connector-server" />
          </subsystem>
          <subsystem xmlns="urn:jboss:domain:modcluster:1.0">
             <mod-cluster-config advertise-socket="modcluster" />
          </subsystem>
-         <subsystem xmlns="urn:jboss:domain:naming:1.0" />
-         <subsystem xmlns="urn:jboss:domain:remoting:1.0" />
+         <subsystem xmlns="urn:jboss:domain:naming:1.1" />
+         <subsystem xmlns="urn:jboss:domain:remoting:1.1" />
          <subsystem xmlns="urn:jboss:domain:resource-adapters:1.0" />
-         <subsystem xmlns="urn:jboss:domain:security:1.0">
+         <subsystem xmlns="urn:jboss:domain:security:1.1">
             <security-domains>
                <security-domain name="other">
                   <authentication>
@@ -179,36 +149,29 @@
             </security-domains>
          </subsystem>
          <subsystem xmlns="urn:jboss:domain:threads:1.0">
-            <thread-factory name="infinispan-factory"
-               group-name="infinispan" priority="5" />
-            <unbounded-queue-thread-pool
-               name="infinispan-transport">
+            <thread-factory name="infinispan-factory" group-name="infinispan" priority="5" />
+            <unbounded-queue-thread-pool name="infinispan-transport">
                <max-threads count="25" per-cpu="0" />
                <keepalive-time time="0" unit="milliseconds" />
                <thread-factory name="infinispan-factory" />
             </unbounded-queue-thread-pool>
-            <unbounded-queue-thread-pool
-               name="infinispan-listener">
+            <unbounded-queue-thread-pool name="infinispan-listener">
                <max-threads count="1" per-cpu="0" />
                <keepalive-time time="0" unit="milliseconds" />
                <thread-factory name="infinispan-factory" />
             </unbounded-queue-thread-pool>
          </subsystem>
-         <subsystem xmlns="urn:jboss:domain:transactions:1.0">
-            <recovery-environment socket-binding="txn-recovery-environment"
-               status-socket-binding="txn-status-manager" />
+         <subsystem xmlns="urn:jboss:domain:transactions:1.1">
+            <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager" />
             <core-environment>
                <process-id>
                   <uuid />
                </process-id>
             </core-environment>
-            <coordinator-environment
-               default-timeout="300" />
+            <coordinator-environment default-timeout="300" />
          </subsystem>
-         <subsystem xmlns="urn:jboss:domain:web:1.0"
-            default-virtual-server="default-host">
-            <connector name="http" scheme="http" protocol="HTTP/1.1"
-               socket-binding="http" max-connections="1000" />
+         <subsystem xmlns="urn:jboss:domain:web:1.1" default-virtual-server="default-host">
+            <connector name="http" scheme="http" protocol="HTTP/1.1" socket-binding="http" max-connections="1000" />
             <virtual-server name="default-host">
                <alias name="localhost" />
                <alias name="example.com" />
@@ -223,11 +186,9 @@
    </profiles>
 
 
-   <!-- Named interfaces that can be referenced elsewhere in the configuration. 
-      The configuration for how to associate these logical names with an actual 
-      network interface can either be specified here or can be declared on a per-host 
-      basis in the equivalent element in host.xml. These default configurations 
-      require the binding specification to be done in host.xml. -->
+   <!-- Named interfaces that can be referenced elsewhere in the configuration. The configuration for how to associate these logical names with an actual network 
+      interface can either be specified here or can be declared on a per-host basis in the equivalent element in host.xml. These default configurations require the binding 
+      specification to be done in host.xml. -->
    <interfaces>
       <interface name="management" />
       <interface name="public" />
@@ -235,26 +196,19 @@
    </interfaces>
 
    <socket-binding-groups>
-      <socket-binding-group name="standard-sockets"
-         default-interface="public">
+      <socket-binding-group name="standard-sockets" default-interface="public">
          <socket-binding name="http" port="8080" />
          <socket-binding name="https" port="8443" />
-         <socket-binding name="jmx-connector-registry"
-            port="1090" />
-         <socket-binding name="jmx-connector-server"
-            port="1091" />
+         <socket-binding name="jmx-connector-registry" port="1090" />
+         <socket-binding name="jmx-connector-server" port="1091" />
          <socket-binding name="jndi" port="1099" />
          <socket-binding name="remoting" port="4447" />
-         <socket-binding name="txn-recovery-environment"
-            port="4712" />
+         <socket-binding name="txn-recovery-environment" port="4712" />
          <socket-binding name="txn-status-manager" port="4713" />
-
-         <socket-binding name="jgroups-udp" interface="clustering"
-            multicast-address="${udpGroup}" multicast-port="45688" port="55200" />
-         <socket-binding name="jgroups-diag" interface="clustering"
-            multicast-address="224.0.75.75" multicast-port="7500" port="7500" />
-         <socket-binding name="jgroups-fdsock" interface="clustering"
-            port="54200" />
+         <socket-binding name="jgroups-udp" interface="clustering" multicast-address="${udpGroup}" multicast-port="45688" port="55200" />
+         <socket-binding name="jgroups-diag" interface="clustering" multicast-address="224.0.75.75" multicast-port="7500" port="7500" />
+         <socket-binding name="jgroups-fdsock" interface="clustering" port="54200" />
+         <socket-binding name="modcluster" port="0" multicast-address="224.0.1.105" multicast-port="23364" />
          <socket-binding name="hotrod" port="11222" />
          <socket-binding name="memcached" port="11211" />
       </socket-binding-group>
