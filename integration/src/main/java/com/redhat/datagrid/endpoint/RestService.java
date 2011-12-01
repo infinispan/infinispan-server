@@ -47,7 +47,7 @@ import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 
 /**
  * A service which starts the REST web application
- * 
+ *
  * @author Tristan Tarrant <ttarrant@redhat.com>
  */
 public class RestService implements Service<Context> {
@@ -81,14 +81,15 @@ public class RestService implements Service<Context> {
    }
 
    private static String cleanContextPath(String s) {
-      if(s.endsWith("/")) 
+      if(s.endsWith("/"))
          return s.substring(0, s.length()-1);
       else
          return s;
    }
 
    /** {@inheritDoc} */
-   public synchronized void start(StartContext startContext) throws StartException {
+   @Override
+public synchronized void start(StartContext startContext) throws StartException {
       long startTime = System.currentTimeMillis();
       log.infof("REST Server starting");
       EmbeddedCacheManager cacheManager = cacheManagerInjector.getValue();
@@ -139,7 +140,7 @@ public class RestService implements Service<Context> {
          context.addServletMapping("/rest/*", "Resteasy");
 
          host.addChild(context);
-         context.create();         
+         context.create();
       } catch (Exception e) {
          throw new StartException("Failed to create context for REST Server "+serverName, e);
       }
@@ -164,7 +165,8 @@ public class RestService implements Service<Context> {
    }
 
    /** {@inheritDoc} */
-   public synchronized void stop(StopContext stopContext) {
+   @Override
+public synchronized void stop(StopContext stopContext) {
       try {
          hostInjector.getValue().getHost().removeChild(context);
          context.stop();
@@ -186,7 +188,8 @@ public class RestService implements Service<Context> {
    }
 
    /** {@inheritDoc} */
-   public synchronized Context getValue() throws IllegalStateException {
+   @Override
+public synchronized Context getValue() throws IllegalStateException {
       final Context context = this.context;
       if (context == null) {
          throw new IllegalStateException();
