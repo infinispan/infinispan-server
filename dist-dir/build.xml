@@ -18,168 +18,131 @@
   -->
 <project name="dist-dir" basedir="." default="clean">
 
-	<property name="output.dir" value="target/${jboss.datagrid.release.finalName}" />
-	<property name="asbuild.dir" value="${project.basedir}/../../jboss-as/build" />
-	<property name="rest.war" value="${project.basedir}/../../rest/target/enterprise-datagrid-rest-${project.version}.war" />
+   <property name="output.dir" value="${project.build.directory}/${jboss.datagrid.release.finalName}" />
+   <property name="edg.modules.dir" value="${basedir}/src/main/resources/edg-modules" />
 
-	<import file="${asbuild.dir}/lib.xml" />
+   <import file="lib.xml" />
 
-	<target name="clean">
-		<delete dir="${output.dir}" />
-	</target>
+   <target name="clean">
+      <delete dir="${output.dir}" />
+   </target>
 
-	<target name="copy-files">
-		<!-- Copy the files from JBoss AS first -->
-		<copy todir="${output.dir}">
-			<fileset dir="${asbuild.dir}/target/jboss-as-${version.org.jboss.as}">
-				<include name="**" />
-			</fileset>
-		</copy>
+   <target name="copy-files">
+      <!-- Copy the EDG resource files -->
+      <copy todir="${output.dir}">
+         <fileset dir="${basedir}/src/main/resources">
+            <include name="bin/**" />
+            <include name="domain/**" />
+            <include name="rest/**" />
+            <include name="standalone/**" />
+            <include name="README.txt" />
+         </fileset>
+      </copy>
 
-		<!-- Make shell scripts executable -->
-		<chmod perm="ugo+x">
-			<fileset dir="${output.dir}/bin">
-				<include name="*.sh" />
-			</fileset>
-		</chmod>
+      <!-- Make shell scripts executable -->
+      <chmod perm="755">
+         <fileset dir="${output.dir}/bin">
+            <include name="**/*.sh" />
+         </fileset>
+      </chmod>
 
-		<!-- Delete unused profiles (domain and standalone) -->
-		<delete dir="${output.dir}/domain" />
-		<delete dir="${output.dir}/standalone" />
+      <!-- These files contain digested passwords, which should not be visible to external users -->
+      <chmod perm="600" file="${output.dir}/domain/configuration/mgmt-users.properties" />
+      <chmod perm="600" file="${output.dir}/standalone/configuration/mgmt-users.properties" />
 
-		<!-- Delete unused files and directories -->
-		<delete file="${output.dir}/README.txt" />
-		<delete dir="${output.dir}/bundles" />
-		<delete dir="${output.dir}/welcome-content" />
+      <!-- Copy the client libraries -->
+      <mkdir dir="${output.dir}/client/java" />
 
-		<!-- Copy the files specific to JBoss Enterprise Data Grid -->
-		<copy todir="${output.dir}/standalone">
-			<fileset dir="${project.basedir}/../src/main/resources/standalone">
-				<include name="**" />
-			</fileset>
-			<filterset>
-				<filter token="rest.war.checksum" value="${rest.war.checksum}" />
-			</filterset>
-		</copy>
+      <copy todir="${output.dir}/client/java">
+         <fileset file="${org.infinispan:infinispan-client-hotrod:jar}" />
+         <fileset file="${org.infinispan:infinispan-core:jar}" />
+         <fileset file="${org.jboss.marshalling:jboss-marshalling:jar}" />
+         <fileset file="${org.jboss.marshalling:jboss-marshalling-river:jar}" />
+         <fileset file="${org.jboss.logging:jboss-logging:jar}" />
+         <fileset file="${commons-pool:commons-pool:jar}" />
+         <mapper type="flatten" />
+      </copy>
 
-		<copy todir="${output.dir}/domain">
-			<fileset dir="${project.basedir}/../src/main/resources/domain">
-				<include name="**" />
-			</fileset>
-			<filterset>
-				<filter token="rest.war.checksum" value="${rest.war.checksum}" />
-			</filterset>
-		</copy>
+      <!-- Copy the RHQ agent plugin -->
+      <mkdir dir="${output.dir}/client/rhq-agent" />
 
-		<!-- Copy the REST webapp elements -->
-		<copy todir="${output.dir}/rest">
-			<fileset dir="${project.basedir}/../src/main/resources/rest">
-				<include name="**" />
-			</fileset>
-		</copy>
+      <copy todir="${output.dir}/client/rhq-agent">
+         <fileset file="${org.infinispan:infinispan-rhq-plugin:jar}" />
+         <mapper type="flatten" />
+      </copy>
+   </target>
 
-		<!-- Copy EDG's readme file -->
-		<copy todir="${output.dir}">
-			<fileset dir="${project.basedir}/../src/main/resources">
-				<include name="README.txt" />
-			</fileset>
-		</copy>
+   <target name="jboss-modules">
+      <ant antfile="jboss-as-build.xml" inheritall="true" target="modules" />
+   </target>
 
-		<!-- Copy the client libraries -->
-		<mkdir dir="${output.dir}/client/java" />
+   <!-- These modules are for EDG-specific functionality -->
+   <target name="edg-modules">
+      <module-def name="com.thoughtworks.xstream" src="${edg.modules.dir}">
+         <maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
+      </module-def>
 
-		<copy todir="${output.dir}/client/java">
-			<fileset file="${org.infinispan:infinispan-client-hotrod:jar}" />
-			<fileset file="${org.infinispan:infinispan-commons:jar}" />
-			<fileset file="${org.infinispan:infinispan-api:jar}" />
-			<fileset file="${org.jboss.marshalling:jboss-marshalling:jar}" />
-			<fileset file="${org.jboss.marshalling:jboss-marshalling-river:jar}" />
-			<fileset file="${org.jboss.logging:jboss-logging:jar}" />
-			<fileset file="${commons-pool:commons-pool:jar}" />
-			<mapper type="flatten" />
-		</copy>
+      <module-def name="com.redhat.datagrid" src="${edg.modules.dir}">
+         <maven-resource group="com.redhat.datagrid" artifact="enterprise-datagrid-integration" />
+      </module-def>
 
-		<!-- Copy the RHQ agent plugin -->
-		<mkdir dir="${output.dir}/client/rhq-agent" />
+      <module-def name="javax.activation.api" src="${edg.modules.dir}">
+         <maven-resource group="javax.activation" artifact="activation" />
+      </module-def>
 
-		<copy todir="${output.dir}/client/rhq-agent">
-			<fileset file="${org.infinispan:infinispan-rhq-plugin:jar}" />
-			<mapper type="flatten" />
-		</copy>
+      <module-def name="org.jboss.as.clustering.jgroups" src="${edg.modules.dir}">
+         <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-jgroups" />
+      </module-def>
 
-	</target>
+      <module-def name="org.jboss.as.clustering.infinispan" src="${edg.modules.dir}">
+         <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
+      </module-def>
 
-	<target name="modules">
+      <module-def name="org.jboss.jts" src="${edg.modules.dir}">
+         <maven-resource group="org.jboss.jbossts" artifact="jbossjts" />
+      </module-def>
 
-		<module-def name="com.thoughtworks.xstream">
-			<maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
-		</module-def>
+      <module-def name="org.infinispan" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-core" />
+      </module-def>
 
-		<delete dir="${output.dir}/modules/org/infinispan" />
-		<delete dir="${output.dir}/modules/org/jboss/as/clustering/infinispan" />
-		<delete dir="${output.dir}/modules/org/jboss/as/clustering/jgroups" />
+      <module-def name="org.infinispan.cachestore.jdbc" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc" />
+      </module-def>
 
-		<module-def name="org.jboss.as.clustering.infinispan">
-			<maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
-		</module-def>
+      <module-def name="org.infinispan.cachestore.remote" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
+      </module-def>
 
-		<module-def name="org.jboss.as.clustering.jgroups">
-			<maven-resource group="org.jboss.as" artifact="jboss-as-clustering-jgroups" />
-		</module-def>
+      <module-def name="org.infinispan.client.hotrod" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-client-hotrod" />
+      </module-def>
 
-		<module-def name="com.redhat.datagrid">
-			<maven-resource group="com.redhat.datagrid" artifact="enterprise-datagrid-integration" />
-		</module-def>
+      <module-def name="org.infinispan.server" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-server-core" />
+      </module-def>
 
-		<module-def name="org.infinispan.api">
-			<maven-resource group="org.infinispan" artifact="infinispan-api" />
-		</module-def>
+      <module-def name="org.infinispan.server.hotrod" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-server-hotrod" />
+      </module-def>
 
-		<module-def name="org.infinispan.commons">
-			<maven-resource group="org.infinispan" artifact="infinispan-commons" />
-		</module-def>
+      <module-def name="org.infinispan.server.memcached" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-server-memcached" />
+      </module-def>
 
-		<module-def name="org.infinispan">
-			<maven-resource group="org.infinispan" artifact="infinispan-core" />
-		</module-def>
+      <module-def name="org.infinispan.server.rest" src="${edg.modules.dir}">
+         <maven-resource-with-classifier group="org.infinispan" artifact="infinispan-server-rest" classifier="classes" />
+      </module-def>
 
-		<module-def name="org.infinispan.cachestore.jdbc">
-			<maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc" />
-		</module-def>
+      <module-def name="org.jgroups" src="${edg.modules.dir}">
+         <maven-resource group="org.jgroups" artifact="jgroups" />
+      </module-def>
 
-		<module-def name="org.infinispan.cachestore.remote">
-			<maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
-		</module-def>
+      <module-def name="org.scala-lang.library" src="${edg.modules.dir}">
+         <maven-resource group="org.scala-lang" artifact="scala-library" />
+      </module-def>
 
-		<module-def name="org.infinispan.client.hotrod">
-			<maven-resource group="org.infinispan" artifact="infinispan-client-hotrod" />
-		</module-def>
+   </target>
 
-		<module-def name="org.infinispan.server">
-			<maven-resource group="org.infinispan" artifact="infinispan-server-core" />
-		</module-def>
-
-		<module-def name="org.infinispan.server.hotrod">
-			<maven-resource group="org.infinispan" artifact="infinispan-server-hotrod" />
-		</module-def>
-
-		<module-def name="org.infinispan.server.memcached">
-			<maven-resource group="org.infinispan" artifact="infinispan-server-memcached" />
-		</module-def>
-
-		<module-def name="org.infinispan.server.rest">
-			<maven-resource-with-classifier group="org.infinispan" artifact="infinispan-server-rest" classifier="classes" />
-		</module-def>
-
-		<module-def name="org.scala-lang.library">
-			<maven-resource group="org.scala-lang" artifact="scala-library" />
-		</module-def>
-
-		<module-def name="org.apache.commons-pool">
-			<maven-resource group="commons-pool" artifact="commons-pool" />
-		</module-def>
-
-	</target>
-
-	<target name="all" depends="clean, copy-files, modules" />
+   <target name="all" depends="clean, copy-files, jboss-modules, edg-modules" />
 </project>
