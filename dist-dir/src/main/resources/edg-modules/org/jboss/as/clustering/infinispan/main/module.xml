@@ -34,6 +34,7 @@
         <module name="org.infinispan"/>
         <module name="org.infinispan.cachestore.jdbc"/>
         <module name="org.infinispan.cachestore.remote" />
+	<module name="org.infinispan.client.hotrod" />
         <module name="org.infinispan.server" services="import"/>
         <module name="org.infinispan.server.hotrod" services="import"/>
         <module name="org.infinispan.server.memcached" services="import"/>
