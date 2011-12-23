@@ -111,7 +111,6 @@
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-rhq-plugin</artifactId>
       </dependency>
-
    </dependencies>
 
    <build>

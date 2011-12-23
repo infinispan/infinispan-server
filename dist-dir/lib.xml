@@ -44,6 +44,8 @@
             <!-- Figure out the correct module path -->
             <define-module-dir name="@{name}" slot="@{slot}"/>
 
+            <delete dir="${module.repo.output.dir}/${current.module.path}" quiet="true" />
+
             <!-- Make the module output director -->
             <mkdir dir="${module.repo.output.dir}/${current.module.path}"/>
 
