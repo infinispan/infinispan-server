@@ -18,8 +18,6 @@
  */
 package com.redhat.datagrid.endpoint;
 
-import static com.redhat.datagrid.DataGridConstants.VERSION;
-
 import java.net.InetSocketAddress;
 import java.util.Properties;
 
@@ -39,7 +37,7 @@ import com.redhat.datagrid.SecurityActions;
 
 /**
  * The service that configures and starts the endpoints supported by data grid.
- * 
+ *
  * @author Tristan Tarrant
  */
 class ProtocolServerService implements Service<ProtocolServer> {
@@ -63,7 +61,7 @@ class ProtocolServerService implements Service<ProtocolServer> {
    private ProtocolServer protocolServer;
    // The name of the server
    private String serverName;
-   
+
 
    ProtocolServerService(ModelNode config, Class<? extends ProtocolServer> serverClass) {
       this.config = config.clone();
