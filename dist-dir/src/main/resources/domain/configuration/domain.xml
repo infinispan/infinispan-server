@@ -178,9 +178,9 @@
             </virtual-server>
          </subsystem>
          <subsystem xmlns="urn:redhat:domain:datagrid:endpoint:1.0">
-            <hotrod-connector socket-binding="hotrod" />
-            <memcached-connector socket-binding="memcached" />
-            <rest-connector virtual-server="default-host" />
+            <hotrod-connector socket-binding="hotrod" cache-container="default"/>
+            <memcached-connector socket-binding="memcached" cache-container="default"/>
+            <rest-connector virtual-server="default-host" cache-container="default"/>
          </subsystem>
       </profile>
    </profiles>

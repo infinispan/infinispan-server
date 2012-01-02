@@ -3,6 +3,7 @@ package com.redhat.datagrid.endpoint;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.as.network.SocketBinding;
@@ -14,6 +15,20 @@ import org.jboss.msc.value.InjectedValue;
 import com.redhat.datagrid.DataGridConstants;
 
 public class EndpointUtils {
+   private static final String INFINISPAN_SERVICE_NAME = "infinispan";
+
+   public static ServiceName getCacheContainerServiceName(String cacheContainerName) {
+      ServiceName cacheContainerServiceName = ServiceName.JBOSS.append(INFINISPAN_SERVICE_NAME);
+      if (cacheContainerName != null) {
+         cacheContainerServiceName = cacheContainerServiceName.append(cacheContainerName);
+      }
+      return cacheContainerServiceName;
+   }
+
+   public static ServiceName getTransportServiceName(String cacheContainerName) {
+      return getCacheContainerServiceName(cacheContainerName).append("transport");
+   }
+
    public static ServiceName getServiceName(final ModelNode node, final String... prefix) {
       final PathAddress address = PathAddress.pathAddress(node.require(OP_ADDR));
       final String name = address.getLastElement().getValue();
@@ -23,13 +38,12 @@ public class EndpointUtils {
          return DataGridConstants.SN_ENDPOINT.append(name);
    }
 
-   public static void addCacheContainerDependency(ServiceBuilder<?> builder, String cacheContainerName, InjectedValue<EmbeddedCacheManager> target) {
-      ServiceName cacheContainerServiceName = ServiceName.JBOSS.append("infinispan");
-      if (cacheContainerName != null) {
-         cacheContainerServiceName = cacheContainerServiceName.append(cacheContainerName);
-      }
-
+   public static void addCacheContainerDependency(OperationContext context, ServiceBuilder<?> builder, String cacheContainerName, InjectedValue<EmbeddedCacheManager> target) {
+      ServiceName cacheContainerServiceName = getCacheContainerServiceName(cacheContainerName);
       builder.addDependency(ServiceBuilder.DependencyType.REQUIRED, cacheContainerServiceName, EmbeddedCacheManager.class, target);
+
+      ServiceName transportServiceName = cacheContainerServiceName.append("transport");
+      builder.addDependency(transportServiceName);
    }
 
    public static void addSocketBindingDependency(ServiceBuilder<?> builder, String socketBindingName, InjectedValue<SocketBinding> target) {
@@ -40,10 +54,10 @@ public class EndpointUtils {
    public static ModelNode pathAddress(PathElement... elements) {
       return PathAddress.pathAddress(elements).toModelNode();
    }
-   
+
    public static void copyIfSet(String name, ModelNode source, ModelNode target) {
       if (source.hasDefined(name)) {
-         target.get(name).set(source.get(name));         
+         target.get(name).set(source.get(name));
       }
    }
 }

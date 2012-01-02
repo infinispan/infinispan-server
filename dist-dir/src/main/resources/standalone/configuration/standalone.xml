@@ -207,11 +207,11 @@
          </cache-container>
       </subsystem>
       <subsystem xmlns="urn:redhat:domain:datagrid:endpoint:1.0">
-         <hotrod-connector socket-binding="hotrod">
+         <hotrod-connector socket-binding="hotrod" cache-container="default">
             <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000" />
          </hotrod-connector>
-         <memcached-connector socket-binding="memcached" />
-         <rest-connector virtual-server="default-host" />
+         <memcached-connector socket-binding="memcached" cache-container="default"/>
+         <rest-connector virtual-server="default-host" cache-container="default"/>
       </subsystem>
 
    </profile>
