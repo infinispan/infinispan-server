@@ -32,6 +32,7 @@
       <copy todir="${output.dir}">
          <fileset dir="${basedir}/src/main/resources">
             <include name="bin/**" />
+            <include name="docs/**" />
             <include name="domain/**" />
             <include name="rest/**" />
             <include name="standalone/**" />

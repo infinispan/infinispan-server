@@ -50,7 +50,7 @@ class HotRodSubsystemAdd extends AbstractAddStepHandler implements DescriptionPr
 
    private static void populate(ModelNode source, ModelNode target) {
       target.setEmptyObject();
-      
+
       copyIfSet(ModelKeys.NAME, source, target);
       copyIfSet(ModelKeys.CACHE_CONTAINER, source, target);
       copyIfSet(ModelKeys.SOCKET_BINDING, source, target);
@@ -74,7 +74,7 @@ class HotRodSubsystemAdd extends AbstractAddStepHandler implements DescriptionPr
 
       // Setup the various dependencies with injectors and install the service
       ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "hotrod"), service);
-      EndpointUtils.addCacheContainerDependency(builder, service.getCacheContainerName(), service.getCacheManager());
+      EndpointUtils.addCacheContainerDependency(context, builder, service.getCacheContainerName(), service.getCacheManager());
       EndpointUtils.addSocketBindingDependency(builder, service.getRequiredSocketBindingName(), service.getSocketBinding());
       builder.install();
    }

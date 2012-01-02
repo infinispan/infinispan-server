@@ -50,7 +50,7 @@ class MemcachedSubsystemAdd extends AbstractAddStepHandler implements Descriptio
 
    private static void populate(ModelNode source, ModelNode target) {
       target.setEmptyObject();
-      
+
       copyIfSet(ModelKeys.NAME, source, target);
       copyIfSet(ModelKeys.CACHE_CONTAINER, source, target);
       copyIfSet(ModelKeys.SOCKET_BINDING, source, target);
@@ -58,7 +58,7 @@ class MemcachedSubsystemAdd extends AbstractAddStepHandler implements Descriptio
       copyIfSet(ModelKeys.TCP_NODELAY, source, target);
       copyIfSet(ModelKeys.RECEIVE_BUFFER_SIZE, source, target);
       copyIfSet(ModelKeys.SEND_BUFFER_SIZE, source, target);
-      copyIfSet(ModelKeys.WORKER_THREADS, source, target); 
+      copyIfSet(ModelKeys.WORKER_THREADS, source, target);
    }
 
    @Override
@@ -74,7 +74,7 @@ class MemcachedSubsystemAdd extends AbstractAddStepHandler implements Descriptio
 
       // Setup the various dependencies with injectors and install the service
       ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "memcached"), service);
-      EndpointUtils.addCacheContainerDependency(builder, service.getCacheContainerName(), service.getCacheManager());
+      EndpointUtils.addCacheContainerDependency(context, builder, service.getCacheContainerName(), service.getCacheManager());
       EndpointUtils.addSocketBindingDependency(builder, service.getRequiredSocketBindingName(), service.getSocketBinding());
       builder.install();
    }
