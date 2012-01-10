@@ -25,10 +25,6 @@ public class EndpointUtils {
       return cacheContainerServiceName;
    }
 
-   public static ServiceName getTransportServiceName(String cacheContainerName) {
-      return getCacheContainerServiceName(cacheContainerName).append("transport");
-   }
-
    public static ServiceName getServiceName(final ModelNode node, final String... prefix) {
       final PathAddress address = PathAddress.pathAddress(node.require(OP_ADDR));
       final String name = address.getLastElement().getValue();

@@ -208,6 +208,10 @@
             <maven-resource group="org.jboss.remoting3" artifact="jboss-remoting"/>
         </module-def>
 
+        <module-def name="org.jboss.remoting3.remoting-jmx">
+            <maven-resource group="org.jboss.remoting3" artifact="remoting-jmx"/>
+        </module-def>
+
         <module-def name="org.jboss.sasl">
             <maven-resource group="org.jboss.sasl" artifact="jboss-sasl" />
         </module-def>
@@ -665,6 +669,10 @@
             <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-jgroups"/>
         </module-def>
 
+        <module-def name="org.jboss.as.clustering.registry">
+            <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-registry"/>
+        </module-def>
+
         <module-def name="org.jboss.as.clustering.service">
             <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-service"/>
         </module-def>
@@ -679,6 +687,10 @@
 
         <module-def name="org.jboss.as.clustering.web.spi">
             <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-web-spi"/>
+        </module-def>
+
+        <module-def name="org.jboss.as.configadmin">
+            <maven-resource group="org.jboss.as" artifact="jboss-as-configadmin"/>
         </module-def>
 
         <module-def name="org.jboss.as.cmp">
@@ -1093,8 +1105,8 @@
         </module-def>
 
         <module-def name="org.picketlink">
-            <maven-resource group="org.picketlink" artifact="picketlink-fed"/>
-            <maven-resource group="org.picketlink" artifact="picketlink-bindings"/>
+            <maven-resource group="org.picketlink" artifact="picketlink-fed" jandex="true"/>
+            <maven-resource group="org.picketlink" artifact="picketlink-bindings" jandex="true"/>
             <maven-resource group="org.picketlink" artifact="picketlink-bindings-jboss"/>
             <maven-resource group="org.picketlink" artifact="picketlink-trust-jbossws"/>
         </module-def>
@@ -1146,68 +1158,13 @@
     </target>
 
     <target name="bundles">
-        <bundle-def name="org.apache.aries.jmx">
-            <maven-bundle group="org.apache.aries.jmx" artifact="org.apache.aries.jmx"/>
-        </bundle-def>
-
-        <bundle-def name="org.apache.aries.util">
-            <maven-bundle group="org.apache.aries" artifact="org.apache.aries.util"/>
-        </bundle-def>
 
         <bundle-def name="org.apache.felix.configadmin">
             <maven-bundle group="org.apache.felix" artifact="org.apache.felix.configadmin"/>
         </bundle-def>
 
-        <bundle-def name="org.apache.felix.eventadmin">
-            <maven-bundle group="org.apache.felix" artifact="org.apache.felix.eventadmin"/>
-        </bundle-def>
-
-        <bundle-def name="org.apache.felix.log">
-            <maven-bundle group="org.apache.felix" artifact="org.apache.felix.log"/>
-        </bundle-def>
-
-        <bundle-def name="org.apache.felix.metatype">
-            <maven-bundle group="org.apache.felix" artifact="org.apache.felix.metatype"/>
-        </bundle-def>
-
-        <bundle-def name="org.apache.felix.scr">
-            <maven-bundle group="org.apache.felix" artifact="org.apache.felix.scr"/>
-        </bundle-def>
-
-        <bundle-def name="org.apache.felix.webconsole">
-            <maven-bundle group="org.apache.felix" artifact="org.apache.felix.webconsole"/>
-        </bundle-def>
-
         <bundle-def name="org.jboss.as.osgi.configadmin">
             <maven-bundle group="org.jboss.as" artifact="jboss-as-osgi-configadmin"/>
-        </bundle-def>
-
-        <bundle-def name="org.jboss.osgi.blueprint">
-            <maven-bundle group="org.jboss.osgi.blueprint" artifact="jbosgi-blueprint"/>
-        </bundle-def>
-
-        <bundle-def name="org.jboss.osgi.http">
-            <maven-bundle group="org.jboss.osgi.http" artifact="jbosgi-http"/>
-        </bundle-def>
-
-        <bundle-def name="org.jboss.osgi.jmx">
-            <maven-bundle group="org.jboss.osgi.jmx" artifact="jboss-osgi-jmx"/>
-        </bundle-def>
-
-        <bundle-def name="org.jboss.osgi.logging">
-            <maven-bundle group="org.jboss.osgi.logging" artifact="jboss-osgi-logging"/>
-        </bundle-def>
-
-        <bundle-def name="org.jboss.osgi.webapp">
-            <maven-bundle group="org.jboss.osgi.webapp" artifact="jbosgi-webapp"/>
-        </bundle-def>
-
-        <bundle-def name="org.jboss.osgi.webconsole">
-            <maven-bundle group="org.jboss.osgi.webconsole" artifact="jbosgi-webconsole"/>
-        </bundle-def>
-
-        <bundle-def name="org.jboss.osgi.xerces">
-            <maven-bundle group="org.jboss.osgi.xerces" artifact="jboss-osgi-xerces"/>
         </bundle-def>
 
         <bundle-def name="org.osgi.compendium">
