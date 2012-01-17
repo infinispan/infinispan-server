@@ -103,10 +103,9 @@
                </long-running-threads>
             </default-workmanager>
          </subsystem>
-         <subsystem xmlns="urn:jboss:domain:jgroups:1.0" default-stack="udp">
+         <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="udp">
             <stack name="udp">
-               <transport type="UDP" socket-binding="jgroups-udp" diagnostics-socket-binding="jgroups-diag">
-               </transport>
+               <transport type="UDP" socket-binding="jgroups-udp" diagnostics-socket-binding="jgroups-diag" site="${topology.site}" rack="${topology.rack}" machine="${topology.machine}"/>
                <protocol type="PING" />
                <protocol type="MERGE2" />
                <protocol type="FD_SOCK" socket-binding="jgroups-fdsock" />
@@ -124,7 +123,7 @@
             </stack>
          </subsystem>
          <subsystem xmlns="urn:jboss:domain:jmx:1.1">
-            <jmx-connector registry-binding="jmx-connector-registry" server-binding="jmx-connector-server" />
+            <show-model value="true"/>
          </subsystem>
          <subsystem xmlns="urn:jboss:domain:modcluster:1.0">
             <mod-cluster-config advertise-socket="modcluster" />

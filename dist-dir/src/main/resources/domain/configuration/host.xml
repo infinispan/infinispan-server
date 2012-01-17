@@ -47,6 +47,11 @@
          <jvm name="default">
             <!-- jvm-options> <option value="-Xrunjdwp:transport=dt_socket,address=8788,server=y,suspend=y"/> </jvm-options -->
          </jvm>
+         <system-properties>
+            <property name="topology.site" value="s1"/>
+            <property name="topology.rack" value="r1"/>
+            <property name="topology.machine" value="m1"/>
+         </system-properties>
       </server>
 
       <server name="server-two" group="datagrid-server-group" auto-start="true">
@@ -55,6 +60,11 @@
          <jvm name="default">
             <!-- jvm-options> <option value="-Xrunjdwp:transport=dt_socket,address=8789,server=y,suspend=y"/> </jvm-options -->
          </jvm>
+         <system-properties>
+            <property name="topology.site" value="s1"/>
+            <property name="topology.rack" value="r1"/>
+            <property name="topology.machine" value="m2"/>
+         </system-properties>
       </server>
    </servers>
 </host>
