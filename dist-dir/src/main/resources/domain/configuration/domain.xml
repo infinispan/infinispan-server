@@ -72,14 +72,12 @@
                   remote-timeout="30000">
                   <locking isolation="READ_COMMITTED" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                   <transaction mode="NONE" />
-                  <rehashing enabled="true" timeout="600000" />
                </distributed-cache>
 
                <distributed-cache name="memcachedCache" mode="SYNC" virtual-nodes="1" owners="2" batching="false" indexing="NONE" 
                   remote-timeout="30000">
                   <locking isolation="READ_COMMITTED" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                   <transaction mode="NONE" />
-                  <rehashing enabled="true" timeout="600000" />
                </distributed-cache>
 
                <distributed-cache name="namedCache" mode="SYNC" />
@@ -89,16 +87,16 @@
             <archive-validation enabled="true" />
             <bean-validation enabled="true" />
             <default-workmanager>
-               <short-running-threads blocking="true">
-                  <core-threads count="10" per-cpu="20" />
-                  <queue-length count="10" per-cpu="20" />
-                  <max-threads count="10" per-cpu="20" />
+               <short-running-threads>
+                  <core-threads count="90" />
+                  <queue-length count="90"/>
+                  <max-threads count="90" />
                   <keepalive-time time="10" unit="seconds" />
                </short-running-threads>
-               <long-running-threads blocking="true">
-                  <core-threads count="10" per-cpu="20" />
-                  <queue-length count="10" per-cpu="20" />
-                  <max-threads count="10" per-cpu="20" />
+               <long-running-threads>
+                  <core-threads count="90"/>
+                  <queue-length count="90"/>
+                  <max-threads count="90"/>
                   <keepalive-time time="10" unit="seconds" />
                </long-running-threads>
             </default-workmanager>

@@ -119,6 +119,10 @@
             <maven-resource group="org.jboss.as" artifact="jboss-as-deployment-repository"/>
         </module-def>
 
+        <module-def name="org.jboss.as.domain-http-error-context">
+            <maven-resource group="org.jboss.as" artifact="jboss-as-domain-http-error-context"/>
+        </module-def>
+
         <module-def name="org.jboss.as.domain-http-interface">
             <maven-resource group="org.jboss.as" artifact="jboss-as-domain-http-interface"/>
         </module-def>
@@ -160,6 +164,14 @@
         </module-def>
 
         <module-def name="org.jboss.as.standalone"/>
+
+        <module-def name="org.jboss.as.threads">
+            <maven-resource group="org.jboss.as" artifact="jboss-as-threads"/>
+        </module-def>
+
+        <module-def name="org.jboss.com.sun.httpserver">
+            <maven-resource group="org.jboss.com.sun.httpserver" artifact="httpserver"/>
+        </module-def>
 
         <module-def name="org.jboss.common-core">
             <maven-resource group="org.jboss" artifact="jboss-common-core"/>
@@ -437,10 +449,6 @@
             <maven-resource group="net.sourceforge.nekohtml" artifact="nekohtml"/>
         </module-def>
 
-        <module-def name="org.apache.ant">
-            <maven-resource group="org.apache.ant" artifact="ant"/>
-        </module-def>
-
         <module-def name="org.apache.commons.beanutils">
             <maven-resource group="commons-beanutils" artifact="commons-beanutils"/>
         </module-def>
@@ -572,6 +580,10 @@
 
         <module-def name="org.codehaus.jackson.jackson-xc">
             <maven-resource group="org.codehaus.jackson" artifact="jackson-xc" />
+        </module-def>
+
+        <module-def name="org.codehaus.jettison">
+            <maven-resource group="org.codehaus.jettison" artifact="jettison" />
         </module-def>
 
         <module-def name="org.hibernate">
@@ -706,10 +718,6 @@
         </module-def>
 
     	<module-def name="org.jboss.as.domain-add-user" />
-
-        <module-def name="org.jboss.as.domain-http-error-context">
-            <maven-resource group="org.jboss.as" artifact="jboss-as-domain-http-error-context"/>
-        </module-def>
 
         <module-def name="org.jboss.as.ee">
             <maven-resource group="org.jboss.as" artifact="jboss-as-ee"/>
@@ -851,16 +859,8 @@
             <maven-resource group="org.jboss.as" artifact="jboss-as-xts"/>
         </module-def>
 
-        <module-def name="org.jboss.as.threads">
-            <maven-resource group="org.jboss.as" artifact="jboss-as-threads"/>
-        </module-def>
-
         <module-def name="org.jboss.classfilewriter">
             <maven-resource group="org.jboss.classfilewriter" artifact="jboss-classfilewriter"/>
-        </module-def>
-
-        <module-def name="org.jboss.com.sun.httpserver">
-            <maven-resource group="org.jboss.com.sun.httpserver" artifact="httpserver"/>
         </module-def>
 
         <module-def name="org.jboss.ejb-client">
@@ -962,6 +962,10 @@
             <maven-resource group="org.jboss.osgi.vfs" artifact="jbosgi-vfs30"/>
         </module-def>
 
+        <module-def name="org.jboss.remote-naming">
+            <maven-resource group="org.jboss" artifact="jboss-remote-naming"/>
+        </module-def>
+
         <module-def name="org.jboss.resteasy.resteasy-atom-provider">
             <maven-resource group="org.jboss.resteasy" artifact="resteasy-atom-provider"  jandex="true"/>
         </module-def>
@@ -978,6 +982,10 @@
             <maven-resource group="org.jboss.resteasy" artifact="resteasy-jaxb-provider" jandex="true"/>
         </module-def>
 
+        <module-def name="org.jboss.resteasy.resteasy-jettison-provider">
+            <maven-resource group="org.jboss.resteasy" artifact="resteasy-jettison-provider" jandex="true"/>
+        </module-def>
+
         <module-def name="org.jboss.resteasy.resteasy-jaxrs">
             <maven-resource group="org.jboss.resteasy" artifact="async-http-servlet-3.0"/>
             <maven-resource group="org.jboss.resteasy" artifact="resteasy-jaxrs" jandex="true"/>
@@ -989,6 +997,10 @@
 
         <module-def name="org.jboss.resteasy.resteasy-multipart-provider">
             <maven-resource group="org.jboss.resteasy" artifact="resteasy-multipart-provider" jandex="true"/>
+        </module-def>
+
+        <module-def name="org.jboss.resteasy.resteasy-yaml-provider">
+            <maven-resource group="org.jboss.resteasy" artifact="resteasy-yaml-provider" jandex="true"/>
         </module-def>
 
         <module-def name="org.jboss.security.negotiation">
@@ -1111,6 +1123,12 @@
             <maven-resource group="org.picketlink" artifact="picketlink-trust-jbossws"/>
         </module-def>
 
+        <module-def name="org.picketbox">
+            <maven-resource group="org.picketbox" artifact="picketbox"/>
+            <maven-resource group="org.picketbox" artifact="picketbox-infinispan"/>
+            <maven-resource group="org.picketbox" artifact="picketbox-commons"/>
+        </module-def>
+
         <module-def name="org.python.jython.standalone">
             <maven-resource group="org.python" artifact="jython-standalone"/>
         </module-def>
@@ -1139,10 +1157,8 @@
             <maven-resource group="org.w3c.css" artifact="sac"/>
         </module-def>
 
-        <module-def name="org.picketbox">
-            <maven-resource group="org.picketbox" artifact="picketbox"/>
-            <maven-resource group="org.picketbox" artifact="picketbox-infinispan"/>
-            <maven-resource group="org.picketbox" artifact="picketbox-commons"/>
+        <module-def name="org.yaml.snakeyaml">
+            <maven-resource group="org.yaml" artifact="snakeyaml"/>
         </module-def>
 
         <module-def name="javax.wsdl4j.api">

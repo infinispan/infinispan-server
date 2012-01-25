@@ -46,7 +46,7 @@ rem # JVM memory allocation pool parameters - modify as appropriate.
 set "JAVA_OPTS=-Xms64M -Xmx512M -XX:MaxPermSize=256M"
 
 rem # Reduce the RMI GCs to once per hour for Sun JVMs.
-set "JAVA_OPTS=%JAVA_OPTS% -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000"
+set "JAVA_OPTS=%JAVA_OPTS% -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000 -Djava.net.preferIPv4Stack=true"
 
 rem # Warn when resolving remote XML DTDs or schemas.
 set "JAVA_OPTS=%JAVA_OPTS% -Dorg.jboss.resolver.warning=true"
@@ -56,7 +56,7 @@ rem # This is necessary to inject Byteman rules into AS7 deployments
 set "JAVA_OPTS=%JAVA_OPTS% -Djboss.modules.system.pkgs=org.jboss.byteman"
 
 rem # Use JBoss Modules lockless mode
-rem #JAVA_OPTS="$JAVA_OPTS -Djboss.modules.lockless=true"
+rem set "JAVA_OPTS=%JAVA_OPTS% -Djboss.modules.lockless=true"
 
 rem The ProcessController process uses its own set of java options
 set "PROCESS_CONTROLLER_JAVA_OPTS=%JAVA_OPTS%"

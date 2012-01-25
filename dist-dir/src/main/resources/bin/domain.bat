@@ -26,10 +26,20 @@ if exist "%DOMAIN_CONF%" (
 )
 
 pushd %DIRNAME%..
-if "x%JBOSS_HOME%" == "x" (
-  set "JBOSS_HOME=%CD%"
-)
+set "RESOLVED_JBOSS_HOME=%CD%"
 popd
+
+if "x%JBOSS_HOME%" == "x" (
+  set "JBOSS_HOME=%RESOLVED_JBOSS_HOME%"
+)
+
+pushd "%JBOSS_HOME%"
+set "SANITIZED_JBOSS_HOME=%CD%"
+popd
+
+if "%RESOLVED_JBOSS_HOME%" NEQ "%SANITIZED_JBOSS_HOME%" (
+    echo WARNING JBOSS_HOME may be pointing to a different installation - unpredictable results may occur.
+)
 
 set DIRNAME=
 
@@ -53,7 +63,8 @@ if "x%JAVA_HOME%" == "x" (
 rem Add -server to the JVM options, if supported
 "%JAVA%" -server -version 2>&1 | findstr /I hotspot > nul
 if not errorlevel == 1 (
-  set "JAVA_OPTS=%JAVA_OPTS% -server"
+  set "PROCESS_CONTROLLER_JAVA_OPTS=%PROCESS_CONTROLLER_JAVA_OPTS -server"
+  set "HOST_CONTROLLER_JAVA_OPTS=%HOST_CONTROLLER_JAVA_OPTS -server"
 )
 
 rem Find run.jar, or we can't continue
@@ -71,8 +82,8 @@ rem Setup the java endorsed dirs
 set JBOSS_ENDORSED_DIRS=%JBOSS_HOME%\lib\endorsed
 
 rem Set default module root paths
-if "x%MODULEPATH%" == "x" (
-  set  "MODULEPATH=%JBOSS_HOME%\modules"
+if "x%JBOSS_MODULEPATH%" == "x" (
+  set  "JBOSS_MODULEPATH=%JBOSS_HOME%\modules"
 )
 
 echo ===============================================================================
@@ -93,8 +104,7 @@ echo.
  "-Dorg.jboss.boot.log.file=%JBOSS_HOME%\domain\log\process-controller\boot.log" ^
  "-Dlogging.configuration=file:%JBOSS_HOME%/domain/configuration/logging.properties" ^
     -jar "%JBOSS_HOME%\jboss-modules.jar" ^
-    -mp "%MODULEPATH%" ^
-    -logmodule "org.jboss.logmanager" ^
+    -mp "%JBOSS_MODULEPATH%" ^
      org.jboss.as.process-controller ^
     -jboss-home "%JBOSS_HOME%" ^
     -jvm "%JAVA%" ^
