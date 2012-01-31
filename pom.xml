@@ -24,8 +24,8 @@
    <artifactId>enterprise-datagrid-parent</artifactId>
    <version>6.0.0-SNAPSHOT</version>
 
-   <name>Enterprise Data Grid - Parent POM</name>
-   <description>Enterprise Data Grid - Parent POM</description>
+   <name>Enterprise Data Grid - Parent</name>
+   <description>Enterprise Data Grid - Parent</description>
 
    <packaging>pom</packaging>
 
@@ -39,7 +39,8 @@
    <modules>
       <module>versions</module>
       <module>integration</module>
-      <module>dist-dir</module>
-      <module>dist-zip</module>
+      <module>server</module>
+      <module>standalone</module>
+      <module>embedded</module>
    </modules>
 </project>
