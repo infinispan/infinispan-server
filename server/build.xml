@@ -1,0 +1,152 @@
+<!--
+  ~ Copyright 2011 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA
+  -->
+<project name="dist-dir" basedir="." default="clean">
+
+   <property name="output.dir" value="${project.build.directory}/${jboss.datagrid.release.finalName}" />
+   <property name="edg.modules.dir" value="${basedir}/src/main/resources/edg-modules" />
+
+   <import file="lib.xml" />
+
+   <target name="clean">
+      <delete dir="${output.dir}" />
+   </target>
+
+   <target name="copy-files">
+      <!-- Copy the EDG resource files -->
+      <copy todir="${output.dir}">
+         <fileset dir="${basedir}/src/main/resources">
+            <include name="bin/**" />
+            <include name="docs/**" />
+            <include name="domain/**" />
+            <include name="rest/**" />
+            <include name="standalone/**" />
+            <include name="README.txt" />
+         </fileset>
+      </copy>
+
+      <!-- Make shell scripts executable -->
+      <chmod perm="755">
+         <fileset dir="${output.dir}/bin">
+            <include name="**/*.sh" />
+         </fileset>
+      </chmod>
+
+      <!-- These files contain digested passwords, which should not be visible to external users -->
+      <chmod perm="600" file="${output.dir}/domain/configuration/mgmt-users.properties" />
+      <chmod perm="600" file="${output.dir}/standalone/configuration/mgmt-users.properties" />
+
+      <!-- Copy the client libraries -->
+      <mkdir dir="${output.dir}/client/java" />
+
+      <copy todir="${output.dir}/client/java">
+         <fileset file="${org.infinispan:infinispan-client-hotrod:jar}" />
+         <fileset file="${org.infinispan:infinispan-core:jar}" />
+         <fileset file="${org.jboss.marshalling:jboss-marshalling:jar}" />
+         <fileset file="${org.jboss.marshalling:jboss-marshalling-river:jar}" />
+         <fileset file="${org.jboss.logging:jboss-logging:jar}" />
+         <fileset file="${commons-pool:commons-pool:jar}" />
+         <mapper type="flatten" />
+      </copy>
+
+      <!-- Copy the RHQ agent plugin -->
+      <mkdir dir="${output.dir}/client/rhq-agent" />
+
+      <copy todir="${output.dir}/client/rhq-agent">
+         <fileset file="${org.infinispan:infinispan-rhq-plugin:jar}" />
+         <mapper type="flatten" />
+      </copy>
+   </target>
+
+   <target name="jboss-modules">
+      <ant antfile="jboss-as-build.xml" inheritall="true" target="modules" />
+   </target>
+   
+   <target name="jboss-bundles" if="osgi.bundles.include">
+      <ant antfile="jboss-as-build.xml" inheritall="true" target="bundles" />
+   </target>
+
+   <!-- These modules are for EDG-specific functionality -->
+   <target name="edg-modules">
+      <module-def name="com.thoughtworks.xstream" src="${edg.modules.dir}">
+         <maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
+      </module-def>
+
+      <module-def name="com.redhat.datagrid" src="${edg.modules.dir}">
+         <maven-resource group="com.redhat.datagrid" artifact="enterprise-datagrid-integration" />
+      </module-def>
+
+      <module-def name="javax.activation.api" src="${edg.modules.dir}">
+         <maven-resource group="javax.activation" artifact="activation" />
+      </module-def>
+
+      <module-def name="org.jboss.as.clustering.jgroups" src="${edg.modules.dir}">
+         <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-jgroups" />
+      </module-def>
+
+      <module-def name="org.jboss.as.clustering.infinispan" src="${edg.modules.dir}">
+         <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
+      </module-def>
+
+      <module-def name="org.jboss.jts" src="${edg.modules.dir}">
+         <maven-resource group="org.jboss.jbossts" artifact="jbossjts" />
+      </module-def>
+
+      <module-def name="org.infinispan" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-core" />
+      </module-def>
+
+      <module-def name="org.infinispan.cachestore.jdbc" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc" />
+      </module-def>
+
+      <module-def name="org.infinispan.cachestore.remote" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
+      </module-def>
+
+      <module-def name="org.infinispan.client.hotrod" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-client-hotrod" />
+      </module-def>
+
+      <module-def name="org.infinispan.server" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-server-core" />
+      </module-def>
+
+      <module-def name="org.infinispan.server.hotrod" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-server-hotrod" />
+      </module-def>
+
+      <module-def name="org.infinispan.server.memcached" src="${edg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-server-memcached" />
+      </module-def>
+
+      <module-def name="org.infinispan.server.rest" src="${edg.modules.dir}">
+         <maven-resource-with-classifier group="org.infinispan" artifact="infinispan-server-rest" classifier="classes" />
+      </module-def>
+
+      <module-def name="org.jgroups" src="${edg.modules.dir}">
+         <maven-resource group="org.jgroups" artifact="jgroups" />
+      </module-def>
+
+      <module-def name="org.scala-lang.library" src="${edg.modules.dir}">
+         <maven-resource group="org.scala-lang" artifact="scala-library" />
+      </module-def>
+   </target>
+
+   <target name="all" depends="clean, copy-files, jboss-modules, edg-modules, jboss-bundles" />
+</project>

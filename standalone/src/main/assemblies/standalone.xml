@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ~ Copyright 2011 Red Hat, Inc. and/or its affiliates. ~ ~ This is free 
+   software; you can redistribute it and/or modify it ~ under the terms of the 
+   GNU Lesser General Public License as ~ published by the Free Software Foundation; 
+   either version 2.1 of ~ the License, or (at your option) any later version. 
+   ~ ~ This software is distributed in the hope that it will be useful, ~ but 
+   WITHOUT ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY 
+   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU ~ Lesser General Public 
+   License for more details. ~ ~ You should have received a copy of the GNU 
+   Lesser General Public ~ License along with this library; if not, write to 
+   the Free Software ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+   MA ~ 02110-1301 USA -->
+<assembly
+      xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+   <id>standalone</id>
+   <formats>
+      <format>zip</format>
+   </formats>
+
+   <includeBaseDirectory>true</includeBaseDirectory>
+
+   <dependencySets>
+      <dependencySet>
+         <useProjectArtifact>false</useProjectArtifact>
+         <includes>
+            <include>org.infinispan:infinispan-core</include>
+         </includes>
+      </dependencySet>
+      <dependencySet>
+         <useProjectArtifact>false</useProjectArtifact>
+         <includes>
+            <include>net.jcip:jcip-annotations</include>
+            <include>org.codehaus.woodstox:stax2-api</include>
+            <include>org.codehaus.woodstox:woodstox-core-asl</include>
+            <include>org.jboss:staxmapper</include>
+            <include>org.jboss.jbossts:jbossjts</include>
+            <include>org.jboss.logging:jboss-logging</include>
+            <include>org.jboss.marshalling:jboss-marshalling</include>
+            <include>org.jboss.marshalling:jboss-marshalling-river</include>
+            <include>org.jgroups:jgroups</include>
+         </includes>
+         <outputDirectory>lib</outputDirectory>
+      </dependencySet>
+      <dependencySet>
+         <useProjectArtifact>false</useProjectArtifact>
+         <includes>
+            <include>org.infinispan:infinispan-cachestore-jdbc</include>
+            <include>org.infinispan:infinispan-cachestore-remote</include>
+            <include>org.infinispan:infinispan-client-hotrod</include>
+            <include>org.infinispan:infinispan-rhq-plugin</include>
+         </includes>
+         <outputDirectory>modules</outputDirectory>
+      </dependencySet>
+   </dependencySets>
+</assembly>
