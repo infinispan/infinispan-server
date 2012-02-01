@@ -508,7 +508,6 @@
             <maven-resource group="org.apache.cxf" artifact="cxf-tools-wsdlto-databinding-jaxb"/>
             <maven-resource group="org.apache.cxf" artifact="cxf-tools-wsdlto-frontend-jaxws"/>
             <maven-resource group="org.apache.cxf.xjcplugins" artifact="cxf-xjc-boolean"/>
-            <maven-resource group="org.apache.cxf.xjcplugins" artifact="cxf-xjc-bug671"/>
             <maven-resource group="org.apache.cxf.xjcplugins" artifact="cxf-xjc-dv"/>
             <maven-resource group="org.apache.cxf.xjcplugins" artifact="cxf-xjc-ts"/>
         </module-def>
@@ -938,19 +937,17 @@
             <maven-resource group="org.jboss.netty" artifact="netty"/>
         </module-def>
 
-        <module-def name="org.jboss.osgi.deployment">
-            <maven-resource group="org.jboss.osgi.deployment" artifact="jbosgi-deployment"/>
-        </module-def>
-
         <module-def name="org.jboss.osgi.framework">
+            <maven-resource group="org.jboss.osgi.deployment" artifact="jbosgi-deployment"/>
             <maven-resource group="org.jboss.osgi.framework" artifact="jbosgi-framework-core"/>
-        </module-def>
-
-        <module-def name="org.jboss.osgi.resolver">
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-api"/>
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-spi"/>
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-felix"/>
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-metadata"/>
+        </module-def>
+
+        <module-def name="org.jboss.osgi.repository.api">
+            <maven-resource group="org.jboss.osgi.repository" artifact="jbosgi-repository-api"/>
         </module-def>
 
         <module-def name="org.jboss.osgi.spi">
@@ -1179,12 +1176,28 @@
             <maven-bundle group="org.apache.felix" artifact="org.apache.felix.configadmin"/>
         </bundle-def>
 
+        <bundle-def name="org.apache.felix.log">
+            <maven-bundle group="org.apache.felix" artifact="org.apache.felix.log"/>
+        </bundle-def>
+
         <bundle-def name="org.jboss.as.osgi.configadmin">
             <maven-bundle group="org.jboss.as" artifact="jboss-as-osgi-configadmin"/>
         </bundle-def>
 
+        <bundle-def name="org.jboss.osgi.logging">
+            <maven-bundle group="org.jboss.osgi.logging" artifact="jboss-osgi-logging"/>
+        </bundle-def>
+
+        <bundle-def name="org.jboss.osgi.repository">
+            <maven-bundle group="org.jboss.osgi.repository" artifact="jbosgi-repository"/>
+        </bundle-def>
+
         <bundle-def name="org.osgi.compendium">
             <maven-bundle group="org.osgi" artifact="org.osgi.compendium"/>
+        </bundle-def>
+
+        <bundle-def name="org.osgi.enterprise">
+            <maven-bundle group="org.osgi" artifact="org.osgi.enterprise"/>
         </bundle-def>
 
         <bundle-def name="org.projectodd.stilts">
