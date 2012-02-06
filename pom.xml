@@ -32,7 +32,7 @@
       <module>versions</module>
       <module>integration</module>
       <module>server</module>
-      <module>standalone</module>
+      <module>library</module>
       <module>embedded</module>
    </modules>
 </project>

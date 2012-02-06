@@ -14,10 +14,10 @@
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>enterprise-datagrid-standalone</artifactId>
+   <artifactId>enterprise-datagrid-library</artifactId>
 
-   <name>Enterprise Data Grid - Standalone Edition</name>
-   <description>Enterprise Data Grid - Standalone Edition</description>
+   <name>Enterprise Data Grid - Library Edition</name>
+   <description>Enterprise Data Grid - Library Edition</description>
 
    <packaging>pom</packaging>
 
