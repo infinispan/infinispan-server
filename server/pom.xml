@@ -17,7 +17,7 @@
    <parent>
       <groupId>com.redhat.datagrid</groupId>
       <artifactId>enterprise-datagrid-versions</artifactId>
-      <version>6.0.0.DR1-edg-1</version>
+      <version>6.0.0.DR2-edg-1</version>
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
@@ -48,6 +48,12 @@
       <dependency>
          <groupId>org.jgroups</groupId>
          <artifactId>jgroups</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>enterprise-datagrid-domain-http-error-context</artifactId>
+         <version>${project.version}</version>
       </dependency>
 
       <dependency>

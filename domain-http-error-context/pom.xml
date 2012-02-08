@@ -18,22 +18,13 @@
       <groupId>com.redhat.datagrid</groupId>
       <artifactId>enterprise-datagrid-versions</artifactId>
       <version>6.0.0.DR2-edg-1</version>
-      <relativePath>versions/pom.xml</relativePath>
+      <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>enterprise-datagrid-parent</artifactId>
+   <artifactId>enterprise-datagrid-domain-http-error-context</artifactId>
 
-   <name>Enterprise Data Grid - Parent</name>
-   <description>Enterprise Data Grid - Parent</description>
+   <name>Enterprise Data Grid - Domain HTTP Error Context</name>
+   <description>Enterprise Data Grid - Domain HTTP Error Context</description>
 
-   <packaging>pom</packaging>
-
-   <modules>
-      <module>versions</module>
-      <module>integration</module>
-      <module>domain-http-error-context</module>
-      <module>server</module>
-      <module>library</module>
-      <module>embedded</module>
-   </modules>
+   <packaging>jar</packaging>
 </project>
