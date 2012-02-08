@@ -88,7 +88,7 @@
                   </executions>
                   <configuration>
                      <descriptors>
-                        <descriptor>${project.basedir}/src/main/assemblies/standalone.xml</descriptor>
+                        <descriptor>${project.basedir}/src/main/assemblies/library.xml</descriptor>
                      </descriptors>
                      <finalName>${jboss.datagrid.release.finalName}</finalName>
                      <outputDirectory>${project.build.directory}/distribution</outputDirectory>
