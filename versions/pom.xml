@@ -25,13 +25,13 @@
    
       <!-- Version Info -->
       <version.net.jcip.annotations>1.0</version.net.jcip.annotations>
-      <version.org.jboss.as>7.1.0.DR1-edg-1</version.org.jboss.as>
+      <version.org.jboss.as>7.1.0.DR2-edg-1</version.org.jboss.as>
       <version.org.jboss.jandex>1.0.3.Final</version.org.jboss.jandex>
-      <version.org.jboss.jbossjts>4.16.1.Final</version.org.jboss.jbossjts>
+      <version.org.jboss.jbossjts>4.16.2.Final</version.org.jboss.jbossjts>
       <version.com.thoughtworks.xstream>1.4.1</version.com.thoughtworks.xstream>
       <version.junit>4.10</version.junit>
-      <version.org.infinispan>5.1.1.DR1-edg-1</version.org.infinispan>
-      <version.org.jgroups>3.0.4.Final</version.org.jgroups>
+      <version.org.infinispan>5.1.1.DR2-edg-1</version.org.infinispan>
+      <version.org.jgroups>3.0.5.Final</version.org.jgroups>
       <version.org.scala-lang>2.9.1</version.org.scala-lang>
       <relocations></relocations>
    </properties>
