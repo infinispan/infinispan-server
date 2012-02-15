@@ -1,3 +1,3 @@
-JBoss-Product-Release-Name: EDG
+JBoss-Product-Release-Name: Data Grid
 JBoss-Product-Release-Version: 6.0
 JBoss-Product-Console-Slot: edg

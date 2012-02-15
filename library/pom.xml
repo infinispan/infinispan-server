@@ -9,15 +9,15 @@
 
    <parent>
       <groupId>com.redhat.datagrid</groupId>
-      <artifactId>enterprise-datagrid-versions</artifactId>
-      <version>6.0.0.DR2-edg-1</version>
+      <artifactId>datagrid-versions</artifactId>
+      <version>6.0.0.DR3-redhat-1</version>
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>enterprise-datagrid-library</artifactId>
+   <artifactId>datagrid-library</artifactId>
 
-   <name>Enterprise Data Grid - Library Edition</name>
-   <description>Enterprise Data Grid - Library Edition</description>
+   <name>Data Grid - Library Edition</name>
+   <description>Data Grid - Library Edition</description>
 
    <packaging>pom</packaging>
 
