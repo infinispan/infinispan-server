@@ -11,7 +11,6 @@ net/sourceforge/cssparser/main/**
 net/sourceforge/nekohtml/main/**
 org/antlr/main/**
 org/apache/commons/beanutils/main/**
-org/apache/commons/cli/main/**
 org/apache/commons/collections/main/**
 org/apache/commons/io/main/**
 org/apache/commons/lang/main/**
@@ -45,7 +44,6 @@ org/jboss/as/ee/deployment/main/**
 org/jboss/as/ejb3/main/**
 org/jboss/as/jaxr/main/**
 org/jboss/as/jaxrs/main/**
-org/jboss/as/jdr/main/**
 org/jboss/as/jpa/main/**
 org/jboss/as/jpa/hibernate/main/**
 org/jboss/as/jpa/hibernate/infinispan/main/**
@@ -107,7 +105,6 @@ org/jboss/xts/main/**
 org/junit/main/**
 org/osgi/core/main/**
 org/picketlink/main/**
-org/python/jython/standalone/main/**
 org/slf4j/ext/main/**
 org/w3c/css/sac/main/**
 org/yaml/snakeyaml/main/**

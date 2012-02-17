@@ -4,6 +4,7 @@
       <extension module="org.jboss.as.clustering.infinispan" />
       <extension module="org.jboss.as.clustering.jgroups" />
       <extension module="org.jboss.as.connector" />
+      <extension module="org.jboss.as.jdr"/>
       <extension module="org.jboss.as.jmx" />
       <extension module="org.jboss.as.logging" />
       <extension module="org.jboss.as.modcluster" />
@@ -101,6 +102,7 @@
                </long-running-threads>
             </default-workmanager>
          </subsystem>
+         <subsystem xmlns="urn:jboss:domain:jdr:1.0"/>
          <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="udp">
             <stack name="udp">
                <transport type="UDP" socket-binding="jgroups-udp" diagnostics-socket-binding="jgroups-diag" site="${topology.site}" rack="${topology.rack}" machine="${topology.machine}"/>
