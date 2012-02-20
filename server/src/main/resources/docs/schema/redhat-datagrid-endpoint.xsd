@@ -41,7 +41,7 @@
       <xs:attribute name="socket-binding" type="xs:string"
          use="required" />
       <xs:attribute name="cache-container" type="xs:string"
-         use="optional" />
+         use="required" />
       <xs:attribute name="worker-threads" type="xs:int"
          use="optional" />
       <xs:attribute name="idle-timeout" type="xs:int" use="optional" />

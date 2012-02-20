@@ -33,8 +33,15 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.as.subsystem.test.AbstractSubsystemTest;
+import org.jboss.as.subsystem.test.AdditionalInitialization;
 import org.jboss.as.subsystem.test.KernelServices;
 import org.jboss.dmr.ModelNode;
+import org.jboss.msc.service.Service;
+import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceTarget;
+import org.jboss.msc.service.StartContext;
+import org.jboss.msc.service.StartException;
+import org.jboss.msc.service.StopContext;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -94,7 +101,7 @@ public class EndpointSubsystemParsingTestCase extends AbstractSubsystemTest {
    @Test
    public void testInstallIntoController() throws Exception {
       // Parse the subsystem xml and install into the controller
-      KernelServices services = super.installInController(subsystemXml);
+      KernelServices services = super.installInController(new EndpointAdditionalInitialization(), subsystemXml);
 
       // Read the whole model and make sure it looks as expected
       ModelNode model = services.readWholeModel();
@@ -109,13 +116,13 @@ public class EndpointSubsystemParsingTestCase extends AbstractSubsystemTest {
    public void testParseAndMarshalModel() throws Exception {
       // Parse the subsystem xml and install into the first controller
 
-      KernelServices servicesA = super.installInController(subsystemXml);
+      KernelServices servicesA = super.installInController(new EndpointAdditionalInitialization(), subsystemXml);
 
       // Get the model and the persisted xml from the first controller
       ModelNode modelA = servicesA.readWholeModel();
       String marshalled = servicesA.getPersistedSubsystemXml();
       // Install the persisted xml from the first controller into a second controller
-      KernelServices servicesB = super.installInController(marshalled);
+      KernelServices servicesB = super.installInController(new EndpointAdditionalInitialization(),marshalled);
       ModelNode modelB = servicesB.readWholeModel();
 
       // Make sure the models from the two controllers are identical
@@ -129,7 +136,7 @@ public class EndpointSubsystemParsingTestCase extends AbstractSubsystemTest {
    @Test
    public void testDescribeHandler() throws Exception {
       // Parse the subsystem xml and install into the first controller
-      KernelServices servicesA = super.installInController(subsystemXml);
+      KernelServices servicesA = super.installInController(new EndpointAdditionalInitialization(), subsystemXml);
       // Get the model and the describe operations from the first controller
       ModelNode modelA = servicesA.readWholeModel();
       ModelNode describeOp = new ModelNode();
@@ -138,11 +145,37 @@ public class EndpointSubsystemParsingTestCase extends AbstractSubsystemTest {
       List<ModelNode> operations = super.checkResultAndGetContents(servicesA.executeOperation(describeOp)).asList();
 
       // Install the describe options from the first controller into a second controller
-      KernelServices servicesB = super.installInController(operations);
+      KernelServices servicesB = super.installInController(new EndpointAdditionalInitialization(), operations);
       ModelNode modelB = servicesB.readWholeModel();
 
       // Make sure the models from the two controllers are identical
       super.compare(modelA, modelB);
+
+   }
+
+   private static final class EndpointAdditionalInitialization extends AdditionalInitialization {
+      @Override
+      protected void addExtraServices(ServiceTarget target) {
+         target.addService(MockTransportService.NAME, new MockTransportService()).install();
+      }
+   }
+
+   public static class MockTransportService implements Service<MockTransportService> {
+
+      public static final ServiceName NAME = ServiceName.JBOSS.append("infinispan", "default", "transport");
+
+      @Override
+      public MockTransportService getValue() throws IllegalStateException, IllegalArgumentException {
+         return this;
+      }
+
+      @Override
+      public void start(StartContext context) throws StartException {
+      }
+
+      @Override
+      public void stop(StopContext context) {
+      }
 
    }
 }

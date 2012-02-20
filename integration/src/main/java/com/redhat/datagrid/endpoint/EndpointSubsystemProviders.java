@@ -55,6 +55,7 @@ public class EndpointSubsystemProviders {
 
    static final DescriptionProvider SUBSYSTEM = new DescriptionProvider() {
 
+      @Override
       public ModelNode getModelDescription(final Locale locale) {
          final ResourceBundle bundle = getResourceBundle(locale);
          final ModelNode node = new ModelNode();
@@ -99,7 +100,7 @@ public class EndpointSubsystemProviders {
          node.get(TAIL_COMMENT_ALLOWED).set(true);
 
          addModelAttribute(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
-         addModelAttribute(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, true);
          addModelAttribute(node, ModelKeys.SOCKET_BINDING, bundle.getString("connector.socket-binding"), ModelType.STRING, true);
          addModelAttribute(node, ModelKeys.WORKER_THREADS, bundle.getString("connector.worker-threads"), ModelType.INT, false);
          addModelAttribute(node, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"), ModelType.LONG, false);
@@ -127,7 +128,7 @@ public class EndpointSubsystemProviders {
          node.get(DESCRIPTION).set(bundle.getString("connector.add"));
 
          addModelRequestProperty(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
-         addModelRequestProperty(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, true);
          addModelRequestProperty(node, ModelKeys.SOCKET_BINDING, bundle.getString("connector.socket-binding"), ModelType.STRING, true);
          addModelRequestProperty(node, ModelKeys.WORKER_THREADS, bundle.getString("connector.worker-threads"), ModelType.INT, false);
          addModelRequestProperty(node, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"), ModelType.LONG, false);
@@ -173,7 +174,7 @@ public class EndpointSubsystemProviders {
          node.get(TAIL_COMMENT_ALLOWED).set(true);
 
          addModelAttribute(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
-         addModelAttribute(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, true);
          addModelAttribute(node, ModelKeys.SOCKET_BINDING, bundle.getString("connector.socket-binding"), ModelType.STRING, true);
          addModelAttribute(node, ModelKeys.WORKER_THREADS, bundle.getString("connector.worker-threads"), ModelType.INT, false);
          addModelAttribute(node, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"), ModelType.LONG, false);
@@ -201,7 +202,7 @@ public class EndpointSubsystemProviders {
          node.get(DESCRIPTION).set(bundle.getString("connector.add"));
 
          addModelRequestProperty(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
-         addModelRequestProperty(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, true);
          addModelRequestProperty(node, ModelKeys.SOCKET_BINDING, bundle.getString("connector.socket-binding"), ModelType.STRING, true);
          addModelRequestProperty(node, ModelKeys.WORKER_THREADS, bundle.getString("connector.worker-threads"), ModelType.INT, false);
          addModelRequestProperty(node, ModelKeys.IDLE_TIMEOUT, bundle.getString("connector.idle-timeout"), ModelType.LONG, false);
@@ -246,7 +247,7 @@ public class EndpointSubsystemProviders {
          node.get(TAIL_COMMENT_ALLOWED).set(true);
 
          addModelAttribute(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
-         addModelAttribute(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, true);
          addModelAttribute(node, ModelKeys.VIRTUAL_SERVER, bundle.getString("rest-connector.virtual-server"), ModelType.STRING, false);
          addModelAttribute(node, ModelKeys.CONTEXT_PATH, bundle.getString("rest-connector.context-path"), ModelType.STRING, false);
 
@@ -263,7 +264,7 @@ public class EndpointSubsystemProviders {
          node.get(DESCRIPTION).set(bundle.getString("connector.add"));
 
          addModelRequestProperty(node, ModelKeys.NAME, bundle.getString("connector.name"), ModelType.STRING, false);
-         addModelRequestProperty(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, true);
          addModelRequestProperty(node, ModelKeys.VIRTUAL_SERVER, bundle.getString("rest-connector.virtual-server"), ModelType.STRING, false);
          addModelRequestProperty(node, ModelKeys.CONTEXT_PATH, bundle.getString("rest-connector.context-path"), ModelType.STRING, false);
 
