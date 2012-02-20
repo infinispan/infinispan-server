@@ -17,12 +17,12 @@
    <description>Enterprise Data Grid - BOM</description>
 
    <properties>
-      <version.org.jboss.as>7.1.0.CR1</version.org.jboss.as>
+      <version.org.jboss.as>7.1.0.Final</version.org.jboss.as>
       <version.org.jboss.jandex>1.0.3.Final</version.org.jboss.jandex>
       <version.com.thoughtworks.xstream>1.4.1</version.com.thoughtworks.xstream>
       <version.junit>4.10</version.junit>
-      <version.org.infinispan>5.1.0.CR2</version.org.infinispan>
-      <version.org.jgroups>3.0.1.Final</version.org.jgroups>
+      <version.org.infinispan>5.1.1.FINAL</version.org.infinispan>
+      <version.org.jgroups>3.0.5.Final</version.org.jgroups>
       <version.org.scala-lang>2.9.1</version.org.scala-lang>
       <relocations></relocations>
    </properties>

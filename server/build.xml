@@ -32,6 +32,7 @@
       <copy todir="${output.dir}">
          <fileset dir="${basedir}/src/main/resources">
             <include name="bin/**" />
+            <include name="docs/**" />
             <include name="domain/**" />
             <include name="rest/**" />
             <include name="standalone/**" />
@@ -74,6 +75,10 @@
 
    <target name="jboss-modules">
       <ant antfile="jboss-as-build.xml" inheritall="true" target="modules" />
+   </target>
+   
+   <target name="jboss-bundles" if="osgi.bundles.include">
+      <ant antfile="jboss-as-build.xml" inheritall="true" target="bundles" />
    </target>
 
    <!-- These modules are for EDG-specific functionality -->
@@ -141,8 +146,13 @@
       <module-def name="org.scala-lang.library" src="${edg.modules.dir}">
          <maven-resource group="org.scala-lang" artifact="scala-library" />
       </module-def>
-
+   </target>
+   
+   <target name="trim-modules">
+      <delete includeemptydirs="true" verbose="true">
+         <fileset dir="${output.dir}/modules" includesfile="trim-modules.txt" />
+      </delete>
    </target>
 
-   <target name="all" depends="clean, copy-files, jboss-modules, edg-modules" />
+   <target name="all" depends="clean, copy-files, jboss-modules, edg-modules, jboss-bundles, trim-modules" />
 </project>
