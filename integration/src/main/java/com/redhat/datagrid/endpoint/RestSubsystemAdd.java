@@ -74,7 +74,7 @@ class RestSubsystemAdd extends AbstractAddStepHandler implements DescriptionProv
 
       // Setup the various dependencies with injectors and install the service
       ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "rest"), service);
-      EndpointUtils.addCacheContainerDependency(builder, service.getCacheContainerName(), service.getCacheManager());
+      EndpointUtils.addCacheContainerDependency(context, builder, service.getCacheContainerName(), service.getCacheManager());
       builder.addDependency(AbstractPathService.pathNameOf(ServerEnvironment.HOME_DIR), String.class, service.getPathInjector());
       builder.addDependency(WebSubsystemServices.JBOSS_WEB_HOST.append(service.getVirtualServer()), VirtualHost.class, service.getHostInjector());
       builder.addListener(verificationHandler);
