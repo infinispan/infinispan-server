@@ -40,6 +40,5 @@
       <module>versions</module>
       <module>integration</module>
       <module>dist-dir</module>
-      <module>dist-zip</module>
    </modules>
 </project>
