@@ -88,7 +88,7 @@
       </module-def>
 
       <module-def name="com.redhat.datagrid" src="${edg.modules.dir}">
-         <maven-resource group="com.redhat.datagrid" artifact="enterprise-datagrid-integration" />
+         <maven-resource group="com.redhat.datagrid" artifact="datagrid-integration" />
       </module-def>
 
       <module-def name="javax.activation.api" src="${edg.modules.dir}">
