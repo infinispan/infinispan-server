@@ -46,6 +46,12 @@
             <artifactId>datagrid-integration</artifactId>
             <version>${project.version}</version>
          </dependency>
+         
+         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>datagrid-domain-http-error-context</artifactId>
+            <version>${project.version}</version>
+         </dependency>
 
          <dependency>
             <groupId>com.thoughtworks.xstream</groupId>

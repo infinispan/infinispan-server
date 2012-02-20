@@ -49,6 +49,11 @@
          <groupId>org.jgroups</groupId>
          <artifactId>jgroups</artifactId>
       </dependency>
+      
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>datagrid-domain-http-error-context</artifactId>
+      </dependency>
 
       <dependency>
          <groupId>${project.groupId}</groupId>

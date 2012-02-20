@@ -18,21 +18,13 @@
       <groupId>com.redhat.datagrid</groupId>
       <artifactId>datagrid-versions</artifactId>
       <version>6.0.0-SNAPSHOT</version>
-      <relativePath>versions/pom.xml</relativePath>
+      <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>datagrid-parent</artifactId>
-   <version>6.0.0-SNAPSHOT</version>
+   <artifactId>datagrid-domain-http-error-context</artifactId>
 
-   <name>JBoss Data Grid - Parent POM</name>
-   <description>JBoss Data Grid - Parent POM</description>
+   <name>JBoss Data Grid - Domain HTTP Error Context</name>
+   <description>JBoss Data Grid - Domain HTTP Error Context</description>
 
-   <packaging>pom</packaging>
-
-   <modules>
-      <module>versions</module>
-      <module>integration</module>
-      <module>domain-http-error-context</module>
-      <module>server</module>
-   </modules>
+   <packaging>jar</packaging>
 </project>

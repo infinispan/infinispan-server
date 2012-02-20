@@ -102,6 +102,16 @@
       <module-def name="org.jboss.as.clustering.infinispan" src="${edg.modules.dir}">
          <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
       </module-def>
+      
+      <module-def name="org.jboss.as.console" slot="edg" src="${edg.modules.dir}">
+          <maven-resource-with-classifier group="org.jboss.as" artifact="jboss-as-console" classifier="resources"/>
+      </module-def>
+
+      <module-def name="org.jboss.as.domain-http-error-context" slot="edg" src="${edg.modules.dir}">
+          <maven-resource group="com.redhat.datagrid" artifact="datagrid-domain-http-error-context" />
+      </module-def>
+
+      <module-def name="org.jboss.as.product" slot="edg" src="${edg.modules.dir}" />
 
       <module-def name="org.jboss.jts" src="${edg.modules.dir}">
          <maven-resource group="org.jboss.jbossts" artifact="jbossjts" />
