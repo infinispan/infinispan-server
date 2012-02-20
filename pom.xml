@@ -39,6 +39,6 @@
    <modules>
       <module>versions</module>
       <module>integration</module>
-      <module>dist-dir</module>
+      <module>server</module>
    </modules>
 </project>
