@@ -23,12 +23,13 @@
   -->
 
 <module xmlns="urn:jboss:module:1.1" name="com.h2database.h2">
-  <resources>
-    <!-- Insert resources here -->
-  </resources>
-  <dependencies>
-    <module name="javax.api"/>
-    <module name="javax.transaction.api"/>
-    <module name="javax.servlet.api" optional="true"/>
-  </dependencies>
+
+    <resources>
+        <!-- Insert resources here -->
+    </resources>
+    <dependencies>
+        <module name="javax.api"/>
+        <module name="javax.transaction.api"/>
+        <module name="javax.servlet.api" optional="true"/>
+    </dependencies>
 </module>

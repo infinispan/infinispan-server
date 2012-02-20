@@ -23,13 +23,21 @@
   -->
 
 <module xmlns="urn:jboss:module:1.1" name="org.jboss.as.mail">
+    <properties>
+        <property name="jboss.api" value="private"/>
+    </properties>
+
     <resources>
         <!-- Insert resources here -->
     </resources>
 
     <dependencies>
         <module name="javax.api"/>
-        <module name="javax.mail.api"/>
+        <module name="javax.mail.api">
+            <imports>
+                <include path="META-INF"/>
+            </imports>
+        </module>
         <module name="org.jboss.as.network"/>
         <module name="org.jboss.as.naming"/>
         <module name="org.jboss.staxmapper"/>
