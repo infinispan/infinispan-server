@@ -16,15 +16,15 @@
 
    <parent>
       <groupId>com.redhat.datagrid</groupId>
-      <artifactId>enterprise-datagrid-versions</artifactId>
+      <artifactId>datagrid-versions</artifactId>
       <version>6.0.0-SNAPSHOT</version>
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>enterprise-datagrid-server</artifactId>
+   <artifactId>datagrid-server</artifactId>
 
-   <name>Enterprise Data Grid - Server</name>
-   <description>Enterprise Data Grid - Server</description>
+   <name>JBoss Data Grid - Server</name>
+   <description>JBoss Data Grid - Server</description>
 
    <packaging>pom</packaging>
 
@@ -52,8 +52,7 @@
 
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>enterprise-datagrid-integration</artifactId>
-         <version>${project.version}</version>
+         <artifactId>datagrid-integration</artifactId>
       </dependency>
 
       <dependency>
