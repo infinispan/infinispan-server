@@ -4,12 +4,15 @@ import sys
 import argparse
 import xml.etree.ElementTree as ET
 
+JBOSS_DOMAIN_NS = '{urn:jboss:domain:1.1}'
+JBOSS_MODULE_NS = '{urn:jboss:module:1.1}'
+
 class Server:
     def __init__(self, path):
         doc = ET.parse(path)
         self.path = path
         self.extensions = ['org.jboss.as.standalone', 'org.jboss.as.process-controller', 'org.jboss.as.host-controller']
-        extensions = doc.findall('{0}extensions/{0}extension'.format("{urn:jboss:domain:1.1}"))
+        extensions = doc.findall('{0}extensions/{0}extension'.format(JBOSS_DOMAIN_NS))
         for extension in extensions:
             self.extensions.append(extension.get('module'))
 
@@ -36,11 +39,14 @@ class Module:
         self.name = root.get('name')
         self.dependencies = []
         self.resources = []
-        dependencies = doc.findall('{0}dependencies/{0}module'.format("{urn:jboss:module:1.1}"))
+        if(root.tag==(JBOSS_MODULE_NS+'module-alias')):
+            self.dependencies.append(root.get('target-name'))
+        
+        dependencies = doc.findall('{0}dependencies/{0}module'.format(JBOSS_MODULE_NS))
         for dependency in dependencies:
         	if(dependency.get('optional', 'false')=='false'):
 	            self.dependencies.append(dependency.get('name'))
-        resources = doc.findall('{0}resources/{0}resource-root'.format("{urn:jboss:module:1.1}"))
+        resources = doc.findall('{0}resources/{0}resource-root'.format(JBOSS_MODULE_NS))
         for resource in resources:
             self.resources.append(resource.get('path'))
 
