@@ -51,6 +51,9 @@
 
             <!-- Copy the module.xml and other stuff to the output director -->
             <copy todir="${module.repo.output.dir}/${current.module.path}">
+                <filterset>
+                    <filter token="project.version" value="${project.version}" />
+                </filterset>
                 <fileset dir="@{src}/${current.module.path}">
                     <include name="**"/>
                 </fileset>
