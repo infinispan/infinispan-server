@@ -21,10 +21,10 @@
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>enterprise-datagrid-dist-dir</artifactId>
+   <artifactId>enterprise-datagrid-server</artifactId>
 
-   <name>Enterprise Data Grid - Distribution (Directory)</name>
-   <description>Enterprise Data Grid - Distribution (Directory)</description>
+   <name>Enterprise Data Grid - Server</name>
+   <description>Enterprise Data Grid - Server</description>
 
    <packaging>pom</packaging>
 
