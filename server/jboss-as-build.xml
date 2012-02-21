@@ -31,9 +31,8 @@
     <target name="copy-files">
         <copy todir="${output.dir}">
             <fileset dir="src/main/resources">
+                <include name="JBossEULA.txt"/>
                 <include name="LICENSE.txt"/>
-                <include name="README.txt"/>
-                <include name="copyright.txt"/>
                 <include name="appclient/**"/>
                 <include name="bin/**"/>
                 <include name="docs/**"/>
@@ -298,8 +297,16 @@
             <maven-resource group="ch.qos.cal10n" artifact="cal10n-api"/>
         </module-def>
 
-        <module-def name="com.google.guava">
+        <module-def name="com.github.relaxng">
+            <maven-resource group="com.github.relaxng" artifact="relaxngDatatype" />
+        </module-def>
+
+    	<module-def name="com.google.guava">
             <maven-resource group="com.google.guava" artifact="guava" />
+        </module-def>
+
+        <module-def name="com.googlecode.jtype">
+            <maven-resource group="com.googlecode.jtype" artifact="jtype"/>
         </module-def>
 
         <module-def name="com.h2database.h2">
@@ -607,6 +614,10 @@
             <maven-resource group="org.codehaus.jettison" artifact="jettison" />
         </module-def>
 
+        <module-def name="org.hamcrest">
+            <maven-resource group="org.hamcrest" artifact="hamcrest-core"/>
+        </module-def>
+
         <module-def name="org.hibernate">
             <maven-resource group="org.hibernate" artifact="hibernate-core" />
             <maven-resource group="org.hibernate.common" artifact="hibernate-commons-annotations" />
@@ -791,10 +802,6 @@
 
         <module-def name="org.jboss.as.jpa.hibernate.infinispan">
             <maven-resource group="org.jboss.as" artifact="jboss-as-jpa-hibernate-infinispan"/>
-        </module-def>
-
-        <module-def name="org.jboss.as.jpa.openjpa">
-            <maven-resource group="org.jboss.as" artifact="jboss-as-jpa-openjpa"/>
         </module-def>
 
         <module-def name="org.jboss.as.jpa.spi">
@@ -1137,10 +1144,7 @@
         </module-def>
 
         <module-def name="org.picketlink">
-            <maven-resource group="org.picketlink" artifact="picketlink-fed" jandex="true"/>
-            <maven-resource group="org.picketlink" artifact="picketlink-bindings" jandex="true"/>
-            <maven-resource group="org.picketlink" artifact="picketlink-bindings-jboss"/>
-            <maven-resource group="org.picketlink" artifact="picketlink-trust-jbossws"/>
+            <maven-resource group="org.picketlink.product.eap" artifact="picketlink-core" jandex="true"/>
         </module-def>
 
         <module-def name="org.picketbox">

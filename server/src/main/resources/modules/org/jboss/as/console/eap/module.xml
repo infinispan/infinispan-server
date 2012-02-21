@@ -2,7 +2,7 @@
 
 <!--
   ~ JBoss, Home of Professional Open Source.
-  ~ Copyright 2010, Red Hat, Inc., and individual contributors
+  ~ Copyright 2011, Red Hat, Inc., and individual contributors
   ~ as indicated by the @author tags. See the copyright.txt file in the
   ~ distribution for a full listing of individual contributors.
   ~
@@ -22,25 +22,14 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<!-- contains the JPA integration classes for OpenJPA 2.x --> 
-<module xmlns="urn:jboss:module:1.1" name="org.jboss.as.jpa.openjpa">
-    <properties>
-        <property name="jboss.api" value="private"/>
-    </properties>
+<module xmlns="urn:jboss:module:1.1" name="org.jboss.as.console" slot="eap">
 
     <resources>
         <!-- Insert resources here -->
     </resources>
 
     <dependencies>
-        <module name="javax.annotation.api"/>
-        <module name="javax.persistence.api"/>
-        <module name="javax.transaction.api"/>
-
-        <module name="org.jboss.as.jpa.spi"/>
-        <module name="org.jboss.logging"/>
-        <module name="org.jboss.jandex"/>
-
-        <module name="org.apache.openjpa" optional="true"/>  <!-- org.apache.openjpa:main must be created manually with OpenJPA jars -->
+        <!-- Do not add dependencies to the console as resources in any
+             dependencies could be served up through the HTTP interface. -->
     </dependencies>
 </module>
