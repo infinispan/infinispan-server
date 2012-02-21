@@ -1,10 +1,10 @@
-Welcome to JBoss Enterprise Data Grid 6.0
+Welcome to JBoss Data Grid 6.0
 http://www.jboss.com/edg6-early-access/
 
-JBoss Enterprise Data Grid is a cloud-ready highly scalable distributed data
+JBoss Data Grid is a cloud-ready highly scalable distributed data
 store from Red Hat. You might be wondering how to use it, so here's an example:
 
-1. Fire up EDG by executing:
+1. Fire up JDG by executing:
 
 ./bin/standalone.sh
 
@@ -30,11 +30,11 @@ dependencies from Maven) then the easiest approach is to add a dependency on:
 <dependency>
    <groupId>org.infinispan</groupId>
    <artifactId>infinispan-client-hotrod</artifactId>
-   <version>5.0.0.FINAL</version>
+   <version>5.1.0.FINAL</version>
 </dependency>
 
 4. Once you have set up your dependencies, you need to establish a remote
-connection to the JBoss Enterprise Data Grid:
+connection to the JBoss Data Grid:
 
 public static void main(String[] args) {
    // By default it connects to localhost:11222
@@ -49,7 +49,7 @@ public static void main(String[] args) {
    RemoteCache cache = container.getCache();
 }
 
-6. Finally, you can store and retrieve data from JBoss Enterprise Data Grid:
+6. Finally, you can store and retrieve data from JBoss Data Grid:
 
 public static void main(String[] args) {
    // By default it connects to localhost:11222
@@ -61,3 +61,4 @@ public static void main(String[] args) {
    cache.remove("key");
    assert cache.isEmpty();
 }
+
