@@ -113,10 +113,10 @@
          <artifactId>infinispan-client-hotrod</artifactId>
       </dependency>
 
-      <dependency>
+      <!--dependency>
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-rhq-plugin</artifactId>
-      </dependency>
+      </dependency -->
    </dependencies>
 
    <build>
