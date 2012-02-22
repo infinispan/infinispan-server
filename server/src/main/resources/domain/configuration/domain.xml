@@ -60,7 +60,7 @@
          </subsystem>
          <subsystem xmlns="urn:jboss:domain:infinispan:1.1" default-cache-container="default">
             <cache-container name="default" default-cache="default" listener-executor="infinispan-listener">
-               <transport executor="infinispan-transport" lock-timeout="240000" />
+               <transport executor="infinispan-transport" lock-timeout="60000" />
                <distributed-cache name="default" mode="SYNC" virtual-nodes="1" owners="2" 
                   remote-timeout="30000">
                   <locking isolation="READ_COMMITTED" acquire-timeout="30000" concurrency-level="1000" striping="false" />
