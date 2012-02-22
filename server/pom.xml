@@ -33,6 +33,12 @@
          <groupId>org.jboss.as</groupId>
          <artifactId>jboss-as-build</artifactId>
          <type>pom</type>
+         <exclusions>
+            <exclusion>
+               <groupId>org.jboss.as</groupId>
+               <artifactId>jbossweb-native</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>
