@@ -22,7 +22,7 @@
       <!-- Release Info -->
       <jboss.datagrid.release.version>${project.version}</jboss.datagrid.release.version>
       <jboss.datagrid.release.codename>Helvellyn</jboss.datagrid.release.codename>
-      <jboss.datagrid.release.finalName>datagrid-${jboss.datagrid.release.version}</jboss.datagrid.release.finalName>
+      <jboss.datagrid.release.finalName>jboss-datagrid-${jboss.datagrid.release.version}</jboss.datagrid.release.finalName>
    
       <!-- Version Info -->
       <version.net.jcip.annotations>1.0-redhat-1</version.net.jcip.annotations>
