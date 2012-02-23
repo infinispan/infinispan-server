@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package com.redhat.datagrid.endpoint;
+package com.jboss.datagrid.endpoint;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -52,7 +52,7 @@ import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
  */
 public class RestService implements Service<Context> {
    private static final String DEFAULT_VIRTUAL_SERVER = "default-host";
-   private static final Logger log = Logger.getLogger("com.redhat.datagrid");
+   private static final Logger log = Logger.getLogger("com.jboss.datagrid");
    private static final String DEFAULT_CONTEXT_PATH = "";
    private final StandardContext context;
    private final InjectedValue<String> pathInjector = new InjectedValue<String>();

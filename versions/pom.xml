@@ -10,7 +10,7 @@
       <relativePath/>
    </parent>
 
-   <groupId>com.redhat.datagrid</groupId>
+   <groupId>com.jboss.datagrid</groupId>
    <artifactId>datagrid-versions</artifactId>
    <version>6.0.0.ER1-redhat-1</version>
    <packaging>pom</packaging>

@@ -16,9 +16,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package com.redhat.datagrid.endpoint;
+package com.jboss.datagrid.endpoint;
 
-import static com.redhat.datagrid.endpoint.EndpointUtils.copyIfSet;
+import static com.jboss.datagrid.endpoint.EndpointUtils.copyIfSet;
 
 import java.util.List;
 import java.util.Locale;

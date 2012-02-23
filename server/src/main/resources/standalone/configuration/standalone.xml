@@ -13,7 +13,7 @@
       <extension module="org.jboss.as.threads" />
       <extension module="org.jboss.as.transactions" />
       <extension module="org.jboss.as.web" />
-      <extension module="com.redhat.datagrid" />
+      <extension module="com.jboss.datagrid" />
    </extensions>
 
    <system-properties>
@@ -190,7 +190,7 @@
             <distributed-cache name="namedCache" mode="SYNC" start="EAGER"/>
          </cache-container>
       </subsystem>
-      <subsystem xmlns="urn:redhat:domain:datagrid:endpoint:1.0">
+      <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:1.0">
          <hotrod-connector socket-binding="hotrod" cache-container="default">
             <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000" />
          </hotrod-connector>

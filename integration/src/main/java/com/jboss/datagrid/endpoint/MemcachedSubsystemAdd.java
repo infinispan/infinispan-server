@@ -16,12 +16,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package com.redhat.datagrid.endpoint;
+package com.jboss.datagrid.endpoint;
+
+import static com.jboss.datagrid.endpoint.EndpointUtils.copyIfSet;
 
 import java.util.List;
 import java.util.Locale;
 
-import org.infinispan.server.hotrod.HotRodServer;
+import org.infinispan.server.memcached.MemcachedServer;
 import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
@@ -33,14 +35,12 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
 
-import static com.redhat.datagrid.endpoint.EndpointUtils.copyIfSet;
-
 /**
  * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  */
-class HotRodSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
+class MemcachedSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
 
-   static final HotRodSubsystemAdd INSTANCE = new HotRodSubsystemAdd();
+   static final MemcachedSubsystemAdd INSTANCE = new MemcachedSubsystemAdd();
 
    static ModelNode createOperation(ModelNode address, ModelNode existing) {
       ModelNode operation = Util.getEmptyOperation(ModelDescriptionConstants.ADD, address);
@@ -63,17 +63,17 @@ class HotRodSubsystemAdd extends AbstractAddStepHandler implements DescriptionPr
 
    @Override
    public ModelNode getModelDescription(Locale locale) {
-      return EndpointSubsystemProviders.ADD_HOTROD_CONNECTOR_DESC.getModelDescription(locale);
+      return EndpointSubsystemProviders.SUBSYTEM_ADD.getModelDescription(locale);
    }
 
    @Override
    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model, ServiceVerificationHandler verificationHandler, List<ServiceController<?>> newControllers)
             throws OperationFailedException {
       // Create the service
-      final ProtocolServerService service = new ProtocolServerService(operation, HotRodServer.class);
+      final ProtocolServerService service = new ProtocolServerService(operation, MemcachedServer.class);
 
       // Setup the various dependencies with injectors and install the service
-      ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "hotrod"), service);
+      ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "memcached"), service);
       EndpointUtils.addCacheContainerDependency(context, builder, service.getCacheContainerName(), service.getCacheManager());
       EndpointUtils.addSocketBindingDependency(builder, service.getRequiredSocketBindingName(), service.getSocketBinding());
       builder.install();

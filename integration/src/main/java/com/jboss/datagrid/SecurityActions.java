@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package com.redhat.datagrid;
+package com.jboss.datagrid;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;

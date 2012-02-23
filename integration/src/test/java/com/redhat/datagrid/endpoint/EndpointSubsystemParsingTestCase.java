@@ -45,7 +45,8 @@ import org.jboss.msc.service.StopContext;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.redhat.datagrid.DataGridConstants;
+import com.jboss.datagrid.DataGridConstants;
+import com.jboss.datagrid.endpoint.EndpointExtension;
 
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>

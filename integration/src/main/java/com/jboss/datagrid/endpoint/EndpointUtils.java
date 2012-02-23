@@ -1,4 +1,4 @@
-package com.redhat.datagrid.endpoint;
+package com.jboss.datagrid.endpoint;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
@@ -12,7 +12,7 @@ import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.value.InjectedValue;
 
-import com.redhat.datagrid.DataGridConstants;
+import com.jboss.datagrid.DataGridConstants;
 
 public class EndpointUtils {
    private static final String INFINISPAN_SERVICE_NAME = "infinispan";

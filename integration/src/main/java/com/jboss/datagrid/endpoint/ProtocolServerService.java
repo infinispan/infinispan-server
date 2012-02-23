@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package com.redhat.datagrid.endpoint;
+package com.jboss.datagrid.endpoint;
 
 import java.net.InetSocketAddress;
 import java.util.Properties;
@@ -33,7 +33,7 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 
-import com.redhat.datagrid.SecurityActions;
+import com.jboss.datagrid.SecurityActions;
 
 /**
  * The service that configures and starts the endpoints supported by data grid.

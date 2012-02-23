@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package com.redhat.datagrid.endpoint;
+package com.jboss.datagrid.endpoint;
 
 import java.util.Locale;
 
@@ -29,19 +29,19 @@ import org.jboss.dmr.ModelNode;
 /**
  * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  */
-public class HotRodSubsystemRemove extends AbstractRemoveStepHandler implements DescriptionProvider {
+public class RestSubsystemRemove extends AbstractRemoveStepHandler implements DescriptionProvider {
    
-   static final HotRodSubsystemRemove INSTANCE = new HotRodSubsystemRemove();
+   static final RestSubsystemRemove INSTANCE = new RestSubsystemRemove();
    
    @Override
    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model)
             throws OperationFailedException {
-      context.removeService(EndpointUtils.getServiceName(operation, "hotrod"));
+      context.removeService(EndpointUtils.getServiceName(operation, "rest"));
    }
 
    @Override
    public ModelNode getModelDescription(Locale locale) {
-      return EndpointSubsystemProviders.REMOVE_HOTROD_CONNECTOR_DESC.getModelDescription(locale);
+      return EndpointSubsystemProviders.REMOVE_REST_CONNECTOR_DESC.getModelDescription(locale);
    }
 
 }

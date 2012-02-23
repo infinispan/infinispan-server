@@ -14,7 +14,7 @@
       <extension module="org.jboss.as.threads" />
       <extension module="org.jboss.as.transactions" />
       <extension module="org.jboss.as.web" />
-      <extension module="com.redhat.datagrid" />
+      <extension module="com.jboss.datagrid" />
    </extensions>
 
    <system-properties>
@@ -161,7 +161,7 @@
                <alias name="example.com" />
             </virtual-server>
          </subsystem>
-         <subsystem xmlns="urn:redhat:domain:datagrid:endpoint:1.0">
+         <subsystem xmlns="urn:jboss:domain:datagrid:endpoint:1.0">
             <hotrod-connector socket-binding="hotrod" cache-container="default"/>
             <memcached-connector socket-binding="memcached" cache-container="default"/>
             <rest-connector virtual-server="default-host" cache-container="default"/>
