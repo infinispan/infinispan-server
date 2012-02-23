@@ -1145,12 +1145,6 @@
             <maven-resource group="org.osgi" artifact="org.osgi.core"/>
         </module-def>
 
-        <module-def name="org.picketlink">
-            <maven-resource group="org.picketlink" artifact="picketlink-bindings" jandex="true"/>
-            <maven-resource group="org.picketlink" artifact="picketlink-bindings-jboss"/>
-            <maven-resource group="org.picketlink" artifact="picketlink-trust-jbossws"/>
-        </module-def>
-
         <module-def name="org.picketbox">
             <maven-resource group="org.picketbox" artifact="picketbox"/>
             <maven-resource group="org.picketbox" artifact="picketbox-infinispan"/>
