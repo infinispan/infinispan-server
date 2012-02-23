@@ -38,6 +38,10 @@
                <groupId>org.jboss.as</groupId>
                <artifactId>jbossweb-native</artifactId>
             </exclusion>
+            <exclusion>
+               <groupId>org.jboss.osgi.metadata</groupId>
+               <artifactId>jbosgi-metadata</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
 
