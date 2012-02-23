@@ -18,7 +18,7 @@
   -->
 <project name="dist-dir" basedir="." default="clean">
 
-   <property name="output.dir" value="${project.build.directory}/${jboss.datagrid.release.finalName}" />
+   <property name="output.dir" value="${project.build.directory}/${product.name}-server-${product.version}" />
    <property name="edg.modules.dir" value="${basedir}/src/main/resources/edg-modules" />
 
    <import file="lib.xml" />

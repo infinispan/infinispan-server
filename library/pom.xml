@@ -90,9 +90,10 @@
                      <descriptors>
                         <descriptor>${project.basedir}/src/main/assemblies/library.xml</descriptor>
                      </descriptors>
-                     <finalName>${jboss.datagrid.release.finalName}</finalName>
-                     <outputDirectory>${project.build.directory}/distribution</outputDirectory>
+                     <finalName>${product.name}-library-${product.version}</finalName>
+                     <outputDirectory>${project.build.directory}</outputDirectory>
                      <workDirectory>${project.build.directory}/assembly/work</workDirectory>
+                     <appendAssemblyId>false</appendAssemblyId>
                   </configuration>
                </plugin>
             </plugins>

@@ -27,6 +27,7 @@
    </formats>
 
    <includeBaseDirectory>true</includeBaseDirectory>
+   <baseDirectory>${product.name}-library-${product.version}</baseDirectory>
 
    <dependencySets>
       <dependencySet>

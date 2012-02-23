@@ -20,9 +20,9 @@
 
    <properties>
       <!-- Release Info -->
-      <jboss.datagrid.release.version>${project.version}</jboss.datagrid.release.version>
-      <jboss.datagrid.release.codename>Helvellyn</jboss.datagrid.release.codename>
-      <jboss.datagrid.release.finalName>jboss-datagrid-${jboss.datagrid.release.version}</jboss.datagrid.release.finalName>
+      <product.version>${project.version}</product.version>
+      <product.codename>Helvellyn</product.codename>
+      <product.name>jboss-datagrid</product.name>
    
       <!-- Version Info -->
       <version.net.jcip.annotations>1.0-redhat-1</version.net.jcip.annotations>
