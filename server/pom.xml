@@ -16,15 +16,15 @@
 
    <parent>
       <groupId>com.redhat.datagrid</groupId>
-      <artifactId>enterprise-datagrid-versions</artifactId>
-      <version>6.0.0.DR2-edg-1</version>
+      <artifactId>datagrid-versions</artifactId>
+      <version>6.0.0.DR3-redhat-1</version>
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>enterprise-datagrid-server</artifactId>
+   <artifactId>datagrid-server</artifactId>
 
-   <name>Enterprise Data Grid - Server Edition</name>
-   <description>Enterprise Data Grid - Server Edition</description>
+   <name>Data Grid - Server Edition</name>
+   <description>Data Grid - Server Edition</description>
 
    <packaging>pom</packaging>
 
@@ -52,13 +52,13 @@
 
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>enterprise-datagrid-domain-http-error-context</artifactId>
+         <artifactId>datagrid-domain-http-error-context</artifactId>
          <version>${project.version}</version>
       </dependency>
 
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>enterprise-datagrid-integration</artifactId>
+         <artifactId>datagrid-integration</artifactId>
          <version>${project.version}</version>
       </dependency>
 

@@ -7,30 +7,31 @@
       <groupId>org.jboss</groupId>
       <artifactId>jboss-parent</artifactId>
       <version>8</version>
+      <relativePath/>
    </parent>
 
    <groupId>com.redhat.datagrid</groupId>
-   <artifactId>enterprise-datagrid-versions</artifactId>
-   <version>6.0.0.DR2-edg-1</version>
+   <artifactId>datagrid-versions</artifactId>
+   <version>6.0.0.DR3-redhat-1</version>
    <packaging>pom</packaging>
 
-   <name>Enterprise Data Grid - BOM</name>
-   <description>Enterprise Data Grid - BOM</description>
+   <name>Data Grid - BOM</name>
+   <description>Data Grid - BOM</description>
 
    <properties>
       <!-- Release Info -->
       <jboss.datagrid.release.version>${project.version}</jboss.datagrid.release.version>
       <jboss.datagrid.release.codename>Helvellyn</jboss.datagrid.release.codename>
-      <jboss.datagrid.release.finalName>enterprise-datagrid-${jboss.datagrid.release.version}</jboss.datagrid.release.finalName>
+      <jboss.datagrid.release.finalName>datagrid-${jboss.datagrid.release.version}</jboss.datagrid.release.finalName>
    
       <!-- Version Info -->
       <version.net.jcip.annotations>1.0</version.net.jcip.annotations>
-      <version.org.jboss.as>7.1.0.DR2-edg-1</version.org.jboss.as>
+      <version.org.jboss.as>7.1.0.DR3-redhat-1</version.org.jboss.as>
       <version.org.jboss.jandex>1.0.3.Final</version.org.jboss.jandex>
       <version.org.jboss.jbossjts>4.16.2.Final</version.org.jboss.jbossjts>
       <version.com.thoughtworks.xstream>1.4.1</version.com.thoughtworks.xstream>
       <version.junit>4.10</version.junit>
-      <version.org.infinispan>5.1.1.DR2-edg-1</version.org.infinispan>
+      <version.org.infinispan>5.1.1.DR3-redhat-1</version.org.infinispan>
       <version.org.jgroups>3.0.5.Final</version.org.jgroups>
       <version.org.scala-lang>2.9.1</version.org.scala-lang>
       <relocations></relocations>
