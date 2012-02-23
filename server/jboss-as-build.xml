@@ -104,7 +104,7 @@
     </target>
 
     <target name="copy-client">
-        <copy file="${org.jboss.as:jboss-as-client-all:jar}" tofile="${output.dir}/bin/client/jboss-client-${project.version}.jar"/>
+        <copy file="${org.jboss.as:jboss-as-client-all:jar}" tofile="${output.dir}/bin/client/jboss-client.jar"/>
     </target>
 
     <target name="minimalistic" depends="base, copy-standalone-minimalistic"/>
@@ -276,7 +276,22 @@
 
     </target>
 
-    <target name="modules" depends="modules-minimalistic">
+    <target name="modules-product">
+        <!--
+          ~ Product configuration modules.
+          -->
+
+        <module-def name="org.jboss.as.console" slot="eap">
+            <maven-resource-with-classifier group="org.jboss.as" artifact="jboss-as-console" classifier="resources"/>
+        </module-def>
+
+        <module-def name="org.jboss.as.domain-http-error-context" slot="eap"/>
+
+        <module-def name="org.jboss.as.product" slot="eap"/>
+
+    </target>
+
+    <target name="modules" depends="modules-minimalistic, modules-product">
         <!--
           ~ Complete list of modules to assemble.
           ~
@@ -297,16 +312,8 @@
             <maven-resource group="ch.qos.cal10n" artifact="cal10n-api"/>
         </module-def>
 
-        <module-def name="com.github.relaxng">
-            <maven-resource group="com.github.relaxng" artifact="relaxngDatatype" />
-        </module-def>
-
-    	<module-def name="com.google.guava">
+        <module-def name="com.google.guava">
             <maven-resource group="com.google.guava" artifact="guava" />
-        </module-def>
-
-        <module-def name="com.googlecode.jtype">
-            <maven-resource group="com.googlecode.jtype" artifact="jtype"/>
         </module-def>
 
         <module-def name="com.h2database.h2">
@@ -614,10 +621,6 @@
             <maven-resource group="org.codehaus.jettison" artifact="jettison" />
         </module-def>
 
-        <module-def name="org.hamcrest">
-            <maven-resource group="org.hamcrest" artifact="hamcrest-core"/>
-        </module-def>
-
         <module-def name="org.hibernate">
             <maven-resource group="org.hibernate" artifact="hibernate-core" />
             <maven-resource group="org.hibernate.common" artifact="hibernate-commons-annotations" />
@@ -864,6 +867,7 @@
             <maven-resource group="org.jboss.as" artifact="jboss-as-web"/>
             <maven-resource group="org.jboss.web" artifact="jasper-jdt"/>
             <maven-resource group="org.jboss.web" artifact="jbossweb"/>
+            <extract-native-jar group="org.jboss.as" artifact="jbossweb-native"/>
         </module-def>
 
         <module-def name="org.jboss.as.webservices">
@@ -1143,7 +1147,10 @@
         </module-def>
 
         <module-def name="org.picketlink">
-            <maven-resource group="org.picketlink.product.eap" artifact="picketlink-core" jandex="true"/>
+            <maven-resource group="org.picketlink" artifact="picketlink-fed" jandex="true"/>
+            <maven-resource group="org.picketlink" artifact="picketlink-bindings" jandex="true"/>
+            <maven-resource group="org.picketlink" artifact="picketlink-bindings-jboss"/>
+            <maven-resource group="org.picketlink" artifact="picketlink-trust-jbossws"/>
         </module-def>
 
         <module-def name="org.picketbox">
