@@ -38,6 +38,20 @@
       <relocations></relocations>
    </properties>
 
+   <repositories>
+      <repository>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+         </snapshots>
+         <id>jboss-public-repository</id>
+         <name>JBoss Public Repository and Proxy for third party repositories</name>
+         <url>https://repository.jboss.org/nexus/content/groups/public</url>
+      </repository>
+   </repositories>
+
    <dependencyManagement>
       <dependencies>
       
@@ -202,4 +216,5 @@
          </dependency>
       </dependencies>
    </dependencyManagement>
+
 </project>
