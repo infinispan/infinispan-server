@@ -16,15 +16,15 @@
 
    <parent>
       <groupId>com.jboss.datagrid</groupId>
-      <artifactId>datagrid-versions</artifactId>
+      <artifactId>jboss-datagrid-versions</artifactId>
       <version>6.0.0.ER1-redhat-1</version>
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>datagrid-domain-http-error-context</artifactId>
+   <artifactId>jboss-datagrid-domain-http-error-context</artifactId>
 
-   <name>Data Grid - Domain HTTP Error Context</name>
-   <description>Data Grid - Domain HTTP Error Context</description>
+   <name>JBoss Data Grid - Domain HTTP Error Context</name>
+   <description>JBoss Data Grid - Domain HTTP Error Context</description>
 
    <packaging>jar</packaging>
 </project>

@@ -88,7 +88,7 @@
       </module-def>
 
       <module-def name="com.jboss.datagrid" src="${edg.modules.dir}">
-         <maven-resource group="com.jboss.datagrid" artifact="datagrid-integration" />
+         <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-server-integration" />
       </module-def>
 
       <module-def name="javax.activation.api" src="${edg.modules.dir}">
@@ -108,7 +108,7 @@
       </module-def>
 
       <module-def name="org.jboss.as.domain-http-error-context" slot="edg" src="${edg.modules.dir}">
-          <maven-resource group="com.jboss.datagrid" artifact="datagrid-domain-http-error-context" />
+          <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-domain-http-error-context" />
       </module-def>
 
       <module-def name="org.jboss.as.product" slot="edg" src="${edg.modules.dir}" />

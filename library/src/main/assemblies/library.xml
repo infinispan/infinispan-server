@@ -72,13 +72,13 @@
          </includes>
          <outputDirectory>modules/cachestores/remote/lib</outputDirectory>
       </dependencySet>
-      <dependencySet>
+      <!-- dependencySet>
          <useProjectArtifact>false</useProjectArtifact>
          <includes>
             <include>org.infinispan:infinispan-rhq-plugin</include>
          </includes>
          <outputDirectory>modules/rhq-plugin</outputDirectory>
-      </dependencySet>
+      </dependencySet -->
       
       <!-- tech preview -->
    </dependencySets>

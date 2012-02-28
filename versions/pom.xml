@@ -11,12 +11,12 @@
    </parent>
 
    <groupId>com.jboss.datagrid</groupId>
-   <artifactId>datagrid-versions</artifactId>
+   <artifactId>jboss-datagrid-versions</artifactId>
    <version>6.0.0.ER1-redhat-1</version>
    <packaging>pom</packaging>
 
-   <name>Data Grid - BOM</name>
-   <description>Data Grid - BOM</description>
+   <name>JBoss Data Grid - BOM</name>
+   <description>JBoss Data Grid - BOM</description>
 
    <properties>
       <!-- Release Info -->
@@ -32,13 +32,24 @@
       <version.com.thoughtworks.xstream>1.4.1-redhat-1</version.com.thoughtworks.xstream>
       <version.junit>4.8.2-redhat-1</version.junit>
       <version.org.infinispan>5.1.2.ER1-redhat-1</version.org.infinispan>
-      <version.org.jgroups>3.0.5.Final-redhat-1</version.org.jgroups>
+      <version.org.jgroups>3.0.6.Final-redhat-1</version.org.jgroups>
       <version.org.scala-lang>2.9.1-redhat-1</version.org.scala-lang>
       <relocations></relocations>
    </properties>
 
    <dependencyManagement>
       <dependencies>
+         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-datagrid-domain-http-error-context</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+   
+         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-datagrid-server-integration</artifactId>
+            <version>${project.version}</version>
+         </dependency>
 
          <dependency>
             <groupId>com.thoughtworks.xstream</groupId>

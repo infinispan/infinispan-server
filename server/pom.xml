@@ -16,15 +16,15 @@
 
    <parent>
       <groupId>com.jboss.datagrid</groupId>
-      <artifactId>datagrid-versions</artifactId>
+      <artifactId>jboss-datagrid-versions</artifactId>
       <version>6.0.0.ER1-redhat-1</version>
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>datagrid-server</artifactId>
+   <artifactId>jboss-datagrid-server</artifactId>
 
-   <name>Data Grid - Server Edition</name>
-   <description>Data Grid - Server Edition</description>
+   <name>JBoss Data Grid - Server Edition</name>
+   <description>JBoss Data Grid - Server Edition</description>
 
    <packaging>pom</packaging>
 
@@ -62,14 +62,12 @@
 
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>datagrid-domain-http-error-context</artifactId>
-         <version>${project.version}</version>
+         <artifactId>jboss-datagrid-domain-http-error-context</artifactId>
       </dependency>
 
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>datagrid-integration</artifactId>
-         <version>${project.version}</version>
+         <artifactId>jboss-datagrid-server-integration</artifactId>
       </dependency>
 
       <dependency>
@@ -123,7 +121,7 @@
          <artifactId>infinispan-client-hotrod</artifactId>
       </dependency>
 
-      <!--dependency>
+      <!--  dependency>
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-rhq-plugin</artifactId>
       </dependency -->
