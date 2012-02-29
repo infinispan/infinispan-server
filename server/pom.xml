@@ -42,6 +42,10 @@
                <groupId>org.jboss.osgi.metadata</groupId>
                <artifactId>jbosgi-metadata</artifactId>
             </exclusion>
+            <exclusion>
+               <groupId>org.apache.ws.scout</groupId>
+               <artifactId>scout</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
 
@@ -121,10 +125,16 @@
          <artifactId>infinispan-client-hotrod</artifactId>
       </dependency>
 
-      <!--  dependency>
+      <dependency>
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-rhq-plugin</artifactId>
-      </dependency -->
+         <exclusions>
+            <exclusion>
+               <groupId>org.rhq</groupId>
+               <artifactId>rhq-core-native-system</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
    </dependencies>
 
    <build>
