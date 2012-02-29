@@ -32,5 +32,6 @@
     </resources>
 
     <dependencies>
+        <module name="org.hamcrest"/>
     </dependencies>
 </module>
