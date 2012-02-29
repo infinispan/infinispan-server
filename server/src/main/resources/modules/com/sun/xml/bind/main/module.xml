@@ -32,6 +32,7 @@
     </resources>
 
     <dependencies>
+        <module name="com.github.relaxng"/>
         <module name="javax.api" />
         <module name="javax.xml.bind.api" />
         <module name="javax.xml.stream.api" />

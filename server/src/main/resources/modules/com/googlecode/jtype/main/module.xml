@@ -22,23 +22,12 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.1" name="org.jboss.as.clustering.singleton">
-    <properties>
-        <property name="jboss.api" value="private"/>
-    </properties>
-
+<module xmlns="urn:jboss:module:1.0" name="com.googlecode.jtype">
     <resources>
         <!-- Insert resources here -->
     </resources>
 
     <dependencies>
-        <module name="org.jboss.as.clustering.api"/>
-        <module name="org.jboss.as.clustering.common"/>
-        <module name="org.jboss.as.clustering.impl"/>
-        <module name="org.jboss.as.clustering.service"/>
-        <module name="org.jboss.logging"/>
-        <module name="org.jboss.marshalling"/>
-        <module name="org.jboss.msc"/>
-        <module name="org.jgroups"/>
     </dependencies>
 </module>
+
