@@ -243,7 +243,7 @@
         </module-def>
 
         <module-def name="org.jboss.remoting3.remoting-jmx">
-            <maven-resource group="org.jboss.remoting3" artifact="remoting-jmx"/>
+            <maven-resource group="org.jboss.remotingjmx" artifact="remoting-jmx"/>
         </module-def>
 
         <module-def name="org.jboss.sasl">
@@ -312,8 +312,16 @@
             <maven-resource group="ch.qos.cal10n" artifact="cal10n-api"/>
         </module-def>
 
-        <module-def name="com.google.guava">
+        <module-def name="com.github.relaxng">
+            <maven-resource group="com.github.relaxng" artifact="relaxngDatatype" />
+        </module-def>
+
+    	<module-def name="com.google.guava">
             <maven-resource group="com.google.guava" artifact="guava" />
+        </module-def>
+
+        <module-def name="com.googlecode.jtype">
+            <maven-resource group="com.googlecode.jtype" artifact="jtype"/>
         </module-def>
 
         <module-def name="com.h2database.h2">
@@ -619,6 +627,10 @@
 
         <module-def name="org.codehaus.jettison">
             <maven-resource group="org.codehaus.jettison" artifact="jettison" />
+        </module-def>
+
+        <module-def name="org.hamcrest">
+            <maven-resource group="org.hamcrest" artifact="hamcrest-core"/>
         </module-def>
 
         <module-def name="org.hibernate">
@@ -1143,6 +1155,10 @@
 
         <module-def name="org.osgi.core">
             <maven-resource group="org.osgi" artifact="org.osgi.core"/>
+        </module-def>
+
+        <module-def name="org.picketlink">
+            <maven-resource group="org.picketlink.product.eap" artifact="picketlink-core" jandex="true"/>
         </module-def>
 
         <module-def name="org.picketbox">
