@@ -161,17 +161,26 @@
             <protocol type="PING" />
             <protocol type="MERGE2" />
             <protocol type="FD_SOCK" socket-binding="jgroups-fdsock" />
-            <protocol type="FD" />
-            <protocol type="VERIFY_SUSPECT" />
-            <protocol type="BARRIER" />
+            <protocol type="FD_ALL" />
             <protocol type="pbcast.NAKACK" />
-            <protocol type="UNICAST2" />
-            <protocol type="pbcast.STABLE" />
+            <protocol type="UNICAST" />
+            <protocol type="pbcast.STABLE">
+               <property name="stability_delay">500</property>
+               <property name="desired_avg_gossip">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
             <protocol type="pbcast.GMS" />
-            <protocol type="UFC" />
-            <protocol type="MFC" />
-            <protocol type="FRAG2" />
-            <protocol type="pbcast.STATE_TRANSFER" />
+            <protocol type="UFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="MFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="FRAG2">
+               <property name="frag_size">8000</property>
+            </protocol>
          </stack>
       </subsystem>
       <subsystem xmlns="urn:jboss:domain:infinispan:1.1" default-cache-container="default">

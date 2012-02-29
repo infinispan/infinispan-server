@@ -96,24 +96,35 @@
          </subsystem>
          <subsystem xmlns="urn:jboss:domain:jdr:1.0"/>
          <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="udp">
-            <stack name="udp">
-               <transport type="UDP" socket-binding="jgroups-udp" diagnostics-socket-binding="jgroups-diag" site="${topology.site}" rack="${topology.rack}" machine="${topology.machine}"/>
-               <protocol type="PING" />
-               <protocol type="MERGE2" />
-               <protocol type="FD_SOCK" socket-binding="jgroups-fdsock" />
-               <protocol type="FD" />
-               <protocol type="VERIFY_SUSPECT" />
-               <protocol type="BARRIER" />
-               <protocol type="pbcast.NAKACK" />
-               <protocol type="UNICAST2" />
-               <protocol type="pbcast.STABLE" />
-               <protocol type="pbcast.GMS" />
-               <protocol type="UFC" />
-               <protocol type="MFC" />
-               <protocol type="FRAG2" />
-               <protocol type="pbcast.STATE_TRANSFER" />
-            </stack>
-         </subsystem>
+         <stack name="udp">
+            <transport type="UDP" socket-binding="jgroups-udp" diagnostics-socket-binding="jgroups-diag" default-executor="jgroups" oob-executor="jgroups-oob"
+               timer-executor="jgroups-timer" site="s1" rack="r1" machine="m1">
+            </transport>
+            <protocol type="PING" />
+            <protocol type="MERGE2" />
+            <protocol type="FD_SOCK" socket-binding="jgroups-fdsock" />
+            <protocol type="FD_ALL" />
+            <protocol type="pbcast.NAKACK" />
+            <protocol type="UNICAST" />
+            <protocol type="pbcast.STABLE">
+               <property name="stability_delay">500</property>
+               <property name="desired_avg_gossip">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.GMS" />
+            <protocol type="UFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="MFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="FRAG2">
+               <property name="frag_size">8000</property>
+            </protocol>
+         </stack>
+      </subsystem>
          <subsystem xmlns="urn:jboss:domain:jmx:1.1">
             <show-model value="true"/>
          </subsystem>
