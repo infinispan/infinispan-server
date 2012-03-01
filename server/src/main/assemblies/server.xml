@@ -31,15 +31,4 @@
          </includes>
       </fileSet>
    </fileSets>
-   
-   <dependencySets>
-      <dependencySet>
-         <useProjectArtifact>false</useProjectArtifact>
-         <directoryMode>0755</directoryMode>
-         <includes>
-            <include>org.infinispan:infinispan-rhq-plugin</include>
-         </includes>
-         <outputDirectory>rhq-plugin</outputDirectory>
-      </dependencySet>
-   </dependencySets>
 </assembly>
