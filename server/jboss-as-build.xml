@@ -579,6 +579,10 @@
             <maven-resource group="org.apache.velocity" artifact="velocity" />
         </module-def>
 
+        <module-def name="org.apache.ws.scout">
+            <maven-resource group="org.apache.ws.scout" artifact="scout"/>
+        </module-def>
+
         <module-def name="org.apache.xalan">
             <maven-resource group="xalan" artifact="serializer"/>
             <maven-resource group="xalan" artifact="xalan"/>
@@ -623,10 +627,6 @@
 
         <module-def name="org.codehaus.jettison">
             <maven-resource group="org.codehaus.jettison" artifact="jettison" />
-        </module-def>
-
-        <module-def name="org.hamcrest">
-            <maven-resource group="org.hamcrest" artifact="hamcrest-core"/>
         </module-def>
 
         <module-def name="org.hibernate">
@@ -978,12 +978,15 @@
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-api"/>
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-spi"/>
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-felix"/>
-            <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-metadata"/>
         </module-def>
 
         <module-def name="org.jboss.osgi.repository">
             <maven-resource group="org.jboss.osgi.repository" artifact="jbosgi-repository-api"/>
             <maven-resource group="org.jboss.osgi.repository" artifact="jbosgi-repository-core"/>
+        </module-def>
+
+        <module-def name="org.jboss.osgi.metadata">
+            <maven-resource group="org.jboss.osgi.metadata" artifact="jbosgi-metadata"/>
         </module-def>
 
         <module-def name="org.jboss.osgi.spi">
@@ -1141,10 +1144,6 @@
 
         <module-def name="org.joda.time">
             <maven-resource group="joda-time" artifact="joda-time"/>
-        </module-def>
-
-        <module-def name="org.junit">
-            <maven-resource group="junit" artifact="junit"/>
         </module-def>
 
         <module-def name="org.omg.api" />
