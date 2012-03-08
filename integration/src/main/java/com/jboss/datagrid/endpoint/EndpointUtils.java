@@ -29,9 +29,9 @@ public class EndpointUtils {
       final PathAddress address = PathAddress.pathAddress(node.require(OP_ADDR));
       final String name = address.getLastElement().getValue();
       if (prefix.length > 0)
-         return DataGridConstants.SN_ENDPOINT.append(prefix).append(name);
+         return DataGridConstants.DATAGRID.append(prefix).append(name);
       else
-         return DataGridConstants.SN_ENDPOINT.append(name);
+         return DataGridConstants.DATAGRID.append(name);
    }
 
    public static void addCacheContainerDependency(OperationContext context, ServiceBuilder<?> builder, String cacheContainerName, InjectedValue<EmbeddedCacheManager> target) {

@@ -62,7 +62,7 @@ public class EndpointSubsystemProviders {
          node.get(DESCRIPTION).set(bundle.getString("endpoint.description"));
          node.get(HEAD_COMMENT_ALLOWED).set(true);
          node.get(TAIL_COMMENT_ALLOWED).set(true);
-         node.get(NAMESPACE).set(DataGridConstants.NS_ENDPOINT_1_0);
+         node.get(NAMESPACE).set(DataGridConstants.NS_DATAGRID_1_0);
 
          for (String connectorType : ModelKeys.CONNECTORS) {
             node.get(CHILDREN, connectorType, DESCRIPTION).set(bundle.getString(connectorType + ".description"));

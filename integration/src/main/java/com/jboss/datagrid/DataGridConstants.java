@@ -26,16 +26,13 @@ import org.jboss.msc.service.ServiceName;
 public class DataGridConstants {
 
    private static final ServiceName JBOSS = ServiceName.of("jboss");
+   public static final String SUBSYSTEM_NAME = "datagrid";
 
-   public static final ServiceName DATAGRID = JBOSS.append("datagrid");
-
-   // Service names (SN_*)
-
-   public static final ServiceName SN_ENDPOINT = DATAGRID.append("endpoint");
+   public static final ServiceName DATAGRID = JBOSS.append(SUBSYSTEM_NAME);
 
    // XML namespaces (NS_*)
 
-   public static final String NS_ENDPOINT_1_0 = "urn:jboss:domain:datagrid:endpoint:1.0";
+   public static final String NS_DATAGRID_1_0 = "urn:jboss:domain:datagrid:1.0";
 
    public static String VERSION = DataGridConstants.class.getPackage().getImplementationVersion();
 

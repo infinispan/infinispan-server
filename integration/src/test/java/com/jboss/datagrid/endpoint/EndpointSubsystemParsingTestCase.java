@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package com.redhat.datagrid.endpoint;
+package com.jboss.datagrid.endpoint;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DESCRIBE;
@@ -57,8 +57,8 @@ public class EndpointSubsystemParsingTestCase extends AbstractSubsystemTest {
    private String subsystemXml;
 
    public EndpointSubsystemParsingTestCase() throws IOException {
-      super(DataGridConstants.SN_ENDPOINT.getSimpleName(), new EndpointExtension());
-      InputStream is = this.getClass().getResourceAsStream("/subsystem-endpoint.xml");
+      super(DataGridConstants.DATAGRID.getSimpleName(), new EndpointExtension());
+      InputStream is = this.getClass().getResourceAsStream("/subsystem-datagrid.xml");
       subsystemXml = loadStreamAsString(is);
 
    }
@@ -93,7 +93,7 @@ public class EndpointSubsystemParsingTestCase extends AbstractSubsystemTest {
       Assert.assertEquals(1, addr.size());
       PathElement element = addr.getElement(0);
       Assert.assertEquals(SUBSYSTEM, element.getKey());
-      Assert.assertEquals(DataGridConstants.SN_ENDPOINT.getSimpleName(), element.getValue());
+      Assert.assertEquals(DataGridConstants.DATAGRID.getSimpleName(), element.getValue());
    }
 
    /**
@@ -106,7 +106,7 @@ public class EndpointSubsystemParsingTestCase extends AbstractSubsystemTest {
 
       // Read the whole model and make sure it looks as expected
       ModelNode model = services.readWholeModel();
-      Assert.assertTrue(model.get(SUBSYSTEM).hasDefined(DataGridConstants.SN_ENDPOINT.getSimpleName()));
+      Assert.assertTrue(model.get(SUBSYSTEM).hasDefined(DataGridConstants.DATAGRID.getSimpleName()));
    }
 
    /**
@@ -142,7 +142,7 @@ public class EndpointSubsystemParsingTestCase extends AbstractSubsystemTest {
       ModelNode modelA = servicesA.readWholeModel();
       ModelNode describeOp = new ModelNode();
       describeOp.get(OP).set(DESCRIBE);
-      describeOp.get(OP_ADDR).set(PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, DataGridConstants.SN_ENDPOINT.getSimpleName())).toModelNode());
+      describeOp.get(OP_ADDR).set(PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, DataGridConstants.DATAGRID.getSimpleName())).toModelNode());
       List<ModelNode> operations = super.checkResultAndGetContents(servicesA.executeOperation(describeOp)).asList();
 
       // Install the describe options from the first controller into a second controller
