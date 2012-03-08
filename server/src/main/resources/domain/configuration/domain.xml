@@ -132,7 +132,9 @@
             <protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd"/>
             <protocol type="FD"/>
             <protocol type="VERIFY_SUSPECT"/>
-            <protocol type="pbcast.NAKACK"/>
+            <protocol type="pbcast.NAKACK">
+               <property name="use_mcast_xmit">false</property>
+            </protocol>
             <protocol type="UNICAST2"/>
             <protocol type="pbcast.STABLE">
                <property name="stability_delay">500</property>
