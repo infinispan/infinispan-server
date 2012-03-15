@@ -97,7 +97,7 @@
          <subsystem xmlns="urn:jboss:domain:jdr:1.0"/>
          <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="udp">
          <stack name="udp">
-            <transport type="UDP" socket-binding="jgroups-udp" diagnostics-socket-binding="jgroups-diagnostics" default-executor="jgroups" oob-executor="jgroups-oob"
+            <transport type="UDP" socket-binding="jgroups-udp" default-executor="jgroups" oob-executor="jgroups-oob"
                timer-executor="jgroups-timer" site="s1" rack="r1" machine="m1">
             </transport>
             <protocol type="PING" />
@@ -125,7 +125,7 @@
             </protocol>
          </stack>
          <stack name="tcp">
-            <transport type="TCP" socket-binding="jgroups-tcp" diagnostics-socket-binding="jgroups-diagnostics" default-executor="jgroups" oob-executor="jgroups-oob"
+            <transport type="TCP" socket-binding="jgroups-tcp" default-executor="jgroups" oob-executor="jgroups-oob"
                timer-executor="jgroups-timer" site="s1" rack="r1" machine="m1"/>
             <protocol type="MPING" socket-binding="jgroups-mping"/>
             <protocol type="MERGE2"/>
@@ -230,7 +230,6 @@
          <socket-binding name="txn-status-manager" port="4713" />
          <socket-binding name="jgroups-udp" interface="clustering" multicast-address="${udpGroup}" multicast-port="45688" port="55200" />
          <socket-binding name="jgroups-tcp" interface="clustering" port="7600"/>
-         <socket-binding name="jgroups-diagnostics" interface="clustering" multicast-address="224.0.75.75" multicast-port="7500" port="0" />
          <socket-binding name="jgroups-udp-fd" interface="clustering" port="54200" />
          <socket-binding name="jgroups-tcp-fd" interface="clustering" port="57600" />
          <socket-binding name="modcluster" port="0" multicast-address="224.0.1.105" multicast-port="23364" />

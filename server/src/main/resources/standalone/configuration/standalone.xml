@@ -155,7 +155,7 @@
       </subsystem>
       <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="udp">
          <stack name="udp">
-            <transport type="UDP" socket-binding="jgroups-udp" diagnostics-socket-binding="jgroups-diagnostics" default-executor="jgroups" oob-executor="jgroups-oob"
+            <transport type="UDP" socket-binding="jgroups-udp" default-executor="jgroups" oob-executor="jgroups-oob"
                timer-executor="jgroups-timer" site="s1" rack="r1" machine="m1">
             </transport>
             <protocol type="PING" />
@@ -183,7 +183,7 @@
             </protocol>
          </stack>
          <stack name="tcp">
-            <transport type="TCP" socket-binding="jgroups-tcp" diagnostics-socket-binding="jgroups-diagnostics" default-executor="jgroups" oob-executor="jgroups-oob"
+            <transport type="TCP" socket-binding="jgroups-tcp" default-executor="jgroups" oob-executor="jgroups-oob"
                timer-executor="jgroups-timer" site="s1" rack="r1" machine="m1"/>
             <protocol type="MPING" socket-binding="jgroups-mping"/>
             <protocol type="MERGE2"/>
