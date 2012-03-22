@@ -163,7 +163,11 @@
             <protocol type="FD_SOCK" socket-binding="jgroups-udp-fd" />
             <protocol type="FD_ALL" />
             <protocol type="pbcast.NAKACK" />
-            <protocol type="UNICAST" />
+            <protocol type="UNICAST2">
+               <property name="timeout">300,600,1200</property>
+               <property name="stable_interval">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
             <protocol type="pbcast.STABLE">
                <property name="stability_delay">500</property>
                <property name="desired_avg_gossip">5000</property>
@@ -181,6 +185,11 @@
             <protocol type="FRAG2">
                <property name="frag_size">8000</property>
             </protocol>
+            <protocol type="RSVP">
+                <property name="timeout">60000</property>
+                <property name="resend_interval">500</property>
+                <property name="ack_on_delivery">false</property>
+            </protocol>
          </stack>
          <stack name="tcp">
             <transport type="TCP" socket-binding="jgroups-tcp" default-executor="jgroups" oob-executor="jgroups-oob"
@@ -193,7 +202,11 @@
             <protocol type="pbcast.NAKACK">
                <property name="use_mcast_xmit">false</property>
             </protocol>
-            <protocol type="UNICAST2"/>
+            <protocol type="UNICAST2">
+               <property name="timeout">300,600,1200</property>
+               <property name="stable_interval">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
             <protocol type="pbcast.STABLE">
                <property name="stability_delay">500</property>
                <property name="desired_avg_gossip">5000</property>
@@ -209,6 +222,11 @@
                <property name="min_threshold">0.20</property>
             </protocol>
             <protocol type="FRAG2"/>
+            <protocol type="RSVP">
+                <property name="timeout">60000</property>
+                <property name="resend_interval">500</property>
+                <property name="ack_on_delivery">false</property>
+            </protocol>
          </stack>
       </subsystem>
       <subsystem xmlns="urn:jboss:domain:infinispan:1.1" default-cache-container="default">
@@ -262,7 +280,6 @@
       <socket-binding name="txn-status-manager" port="4713" />
       <socket-binding name="jgroups-udp" interface="clustering" multicast-address="${udpGroup}" multicast-port="45688" port="55200" />
       <socket-binding name="jgroups-tcp" interface="clustering" port="7600"/>
-      <socket-binding name="jgroups-diagnostics" interface="clustering" multicast-address="224.0.75.75" multicast-port="7500" port="0" />
       <socket-binding name="jgroups-udp-fd" interface="clustering" port="54200" />
       <socket-binding name="jgroups-tcp-fd" interface="clustering" port="57600" />
       <socket-binding name="hotrod" port="11222" />
