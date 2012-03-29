@@ -1,5 +1,5 @@
 <!--
- ~ Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ ~ Copyright 2012 Red Hat, Inc. and/or its affiliates.
  ~
  ~ This is free software; you can redistribute it and/or modify it
  ~ under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,7 @@
       <meta content="all" name="robots">
       <meta content="no-cache" http-equiv="cache-control">
       <meta content="no-cache" http-equiv="pragma">
-      <title>Red Hat Enterprise Data Grid: REST Server</title>
+      <title>Red Hat JBoss Data Grid: REST Server</title>
       <style type="text/css">
 
 body, h1, h2, h3, h4, h5, h6, pre, li, div {
@@ -149,16 +149,16 @@ td {
      <a class="left" href="http://www.redhat.com"><img src="image_left.png" alt="Product Site" /></a><a class="right" href="http://docs.redhat.com"><img src="image_right.png" alt="Documentation Site" /></a>
      </p>
      <h1 class="title">
-        Red Hat Enterprise Data Grid
+        Red Hat JBoss Data Grid
      </h1>
      <div class="main">
-      <h2>Welcome to the EDG REST Server</h2>
+      <h2>Welcome to the JDG REST Server</h2>
       <p>This server provides easy to use <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">RESTful</a>
-         access to the Enterprise Data Grid. See below for usage details.</p>
+         access to the Data Grid. See below for usage details.</p>
 
       <h4>1. Configuration</h4>
-      <p>Out of the box, Enterprise Data Grid will use its default cache defined in <tt>&lt;EDG_HOME&gt;/standalone/configuration/standalone.xml</tt>.
-         To set a custom configuration, modify the configuration file and restart Enterprise Data Grid.</p>
+      <p>Out of the box, JBoss Data Grid will use its default cache defined in <tt>&lt;JDG_HOME&gt;/standalone/configuration/standalone.xml</tt>.
+         To set a custom configuration, modify the configuration file and restart JBoss Data Grid.</p>
 
          <p>Please note that the REST server
          only allows interaction with either the default cache, named <tt>___defaultcache</tt> or one of the named caches
@@ -220,7 +220,7 @@ td {
       <p>An <a href="http://en.wikipedia.org/wiki/HTTP_ETag">ETag</a> will be returned unique for each entry, as will
          the <tt>Last-Modified</tt> header field indicating the state of the data at the given URL.  ETags allow browsers (and
          other clients) to ask for data only in the case where it has changed (to save on bandwidth) - this is standard
-         HTTP and is honored by Enterprise Data Grid.
+         HTTP and is honored by JBoss Data Grid.
       </p>
       <h6>HEAD /{cacheName}/{cacheKey}</h6>
         <p>The same as GET, only no content is returned (only the header fields).</p>
