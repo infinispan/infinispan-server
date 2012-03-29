@@ -2,6 +2,7 @@
 
    <extensions>
       <extension module="org.jboss.as.clustering.infinispan" />
+      <extension module="org.jboss.as.clustering.jgroups" />
       <extension module="org.jboss.as.connector" />
       <extension module="org.jboss.as.jdr"/>
       <extension module="org.jboss.as.jmx" />
@@ -152,19 +153,96 @@
             <alias name="example.com" />
          </virtual-server>
       </subsystem>
+      <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="udp">
+         <stack name="udp">
+            <transport type="UDP" socket-binding="jgroups-udp" default-executor="jgroups" oob-executor="jgroups-oob"
+               timer-executor="jgroups-timer" site="s1" rack="r1" machine="m1">
+            </transport>
+            <protocol type="PING" />
+            <protocol type="MERGE2" />
+            <protocol type="FD_SOCK" socket-binding="jgroups-udp-fd" />
+            <protocol type="FD_ALL" />
+            <protocol type="pbcast.NAKACK" />
+            <protocol type="UNICAST2">
+               <property name="timeout">300,600,1200</property>
+               <property name="stable_interval">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.STABLE">
+               <property name="stability_delay">500</property>
+               <property name="desired_avg_gossip">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.GMS" />
+            <protocol type="UFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="MFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="FRAG2">
+               <property name="frag_size">8000</property>
+            </protocol>
+            <protocol type="RSVP">
+                <property name="timeout">60000</property>
+                <property name="resend_interval">500</property>
+                <property name="ack_on_delivery">false</property>
+            </protocol>
+         </stack>
+         <stack name="tcp">
+            <transport type="TCP" socket-binding="jgroups-tcp" default-executor="jgroups" oob-executor="jgroups-oob"
+               timer-executor="jgroups-timer" site="s1" rack="r1" machine="m1"/>
+            <protocol type="MPING" socket-binding="jgroups-mping"/>
+            <protocol type="MERGE2"/>
+            <protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd"/>
+            <protocol type="FD"/>
+            <protocol type="VERIFY_SUSPECT"/>
+            <protocol type="pbcast.NAKACK">
+               <property name="use_mcast_xmit">false</property>
+            </protocol>
+            <protocol type="UNICAST2">
+               <property name="timeout">300,600,1200</property>
+               <property name="stable_interval">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.STABLE">
+               <property name="stability_delay">500</property>
+               <property name="desired_avg_gossip">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.GMS"/>
+            <protocol type="UFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="MFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="FRAG2"/>
+            <protocol type="RSVP">
+                <property name="timeout">60000</property>
+                <property name="resend_interval">500</property>
+                <property name="ack_on_delivery">false</property>
+            </protocol>
+         </stack>
+      </subsystem>
       <subsystem xmlns="urn:jboss:domain:infinispan:1.1" default-cache-container="default">
          <cache-container name="default" default-cache="default" listener-executor="infinispan-listener">
-            <local-cache name="default" start="EAGER">
-               <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
+            <transport executor="infinispan-transport" lock-timeout="60000" />
+            <distributed-cache name="default" mode="SYNC" virtual-nodes="1" owners="2" remote-timeout="30000" start="EAGER">
+               <locking isolation="READ_COMMITTED" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                <transaction mode="NONE" />
-            </local-cache>
+            </distributed-cache>
 
-            <local-cache name="memcachedCache" start="EAGER">
-               <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
+            <distributed-cache name="memcachedCache" mode="SYNC" virtual-nodes="1" owners="2" remote-timeout="30000" start="EAGER">
+               <locking isolation="READ_COMMITTED" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                <transaction mode="NONE" />
-            </local-cache>
+            </distributed-cache>
 
-            <local-cache name="namedCache" start="EAGER"/>
+            <distributed-cache name="namedCache" mode="SYNC" start="EAGER"/>
          </cache-container>
       </subsystem>
       <subsystem xmlns="urn:jboss:domain:datagrid:1.0">
