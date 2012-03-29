@@ -2,7 +2,7 @@
 <!--  See src/resources/configuration/ReadMe.txt for how the configuration assembly works -->
 <config>
    <extension-module>org.jboss.as.threads</extension-module>
-   <subsystem xmlns="urn:jboss:domain:threads:1.0">
+   <subsystem xmlns="urn:jboss:domain:threads:1.1">
          <thread-factory name="jgroups-factory" group-name="jgroups" priority="5" />
          <unbounded-queue-thread-pool name="jgroups">
             <max-threads count="200" per-cpu="0" />

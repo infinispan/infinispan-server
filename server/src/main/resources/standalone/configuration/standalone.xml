@@ -1,9 +1,9 @@
-<server xmlns="urn:jboss:domain:1.1">
+<server xmlns="urn:jboss:domain:1.2">
 
    <extensions>
       <extension module="org.jboss.as.clustering.infinispan" />
       <extension module="org.jboss.as.connector" />
-      <extension module="org.jboss.as.jdr"/>
+      <extension module="org.jboss.as.jdr" />
       <extension module="org.jboss.as.jmx" />
       <extension module="org.jboss.as.logging" />
       <extension module="org.jboss.as.naming" />
@@ -72,28 +72,30 @@
             </handlers>
          </root-logger>
       </subsystem>
+
       <subsystem xmlns="urn:jboss:domain:jca:1.1">
-         <archive-validation enabled="true" />
+         <archive-validation enabled="true" fail-on-error="true" fail-on-warn="false" />
          <bean-validation enabled="true" />
          <default-workmanager>
             <short-running-threads>
-               <core-threads count="90" />
-               <queue-length count="90"/>
-               <max-threads count="90"  />
+               <core-threads count="50" />
+               <queue-length count="50" />
+               <max-threads count="50" />
                <keepalive-time time="10" unit="seconds" />
             </short-running-threads>
             <long-running-threads>
-               <core-threads count="90" />
-               <queue-length count="90" />
-               <max-threads count="90"/>
+               <core-threads count="50" />
+               <queue-length count="50" />
+               <max-threads count="50" />
                <keepalive-time time="10" unit="seconds" />
             </long-running-threads>
          </default-workmanager>
+         <cached-connection-manager />
       </subsystem>
-      <subsystem xmlns="urn:jboss:domain:jdr:1.0"/>
+      <subsystem xmlns="urn:jboss:domain:jdr:1.0" />
       <subsystem xmlns="urn:jboss:domain:jmx:1.1">
-         <show-model value="true"/>
-         <remoting-connector/>
+         <show-model value="true" />
+         <remoting-connector />
       </subsystem>
       <subsystem xmlns="urn:jboss:domain:naming:1.1" />
       <subsystem xmlns="urn:jboss:domain:remoting:1.1" />
@@ -107,7 +109,7 @@
             </security-domain>
          </security-domains>
       </subsystem>
-      <subsystem xmlns="urn:jboss:domain:threads:1.0">
+      <subsystem xmlns="urn:jboss:domain:threads:1.1">
          <thread-factory name="jgroups-factory" group-name="jgroups" priority="5" />
          <unbounded-queue-thread-pool name="jgroups">
             <max-threads count="200" per-cpu="0" />
@@ -152,7 +154,7 @@
             <alias name="example.com" />
          </virtual-server>
       </subsystem>
-      <subsystem xmlns="urn:jboss:domain:infinispan:1.1" default-cache-container="default">
+      <subsystem xmlns="urn:jboss:domain:infinispan:1.2" default-cache-container="default">
          <cache-container name="default" default-cache="default" listener-executor="infinispan-listener">
             <local-cache name="default" start="EAGER">
                <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
@@ -164,15 +166,15 @@
                <transaction mode="NONE" />
             </local-cache>
 
-            <local-cache name="namedCache" start="EAGER"/>
+            <local-cache name="namedCache" start="EAGER" />
          </cache-container>
       </subsystem>
       <subsystem xmlns="urn:jboss:domain:datagrid:1.0">
          <hotrod-connector socket-binding="hotrod" cache-container="default">
             <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000" />
          </hotrod-connector>
-         <memcached-connector socket-binding="memcached" cache-container="default"/>
-         <rest-connector virtual-server="default-host" cache-container="default"/>
+         <memcached-connector socket-binding="memcached" cache-container="default" />
+         <rest-connector virtual-server="default-host" cache-container="default" />
       </subsystem>
 
    </profile>
@@ -201,7 +203,7 @@
       <socket-binding name="txn-recovery-environment" port="4712" />
       <socket-binding name="txn-status-manager" port="4713" />
       <socket-binding name="jgroups-udp" interface="clustering" multicast-address="${udpGroup}" multicast-port="45688" port="55200" />
-      <socket-binding name="jgroups-tcp" interface="clustering" port="7600"/>
+      <socket-binding name="jgroups-tcp" interface="clustering" port="7600" />
       <socket-binding name="jgroups-udp-fd" interface="clustering" port="54200" />
       <socket-binding name="jgroups-tcp-fd" interface="clustering" port="57600" />
       <socket-binding name="hotrod" port="11222" />

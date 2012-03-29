@@ -35,6 +35,7 @@
         <module name="org.jboss.logging"/>
         <module name="org.jboss.modules"/>
         <module name="org.jboss.osgi.framework"/>
+        <module name="org.jboss.osgi.resolver"/>
         <module name="org.osgi.core"/>
     </dependencies>
 </module>

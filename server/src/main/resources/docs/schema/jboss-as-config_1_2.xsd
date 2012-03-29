@@ -2,7 +2,7 @@
 
 <!--
   ~ JBoss, Home of Professional Open Source.
-  ~ Copyright 2010, Red Hat, Inc., and individual contributors
+  ~ Copyright 2012, Red Hat, Inc., and individual contributors
   ~ as indicated by the @author tags. See the copyright.txt file in the
   ~ distribution for a full listing of individual contributors.
   ~
@@ -23,8 +23,8 @@
   -->
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns="urn:jboss:domain:1.1"
-           targetNamespace="urn:jboss:domain:1.1"
+           xmlns="urn:jboss:domain:1.2"
+           targetNamespace="urn:jboss:domain:1.2"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified"
         >
@@ -80,9 +80,12 @@
             <xs:attribute name="name" type="xs:string" use="optional">
                 <xs:annotation>
                     <xs:documentation>
-                        The name to use for this host's host controller. Must be
-                        unique across the domain. If not set, defaults to the
-                        runtime value of InetAddress.getLocalHost().getHostName().
+                        The name to use for this host's host controller. Must be unique across the domain.
+                        If not set, defaults to the runtime value "HOSTNAME" or "COMPUTERNAME" environment variables,
+                        or, if neither environment variable is present, to the value of InetAddress.getLocalHost().getHostName().
+
+                        If the special value "jboss.domain.uuid" is used, a java.util.UUID will be created
+                        and used, based on the value of InetAddress.getLocalHost().
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
@@ -111,13 +114,17 @@
                 <xs:element name="profile" type="standalone-profileType" minOccurs="0"/>
                 <xs:element name="interfaces" type="specified-interfacesType" minOccurs="0" maxOccurs="1"/>
                 <xs:element name="socket-binding-group" type="standalone-socket-binding-groupType" minOccurs="0" maxOccurs="1"/>
-                <xs:element name="deployments" type="mapped-deploymentsType" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="deployments" type="server-deploymentsType" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
             <xs:attribute name="name" type="xs:string" use="optional">
                 <xs:annotation>
                     <xs:documentation>
-                        The name to use for this server. If not set, defaults to
-                        the runtime value of InetAddress.getLocalHost().getHostName().
+                        The name to use for this server.
+                        If not set, defaults to the runtime value "HOSTNAME" or "COMPUTERNAME" environment variables,
+                        or, if neither environment variable is present, to the value of InetAddress.getLocalHost().getHostName().
+
+                        If the special value "jboss.domain.uuid" is used, a java.util.UUID will be created
+                        and used, based on the value of InetAddress.getLocalHost().
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
@@ -179,7 +186,7 @@
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="ldapType"> <!-- TODO - May extend from a common connection type for name -->
+    <xs:complexType name="ldapType">
         <xs:annotation>
             <xs:documentation>
                 The LDAP connection definition.
@@ -214,7 +221,6 @@
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <!-- TODO - May drop this and just allow free name/value properties for extension. -->
         <xs:attribute name="initial-context-factory" type="xs:string" default="com.sun.jndi.ldap.LdapCtxFactory">
             <xs:annotation>
                 <xs:documentation>
@@ -233,6 +239,7 @@
         <xs:sequence>
             <xs:element name="server-identities" type="server-identitiesType" minOccurs="0" />
             <xs:element name="authentication" type="authenticationType" minOccurs="0" />
+            <xs:element name="authorization" type="authorizationType" minOccurs="0" />
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required">
             <xs:annotation>
@@ -241,6 +248,21 @@
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="authorizationType">
+        <xs:annotation>
+            <xs:documentation>
+                Configuration defining how to load the authorization information for the authenticated user.
+
+                After a user has been authenticated additional information such as roles can be loaded and
+                associated with the user for subsequent authorization checks, this type is used to define
+                how the roles are loaded.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="properties" type="propertiesFileType" minOccurs="1" />  <!-- minOccurs="1" while this is the only mech -->
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="server-identitiesType">
@@ -342,11 +364,27 @@
                 </xs:annotation>
             </xs:element>
             <xs:choice minOccurs="0">
+                <xs:element name="jaas" type="jaasAuthenticationType" minOccurs="0" />
                 <xs:element name="ldap" type="ldapAuthenticationType" minOccurs="0" />
                 <xs:element name="properties" type="propertiesAuthenticationType" minOccurs="0" />
                 <xs:element name="users" type="usersAuthenticationType" minOccurs="0" />
             </xs:choice>
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="jaasAuthenticationType">
+        <xs:annotation>
+            <xs:documentation>
+                Definition to use a JAAS based configuration for authentication.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The name identifying the jaas configuration of LoginModules.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="ldapAuthenticationType">
@@ -444,13 +482,10 @@
         </xs:attribute>
     </xs:complexType>
 
-    <xs:complexType name="propertiesAuthenticationType">
+    <xs:complexType name="propertiesFileType">
         <xs:annotation>
             <xs:documentation>
-                Declaration of users stored within properties files.
-
-                The entries within the properties file are username={credentials} with each user
-                being specified on it's own line.
+                Declaration of a location of a properties file.
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="relative-to" use="optional" type="xs:string">
@@ -466,19 +501,34 @@
         <xs:attribute name="path" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation>
-                    The path of the properties file containing the users.
+                    The path of the properties file.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="plain-text" type="xs:boolean" default="false">
-            <xs:annotation>
-                <xs:documentation>
-                    Are the credentials within the properties file stored in plain text, if not
-                    the {credential} is expected to be the hex encoded Digest hash
-                    of 'username : realm : password'.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="propertiesAuthenticationType">
+        <xs:annotation>
+            <xs:documentation>
+                Declaration of users stored within properties files.
+
+                The entries within the properties file are username={credentials} with each user
+                being specified on it's own line.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="propertiesFileType">
+                <xs:attribute name="plain-text" type="xs:boolean" default="false">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Are the credentials within the properties file stored in plain text, if not
+                            the {credential} is expected to be the hex encoded Digest hash
+                            of 'username : realm : password'.
+                        </xs:documentation>
+                    </xs:annotation>
+            </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="host-management-interfacesType">
@@ -562,6 +612,7 @@
                 <xs:sequence>
                     <xs:element name="socket" type="http-management-socketType"/>
                 </xs:sequence>
+                <xs:attribute name="console-enabled" type="xs:boolean" use="optional" default="true"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -672,6 +723,7 @@
                     <xs:element name="socket" type="http-management-socketType"/>
                     <xs:element name="socket-binding" type="http-management-socket-binding-refType"/>
                 </xs:choice>
+                <xs:attribute name="console-enabled" type="xs:boolean" use="optional" default="true"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -717,15 +769,84 @@
     <xs:complexType name="domain-controller-localType" />
 
     <xs:complexType name="domain-controller-remoteType">
-         <xs:attribute name="host" type="xs:string" use="required" />
-         <xs:attribute name="port" type="xs:integer" use="required" />
-         <xs:attribute name="security-realm" type="xs:string" use="optional" />
+        <xs:sequence>
+            <xs:element name="ignored-resources" type="ignored-resourcesType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="host" type="xs:string" use="required" />
+        <xs:attribute name="port" type="xs:integer" use="required" />
+        <xs:attribute name="security-realm" type="xs:string" use="optional" />
+    </xs:complexType>
+
+    <xs:complexType name="ignored-resourcesType">
+        <xs:annotation>
+            <xs:documentation>
+                Provides names of direct child resources of the domain root resource requests for which the
+                Host Controller should ignore. Only relevant on a slave Host Controller. Configuring such
+                "ignored resources" may help allow a Host Controller from an earlier release to function as a
+                slave to a master Host Controller running a later release, by letting the slave ignore portions
+                of the configuration its version of the software cannot understand. This strategy can only be
+                successful if the servers managed by the slave Host Controller do not reference any of the
+                ignored configuration.
+
+                Supports the following attributes:
+
+                type -- the type of resource (e.g. 'profile' or 'socket-binding-group') certain instances of which
+                        should be ignored. The value corresponds to the 'key' portion of the first element in the
+                        resource's address (e.g. 'profile' in the address /profile=ha/subsystem=web)
+
+                wildcard -- if 'true', all resources of the given type should be ignored.
+
+                Child elements list the names of specific instances of the given type of resource
+                that should be ignored. Each element in the list corresponds to the 'value' portion of
+                the first element in the resource's address (e.g. 'ha' in the address /profile=ha/subsystem=web.)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="instance" type="ignored-resource-instanceType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string" use="required" />
+        <xs:attribute name="wildcard" type="xs:boolean" use="optional" default="false" />
+        <xs:attribute name="names" type="xs:string" use="optional" />
+    </xs:complexType>
+
+    <xs:complexType name="ignored-resource-instanceType">
+        <xs:annotation>
+            <xs:documentation>
+                The name of a specific instances of a particular type of resource that should be ignored.
+                The 'name' attribute corresponds to the 'value' portion of the first element in the resource's address
+                (e.g. 'ha' in the address /profile=ha/subsystem=web.)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="name" type="xs:string" use="required" />
     </xs:complexType>
 
     <xs:complexType name="serversType">
         <xs:sequence>
             <xs:element name="server" type="serverType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
+        <xs:attribute name="directory-grouping" default="by-server" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:token">
+                    <xs:enumeration value="by-server">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Indicates each server's writable directories should be grouped under the server's name
+                                in the domain/servers directory. This is the default option.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="by-type">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Indicates each server's writable directories should be grouped based on their "type"
+                                (i.e. "data", "log", "tmp") with directories of a given type for all servers appearing
+                                in the domain level directory for that type, e.g. domain/data/servers/server-name.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="serverType">
@@ -809,7 +930,7 @@
             <xs:element name="jvm" type="namedJvmType" minOccurs="0"/>
             <xs:element name="socket-binding-group" type="socket-binding-group-refType" minOccurs="1"/>
 
-            <xs:element name="deployments" type="mapped-deploymentsType" minOccurs="0"/>
+            <xs:element name="deployments" type="server-groupDeploymentsType" minOccurs="0"/>
 
             <xs:element name="system-properties" minOccurs="0" type="properties-with-boottime"/>
         </xs:sequence>
@@ -838,27 +959,33 @@
         </xs:attribute>
     </xs:complexType>
 
-    <xs:complexType name="mapped-deploymentsType">
+    <xs:complexType name="server-groupDeploymentsType">
         <xs:annotation>
             <xs:documentation>Contains a list of deployments that have been mapped to a server-group.</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="deployment" type="mapped-deploymentType" maxOccurs="unbounded"/>
+            <xs:element name="deployment" type="base-deploymentType" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="mapped-deploymentType">
+    <xs:complexType name="server-groupDeploymentType">
         <xs:annotation>
             <xs:documentation>A deployment that has been mapped to a server group.</xs:documentation>
         </xs:annotation>
-        <xs:sequence>
-            <!-- TODO: maxOccurs should be unbounded once overlays are in place -->
-            <xs:choice maxOccurs="1">
-                <xs:element name="content" type="contentType"/>
-                <xs:element name="fs-archive" type="fs-archiveType"/>
-                <xs:element name="fs-exploded" type="fs-explodedType"/>
-            </xs:choice>
-        </xs:sequence>
+        <xs:complexContent>
+            <xs:extension base="base-deploymentType">
+                <!--  TODO clarify what a value of 'false' means -->
+                <xs:attribute name="enabled" use="optional" type="xs:boolean" default="true">
+                    <xs:annotation>
+                        <xs:documentation>Whether the deployment deploy automatically when the server starts up.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="base-deploymentType">
         <xs:attribute name="name" use="required">
             <xs:annotation>
                 <xs:documentation>Unique identifier of the deployment. Must be unique across all deployments.
@@ -875,13 +1002,40 @@
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <!--  TODO clarify what a value of 'false' means -->
-        <xs:attribute name="enabled" use="optional" type="xs:boolean" default="true">
-            <xs:annotation>
-                <xs:documentation>Whether the deployment deploy automatically when the server starts up.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="server-deploymentsType">
+        <xs:annotation>
+            <xs:documentation>Contains a list of deployments that have been mapped to a server.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="deployment" type="server-deploymentType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="server-deploymentType">
+        <xs:annotation>
+            <xs:documentation>A deployment that has been mapped to a server.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="base-deploymentType">
+                <xs:sequence>
+                    <!-- TODO: maxOccurs should be unbounded once overlays are in place -->
+                    <xs:choice maxOccurs="1">
+                        <xs:element name="content" type="contentType"/>
+                        <xs:element name="fs-archive" type="fs-archiveType"/>
+                        <xs:element name="fs-exploded" type="fs-explodedType"/>
+                    </xs:choice>
+                </xs:sequence>
+                <!--  TODO clarify what a value of 'false' means -->
+                <xs:attribute name="enabled" use="optional" type="xs:boolean" default="true">
+                    <xs:annotation>
+                        <xs:documentation>Whether the deployment deploy automatically when the server starts up.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="contentType">
@@ -928,11 +1082,11 @@
             <xs:documentation>Contains a list of domain-level deployments</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="deployment" type="deploymentType" maxOccurs="unbounded"/>
+            <xs:element name="deployment" type="domain-deploymentType" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="deploymentType">
+    <xs:complexType name="domain-deploymentType">
         <xs:annotation>
             <xs:documentation>Deployment represents anything that can be deployed (e.g. an application such as EJB-JAR,
                 WAR, EAR,
@@ -941,7 +1095,16 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="mapped-deploymentType" />
+            <xs:extension base="base-deploymentType">
+                <xs:sequence>
+                    <!-- TODO: maxOccurs should be unbounded once overlays are in place -->
+                    <xs:choice maxOccurs="1">
+                        <xs:element name="content" type="contentType"/>
+                        <xs:element name="fs-archive" type="fs-archiveType"/>
+                        <xs:element name="fs-exploded" type="fs-explodedType"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
@@ -1081,6 +1244,24 @@
         <xs:annotation>
             <xs:documentation>Configuration information for a socket.</xs:documentation>
         </xs:annotation>
+        <xs:choice>
+            <xs:element name="client-mapping" type="socket-binding-client-mappingType"
+                        minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Specifies zero or more client mappings for this socket binding.
+                        A client connecting to this socket should use the destination address
+                        specified in the mapping that matches its desired outbound interface.
+                        This allows for advanced network topologies that use either network
+                        address translation, or have bindings on multiple network interfaces
+                        to function.
+
+                        Each mapping should be evaluated in declared order, with the first successful
+                        match used to determine the destination.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:choice>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="interface" type="xs:string" use="optional">
             <xs:annotation>
@@ -1120,6 +1301,49 @@
                 <xs:documentation>
                     Port on which the socket should receive multicast
                     traffic. Must be configured if 'multicast-address' is configured.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="socket-binding-client-mappingType">
+        <xs:annotation>
+                <xs:documentation>
+                    Type definition for a client mapping on a socket binding. A client
+                    mapping specifies how external clients should connect to this
+                    socket's port, provided that the client's outbound interface
+                    match the specified source network value.
+                </xs:documentation>
+            </xs:annotation>
+        <xs:attribute name="source-network" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Source network the client connection binds on. This value is in
+                    the form of ip/netmask. A client should match this value against
+                    the desired client host network interface, and if matched the
+                    client should connect to the corresponding destination values.
+
+                    If omitted this mapping should match any interface.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="destination-address" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The destination address that a client should connect to if the
+                    source-network matches. This value can either be a hostname or
+                    an ip address.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="destination-port" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    The destination port that a client should connect to if the
+                    source-network matches.
+
+                    If omitted this mapping will reuse the effective socket binding
+                    port.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>

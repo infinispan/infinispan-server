@@ -10,14 +10,13 @@
    Lesser General Public ~ License along with this library; if not, write to 
    the Free Software ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
    MA ~ 02110-1301 USA -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
       <groupId>com.jboss.datagrid</groupId>
       <artifactId>jboss-datagrid-versions</artifactId>
-      <version>6.0.0.ER5-redhat-1</version>
+      <version>6.0.0.ER6-redhat-1</version>
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
@@ -28,166 +27,20 @@
 
    <packaging>pom</packaging>
 
+   <properties>
+      <!-- generated configs root dirs -->
+      <generated.configs>${basedir}/target/generated-configs</generated.configs>
+      <generated.configs.standalone>${generated.configs}/standalone/configuration</generated.configs.standalone>
+      <generated.configs.domain>${generated.configs}/domain/configuration</generated.configs.domain>
+      <generated.configs.examples>${generated.configs}/docs/examples/configs</generated.configs.examples>
+      <generated.configs.src.dir>${basedir}/src/main/resources</generated.configs.src.dir>
+   </properties>
+
    <dependencies>
       <dependency>
          <groupId>org.jboss.as</groupId>
          <artifactId>jboss-as-build</artifactId>
          <type>pom</type>
-         <exclusions>
-            <exclusion>
-               <groupId>org.jboss.as</groupId>
-               <artifactId>jbossweb-native</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.cxf</groupId>
-               <artifactId>cxf-api</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.cxf</groupId>
-               <artifactId>cxf-common-utilities</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.cxf</groupId>
-               <artifactId>cxf-rt-bindings-coloc</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.cxf</groupId>
-               <artifactId>cxf-rt-bindings-http</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.cxf</groupId>
-               <artifactId>cxf-rt-bindings-object</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.cxf</groupId>
-               <artifactId>cxf-rt-bindings-soap</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.cxf</groupId>
-               <artifactId>cxf-rt-bindings-xml</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.cxf</groupId>
-               <artifactId>cxf-rt-core</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.cxf</groupId>
-               <artifactId>cxf-rt-databinding-aegis</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-databinding-jaxb</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-simple</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-management</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-common</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-http</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-local</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-jms</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-ws-addr</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-ws-policy</artifactId>
-            </exclusion>
-            
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-ws-rm</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-ws-security</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-tools-common</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-tools-java2ws</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-tools-validator</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-tools-wsdlto-core</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-tools-wsdlto-databinding-jaxb</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-tools-wsdlto-frontend-jaxws</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf.xjcplugins</groupId>
-                <artifactId>cxf-xjc-boolean</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf.xjcplugins</groupId>
-                <artifactId>cxf-xjc-dv</artifactId>
-            </exclusion>
-
-            <exclusion>
-                <groupId>org.apache.cxf.xjcplugins</groupId>
-                <artifactId>cxf-xjc-ts</artifactId>
-            </exclusion>
-
-            <exclusion>
-               <groupId>org.jboss.osgi.metadata</groupId>
-               <artifactId>jbosgi-metadata</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.ws.scout</groupId>
-               <artifactId>scout</artifactId>
-            </exclusion>
-         </exclusions>
       </dependency>
 
       <dependency>
@@ -283,6 +136,20 @@
          <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
+               <execution>
+                  <id>generate-configs</id>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                     <target>
+                        <ant antfile="build-configs.xml" inheritRefs="true">
+                           <target name="all" />
+                        </ant>
+                     </target>
+                  </configuration>
+               </execution>
                <execution>
                   <id>build-dist-dir</id>
                   <goals>

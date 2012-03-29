@@ -1,4 +1,4 @@
-<domain xmlns="urn:jboss:domain:1.1">
+<domain xmlns="urn:jboss:domain:1.2">
 
    <extensions>
       <extension module="org.jboss.as.clustering.infinispan" />
@@ -58,7 +58,7 @@
                </handlers>
             </root-logger>
          </subsystem>
-         <subsystem xmlns="urn:jboss:domain:infinispan:1.1" default-cache-container="default">
+         <subsystem xmlns="urn:jboss:domain:infinispan:1.2" default-cache-container="default">
             <cache-container name="default" default-cache="default" listener-executor="infinispan-listener">
                <transport executor="infinispan-transport" lock-timeout="60000" />
                <distributed-cache name="default" mode="SYNC" virtual-nodes="1" owners="2" 
@@ -193,7 +193,7 @@
                </security-domain>
             </security-domains>
          </subsystem>
-         <subsystem xmlns="urn:jboss:domain:threads:1.0">
+         <subsystem xmlns="urn:jboss:domain:threads:1.1">
             <thread-factory name="jgroups-factory" group-name="jgroups" priority="5" />
             <unbounded-queue-thread-pool name="jgroups">
                <max-threads count="200" per-cpu="0" />
