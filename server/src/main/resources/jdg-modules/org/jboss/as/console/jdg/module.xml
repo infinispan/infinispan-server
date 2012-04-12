@@ -22,14 +22,14 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.1" name="org.jboss.as.domain-http-error-context" slot="edg">
+<module xmlns="urn:jboss:module:1.1" name="org.jboss.as.console" slot="jdg">
 
     <resources>
         <!-- Insert resources here -->
     </resources>
 
     <dependencies>
-        <!-- Do not add dependencies to the error context as resources in any
+        <!-- Do not add dependencies to the console as resources in any
              dependencies could be served up through the HTTP interface. -->
     </dependencies>
 </module>

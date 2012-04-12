@@ -19,7 +19,7 @@
 <project name="dist-dir" basedir="." default="clean">
 
    <property name="output.dir" value="${project.build.directory}/${product.name}-server-${product.version}" />
-   <property name="edg.modules.dir" value="${basedir}/src/main/resources/edg-modules" />
+   <property name="jdg.modules.dir" value="${basedir}/src/main/resources/jdg-modules" />
 
    <import file="lib.xml" />
 
@@ -28,7 +28,7 @@
    </target>
 
    <target name="copy-files">
-      <!-- Copy the EDG resource files -->
+      <!-- Copy the JDG resource files -->
       <copy todir="${output.dir}">
          <fileset dir="${basedir}/src/main/resources">
             <include name="bin/**" />
@@ -81,79 +81,79 @@
       <ant antfile="jboss-as-build.xml" inheritall="true" target="bundles" />
    </target>
 
-   <!-- These modules are for EDG-specific functionality -->
-   <target name="edg-modules">
-      <module-def name="com.thoughtworks.xstream" src="${edg.modules.dir}">
+   <!-- These modules are for JDG-specific functionality -->
+   <target name="jdg-modules">
+      <module-def name="com.thoughtworks.xstream" src="${jdg.modules.dir}">
          <maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
       </module-def>
 
-      <module-def name="com.jboss.datagrid" src="${edg.modules.dir}">
+      <module-def name="com.jboss.datagrid" src="${jdg.modules.dir}">
          <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-server-integration" />
       </module-def>
 
-      <module-def name="javax.activation.api" src="${edg.modules.dir}">
+      <module-def name="javax.activation.api" src="${jdg.modules.dir}">
          <maven-resource group="javax.activation" artifact="activation" />
       </module-def>
 
-      <module-def name="org.jboss.as.clustering.jgroups" src="${edg.modules.dir}">
+      <module-def name="org.jboss.as.clustering.jgroups" src="${jdg.modules.dir}">
          <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-jgroups" />
       </module-def>
 
-      <module-def name="org.jboss.as.clustering.infinispan" src="${edg.modules.dir}">
+      <module-def name="org.jboss.as.clustering.infinispan" src="${jdg.modules.dir}">
          <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
       </module-def>
 
-      <module-def name="org.jboss.as.console" slot="edg" src="${edg.modules.dir}">
+      <module-def name="org.jboss.as.console" slot="jdg" src="${jdg.modules.dir}">
           <maven-resource-with-classifier group="org.jboss.as" artifact="jboss-as-console" classifier="resources"/>
       </module-def>
 
-      <module-def name="org.jboss.as.domain-http-error-context" slot="edg" src="${edg.modules.dir}">
+      <module-def name="org.jboss.as.domain-http-error-context" slot="jdg" src="${jdg.modules.dir}">
           <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-domain-http-error-context" />
       </module-def>
 
-      <module-def name="org.jboss.as.product" slot="edg" src="${edg.modules.dir}" />
+      <module-def name="org.jboss.as.product" slot="jdg" src="${jdg.modules.dir}" />
 
-      <module-def name="org.jboss.jts" src="${edg.modules.dir}">
+      <module-def name="org.jboss.jts" src="${jdg.modules.dir}">
          <maven-resource group="org.jboss.jbossts" artifact="jbossjts" />
       </module-def>
 
-      <module-def name="org.infinispan" src="${edg.modules.dir}">
+      <module-def name="org.infinispan" src="${jdg.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-core" />
       </module-def>
 
-      <module-def name="org.infinispan.cachestore.jdbc" src="${edg.modules.dir}">
+      <module-def name="org.infinispan.cachestore.jdbc" src="${jdg.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc" />
       </module-def>
 
-      <module-def name="org.infinispan.cachestore.remote" src="${edg.modules.dir}">
+      <module-def name="org.infinispan.cachestore.remote" src="${jdg.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
       </module-def>
 
-      <module-def name="org.infinispan.client.hotrod" src="${edg.modules.dir}">
+      <module-def name="org.infinispan.client.hotrod" src="${jdg.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-client-hotrod" />
       </module-def>
 
-      <module-def name="org.infinispan.server" src="${edg.modules.dir}">
+      <module-def name="org.infinispan.server" src="${jdg.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-server-core" />
       </module-def>
 
-      <module-def name="org.infinispan.server.hotrod" src="${edg.modules.dir}">
+      <module-def name="org.infinispan.server.hotrod" src="${jdg.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-server-hotrod" />
       </module-def>
 
-      <module-def name="org.infinispan.server.memcached" src="${edg.modules.dir}">
+      <module-def name="org.infinispan.server.memcached" src="${jdg.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-server-memcached" />
       </module-def>
 
-      <module-def name="org.infinispan.server.rest" src="${edg.modules.dir}">
+      <module-def name="org.infinispan.server.rest" src="${jdg.modules.dir}">
          <maven-resource-with-classifier group="org.infinispan" artifact="infinispan-server-rest" classifier="classes" />
       </module-def>
 
-      <module-def name="org.jgroups" src="${edg.modules.dir}">
+      <module-def name="org.jgroups" src="${jdg.modules.dir}">
          <maven-resource group="org.jgroups" artifact="jgroups" />
       </module-def>
 
-      <module-def name="org.scala-lang.library" src="${edg.modules.dir}">
+      <module-def name="org.scala-lang.library" src="${jdg.modules.dir}">
          <maven-resource group="org.scala-lang" artifact="scala-library" />
       </module-def>
    </target>
@@ -164,5 +164,5 @@
       </delete>
    </target>
 
-   <target name="all" depends="clean, copy-files, jboss-modules, edg-modules, jboss-bundles, trim-modules" />
+   <target name="all" depends="clean, copy-files, jboss-modules, jdg-modules, jboss-bundles, trim-modules" />
 </project>
