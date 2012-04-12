@@ -31,12 +31,19 @@
       <!-- Copy the JDG resource files -->
       <copy todir="${output.dir}">
          <fileset dir="${basedir}/src/main/resources">
+            <include name="JBossEULA.txt"/>
+            <include name="LICENSE.txt"/>
             <include name="bin/**" />
             <include name="docs/**" />
             <include name="domain/**" />
             <include name="rest/**" />
-            <include name="standalone/**" />
+            <include name="standalone/configuration/**.properties" />
             <include name="README.txt" />
+         </fileset>
+         <fileset dir="${generated.configs}">
+            <include name="standalone/configuration/**.xml"/>
+            <include name="domain/**"/>
+            <include name="docs/**"/>
          </fileset>
       </copy>
 
@@ -95,10 +102,6 @@
          <maven-resource group="javax.activation" artifact="activation" />
       </module-def>
 
-      <module-def name="org.jboss.as.clustering.jgroups" src="${jdg.modules.dir}">
-         <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-jgroups" />
-      </module-def>
-
       <module-def name="org.jboss.as.clustering.infinispan" src="${jdg.modules.dir}">
          <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
       </module-def>
@@ -117,22 +120,6 @@
          <maven-resource group="org.jboss.jbossts" artifact="jbossjts" />
       </module-def>
 
-      <module-def name="org.infinispan" src="${jdg.modules.dir}">
-         <maven-resource group="org.infinispan" artifact="infinispan-core" />
-      </module-def>
-
-      <module-def name="org.infinispan.cachestore.jdbc" src="${jdg.modules.dir}">
-         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc" />
-      </module-def>
-
-      <module-def name="org.infinispan.cachestore.remote" src="${jdg.modules.dir}">
-         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
-      </module-def>
-
-      <module-def name="org.infinispan.client.hotrod" src="${jdg.modules.dir}">
-         <maven-resource group="org.infinispan" artifact="infinispan-client-hotrod" />
-      </module-def>
-
       <module-def name="org.infinispan.server" src="${jdg.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-server-core" />
       </module-def>
@@ -147,10 +134,6 @@
 
       <module-def name="org.infinispan.server.rest" src="${jdg.modules.dir}">
          <maven-resource-with-classifier group="org.infinispan" artifact="infinispan-server-rest" classifier="classes" />
-      </module-def>
-
-      <module-def name="org.jgroups" src="${jdg.modules.dir}">
-         <maven-resource group="org.jgroups" artifact="jgroups" />
       </module-def>
 
       <module-def name="org.scala-lang.library" src="${jdg.modules.dir}">
