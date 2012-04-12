@@ -12,7 +12,7 @@ HOW TO BUILD
 3) Run JDG:
 
     $ rm -fr ~/jdg
-    $ cp -R dist-dir/target/jboss-datagrid-<version> ~/edg
+    $ cp -R dist-dir/target/jboss-datagrid-<version> ~/jdg
     $ cd ~/jdg/bin
     $ ./standalone.sh
 
