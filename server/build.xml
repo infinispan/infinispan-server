@@ -106,13 +106,13 @@
          <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
       </module-def>
 
-      <module-def name="org.jboss.as.console" slot="jdg" src="${jdg.modules.dir}">
+      <!--module-def name="org.jboss.as.console" slot="jdg" src="${jdg.modules.dir}">
           <maven-resource-with-classifier group="org.jboss.as" artifact="jboss-as-console" classifier="resources"/>
-      </module-def>
+      </module-def-->
 
-      <module-def name="org.jboss.as.domain-http-error-context" slot="jdg" src="${jdg.modules.dir}">
+      <!--module-def name="org.jboss.as.domain-http-error-context" slot="jdg" src="${jdg.modules.dir}">
           <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-domain-http-error-context" />
-      </module-def>
+      </module-def-->
 
       <module-def name="org.jboss.as.product" slot="jdg" src="${jdg.modules.dir}" />
 

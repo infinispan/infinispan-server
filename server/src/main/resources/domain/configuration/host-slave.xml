@@ -1,10 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
-<host name="master" xmlns="urn:jboss:domain:1.2">
+<host xmlns="urn:jboss:domain:1.2">
 
     <management>
         <security-realms>
             <security-realm name="ManagementRealm">
+                <server-identities>
+                     <!-- Replace this with either a base64 password of your own, or use a vault with a vault expression -->
+                     <secret value="c2xhdmVfdXNlcl9wYXNzd29yZA=="/>
+                </server-identities>
+
                 <authentication>
                     <properties path="mgmt-users.properties" relative-to="jboss.domain.config.dir"/>
                 </authentication>
@@ -26,9 +31,7 @@
     </management>
 
     <domain-controller>
-       <local/>
-       <!-- Alternative remote domain controller configuration with a host and port -->
-       <!-- <remote host="${jboss.domain.master.address}" port="${jboss.domain.master.port:9999}" security-realm="ManagementRealm"/> -->
+       <remote host="${jboss.domain.master.address}" port="${jboss.domain.master.port:9999}" security-realm="ManagementRealm"/>
     </domain-controller>
 
     <interfaces>
@@ -45,27 +48,19 @@
         </interface>
     </interfaces>
 
- 	<jvms>
- 	   <jvm name="default">
-          <heap size="64m" max-size="256m"/>
-          <permgen size="256m" max-size="256m"/>
-            <jvm-options>
-                <option value="-server"/>
-            </jvm-options>
-       </jvm>
- 	</jvms>
+    <jvms>
+   	   <jvm name="default">
+            <heap size="64m" max-size="256m"/>
+            <permgen size="256m" max-size="256m"/>
+              <jvm-options>
+                  <option value="-server"/>
+              </jvm-options>
+         </jvm>
+   	</jvms>
 
     <servers>
-        <server name="server-one" group="datagrid-server-group">
-            <!-- Remote JPDA debugging for a specific server
-            <jvm name="default">
-              <jvm-options>
-                <option value="-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n"/>
-              </jvm-options>
-           </jvm>
-           -->
-        </server>
-        <server name="server-two" group="datagrid-server-group" auto-start="true">
+        <server name="server-one" group="main-server-group"/>
+        <server name="server-two" group="other-server-group">
             <!-- server-two avoids port conflicts by incrementing the ports in
                  the default socket-group declared in the server-group -->
             <socket-bindings port-offset="150"/>
