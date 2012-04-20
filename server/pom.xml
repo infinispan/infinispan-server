@@ -58,10 +58,10 @@
          <artifactId>jgroups</artifactId>
       </dependency>
 
-      <dependency>
+      <!-- dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>jboss-datagrid-domain-http-error-context</artifactId>
-      </dependency>
+      </dependency -->
 
       <dependency>
          <groupId>${project.groupId}</groupId>

@@ -31,7 +31,6 @@
    <modules>
       <module>versions</module>
       <module>integration</module>
-      <module>domain-http-error-context</module>
       <module>server</module>
       <module>library</module>
    </modules>

@@ -56,6 +56,20 @@
            paramTemplateFile="configuration/domain/template.xml" 
            paramSubsystemsFile="configuration/domain/subsystems.xml"
            paramOutputFile="${generated.configs.domain}/domain.xml"/>
+       
+       <!-- Example configs -->
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-fcs-local.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-fcs-local.xml"/>
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-jdbc-ha.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-jdbc-ha.xml"/>
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-rcs-local.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-rcs-local.xml"/>
     </target>
 
 
