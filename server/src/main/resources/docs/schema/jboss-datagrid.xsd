@@ -1,0 +1,90 @@
+<!-- ~ JBoss, Home of Professional Open Source. ~ Copyright 2010, Red Hat, 
+   Inc., and individual contributors ~ as indicated by the @author tags. See 
+   the copyright.txt file in the ~ distribution for a full listing of individual 
+   contributors. ~ ~ This is free software; you can redistribute it and/or modify 
+   it ~ under the terms of the GNU Lesser General Public License as ~ published 
+   by the Free Software Foundation; either version 2.1 of ~ the License, or 
+   (at your option) any later version. ~ ~ This software is distributed in the 
+   hope that it will be useful, ~ but WITHOUT ANY WARRANTY; without even the 
+   implied warranty of ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+   See the GNU ~ Lesser General Public License for more details. ~ ~ You should 
+   have received a copy of the GNU Lesser General Public ~ License along with 
+   this software; if not, write to the Free ~ Software Foundation, Inc., 51 
+   Franklin St, Fifth Floor, Boston, MA ~ 02110-1301 USA, or see the FSF site: 
+   http://www.fsf.org. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="urn:jboss:domain:datagrid:1.0" xmlns="urn:jboss:domain:datagrid:1.0"
+   elementFormDefault="qualified" attributeFormDefault="unqualified"
+   version="1.0">
+
+   <xs:element name="subsystem" type="subsystemType" />
+
+   <xs:complexType name="subsystemType">
+      <xs:all>
+         <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:group ref="connectors" />
+         </xs:choice>
+         <xs:element name="topology-state-transfer" type="topologyStateTransferType"
+            minOccurs="0" maxOccurs="1" />
+      </xs:all>
+   </xs:complexType>
+
+   <xs:group name="connectors">
+      <xs:choice>
+         <xs:element ref="hotrod-connector" />
+         <xs:element ref="memcached-connector" />
+         <xs:element ref="rest-connector" />
+      </xs:choice>
+   </xs:group>
+
+   <xs:complexType name="protocol-connector" abstract="true">
+      <xs:attribute name="socket-binding" type="xs:string"
+         use="required" />
+      <xs:attribute name="cache-container" type="xs:string"
+         use="required" />
+      <xs:attribute name="worker-threads" type="xs:int"
+         use="optional" />
+      <xs:attribute name="idle-timeout" type="xs:int" use="optional" />
+      <xs:attribute name="tcp-nodelay" type="xs:boolean"
+         use="optional" />
+      <xs:attribute name="send-buffer-size" type="xs:int"
+         use="optional" />
+      <xs:attribute name="receive-buffer-size" type="xs:int"
+         use="optional" />
+   </xs:complexType>
+
+   <xs:complexType name="hotrod-connector">
+      <xs:complexContent>
+         <xs:extension base="protocol-connector" />
+         <xs:element ref="topologyStateTransfer" />
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="memcached-connector">
+      <xs:complexContent>
+         <xs:extension base="protocol-connector" />
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="rest-connector">
+      <xs:attribute name="virtual-server" type="xs:string"
+         use="optional" />
+      <xs:attribute name="cache-container" type="xs:string"
+         use="optional" />
+      <xs:attribute name="context-path" type="xs:string"
+         use="optional" />
+   </xs:complexType>
+
+   <xs:complexType name="topologyStateTransferType">
+      <xs:attribute name="lock-timeout" type="xs:int" use="optional" />
+      <xs:attribute name="replication-timeout" type="xs:int"
+         use="optional" />
+      <xs:attribute name="update-timeout" type="xs:int"
+         use="optional" />
+      <xs:attribute name="external-host" type="xs:string"
+         use="optional" />
+      <xs:attribute name="external-port" type="xs:int" use="optional" />
+      <xs:attribute name="lazy-retrieval" type="xs:boolean"
+         use="optional" />
+   </xs:complexType>
+</xs:schema>

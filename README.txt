@@ -2,25 +2,18 @@ HOW TO BUILD
 ============
 
 1) Check out the source code.
-2) Run 
-
-    $ git submodule init
-    $ git submodule update
-
-   to initialize your local configuration file, and to fetch the EDG Quickstart submodule
-   
 2) Check versions/pom.xml for the versions of the external components you want to include (AS7, Infinispan).
    Make sure you have the artifacts for those components available in your Maven repository (local or remote).
 
-3) Build EDG:
+3) Build JDG:
 
     $ mvn clean package
 
-3) Run EDG:
+3) Run JDG:
 
-    $ rm -fr ~/edg
-    $ cp -R dist-dir/target/jboss-datagrid-<version> ~/edg
-    $ cd ~/edg/bin
+    $ rm -fr ~/jdg
+    $ cp -R dist-dir/target/jboss-datagrid-<version> ~/jdg
+    $ cd ~/jdg/bin
     $ ./standalone.sh
 
 NOTE: We copy the distribution directory to a place independent from the
@@ -32,9 +25,9 @@ NOTE: We copy the distribution directory to a place independent from the
       127.0.0.1:11211 (Memcached)
       http://127.0.0.1:8080/ (REST server)
 
-HOW TO UPGRADE AS 7.1
+HOW TO UPGRADE AS 7.x
 =====================
-JBoss AS 7.1 is included in the build via a BOM, referenced in versions/pom.xml and the modules. 
+JBoss AS 7.x is included in the build via a BOM, referenced in versions/pom.xml and the modules. 
 
 DEBUGGING
 =========

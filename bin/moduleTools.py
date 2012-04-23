@@ -4,7 +4,7 @@ import sys
 import argparse
 import xml.etree.ElementTree as ET
 
-JBOSS_DOMAIN_NS = '{urn:jboss:domain:1.1}'
+JBOSS_DOMAIN_NS = '{urn:jboss:domain:1.2}'
 JBOSS_MODULE_NS = '{urn:jboss:module:1.1}'
 
 class Server:

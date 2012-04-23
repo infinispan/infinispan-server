@@ -1,70 +1,74 @@
-<host xmlns="urn:jboss:domain:1.1" name="master">
-   <management>
-      <security-realms>
-         <security-realm name="ManagementRealm">
-            <authentication>
-               <properties path="mgmt-users.properties" relative-to="jboss.domain.config.dir" />
-            </authentication>
-         </security-realm>
-      </security-realms>
-      <management-interfaces>
-         <native-interface security-realm="ManagementRealm">
-            <socket interface="management" port="9999" />
-         </native-interface>
-         <http-interface security-realm="ManagementRealm">
-            <socket interface="management" port="9990" />
-         </http-interface>
-      </management-interfaces>
-   </management>
+<?xml version='1.0' encoding='UTF-8'?>
 
-   <domain-controller>
-      <local />
-      <!-- Alternative remote domain controller configuration with a host and port -->
-      <!-- <remote host="192.168.100.1" port="9999"/> -->
-   </domain-controller>
+<host name="master" xmlns="urn:jboss:domain:1.2">
 
-   <interfaces>
-      <interface name="management">
-         <inet-address value="${jboss.bind.address.management:127.0.0.1}" />
-      </interface>
-      <interface name="public">
-         <inet-address value="${jboss.bind.address:127.0.0.1}" />
-      </interface>
-      <interface name="clustering">
-         <inet-address value="${jboss.bind.address.clustering:127.0.0.1}" />
-      </interface>
-   </interfaces>
+    <management>
+        <security-realms>
+            <security-realm name="ManagementRealm">
+                <authentication>
+                    <properties path="mgmt-users.properties" relative-to="jboss.domain.config.dir"/>
+                </authentication>
+            </security-realm>
+            <security-realm name="ApplicationRealm">
+                <authentication>
+                    <properties path="application-users.properties" relative-to="jboss.domain.config.dir" />
+                </authentication>
+                <authorization>
+                    <properties path="application-roles.properties" relative-to="jboss.domain.config.dir"/>
+                </authorization>                
+            </security-realm>
+        </security-realms>
+        <management-interfaces>
+            <native-interface security-realm="ManagementRealm">
+                <socket interface="management" port="${jboss.management.native.port:9999}"/>
+            </native-interface>
+        </management-interfaces>
+    </management>
 
-   <jvms>
-      <jvm name="default">
-         <heap size="64m" max-size="128m" />
-      </jvm>
-   </jvms>
+    <domain-controller>
+       <local/>
+       <!-- Alternative remote domain controller configuration with a host and port -->
+       <!-- <remote host="${jboss.domain.master.address}" port="${jboss.domain.master.port:9999}" security-realm="ManagementRealm"/> -->
+    </domain-controller>
 
-   <servers>
-      <server name="server-one" group="datagrid-server-group">
-         <!-- server-one inherits the default socket-group declared in the server-group -->
-         <jvm name="default">
-            <!-- jvm-options> <option value="-Xrunjdwp:transport=dt_socket,address=8788,server=y,suspend=y"/> </jvm-options -->
-         </jvm>
-         <system-properties>
-            <property name="topology.site" value="s1"/>
-            <property name="topology.rack" value="r1"/>
-            <property name="topology.machine" value="m1"/>
-         </system-properties>
-      </server>
+    <interfaces>
+        <interface name="management">
+            <inet-address value="${jboss.bind.address.management:127.0.0.1}"/>
+        </interface>
+        <interface name="public">
+           <inet-address value="${jboss.bind.address:127.0.0.1}"/>
+        </interface>
+        <interface name="unsecure">
+            <!-- Used for IIOP sockets in the standard configuration.
+                 To secure JacORB you need to setup SSL -->
+            <inet-address value="${jboss.bind.address.unsecure:127.0.0.1}"/>
+        </interface>
+    </interfaces>
 
-      <server name="server-two" group="datagrid-server-group" auto-start="true">
-         <!-- server-two avoids port conflicts by incrementing the ports in the default socket-group declared in the server-group -->
-         <socket-bindings port-offset="150" />
-         <jvm name="default">
-            <!-- jvm-options> <option value="-Xrunjdwp:transport=dt_socket,address=8789,server=y,suspend=y"/> </jvm-options -->
-         </jvm>
-         <system-properties>
-            <property name="topology.site" value="s1"/>
-            <property name="topology.rack" value="r1"/>
-            <property name="topology.machine" value="m2"/>
-         </system-properties>
-      </server>
-   </servers>
+ 	<jvms>
+ 	   <jvm name="default">
+          <heap size="64m" max-size="256m"/>
+          <permgen size="256m" max-size="256m"/>
+            <jvm-options>
+                <option value="-server"/>
+            </jvm-options>
+       </jvm>
+ 	</jvms>
+
+    <servers>
+        <server name="server-one" group="datagrid-server-group">
+            <!-- Remote JPDA debugging for a specific server
+            <jvm name="default">
+              <jvm-options>
+                <option value="-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n"/>
+              </jvm-options>
+           </jvm>
+           -->
+        </server>
+        <server name="server-two" group="datagrid-server-group" auto-start="true">
+            <!-- server-two avoids port conflicts by incrementing the ports in
+                 the default socket-group declared in the server-group -->
+            <socket-bindings port-offset="150"/>
+        </server>
+    </servers>
 </host>

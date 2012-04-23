@@ -10,23 +10,31 @@
    Lesser General Public ~ License along with this library; if not, write to 
    the Free Software ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
    MA ~ 02110-1301 USA -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
-      <groupId>com.redhat.datagrid</groupId>
-      <artifactId>datagrid-versions</artifactId>
+      <groupId>com.jboss.datagrid</groupId>
+      <artifactId>jboss-datagrid-versions</artifactId>
       <version>6.0.0-SNAPSHOT</version>
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>datagrid-server</artifactId>
+   <artifactId>jboss-datagrid-server</artifactId>
 
-   <name>JBoss Data Grid - Server</name>
-   <description>JBoss Data Grid - Server</description>
+   <name>JBoss Data Grid - Server Edition</name>
+   <description>JBoss Data Grid - Server Edition</description>
 
    <packaging>pom</packaging>
+
+   <properties>
+      <!-- generated configs root dirs -->
+      <generated.configs>${basedir}/target/generated-configs</generated.configs>
+      <generated.configs.standalone>${generated.configs}/standalone/configuration</generated.configs.standalone>
+      <generated.configs.domain>${generated.configs}/domain/configuration</generated.configs.domain>
+      <generated.configs.examples>${generated.configs}/docs/examples/configs</generated.configs.examples>
+      <generated.configs.src.dir>${basedir}/src/main/resources</generated.configs.src.dir>
+   </properties>
 
    <dependencies>
       <dependency>
@@ -49,15 +57,15 @@
          <groupId>org.jgroups</groupId>
          <artifactId>jgroups</artifactId>
       </dependency>
-      
-      <dependency>
+
+      <!-- dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>datagrid-domain-http-error-context</artifactId>
-      </dependency>
+         <artifactId>jboss-datagrid-domain-http-error-context</artifactId>
+      </dependency -->
 
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>datagrid-integration</artifactId>
+         <artifactId>jboss-datagrid-server-integration</artifactId>
       </dependency>
 
       <dependency>
@@ -110,11 +118,6 @@
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-client-hotrod</artifactId>
       </dependency>
-
-      <dependency>
-         <groupId>org.infinispan</groupId>
-         <artifactId>infinispan-rhq-plugin</artifactId>
-      </dependency>
    </dependencies>
 
    <build>
@@ -122,6 +125,20 @@
          <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
+               <execution>
+                  <id>generate-configs</id>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                     <target>
+                        <ant antfile="build-configs.xml" inheritRefs="true">
+                           <target name="all" />
+                        </ant>
+                     </target>
+                  </configuration>
+               </execution>
                <execution>
                   <id>build-dist-dir</id>
                   <goals>
@@ -147,7 +164,7 @@
          </plugin>
       </plugins>
    </build>
-   
+
    <profiles>
       <profile>
          <id>distribution</id>
@@ -175,9 +192,10 @@
                      <descriptors>
                         <descriptor>${project.basedir}/src/main/assemblies/server.xml</descriptor>
                      </descriptors>
-                     <finalName>${jboss.datagrid.release.finalName}</finalName>
-                     <outputDirectory>${project.build.directory}/distribution</outputDirectory>
+                     <finalName>${product.name}-server-${product.version}</finalName>
+                     <outputDirectory>${project.build.directory}</outputDirectory>
                      <workDirectory>${project.build.directory}/assembly/work</workDirectory>
+                     <appendAssemblyId>false</appendAssemblyId>
                   </configuration>
                </plugin>
             </plugins>

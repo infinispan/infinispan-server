@@ -33,7 +33,7 @@
     <xs:complexType name="subsystem">
       <xs:sequence>
          <xs:element name="show-model" type="booleanValueType" minOccurs="0"/>
-         <xs:element name="remoting-connector" type="remotingConnectorRefType" minOccurs="0"/>
+         <xs:element name="jmx-connector" type="jmx-connectorType" minOccurs="0"/>
       </xs:sequence>
     </xs:complexType>
 
@@ -41,15 +41,9 @@
       <xs:attribute name="value" type="xs:boolean"/>
     </xs:complexType>
 
-    <xs:complexType name="remotingConnectorRefType">
-        <xs:attribute name="use-management-endpoint" type="xs:boolean" default="true" use="optional" >
-            <xs:annotation>
-                <xs:documentation>
-                    If true then this connector will use the management endpoint, otherwise it will use the
-                    remoting subsystem endpoint.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
+    <xs:complexType name="jmx-connectorType">
+       <xs:attribute name="registry-binding" use="required" />
+       <xs:attribute name="server-binding" use="required" />
     </xs:complexType>
 
 </xs:schema>

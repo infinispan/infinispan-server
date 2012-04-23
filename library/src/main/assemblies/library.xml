@@ -27,16 +27,19 @@
    </formats>
 
    <includeBaseDirectory>true</includeBaseDirectory>
+   <baseDirectory>${product.name}-library-${product.version}</baseDirectory>
 
    <dependencySets>
       <dependencySet>
          <useProjectArtifact>false</useProjectArtifact>
+         <directoryMode>0755</directoryMode>
          <includes>
             <include>org.infinispan:infinispan-core</include>
          </includes>
       </dependencySet>
       <dependencySet>
          <useProjectArtifact>false</useProjectArtifact>
+         <directoryMode>0755</directoryMode>
          <includes>
             <include>net.jcip:jcip-annotations</include>
             <include>org.codehaus.woodstox:stax2-api</include>
@@ -51,6 +54,7 @@
       </dependencySet>
       <dependencySet>
          <useProjectArtifact>false</useProjectArtifact>
+         <directoryMode>0755</directoryMode>
          <includes>
             <include>org.infinispan:infinispan-cachestore-jdbc</include>
          </includes>
@@ -58,6 +62,7 @@
       </dependencySet>
       <dependencySet>
          <useProjectArtifact>false</useProjectArtifact>
+         <directoryMode>0755</directoryMode>
          <includes>
             <include>org.infinispan:infinispan-cachestore-remote</include>
          </includes>
@@ -65,20 +70,13 @@
       </dependencySet>
       <dependencySet>
          <useProjectArtifact>false</useProjectArtifact>
+         <directoryMode>0755</directoryMode>
          <includes>
             <include>commons-pool:commons-pool</include>
             <include>org.infinispan:infinispan-client-hotrod</include>
          </includes>
          <outputDirectory>modules/cachestores/remote/lib</outputDirectory>
       </dependencySet>
-      <dependencySet>
-         <useProjectArtifact>false</useProjectArtifact>
-         <includes>
-            <include>org.infinispan:infinispan-rhq-plugin</include>
-         </includes>
-         <outputDirectory>modules/rhq-plugin</outputDirectory>
-      </dependencySet>
-      
       <!-- tech preview -->
    </dependencySets>
 </assembly>

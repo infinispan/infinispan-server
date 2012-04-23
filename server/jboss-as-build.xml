@@ -26,7 +26,7 @@
 
     <property name="output.dir" value="target/jboss-as-${jboss.as.release.version}"/>
 
-    <target name="base" depends="clean-target, modules-minimalistic, copy-files, make-dirs, copy-client"/>
+    <target name="base" depends="clean-target, modules-minimalistic, copy-files, make-dirs"/>
 
     <target name="copy-files">
         <copy todir="${output.dir}">
@@ -42,6 +42,10 @@
                 <include name="standalone/deployments/**"/>
                 <include name="welcome-content/**"/>
             </fileset>
+        	   <fileset dir="${generated.configs}">
+        	   	 <include name="domain/**"/>
+        	   	 <include name="docs/**"/>
+        	   </fileset>
         </copy>
         <chmod perm="755">
             <fileset dir="${output.dir}/bin">
@@ -51,20 +55,11 @@
         <!-- These files contain digested passwords, which should not be visible to external users -->
         <chmod perm="600" file="${output.dir}/domain/configuration/mgmt-users.properties"/>
         <chmod perm="600" file="${output.dir}/standalone/configuration/mgmt-users.properties"/>
-
-        <!-- Copy the JBoss AS7 EJB specific schemas to the JBOSS_HOME/docs/schema folder -->
-        <unzip src="${org.jboss.as:jboss-as-ejb3:jar}" dest="${output.dir}/docs/schema/">
-            <patternset>
-                <include name="*.xsd"/>
-            </patternset>
-            <mapper type="flatten"/>
-        </unzip>
-
     </target>
 
     <target name="copy-standalone" description="Copy all standard configurations">
         <copy todir="${output.dir}">
-            <fileset dir="src/main/resources">
+            <fileset dir="${generated.configs}">
                 <include name="standalone/configuration/**.xml"/>
             </fileset>
         </copy>
@@ -73,7 +68,7 @@
     <target name="copy-standalone-minimalistic">
         <copy tofile="${output.dir}/standalone/configuration/standalone.xml" file="src/main/resources/docs/examples/configs/standalone-minimalistic.xml"/>
         <copy todir="${output.dir}/docs/examples/configs">
-            <fileset dir="src/main/resources/standalone/configuration">
+            <fileset dir="${generated.configs.standalone}">
                 <include name="**.xml"/>
             </fileset>
         </copy>
@@ -102,10 +97,18 @@
             </patternset>
             <mapper type="flatten"/>
         </unzip>
+        <!-- Copy the JBoss AS7 EJB specific schemas to the JBOSS_HOME/docs/schema folder -->
+        <unzip src="${org.jboss.as:jboss-as-ejb3:jar}" dest="${output.dir}/docs/schema/">
+            <patternset>
+                <include name="*.xsd"/>
+            </patternset>
+            <mapper type="flatten"/>
+        </unzip>
+
     </target>
 
     <target name="copy-client">
-        <copy file="${org.jboss.as:jboss-as-client-all:jar}" tofile="${output.dir}/bin/client/jboss-client-${project.version}.jar"/>
+        <copy file="${org.jboss.as:jboss-as-client-all:jar}" tofile="${output.dir}/bin/client/jboss-client.jar"/>
     </target>
 
     <target name="minimalistic" depends="base, copy-standalone-minimalistic"/>
@@ -231,6 +234,10 @@
             <maven-resource group="org.jboss.logging" artifact="jboss-logging"/>
         </module-def>
 
+        <module-def name="org.jboss.logging.jul-to-slf4j-stub">
+            <maven-resource group="org.jboss.logging" artifact="jul-to-slf4j-stub"/>
+        </module-def>
+
         <module-def name="org.jboss.logmanager">
             <maven-resource group="org.jboss.logmanager" artifact="jboss-logmanager"/>
         </module-def>
@@ -244,7 +251,7 @@
         </module-def>
 
         <module-def name="org.jboss.remoting3.remoting-jmx">
-            <maven-resource group="org.jboss.remoting3" artifact="remoting-jmx"/>
+            <maven-resource group="org.jboss.remotingjmx" artifact="remoting-jmx"/>
         </module-def>
 
         <module-def name="org.jboss.sasl">
@@ -487,6 +494,10 @@
             <maven-resource group="commons-collections" artifact="commons-collections" />
         </module-def>
 
+      <module-def name="org.apache.commons.configuration">
+          <maven-resource group="commons-configuration" artifact="commons-configuration" />
+      </module-def>
+
         <module-def name="org.apache.commons.io">
             <maven-resource group="commons-io" artifact="commons-io"/>
         </module-def>
@@ -544,6 +555,14 @@
         <module-def name="org.apache.james.mime4j">
             <maven-resource group="org.apache.james" artifact="apache-mime4j"/>
         </module-def>
+    	
+        <module-def name="org.apache.juddi.juddi-client">
+            <maven-resource group="org.apache.juddi" artifact="juddi-client"/>
+        </module-def>
+
+        <module-def name="org.apache.juddi.uddi-ws">
+            <maven-resource group="org.apache.juddi" artifact="uddi-ws"/>
+        </module-def>
 
         <module-def name="org.apache.neethi">
             <maven-resource group="org.apache.neethi" artifact="neethi"/>
@@ -557,8 +576,8 @@
             <maven-resource group="org.apache.velocity" artifact="velocity" />
         </module-def>
 
-        <module-def name="org.apache.ws.scout">
-            <maven-resource group="org.apache.ws.scout" artifact="scout"/>
+        <module-def name="org.apache.juddi.scout">
+            <maven-resource group="org.apache.juddi.scout" artifact="scout"/>
         </module-def>
 
         <module-def name="org.apache.xalan">
@@ -611,6 +630,7 @@
             <maven-resource group="org.hibernate" artifact="hibernate-core" />
             <maven-resource group="org.hibernate.common" artifact="hibernate-commons-annotations" />
             <maven-resource group="org.hibernate" artifact="hibernate-entitymanager" />
+            <maven-resource group="org.hibernate" artifact="hibernate-infinispan"/>
         </module-def>
 
         <module-def name="org.hibernate.envers">
@@ -618,9 +638,6 @@
         </module-def>
         <module-def name="org.hibernate.validator">
             <maven-resource group="org.hibernate" artifact="hibernate-validator"/>
-        </module-def>
-        <module-def name="org.hibernate.infinispan">
-            <maven-resource group="org.hibernate" artifact="hibernate-infinispan"/>
         </module-def>
 
         <module-def name="org.hornetq">
@@ -789,10 +806,6 @@
             <maven-resource group="org.jboss.as" artifact="jboss-as-jpa-hibernate4"/>
         </module-def>
 
-        <module-def name="org.jboss.as.jpa.hibernate.infinispan">
-            <maven-resource group="org.jboss.as" artifact="jboss-as-jpa-hibernate-infinispan"/>
-        </module-def>
-
         <module-def name="org.jboss.as.jpa.openjpa">
             <maven-resource group="org.jboss.as" artifact="jboss-as-jpa-openjpa"/>
         </module-def>
@@ -862,7 +875,7 @@
 
         <module-def name="org.jboss.as.webservices">
             <maven-resource group="org.jboss.as" artifact="jboss-as-webservices-server-integration"/>
-            <maven-resource-with-classifier group="org.jboss.ws.cxf" artifact="jbossws-cxf-resources" classifier="jboss700"/>
+            <maven-resource-with-classifier group="org.jboss.ws.cxf" artifact="jbossws-cxf-resources" classifier="jboss711"/>
         </module-def>
 
         <module-def name="org.jboss.as.webservices.server.integration">
@@ -961,12 +974,15 @@
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-api"/>
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-spi"/>
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-felix"/>
-            <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-metadata"/>
         </module-def>
 
         <module-def name="org.jboss.osgi.repository">
             <maven-resource group="org.jboss.osgi.repository" artifact="jbosgi-repository-api"/>
             <maven-resource group="org.jboss.osgi.repository" artifact="jbosgi-repository-core"/>
+        </module-def>
+
+        <module-def name="org.jboss.osgi.metadata">
+            <maven-resource group="org.jboss.osgi.metadata" artifact="jbosgi-metadata"/>
         </module-def>
 
         <module-def name="org.jboss.osgi.spi">
@@ -1126,10 +1142,6 @@
             <maven-resource group="joda-time" artifact="joda-time"/>
         </module-def>
 
-        <module-def name="org.junit">
-            <maven-resource group="junit" artifact="junit"/>
-        </module-def>
-
         <module-def name="org.omg.api" />
 
         <module-def name="org.osgi.core">
@@ -1140,7 +1152,6 @@
             <maven-resource group="org.picketlink" artifact="picketlink-fed" jandex="true"/>
             <maven-resource group="org.picketlink" artifact="picketlink-bindings" jandex="true"/>
             <maven-resource group="org.picketlink" artifact="picketlink-bindings-jboss"/>
-            <maven-resource group="org.picketlink" artifact="picketlink-trust-jbossws"/>
         </module-def>
 
         <module-def name="org.picketbox">
@@ -1232,5 +1243,5 @@
         <delete file="maven-ant-tasks.jar"/>
     </target>
 
-    <target name="all" depends="base, copy-standalone, modules, bundles, create-ext-content"/>
+    <target name="all" depends="base, copy-standalone, modules, bundles, create-ext-content, copy-client"/>
 </project>

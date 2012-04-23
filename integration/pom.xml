@@ -8,14 +8,15 @@
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
-      <groupId>com.redhat.datagrid</groupId>
-      <artifactId>datagrid-versions</artifactId>
+      <groupId>com.jboss.datagrid</groupId>
+      <artifactId>jboss-datagrid-versions</artifactId>
       <version>6.0.0-SNAPSHOT</version>
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>datagrid-integration</artifactId>
-   <name>JBoss Data Grid - AS Data Grid Subsystem</name>
+   <artifactId>jboss-datagrid-server-integration</artifactId>
+   <name>JBoss Data Grid - Server Endpoint Subsystem</name>
+   <description>JBoss Data Grid - Server Endpoint Subsystem</description>
 
    <build>
       <plugins>
@@ -137,14 +138,12 @@
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
-         <version>${version.junit}</version>
          <scope>test</scope>
       </dependency>
 
       <dependency>
          <groupId>org.jboss.as</groupId>
          <artifactId>jboss-as-subsystem-test</artifactId>
-         <version>${version.org.jboss.as}</version>
          <scope>test</scope>
       </dependency>
    </dependencies>

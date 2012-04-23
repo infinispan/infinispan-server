@@ -1,3 +1,0 @@
-JBoss-Product-Release-Name: Data Grid
-JBoss-Product-Release-Version: @project.version@
-JBoss-Product-Console-Slot: edg

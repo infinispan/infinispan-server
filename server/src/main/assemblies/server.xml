@@ -20,10 +20,11 @@
    </formats>
 
    <includeBaseDirectory>true</includeBaseDirectory>
+   <baseDirectory>${product.name}-server-${product.version}</baseDirectory>
 
    <fileSets>
       <fileSet>
-         <directory>${project.build.directory}/${jboss.datagrid.release.finalName}</directory>
+         <directory>${project.build.directory}/${product.name}-server-${product.version}</directory>
          <outputDirectory />
          <includes>
             <include>**/**</include>
