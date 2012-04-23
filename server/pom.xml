@@ -118,17 +118,6 @@
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-client-hotrod</artifactId>
       </dependency>
-
-      <dependency>
-         <groupId>org.infinispan</groupId>
-         <artifactId>infinispan-rhq-plugin</artifactId>
-         <exclusions>
-            <exclusion>
-               <groupId>org.rhq</groupId>
-               <artifactId>rhq-core-native-system</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
    </dependencies>
 
    <build>

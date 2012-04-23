@@ -70,14 +70,6 @@
          <fileset file="${commons-pool:commons-pool:jar}" />
          <mapper type="flatten" />
       </copy>
-
-      <!-- Copy the RHQ agent plugin -->
-      <mkdir dir="${output.dir}/client/rhq-agent" />
-
-      <copy todir="${output.dir}/client/rhq-agent">
-         <fileset file="${org.infinispan:infinispan-rhq-plugin:jar}" />
-         <mapper type="flatten" />
-      </copy>
    </target>
 
    <target name="jboss-modules">

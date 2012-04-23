@@ -81,14 +81,6 @@
          <useProjectArtifact>false</useProjectArtifact>
          <directoryMode>0755</directoryMode>
          <includes>
-            <include>org.infinispan:infinispan-rhq-plugin</include>
-         </includes>
-         <outputDirectory>modules/rhq-plugin</outputDirectory>
-      </dependencySet>
-      <dependencySet>
-         <useProjectArtifact>false</useProjectArtifact>
-         <directoryMode>0755</directoryMode>
-         <includes>
             <include>org.infinispan:infinispan:*:javadoc</include>
          </includes>
          <unpack>true</unpack>
