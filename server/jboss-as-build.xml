@@ -335,6 +335,11 @@
             <maven-resource group="com.h2database" artifact="h2"/>
         </module-def>
 
+        <module-def name="com.sun.istack">
+            <maven-resource group="com.sun.istack" artifact="istack-commons-runtime"/>
+            <maven-resource group="com.sun.istack" artifact="istack-commons-tools"/>
+        </module-def>
+
         <module-def name="com.sun.jsf-impl">
             <maven-resource group="com.sun.faces" artifact="jsf-impl"/>
         </module-def>
@@ -350,6 +355,10 @@
 
         <module-def name="com.sun.xml.messaging.saaj">
             <maven-resource group="com.sun.xml.messaging.saaj" artifact="saaj-impl"/>
+        </module-def>
+
+        <module-def name="com.sun.xml.txw2">
+            <maven-resource group="com.sun.xml.txw2" artifact="txw2"/>
         </module-def>
 
         <module-def name="org.dom4j">
@@ -492,14 +501,6 @@
             <maven-resource group="net.jcip" artifact="jcip-annotations"/>
         </module-def>
 
-        <module-def name="net.sourceforge.cssparser">
-            <maven-resource group="net.sourceforge.cssparser" artifact="cssparser"/>
-        </module-def>
-
-        <module-def name="net.sourceforge.nekohtml">
-            <maven-resource group="net.sourceforge.nekohtml" artifact="nekohtml"/>
-        </module-def>
-
         <module-def name="org.apache.commons.beanutils">
             <maven-resource group="commons-beanutils" artifact="commons-beanutils"/>
         </module-def>
@@ -577,7 +578,7 @@
         <module-def name="org.apache.james.mime4j">
             <maven-resource group="org.apache.james" artifact="apache-mime4j"/>
         </module-def>
-    	
+
         <module-def name="org.apache.juddi.juddi-client">
             <maven-resource group="org.apache.juddi" artifact="juddi-client"/>
         </module-def>
@@ -936,14 +937,6 @@
             <maven-resource group="org.jboss" artifact="jboss-iiop-client"/>
         </module-def>
 
-        <module-def name="org.jboss.interceptor">
-            <maven-resource group="org.jboss.interceptor" artifact="jboss-interceptor-core"/>
-        </module-def>
-
-        <module-def name="org.jboss.interceptor.spi">
-            <maven-resource group="org.jboss.interceptor" artifact="jboss-interceptor-spi"/>
-        </module-def>
-
         <module-def name="org.jboss.ironjacamar.api">
             <maven-resource group="org.jboss.ironjacamar" artifact="ironjacamar-common-api"/>
             <maven-resource group="org.jboss.ironjacamar" artifact="ironjacamar-common-spi"/>
@@ -998,7 +991,6 @@
         <module-def name="org.jboss.osgi.resolver">
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-api"/>
             <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-felix"/>
-            <maven-resource group="org.apache.felix" artifact="org.apache.felix.resolver"/>
         </module-def>
 
         <module-def name="org.jboss.osgi.metadata">
@@ -1200,10 +1192,6 @@
 
         <module-def name="org.slf4j.ext">
             <maven-resource group="org.slf4j" artifact="slf4j-ext"/>
-        </module-def>
-
-        <module-def name="org.w3c.css.sac">
-            <maven-resource group="org.w3c.css" artifact="sac"/>
         </module-def>
 
         <module-def name="org.yaml.snakeyaml">
