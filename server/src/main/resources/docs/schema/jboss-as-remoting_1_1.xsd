@@ -85,7 +85,6 @@
             </xs:documentation>
         </xs:annotation>
         <xs:all>
-            <!-- xs:element name="ssl-whatever??" type="ref" minOccurs="0" -->
             <xs:element name="sasl" type="sasl" minOccurs="0"/>
             <xs:element name="authentication-provider" type="ref" minOccurs="0"/>
             <xs:element name="properties" type="properties" minOccurs="0"/>
@@ -300,7 +299,7 @@
 
     <xs:complexType name="base-outbound-connectionType">
         <xs:all>
-            <xs:element name="connection-creation-options" type="xnio-optionsType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="properties" type="properties" minOccurs="0"/>
         </xs:all>
         <xs:attribute name="name" type="xs:string" use="required"/>
     </xs:complexType>
@@ -325,18 +324,10 @@
         <xs:complexContent>
             <xs:extension base="base-outbound-connectionType">
                 <xs:attribute name="outbound-socket-binding-ref" type="xs:string" use="required"/>
+                <xs:attribute name="username" type="xs:string" use="optional"/>
+                <xs:attribute name="security-realm" type="xs:string" use="optional"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="xnio-optionsType">
-        <xs:sequence>
-            <xs:element name="option" type="xnio-optionType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="xnio-optionType">
-        <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="value" type="xs:string" use="required"/>
-    </xs:complexType>
 </xs:schema>
