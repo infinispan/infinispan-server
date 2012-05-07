@@ -5,7 +5,10 @@
    <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="udp">
       <stack name="udp">
          <transport type="UDP" socket-binding="jgroups-udp" default-executor="jgroups" oob-executor="jgroups-oob" timer-executor="jgroups-timer" />
-         <protocol type="PING" />
+         <protocol type="PING">
+            <property name="timeout">5000</property>
+            <property name="num_initial_members">5</property>
+         </protocol>
          <protocol type="MERGE2" />
          <protocol type="FD_SOCK" socket-binding="jgroups-udp-fd" />
          <protocol type="FD_ALL" />
