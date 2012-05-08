@@ -78,7 +78,6 @@ class ProtocolServerService implements Service<ProtocolServer> {
       assert connectorProperties.isEmpty();
       assert topologyStateTransferProperties.isEmpty();
 
-      ClassLoader origTCCL = SecurityActions.getContextClassLoader();
       boolean done = false;
       try {
          loadConnectorProperties(config);
@@ -104,8 +103,6 @@ class ProtocolServerService implements Service<ProtocolServer> {
          if (!done) {
             doStop();
          }
-
-         SecurityActions.setContextClassLoader(origTCCL);
       }
    }
 
@@ -127,8 +124,6 @@ class ProtocolServerService implements Service<ProtocolServer> {
       props.putAll(topologyStateTransferProperties);
 
       // Start the server and record it
-
-      SecurityActions.setContextClassLoader(serverClass.getClassLoader());
       ProtocolServer server;
       try {
          server = serverClass.newInstance();
