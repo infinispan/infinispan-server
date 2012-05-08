@@ -35,6 +35,7 @@
       <module name="org.jboss.as.naming" />
       <module name="org.jboss.as.server" export="true" />
       <module name="org.jboss.as.network" />
+      <module name="org.jboss.as.security" />
       <module name="org.jboss.as.web" />
       <module name="org.jboss.msc" />
       <module name="org.jboss.logging" />
@@ -42,5 +43,7 @@
       <module name="org.jboss.marshalling.river" services="import" />
       <module name="org.jboss.resteasy.resteasy-jaxrs" services="import" />
       <module name="org.jgroups" />
+      <module name="org.picketbox" />
+      <module name="javax.security.jacc.api"/>
    </dependencies>
 </module>

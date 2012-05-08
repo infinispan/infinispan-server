@@ -40,10 +40,10 @@ import org.jboss.staxmapper.XMLExtendedStreamWriter;
 
 /**
  * The parser for the data grid endpoint subsystem configuration.
- * 
+ *
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
  * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
- * 
+ *
  */
 class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<List<ModelNode>>, XMLElementWriter<SubsystemMarshallingContext> {
 
@@ -96,7 +96,7 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
 
    /**
     * Handle parsing of the hotrod and memcached connector configuration
-    * 
+    *
     * @param reader
     * @param connector
     */
@@ -138,18 +138,18 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
             ParseUtils.unexpectedAttribute(reader, i);
          }
       }
-      
+
       final ModelNode address = parentAddress.clone();
       address.add(name, providedName);
       address.protect();
       op.get(OP_ADDR).set(address);
-      
+
       return op;
    }
 
    /**
     * Handle parsing of the Rest connector configuration
-    * 
+    *
     * @param reader
     * @param connector
     */
@@ -174,6 +174,10 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
             op.get(ModelKeys.VIRTUAL_SERVER).set(attrValue);
          } else if (ModelKeys.CONTEXT_PATH.equals(attrName)) {
             op.get(ModelKeys.CONTEXT_PATH).set(attrValue);
+         } else if (ModelKeys.SECURITY_DOMAIN.equals(attrName)) {
+            op.get(ModelKeys.SECURITY_DOMAIN).set(attrValue);
+         } else if (ModelKeys.AUTH_METHOD.equals(attrName)) {
+            op.get(ModelKeys.AUTH_METHOD).set(attrValue);
          } else {
             ParseUtils.unexpectedAttribute(reader, i);
          }
@@ -211,7 +215,7 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
    public void writeContent(final XMLExtendedStreamWriter writer, final SubsystemMarshallingContext context) throws XMLStreamException {
       context.startSubsystemElement(namespaceUri, false);
       final ModelNode node = context.getModelNode();
-      writeConnectors(writer, node);      
+      writeConnectors(writer, node);
       writer.writeEndElement();
    }
 

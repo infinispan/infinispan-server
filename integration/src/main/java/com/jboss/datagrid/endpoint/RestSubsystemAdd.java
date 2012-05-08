@@ -30,6 +30,8 @@ import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.operations.common.Util;
+import org.jboss.as.security.plugins.SecurityDomainContext;
+import org.jboss.as.security.service.SecurityDomainService;
 import org.jboss.as.server.ServerEnvironment;
 import org.jboss.as.server.services.path.AbstractPathService;
 import org.jboss.as.web.VirtualHost;
@@ -58,6 +60,7 @@ class RestSubsystemAdd extends AbstractAddStepHandler implements DescriptionProv
       copyIfSet(ModelKeys.CACHE_CONTAINER, source, target);
       copyIfSet(ModelKeys.VIRTUAL_SERVER, source, target);
       copyIfSet(ModelKeys.CONTEXT_PATH, source, target);
+      copyIfSet(ModelKeys.SECURITY_DOMAIN, source, target);
    }
 
    @Override
@@ -77,6 +80,13 @@ class RestSubsystemAdd extends AbstractAddStepHandler implements DescriptionProv
       EndpointUtils.addCacheContainerDependency(context, builder, service.getCacheContainerName(), service.getCacheManager());
       builder.addDependency(AbstractPathService.pathNameOf(ServerEnvironment.HOME_DIR), String.class, service.getPathInjector());
       builder.addDependency(WebSubsystemServices.JBOSS_WEB_HOST.append(service.getVirtualServer()), VirtualHost.class, service.getHostInjector());
+      if (service.getSecurityDomain()!=null) {
+         builder.addDependency(
+               SecurityDomainService.SERVICE_NAME.append(service.getSecurityDomain()),
+               SecurityDomainContext.class,
+               service.getSecurityDomainContextInjector()
+         );
+      }
       builder.addListener(verificationHandler);
       builder.setInitialMode(ServiceController.Mode.ACTIVE);
       builder.install();

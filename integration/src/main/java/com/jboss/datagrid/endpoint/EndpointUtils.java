@@ -46,9 +46,9 @@ public class EndpointUtils {
          return DataGridConstants.DATAGRID.append(name);
    }
 
-   public static void addCacheDependency(OperationContext context, ServiceBuilder<?> builder, String cacheContainerName, String cacheName, InjectedValue<Cache> target) {
+   public static void addCacheDependency(OperationContext context, ServiceBuilder<?> builder, String cacheContainerName, String cacheName) {
       ServiceName cacheServiceName = getCacheServiceName(cacheContainerName, cacheName);
-      builder.addDependency(ServiceBuilder.DependencyType.REQUIRED, cacheServiceName, Cache.class, target);
+      builder.addDependency(ServiceBuilder.DependencyType.REQUIRED, cacheServiceName);
    }
 
    public static void addCacheContainerDependency(OperationContext context, ServiceBuilder<?> builder, String cacheContainerName, InjectedValue<EmbeddedCacheManager> target) {

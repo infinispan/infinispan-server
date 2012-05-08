@@ -38,7 +38,6 @@ org/jboss/as/cmp/main/**
 org/jboss/as/configadmin/main/**
 org/jboss/as/console/**
 org/jboss/as/deployment-scanner/main/**
-org/jboss/as/domain-add-user/main/**
 org/jboss/as/domain-http-error-context/main/**
 org/jboss/as/ee/deployment/main/**
 org/jboss/as/ejb3/main/**

@@ -90,6 +90,58 @@ public class EndpointSubsystemProviders {
 
    };
 
+   static DescriptionProvider TOPOLOGY_STATE_TRANSFER_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(DESCRIPTION).set(bundle.getString("topology-state-transfer.description"));
+         node.get(HEAD_COMMENT_ALLOWED).set(true);
+         node.get(TAIL_COMMENT_ALLOWED).set(true);
+
+         addNode(node, ModelKeys.EXTERNAL_HOST, bundle.getString("topology-state-transfer.external-host"), ModelType.STRING, false);
+         addNode(node, ModelKeys.EXTERNAL_PORT, bundle.getString("topology-state-transfer.external-port"), ModelType.INT, false);
+         addNode(node, ModelKeys.LAZY_RETRIEVAL, bundle.getString("topology-state-transfer.lazy-retrieval"), ModelType.BOOLEAN, false);
+         addNode(node, ModelKeys.LOCK_TIMEOUT, bundle.getString("topology-state-transfer.lock-timeout"), ModelType.LONG, false);
+         addNode(node, ModelKeys.REPLICATION_TIMEOUT, bundle.getString("topology-state-transfer.replication-timeout"), ModelType.LONG, false);
+
+         return node;
+      }
+   };
+
+   static DescriptionProvider ADD_TOPOLOGY_STATE_TRANSFER_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(final Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(OPERATION_NAME).set(ADD);
+         node.get(DESCRIPTION).set(bundle.getString("topology-state-transfer.add"));
+
+         addModelRequestProperty(node, ModelKeys.EXTERNAL_HOST, bundle.getString("topology-state-transfer.external-host"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.EXTERNAL_PORT, bundle.getString("topology-state-transfer.external-port"), ModelType.INT, false);
+         addModelRequestProperty(node, ModelKeys.LAZY_RETRIEVAL, bundle.getString("topology-state-transfer.lazy-retrieval"), ModelType.BOOLEAN, false);
+         addModelRequestProperty(node, ModelKeys.LOCK_TIMEOUT, bundle.getString("topology-state-transfer.lock-timeout"), ModelType.LONG, false);
+         addModelRequestProperty(node, ModelKeys.REPLICATION_TIMEOUT, bundle.getString("topology-state-transfer.replication-timeout"), ModelType.LONG, false);
+         node.get(REPLY_PROPERTIES).setEmptyObject();
+         return node;
+      }
+   };
+
+   static DescriptionProvider REMOVE_TOPOLOGY_STATE_TRANSFER_DESC = new DescriptionProvider() {
+      @Override
+      public ModelNode getModelDescription(final Locale locale) {
+         final ResourceBundle bundle = getResourceBundle(locale);
+         final ModelNode node = new ModelNode();
+         node.get(OPERATION_NAME).set(REMOVE);
+         node.get(DESCRIPTION).set(bundle.getString("topology-state-transfer.add"));
+         node.get(REQUEST_PROPERTIES, NAME, DESCRIPTION).set(bundle.getString("topology-state-transfer.add"));
+         node.get(REQUEST_PROPERTIES, NAME, TYPE).set(ModelType.STRING);
+         node.get(REQUEST_PROPERTIES, NAME, REQUIRED).set(true);
+         node.get(REPLY_PROPERTIES).setEmptyObject();
+         return node;
+      }
+   };
+
    static DescriptionProvider HOTROD_CONNECTOR_DESC = new DescriptionProvider() {
       @Override
       public ModelNode getModelDescription(Locale locale) {
@@ -250,6 +302,8 @@ public class EndpointSubsystemProviders {
          addModelAttribute(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, true);
          addModelAttribute(node, ModelKeys.VIRTUAL_SERVER, bundle.getString("rest-connector.virtual-server"), ModelType.STRING, false);
          addModelAttribute(node, ModelKeys.CONTEXT_PATH, bundle.getString("rest-connector.context-path"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.SECURITY_DOMAIN, bundle.getString("rest-connector.security-domain"), ModelType.STRING, false);
+         addModelAttribute(node, ModelKeys.AUTH_METHOD, bundle.getString("rest-connector.auth-method"), ModelType.STRING, false);
 
          return node;
       }
@@ -267,6 +321,8 @@ public class EndpointSubsystemProviders {
          addModelRequestProperty(node, ModelKeys.CACHE_CONTAINER, bundle.getString("connector.cache-container"), ModelType.STRING, true);
          addModelRequestProperty(node, ModelKeys.VIRTUAL_SERVER, bundle.getString("rest-connector.virtual-server"), ModelType.STRING, false);
          addModelRequestProperty(node, ModelKeys.CONTEXT_PATH, bundle.getString("rest-connector.context-path"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.SECURITY_DOMAIN, bundle.getString("rest-connector.security-domain"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.AUTH_METHOD, bundle.getString("rest-connector.auth-method"), ModelType.STRING, false);
 
          node.get(REPLY_PROPERTIES).setEmptyObject();
          return node;

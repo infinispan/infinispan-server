@@ -73,6 +73,10 @@
          use="optional" />
       <xs:attribute name="context-path" type="xs:string"
          use="optional" />
+      <xs:attribute name="security-domain" type="xs:string"
+         use="optional" />
+      <xs:attribute name="auth-method" type="xs:string"
+         use="optional" />
    </xs:complexType>
 
    <xs:complexType name="topologyStateTransferType">
