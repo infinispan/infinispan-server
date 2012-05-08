@@ -29,7 +29,6 @@ import org.jboss.as.controller.SubsystemRegistration;
 import org.jboss.as.controller.parsing.ExtensionParsingContext;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
-import org.jboss.msc.service.ServiceName;
 
 import com.jboss.datagrid.DataGridConstants;
 
