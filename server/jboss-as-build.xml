@@ -198,6 +198,10 @@
             <maven-resource group="org.jboss.com.sun.httpserver" artifact="httpserver"/>
         </module-def>
 
+        <module-def name="org.jboss.common-beans">
+            <maven-resource group="org.jboss.common" artifact="jboss-common-beans"/>
+        </module-def>
+    	
         <module-def name="org.jboss.common-core">
             <maven-resource group="org.jboss" artifact="jboss-common-core"/>
         </module-def>
@@ -241,8 +245,8 @@
             <maven-resource group="org.jboss.logmanager" artifact="jboss-logmanager"/>
         </module-def>
 
-        <module-def name="org.jboss.logmanager.log4j">
-            <maven-resource group="org.jboss.logmanager" artifact="jboss-logmanager-log4j"/>
+        <module-def name="org.jboss.log4j.logmanager">
+            <maven-resource group="org.jboss.logmanager" artifact="log4j-jboss-logmanager"/>
         </module-def>
 
         <module-def name="org.jboss.remoting3">
@@ -335,6 +339,10 @@
             <maven-resource group="com.h2database" artifact="h2"/>
         </module-def>
 
+        <module-def name="com.sun.codemodel">
+            <maven-resource group="com.sun.codemodel" artifact="codemodel"/>
+        </module-def>
+
         <module-def name="com.sun.istack">
             <maven-resource group="com.sun.istack" artifact="istack-commons-runtime"/>
             <maven-resource group="com.sun.istack" artifact="istack-commons-tools"/>
@@ -359,6 +367,10 @@
 
         <module-def name="com.sun.xml.txw2">
             <maven-resource group="com.sun.xml.txw2" artifact="txw2"/>
+        </module-def>
+
+        <module-def name="com.sun.xsom">
+            <maven-resource group="com.sun.xsom" artifact="xsom"/>
         </module-def>
 
         <module-def name="org.dom4j">
@@ -1107,10 +1119,6 @@
             <maven-resource group="org.jboss.ws.native" artifact="jbossws-native-core"/>
         </module-def>
 
-        <module-def name="org.jboss.ws.native.jbossws-native-factories">
-            <maven-resource group="org.jboss.ws.native" artifact="jbossws-native-factories"/>
-        </module-def>
-
         <module-def name="org.jboss.ws.native.jbossws-native-services">
             <maven-resource group="org.jboss.ws.native" artifact="jbossws-native-services"/>
         </module-def>
@@ -1154,6 +1162,10 @@
             <maven-resource group="joda-time" artifact="joda-time"/>
         </module-def>
 
+        <module-def name="org.kohsuke.rngom">
+            <maven-resource group="org.kohsuke.rngom" artifact="rngom"/>
+        </module-def>
+
         <module-def name="org.omg.api" />
 
         <module-def name="org.osgi.core">
@@ -1161,7 +1173,8 @@
         </module-def>
 
         <module-def name="org.picketlink">
-            <maven-resource group="org.picketlink.product.eap" artifact="picketlink-core" jandex="true"/>
+            <maven-resource group="org.picketlink" artifact="picketlink-core" jandex="true"/>
+            <maven-resource group="org.picketlink.distribution" artifact="picketlink-jbas7" jandex="true"/>
         </module-def>
 
         <module-def name="org.picketbox">
@@ -1225,7 +1238,7 @@
         </bundle-def>
 
         <bundle-def name="javax.servlet.api" slot="v25">
-            <maven-bundle group="org.jboss.osgi" artifact="javax.servlet.api"/>
+            <maven-bundle group="org.jboss.spec.javax.servlet" artifact="jboss-servlet-api_2.5_spec"/>
         </bundle-def>
 
         <bundle-def name="org.jboss.osgi.logging">
