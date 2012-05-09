@@ -36,8 +36,10 @@ org/jboss/as/clustering/ejb3/infinispan/main/**
 org/jboss/as/clustering/singleton/main/**
 org/jboss/as/cmp/main/**
 org/jboss/as/configadmin/main/**
-org/jboss/as/console/**
+org/jboss/as/console/eap/**
+org/jboss/as/console/main/**
 org/jboss/as/deployment-scanner/main/**
+org/jboss/as/domain-http-error-context/eap/**
 org/jboss/as/domain-http-error-context/main/**
 org/jboss/as/ee/deployment/main/**
 org/jboss/as/ejb3/main/**

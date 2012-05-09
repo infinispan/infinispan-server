@@ -97,6 +97,10 @@
       <module-def name="org.jboss.as.clustering.infinispan" src="${jdg.modules.dir}">
          <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
       </module-def>
+      
+      <module-def name="org.jboss.as.console" slot="jdg" src="${jdg.modules.dir}" />
+
+      <module-def name="org.jboss.as.domain-http-error-context" slot="jdg" src="${jdg.modules.dir}" />
 
       <module-def name="org.jboss.as.product" slot="jdg" src="${jdg.modules.dir}" />
 
