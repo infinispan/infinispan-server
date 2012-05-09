@@ -25,6 +25,7 @@
       <product.name>jboss-datagrid</product.name>
 
       <!-- Version Info -->
+      <version.io.netty>3.4.4.Final</version.io.netty>
       <version.net.jcip.annotations>1.0-redhat-1</version.net.jcip.annotations>
       <version.org.jboss.as>7.1.1.Final-redhat-1</version.org.jboss.as>
       <version.org.jboss.jandex>1.0.3.Final-redhat-1</version.org.jboss.jandex>
@@ -48,6 +49,12 @@
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
             <version>${version.com.thoughtworks.xstream}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>${version.io.netty}</version>
          </dependency>
 
          <dependency>
@@ -136,6 +143,14 @@
                </exclusion>
             </exclusions>
          </dependency>
+         
+         <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-client-hotrod</artifactId>
+            <classifier>javadoc</classifier>
+            <version>${version.org.infinispan}</version>
+         </dependency>
+         
 
          <dependency>
             <groupId>org.infinispan</groupId>

@@ -97,7 +97,7 @@
       <module-def name="org.jboss.as.clustering.infinispan" src="${jdg.modules.dir}">
          <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
       </module-def>
-      
+
       <module-def name="org.jboss.as.console" slot="jdg" src="${jdg.modules.dir}" />
 
       <module-def name="org.jboss.as.domain-http-error-context" slot="jdg" src="${jdg.modules.dir}" />
@@ -106,6 +106,10 @@
 
       <module-def name="org.jboss.jts" src="${jdg.modules.dir}">
          <maven-resource group="org.jboss.jbossts" artifact="jbossjts" />
+      </module-def>
+
+      <module-def name="org.jboss.netty">
+         <maven-resource group="io.netty" artifact="netty" />
       </module-def>
 
       <module-def name="org.infinispan.cachestore.remote" src="${jdg.modules.dir}">
@@ -138,6 +142,15 @@
          <fileset dir="${output.dir}/modules" includesfile="trim-modules.txt" />
       </delete>
    </target>
+   
+   <target name="trim-domain">
+      <delete dir="${output.dir}/domain" verbose="true" />
+      <delete>
+         <fileset dir="${output.dir}/bin">
+            <include name="domain.*"/>
+         </fileset>
+      </delete>
+   </target>
 
-   <target name="all" depends="clean, copy-files, jboss-modules, jdg-modules, jboss-bundles, trim-modules" />
+   <target name="all" depends="clean, copy-files, jboss-modules, jdg-modules, jboss-bundles, trim-modules, trim-domain" />
 </project>

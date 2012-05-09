@@ -12,7 +12,7 @@
             <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000" />
          </hotrod-connector>
          <memcached-connector socket-binding="memcached" cache-container="local" />
-         <rest-connector virtual-server="default-host" cache-container="local" security-domain="other"/>
+         <rest-connector virtual-server="default-host" cache-container="local" />
       </replacement>
    </supplement>
    <supplement name="ha">
