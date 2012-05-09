@@ -70,6 +70,10 @@
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-rcs-local.xml"
            paramOutputFile="${generated.configs.examples}/standalone-rcs-local.xml"/>
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-rest-auth.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-rest-auth.xml"/>
     </target>
 
 

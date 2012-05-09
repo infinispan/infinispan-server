@@ -112,6 +112,21 @@
          </cache-container>
       </replacement>
    </supplement>
+   <supplement name="rest-auth">
+      <replacement placeholder="@@default-cache-container@@" attributeValue="local" />
+      <replacement placeholder="CACHE-CONTAINERS">
+         <cache-container name="local" default-cache="default" listener-executor="infinispan-listener">
+            <local-cache name="default" start="EAGER">
+               <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
+               <transaction mode="NONE" />
+               <eviction strategy="LRU" max-entries="1000" />
+            </local-cache>
+            <local-cache name="namedCache" start="EAGER">
+               <expiration lifespan="2000" max-idle="1000" />
+            </local-cache>
+         </cache-container>
+      </replacement>
+   </supplement>
    <outbound-socket-binding name="remote-store-hotrod-server">
       <remote-destination host="remote-host" port="11222" />
    </outbound-socket-binding>
