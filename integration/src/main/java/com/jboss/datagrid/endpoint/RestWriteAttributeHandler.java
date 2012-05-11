@@ -22,6 +22,12 @@ import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 
+/**
+ * RestWriteAttributeHandler.
+ *
+ * @author Tristan Tarrant
+ * @since 6.0
+ */
 public class RestWriteAttributeHandler extends ReloadRequiredWriteAttributeHandler {
    private static final AttributeDefinition[] ATTRIBUTES = {
       EndpointAttributeDefinitions.NAME,

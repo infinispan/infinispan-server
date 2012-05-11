@@ -27,12 +27,15 @@ import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.dmr.ModelNode;
 
 /**
- * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ * RestSubsystemRemove.
+ *
+ * @author Tristan Tarrant
+ * @since 6.0
  */
 public class RestSubsystemRemove extends AbstractRemoveStepHandler implements DescriptionProvider {
-   
+
    static final RestSubsystemRemove INSTANCE = new RestSubsystemRemove();
-   
+
    @Override
    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model)
             throws OperationFailedException {

@@ -48,11 +48,13 @@ import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
+import org.jboss.security.negotiation.NegotiationAuthenticator;
 
 /**
  * A service which starts the REST web application
  *
  * @author Tristan Tarrant <ttarrant@redhat.com>
+ * @since 6.0
  */
 public class RestService implements Service<Context> {
    private static final String DEFAULT_VIRTUAL_SERVER = "default-host";
@@ -192,6 +194,9 @@ public class RestService implements Service<Context> {
       realm.setAuditManager(securityDomainContext.getAuditManager());
       context.setRealm(realm);
       context.addValve(new RestSecurityContext(path, securityDomain));
+      if("SPNEGO".equals(authMethod)) {
+         context.addValve(new NegotiationAuthenticator());
+      }
    }
 
    public String getVirtualServer() {

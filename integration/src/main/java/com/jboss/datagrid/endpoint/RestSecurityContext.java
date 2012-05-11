@@ -52,6 +52,7 @@ import org.jboss.security.SecurityUtil;
  * @author Scott.Stark@jboss.org
  * @author Thomas.Diesler@jboss.org
  * @author Anil.Saldhana@jboss.org
+ * @author Tristan Tarrant
  */
 public class RestSecurityContext extends ValveBase {
    private static final ThreadLocal<Request> activeRequest = new ThreadLocal<Request>();

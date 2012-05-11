@@ -41,7 +41,11 @@ import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
 
 /**
- * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ *
+ * RestSubsystemAdd.
+ *
+ * @author Tristan Tarrant
+ * @since 6.0
  */
 class RestSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
 
