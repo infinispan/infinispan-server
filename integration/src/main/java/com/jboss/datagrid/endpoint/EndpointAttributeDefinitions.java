@@ -21,6 +21,7 @@ package com.jboss.datagrid.endpoint;
 import org.jboss.as.controller.ObjectTypeAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
+import org.jboss.as.controller.operations.validation.EnumValidator;
 import org.jboss.dmr.ModelType;
 
 public class EndpointAttributeDefinitions {
@@ -141,6 +142,14 @@ public class EndpointAttributeDefinitions {
          new SimpleAttributeDefinitionBuilder(ModelKeys.AUTH_METHOD, ModelType.STRING, true)
                  .setAllowExpression(true)
                  .setXmlName(ModelKeys.AUTH_METHOD)
+                 .setRestartAllServices()
+                 .build();
+
+   protected static final SimpleAttributeDefinition SECURITY_MODE =
+         new SimpleAttributeDefinitionBuilder(ModelKeys.SECURITY_MODE, ModelType.STRING, true)
+                 .setAllowExpression(true)
+                 .setXmlName(ModelKeys.SECURITY_MODE)
+                 .setValidator(new EnumValidator<SecurityMode>(SecurityMode.class, true, false))
                  .setRestartAllServices()
                  .build();
 

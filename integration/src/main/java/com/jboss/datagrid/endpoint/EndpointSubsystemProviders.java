@@ -304,7 +304,7 @@ public class EndpointSubsystemProviders {
          addModelAttribute(node, ModelKeys.CONTEXT_PATH, bundle.getString("rest-connector.context-path"), ModelType.STRING, false);
          addModelAttribute(node, ModelKeys.SECURITY_DOMAIN, bundle.getString("rest-connector.security-domain"), ModelType.STRING, false);
          addModelAttribute(node, ModelKeys.AUTH_METHOD, bundle.getString("rest-connector.auth-method"), ModelType.STRING, false);
-
+         addModelAttribute(node, ModelKeys.SECURITY_MODE, bundle.getString("rest-connector.security-mode"), ModelType.STRING, false);
          return node;
       }
    };
@@ -323,6 +323,7 @@ public class EndpointSubsystemProviders {
          addModelRequestProperty(node, ModelKeys.CONTEXT_PATH, bundle.getString("rest-connector.context-path"), ModelType.STRING, false);
          addModelRequestProperty(node, ModelKeys.SECURITY_DOMAIN, bundle.getString("rest-connector.security-domain"), ModelType.STRING, false);
          addModelRequestProperty(node, ModelKeys.AUTH_METHOD, bundle.getString("rest-connector.auth-method"), ModelType.STRING, false);
+         addModelRequestProperty(node, ModelKeys.SECURITY_MODE, bundle.getString("rest-connector.security-mode"), ModelType.STRING, false);
 
          node.get(REPLY_PROPERTIES).setEmptyObject();
          return node;

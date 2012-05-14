@@ -65,6 +65,8 @@ class RestSubsystemAdd extends AbstractAddStepHandler implements DescriptionProv
       copyIfSet(ModelKeys.VIRTUAL_SERVER, source, target);
       copyIfSet(ModelKeys.CONTEXT_PATH, source, target);
       copyIfSet(ModelKeys.SECURITY_DOMAIN, source, target);
+      copyIfSet(ModelKeys.AUTH_METHOD, source, target);
+      copyIfSet(ModelKeys.SECURITY_MODE, source, target);
    }
 
    @Override

@@ -152,8 +152,9 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
     *
     * @param reader
     * @param connector
+    * @throws XMLStreamException
     */
-   private ModelNode readRestConnector(final XMLExtendedStreamReader reader, final String name, ModelNode parentAddress) {
+   private ModelNode readRestConnector(final XMLExtendedStreamReader reader, final String name, ModelNode parentAddress) throws XMLStreamException {
       final ModelNode op = new ModelNode();
       op.get(OP).set(ADD);
 
@@ -167,17 +168,19 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
          String attrName = reader.getAttributeLocalName(i);
          String attrValue = reader.getAttributeValue(i);
          if (ModelKeys.NAME.equals(attrName)) {
-            op.get(ModelKeys.NAME).set(attrValue);
+            EndpointAttributeDefinitions.NAME.parseAndSetParameter(attrValue, op, reader);
          } else if (ModelKeys.CACHE_CONTAINER.equals(attrName)) {
-            op.get(ModelKeys.CACHE_CONTAINER).set(attrValue);
+            EndpointAttributeDefinitions.CACHE_CONTAINER.parseAndSetParameter(attrValue, op, reader);
          } else if (ModelKeys.VIRTUAL_SERVER.equals(attrName)) {
-            op.get(ModelKeys.VIRTUAL_SERVER).set(attrValue);
+            EndpointAttributeDefinitions.VIRTUAL_SERVER.parseAndSetParameter(attrValue, op, reader);
          } else if (ModelKeys.CONTEXT_PATH.equals(attrName)) {
-            op.get(ModelKeys.CONTEXT_PATH).set(attrValue);
+            EndpointAttributeDefinitions.CONTEXT_PATH.parseAndSetParameter(attrValue, op, reader);
          } else if (ModelKeys.SECURITY_DOMAIN.equals(attrName)) {
-            op.get(ModelKeys.SECURITY_DOMAIN).set(attrValue);
+            EndpointAttributeDefinitions.SECURITY_DOMAIN.parseAndSetParameter(attrValue, op, reader);
          } else if (ModelKeys.AUTH_METHOD.equals(attrName)) {
-            op.get(ModelKeys.AUTH_METHOD).set(attrValue);
+            EndpointAttributeDefinitions.AUTH_METHOD.parseAndSetParameter(attrValue, op, reader);
+         } else if (ModelKeys.SECURITY_MODE.equals(attrName)) {
+            EndpointAttributeDefinitions.SECURITY_MODE.parseAndSetParameter(attrValue, op, reader);
          } else {
             ParseUtils.unexpectedAttribute(reader, i);
          }

@@ -72,6 +72,7 @@ public class RestService implements Service<Context> {
    private String serverName;
    private String securityDomain;
    private String authMethod;
+   private SecurityMode securityMode;
 
    public RestService(ModelNode config) {
       this.config = config.clone();
@@ -85,6 +86,7 @@ public class RestService implements Service<Context> {
             : null;
       authMethod = config.hasDefined(ModelKeys.AUTH_METHOD) ? config.get(ModelKeys.AUTH_METHOD).asString()
             : "BASIC";
+      securityMode = config.hasDefined(ModelKeys.SECURITY_MODE) ? SecurityMode.valueOf(config.get(ModelKeys.SECURITY_MODE).asString()) : SecurityMode.READ_WRITE;
 
       // Obtain the setter for injecting the EmbbededCacheManager into the Rest server
       try {
@@ -176,7 +178,17 @@ public class RestService implements Service<Context> {
       SecurityConstraint constraint = new SecurityConstraint();
       SecurityCollection webCollection = new SecurityCollection();
       webCollection.addPattern("/rest/*");
-      webCollection.addMethod("GET");
+      switch(securityMode) {
+      case WRITE:
+         // protect all writes
+         webCollection.addMethod("PUT");
+         webCollection.addMethod("POST");
+         webCollection.addMethod("DELETE");
+         break;
+      case READ_WRITE:
+         // protect all methods
+         break;
+      }
       constraint.addCollection(webCollection);
       constraint.setAuthConstraint(true);
       constraint.addAuthRole("REST");

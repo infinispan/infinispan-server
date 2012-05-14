@@ -35,7 +35,8 @@ public class RestWriteAttributeHandler extends ReloadRequiredWriteAttributeHandl
       EndpointAttributeDefinitions.CONTEXT_PATH,
       EndpointAttributeDefinitions.VIRTUAL_SERVER,
       EndpointAttributeDefinitions.SECURITY_DOMAIN,
-      EndpointAttributeDefinitions.AUTH_METHOD
+      EndpointAttributeDefinitions.AUTH_METHOD,
+      EndpointAttributeDefinitions.SECURITY_MODE
    };
    static final RestWriteAttributeHandler INSTANCE = new RestWriteAttributeHandler();
 
