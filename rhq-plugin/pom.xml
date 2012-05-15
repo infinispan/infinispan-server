@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ~ Copyright 2011 Red Hat, Inc. and/or its affiliates. ~ ~ This is free 
+	software; you can redistribute it and/or modify it ~ under the terms of the 
+	GNU Lesser General Public License as ~ published by the Free Software Foundation; 
+	either version 2.1 of ~ the License, or (at your option) any later version. 
+	~ ~ This software is distributed in the hope that it will be useful, ~ but 
+	WITHOUT ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY 
+	or FITNESS FOR A PARTICULAR PURPOSE. See the GNU ~ Lesser General Public 
+	License for more details. ~ ~ You should have received a copy of the GNU 
+	Lesser General Public ~ License along with this library; if not, write to 
+	the Free Software ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+	MA ~ 02110-1301 USA -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>com.jboss.datagrid</groupId>
+      <artifactId>jboss-datagrid-versions</artifactId>
+      <version>6.0.0.ER8-redhat-1</version>
+      <relativePath>../versions/pom.xml</relativePath>
+   </parent>
+
+   <artifactId>jboss-datagrid-rhq-plugin</artifactId>
+   <name>JBoss Data Grid - RHQ/JON plugin</name>
+   <description>JBoss Data Grid - RHQ/JON plugin</description>
+
+   <dependencies>
+      <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.rhq</groupId>
+         <artifactId>rhq-core-domain</artifactId>
+         <scope>provided</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>hibernate</groupId>
+               <artifactId>hibernate3</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>com.sun.xml.bind</groupId>
+               <artifactId>jaxb-impl</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>javax.xml.bind</groupId>
+               <artifactId>jaxb-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>net.sourceforge.cobertura</groupId>
+               <artifactId>cobertura</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.jboss.arquillian</groupId>
+               <artifactId>arquillian-bom</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.rhq</groupId>
+         <artifactId>rhq-core-plugin-api</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>com.sun.xml.bind</groupId>
+               <artifactId>jaxb-impl</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>javax.xml.bind</groupId>
+               <artifactId>jaxb-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>net.sourceforge.cobertura</groupId>
+               <artifactId>cobertura</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.jboss.arquillian</groupId>
+               <artifactId>arquillian-bom</artifactId>
+            </exclusion>
+         </exclusions>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.rhq</groupId>
+         <artifactId>rhq-jboss-as-7-plugin</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>com.sun.xml.bind</groupId>
+               <artifactId>jaxb-impl</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>javax.xml.bind</groupId>
+               <artifactId>jaxb-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>net.sourceforge.cobertura</groupId>
+               <artifactId>cobertura</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.jboss.arquillian</groupId>
+               <artifactId>arquillian-bom</artifactId>
+            </exclusion>
+         </exclusions>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.rhq</groupId>
+         <artifactId>rhq-core-native-system</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>org.hyperic</groupId>
+               <artifactId>sigar</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.hyperic</groupId>
+               <artifactId>sigar-dist</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>net.sourceforge.cobertura</groupId>
+               <artifactId>cobertura</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.jboss.arquillian</groupId>
+               <artifactId>arquillian-bom</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <!-- Crazy dependencies to solve the usual compiler bug with unavailable annotations -->
+      <dependency>
+         <groupId>org.hibernate.javax.persistence</groupId>
+         <artifactId>hibernate-jpa-2.0-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.hibernate</groupId>
+         <artifactId>hibernate-core</artifactId>
+         <scope>provided</scope>
+      </dependency>
+   </dependencies>
+</project>
+

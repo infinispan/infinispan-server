@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
@@ -19,12 +18,13 @@
    <description>JBoss Data Grid - BOM</description>
 
    <properties>
-      <!-- Release Info -->
+		<!-- Release Info -->
       <product.version>${project.version}</product.version>
       <product.codename>Helvellyn</product.codename>
       <product.name>jboss-datagrid</product.name>
 
-      <!-- Version Info -->
+		<!-- Version Info -->
+      <version.commons.logging>1.1.1-redhat-1</version.commons.logging>
       <version.io.netty>3.4.4.Final</version.io.netty>
       <version.net.jcip.annotations>1.0-redhat-1</version.net.jcip.annotations>
       <version.org.jboss.as>7.1.1.Final-redhat-1</version.org.jboss.as>
@@ -33,6 +33,7 @@
       <version.junit>4.10-redhat-1</version.junit>
       <version.org.infinispan>5.1.5.ER8-redhat-1</version.org.infinispan>
       <version.org.jgroups>3.0.9.Final-redhat-1</version.org.jgroups>
+      <version.org.rhq>4.4.0.JON310GA</version.org.rhq>
       <version.org.scala-lang>2.9.2-redhat-1</version.org.scala-lang>
       <relocations></relocations>
    </properties>
@@ -41,8 +42,20 @@
       <dependencies>
          <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-datagrid-infinispan</artifactId>
+            <version>${version.org.jboss.as}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jboss-datagrid-server-integration</artifactId>
             <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${version.commons.logging}</version>
          </dependency>
 
          <dependency>
@@ -143,14 +156,14 @@
                </exclusion>
             </exclusions>
          </dependency>
-         
+
          <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-client-hotrod</artifactId>
             <classifier>javadoc</classifier>
             <version>${version.org.infinispan}</version>
          </dependency>
-         
+
 
          <dependency>
             <groupId>org.infinispan</groupId>
@@ -231,9 +244,34 @@
             <version>${version.junit}</version>
             <scope>test</scope>
          </dependency>
+
+         <dependency>
+            <groupId>org.rhq</groupId>
+            <artifactId>rhq-core-domain</artifactId>
+            <version>${version.org.rhq}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.rhq</groupId>
+            <artifactId>rhq-core-plugin-api</artifactId>
+            <version>${version.org.rhq}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.rhq</groupId>
+            <artifactId>rhq-jboss-as-7-plugin</artifactId>
+            <version>${version.org.rhq}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.rhq</groupId>
+            <artifactId>rhq-core-native-system</artifactId>
+            <version>${version.org.rhq}</version>
+         </dependency>
       </dependencies>
+
    </dependencyManagement>
-   
+
    <build>
       <pluginManagement>
          <plugins>
@@ -245,5 +283,5 @@
          </plugins>
       </pluginManagement>
    </build>
-   
+
 </project>

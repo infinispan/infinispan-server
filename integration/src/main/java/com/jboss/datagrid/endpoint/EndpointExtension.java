@@ -34,7 +34,7 @@ import com.jboss.datagrid.DataGridConstants;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
- * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ * @author Tristan Tarrant
  */
 public class EndpointExtension implements Extension {
 
@@ -43,6 +43,8 @@ public class EndpointExtension implements Extension {
 
    @Override
    public final void initialize(ExtensionContext context) {
+      final boolean registerRuntimeOnly = context.isRuntimeOnlyRegistrationValid();
+
       final SubsystemRegistration registration = context.registerSubsystem(DataGridConstants.SUBSYSTEM_NAME, 1, 0);
       registration.registerXMLElementWriter(parser);
 
@@ -64,6 +66,12 @@ public class EndpointExtension implements Extension {
       restConnector.registerOperationHandler(ADD, RestSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_REST_CONNECTOR_DESC, false);
       restConnector.registerOperationHandler(REMOVE, RestSubsystemRemove.INSTANCE, EndpointSubsystemProviders.REMOVE_REST_CONNECTOR_DESC, false);
       RestWriteAttributeHandler.INSTANCE.registerAttributes(restConnector);
+
+      // Metrics
+      if(registerRuntimeOnly) {
+         ProtocolServerMetricsHandler.registerMetrics(hotrodConnector, "hotrod");
+         ProtocolServerMetricsHandler.registerMetrics(memcachedConnector, "memcached");
+      }
    }
 
    @Override

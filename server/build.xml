@@ -95,7 +95,7 @@
       </module-def>
 
       <module-def name="org.jboss.as.clustering.infinispan" src="${jdg.modules.dir}">
-         <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
+         <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-infinispan" />
       </module-def>
 
       <module-def name="org.jboss.as.console" slot="jdg" src="${jdg.modules.dir}" />

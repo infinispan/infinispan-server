@@ -27,7 +27,7 @@ PutObjectStoreDirHere
 /query/person
 ObjectStore
 # generated rhq plugin xml
-rhq-plugin.xml
+#rhq-plugin.xml
 # generated schema
 core/src/main/resources/schema
 # Compiled python files
