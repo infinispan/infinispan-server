@@ -34,7 +34,7 @@
       <module>integration</module>
       <module>server</module>
       <module>library</module>
-      <!--module>rhq-plugin</module -->
+      <module>rhq-plugin</module>
    </modules>
    
    <profiles>

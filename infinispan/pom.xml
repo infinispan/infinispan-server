@@ -37,7 +37,7 @@
     <artifactId>jboss-datagrid-infinispan</artifactId>
     <packaging>jar</packaging>
 
-    <name>JBoss Application Server: Infinispan Subsystem</name>
+    <name>JBoss Data Grid - Infinispan Subsystem</name>
 
     <dependencies>
         <dependency>
