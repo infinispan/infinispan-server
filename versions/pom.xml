@@ -11,7 +11,7 @@
 
    <groupId>com.jboss.datagrid</groupId>
    <artifactId>jboss-datagrid-versions</artifactId>
-   <version>6.0.0.ER8-redhat-1</version>
+   <version>6.0.0.ER9-redhat-1</version>
    <packaging>pom</packaging>
 
    <name>JBoss Data Grid - BOM</name>
