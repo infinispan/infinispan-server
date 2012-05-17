@@ -18,7 +18,6 @@
  */
 package com.jboss.datagrid.endpoint;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -34,6 +33,7 @@ import org.apache.catalina.deploy.SecurityCollection;
 import org.apache.catalina.deploy.SecurityConstraint;
 import org.apache.tomcat.InstanceManager;
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.jboss.as.controller.services.path.PathManager;
 import org.jboss.as.security.plugins.SecurityDomainContext;
 import org.jboss.as.web.VirtualHost;
 import org.jboss.as.web.deployment.WebCtxLoader;
@@ -58,24 +58,27 @@ import org.jboss.security.negotiation.NegotiationAuthenticator;
  */
 public class RestService implements Service<Context> {
    private static final String DEFAULT_VIRTUAL_SERVER = "default-host";
+   private static final String HOME_DIR = "jboss.home.dir";
    private static final Logger log = Logger.getLogger("com.jboss.datagrid");
    private static final String DEFAULT_CONTEXT_PATH = "";
    private final StandardContext context;
-   private final InjectedValue<String> pathInjector = new InjectedValue<String>();
+   private final InjectedValue<PathManager> pathManagerInjector = new InjectedValue<PathManager>();
    private final InjectedValue<VirtualHost> hostInjector = new InjectedValue<VirtualHost>();
    private final InjectedValue<EmbeddedCacheManager> cacheManagerInjector = new InjectedValue<EmbeddedCacheManager>();
    private final InjectedValue<SecurityDomainContext> securityDomainContextInjector = new InjectedValue<SecurityDomainContext>();
    private Method cacheManagerSetter;
-   private ModelNode config;
-   private String virtualServer;
-   private String path;
-   private String serverName;
-   private String securityDomain;
-   private String authMethod;
-   private SecurityMode securityMode;
+   private final ModelNode config;
+   private final String virtualServer;
+   private final String path;
+   private final String serverName;
+   private final String securityDomain;
+   private final String authMethod;
+   private final SecurityMode securityMode;
+   private PathManager.Callback.Handle callbackHandle;
 
    public RestService(ModelNode config) {
       this.config = config.clone();
+
       context = new StandardContext();
       virtualServer = this.config.hasDefined(ModelKeys.VIRTUAL_SERVER) ? this.config.get(ModelKeys.VIRTUAL_SERVER)
             .asString() : DEFAULT_VIRTUAL_SERVER;
@@ -84,9 +87,9 @@ public class RestService implements Service<Context> {
       serverName = config.hasDefined(ModelKeys.NAME) ? config.get(ModelKeys.NAME).asString() : "";
       securityDomain = config.hasDefined(ModelKeys.SECURITY_DOMAIN) ? config.get(ModelKeys.SECURITY_DOMAIN).asString()
             : null;
-      authMethod = config.hasDefined(ModelKeys.AUTH_METHOD) ? config.get(ModelKeys.AUTH_METHOD).asString()
-            : "BASIC";
-      securityMode = config.hasDefined(ModelKeys.SECURITY_MODE) ? SecurityMode.valueOf(config.get(ModelKeys.SECURITY_MODE).asString()) : SecurityMode.READ_WRITE;
+      authMethod = config.hasDefined(ModelKeys.AUTH_METHOD) ? config.get(ModelKeys.AUTH_METHOD).asString() : "BASIC";
+      securityMode = config.hasDefined(ModelKeys.SECURITY_MODE) ? SecurityMode.valueOf(config.get(
+            ModelKeys.SECURITY_MODE).asString()) : SecurityMode.READ_WRITE;
 
       // Obtain the setter for injecting the EmbbededCacheManager into the Rest server
       try {
@@ -98,10 +101,11 @@ public class RestService implements Service<Context> {
    }
 
    private static String cleanContextPath(String s) {
-      if (s.endsWith("/"))
+      if (s.endsWith("/")) {
          return s.substring(0, s.length() - 1);
-      else
+      } else {
          return s;
+      }
    }
 
    /** {@inheritDoc} */
@@ -118,7 +122,10 @@ public class RestService implements Service<Context> {
       try {
          context.setPath(path);
          context.addLifecycleListener(new RestContextConfig());
-         context.setDocBase(pathInjector.getValue() + File.separatorChar + "rest");
+
+         context.setDocBase(pathManagerInjector.getValue().resolveRelativePathEntry("rest", HOME_DIR));
+         callbackHandle = pathManagerInjector.getValue().registerCallback(HOME_DIR,
+               PathManager.ReloadServerCallback.create(), PathManager.Event.UPDATED, PathManager.Event.REMOVED);
 
          final Loader loader = new WebCtxLoader(this.getClass().getClassLoader());
          Host host = hostInjector.getValue().getHost();
@@ -178,7 +185,7 @@ public class RestService implements Service<Context> {
       SecurityConstraint constraint = new SecurityConstraint();
       SecurityCollection webCollection = new SecurityCollection();
       webCollection.addPattern("/rest/*");
-      switch(securityMode) {
+      switch (securityMode) {
       case WRITE:
          // protect all writes
          webCollection.addMethod("PUT");
@@ -206,7 +213,7 @@ public class RestService implements Service<Context> {
       realm.setAuditManager(securityDomainContext.getAuditManager());
       context.setRealm(realm);
       context.addValve(new RestSecurityContext(path, securityDomain));
-      if("SPNEGO".equals(authMethod)) {
+      if ("SPNEGO".equals(authMethod)) {
          context.addValve(new NegotiationAuthenticator());
       }
    }
@@ -229,6 +236,9 @@ public class RestService implements Service<Context> {
    /** {@inheritDoc} */
    @Override
    public synchronized void stop(StopContext stopContext) {
+      if (callbackHandle != null) {
+         callbackHandle.remove();
+      }
       try {
          hostInjector.getValue().getHost().removeChild(context);
          context.stop();
@@ -259,8 +269,8 @@ public class RestService implements Service<Context> {
       return context;
    }
 
-   public InjectedValue<String> getPathInjector() {
-      return pathInjector;
+   public InjectedValue<PathManager> getPathManagerInjector() {
+      return pathManagerInjector;
    }
 
    public InjectedValue<VirtualHost> getHostInjector() {
