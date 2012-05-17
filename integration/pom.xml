@@ -146,5 +146,18 @@
          <artifactId>jboss-as-subsystem-test</artifactId>
          <scope>test</scope>
       </dependency>
+      
+      <dependency>
+         <groupId>org.rhq.helpers</groupId>
+         <artifactId>rhq-pluginAnnotations</artifactId>
+         <scope>provided</scope>
+         <exclusions>
+            <exclusion>
+               <artifactId>i18nlog</artifactId>
+               <groupId>i18nlog</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
    </dependencies>
 </project>
