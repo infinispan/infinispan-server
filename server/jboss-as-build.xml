@@ -51,6 +51,8 @@
                 <include name="**/*.sh"/>
             </fileset>
         </chmod>
+        <!-- Convert .bat files to DOS line endings -->
+        <fixcrlf srcdir="${output.dir}/bin" includes="**/*.bat" eol="crlf" />
         <!-- These files contain digested passwords, which should not be visible to external users -->
         <chmod perm="600" file="${output.dir}/domain/configuration/mgmt-users.properties"/>
         <chmod perm="600" file="${output.dir}/standalone/configuration/mgmt-users.properties"/>
@@ -103,6 +105,13 @@
             </patternset>
             <mapper type="flatten"/>
         </unzip>
+        <!-- Copy the JBoss Modules specific schemas to the JBOSS_HOME/docs/schema folder -->
+        <unzip src="${org.jboss.modules:jboss-modules:jar}" dest="${output.dir}/docs/schema/">
+            <patternset>
+                <include name="schema/*.xsd"/>
+            </patternset>
+            <mapper type="flatten"/>
+        </unzip>
 
     </target>
 
@@ -142,10 +151,6 @@
 
         <module-def name="org.jboss.as.deployment-repository">
             <maven-resource group="org.jboss.as" artifact="jboss-as-deployment-repository"/>
-        </module-def>
-
-        <module-def name="org.jboss.as.domain-http-error-context">
-            <maven-resource group="org.jboss.as" artifact="jboss-as-domain-http-error-context"/>
         </module-def>
 
         <module-def name="org.jboss.as.domain-http-interface">
@@ -663,9 +668,12 @@
 
         <module-def name="org.hibernate">
             <maven-resource group="org.hibernate" artifact="hibernate-core" />
-            <maven-resource group="org.hibernate.common" artifact="hibernate-commons-annotations" />
             <maven-resource group="org.hibernate" artifact="hibernate-entitymanager" />
             <maven-resource group="org.hibernate" artifact="hibernate-infinispan"/>
+        </module-def>
+
+        <module-def name="org.hibernate.commons-annotations">
+            <maven-resource group="org.hibernate.common" artifact="hibernate-commons-annotations"/>
         </module-def>
 
         <module-def name="org.hibernate.envers">
@@ -720,10 +728,6 @@
 
         <module-def name="org.jboss.as.appclient">
             <maven-resource group="org.jboss.as" artifact="jboss-as-appclient"/>
-        </module-def>
-
-        <module-def name="org.jboss.as.console">
-            <maven-resource-with-classifier group="org.jboss.as" artifact="jboss-as-console" classifier="resources"/>
         </module-def>
 
         <module-def name="org.jboss.as.cli">

@@ -79,7 +79,6 @@ org/jboss/resteasy/resteasy-jettison-provider/main/**
 org/jboss/resteasy/resteasy-jsapi/main/**
 org/jboss/resteasy/resteasy-multipart-provider/main/**
 org/jboss/resteasy/resteasy-yaml-provider/main/**
-org/jboss/security/xacml/main/**
 org/jboss/shrinkwrap/core/main/**
 org/jboss/weld/api/main/**
 org/jboss/weld/core/main/**
