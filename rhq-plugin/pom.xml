@@ -124,6 +124,7 @@
                <artifactId>arquillian-bom</artifactId>
             </exclusion>
          </exclusions>
+         <scope>provided</scope>
       </dependency>
       <!-- Crazy dependencies to solve the usual compiler bug with unavailable annotations -->
       <dependency>
@@ -138,5 +139,43 @@
          <scope>provided</scope>
       </dependency>
    </dependencies>
+   
+   <profiles>
+      <profile>
+         <id>distribution</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+         <properties>
+            <maven.test.skip.exec>true</maven.test.skip.exec>
+         </properties>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-assembly-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>assemble</id>
+                        <phase>package</phase>
+                        <goals>
+                           <goal>single</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <descriptors>
+                        <descriptor>${project.basedir}/src/main/assemblies/plugin.xml</descriptor>
+                     </descriptors>
+                     <finalName>${product.name}-rhq-plugin-${product.version}</finalName>
+                     <outputDirectory>${project.build.directory}</outputDirectory>
+                     <workDirectory>${project.build.directory}/assembly/work</workDirectory>
+                     <appendAssemblyId>false</appendAssemblyId>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 </project>
 
