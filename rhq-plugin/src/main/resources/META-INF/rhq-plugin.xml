@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin name="JDG" displayName="JBoss Data Grid" description="Supports management and monitoring of JBoss Data Grid" package="com.jboss.datagrid.rhq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:xmlns:rhq-plugin" xmlns:c="urn:xmlns:rhq-configuration">
+<plugin name="JDG" displayName="JBoss Data Grid 6.x" description="Supports management and monitoring of JBoss Data Grid 6.x" package="com.jboss.datagrid.rhq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:xmlns:rhq-plugin" xmlns:c="urn:xmlns:rhq-configuration">
 
    <depends plugin="JBossAS7" useClasses="true" />
 
-   <service name="DataGrid" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.JDGComponent" singleton="true">
+   <service name="DataGrid" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.JDGComponent" singleton="true" description="The Data Grid endpoint connectors">
 
       <runs-inside>
          <parent-resource-type name="Profile" plugin="JBossAS7" />
@@ -34,8 +34,8 @@
       </service>
    </service>
 
-   <service name="Infinispan" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnComponent" singleton="true">
-
+   <service name="Infinispan (Managed Server)" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnComponent" singleton="true" description="The Infinispan subsystem">
+   
       <runs-inside>
          <parent-resource-type name="Profile" plugin="JBossAS7" />
          <parent-resource-type name="JBossAS7 Standalone Server" plugin="JBossAS7" />
@@ -47,7 +47,7 @@
          <c:simple-property name="managedRuntime" default="true" type="boolean" readOnly="true" />
       </plugin-configuration>
 
-      <service name="Cache Container" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCContainerComponent" createDeletePolicy="both" creationDataType="configuration">
+      <service name="Cache Container (Managed Server)" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCContainerComponent" description="A cache container">
 
          <plugin-configuration>
             <c:simple-property name="path" readOnly="true" default="cache-container" />
@@ -59,24 +59,25 @@
          <metric property="localAddress" displayName="Local Address" displayType="summary" units="none" dataType="trait" description="The local node's address" />
 
          <resource-configuration>
-            <c:simple-property name="default-cache" required="false" type="string" readOnly="false" description="The default infinispan cache" />
-        <!-- TODO select from child cache services -->
-            <c:list-property name="aliases" required="false" description="The list of aliases for this cache container">
-               <c:simple-property name="alias" />
+            <c:simple-property name="default-cache" required="false" type="string" readOnly="true" description="The default infinispan cache" />
+          <!-- TODO select from child cache services -->
+            <c:list-property name="aliases" required="false" description="The list of aliases for this cache container" readOnly="true">
+               <c:simple-property name="alias" readOnly="true" />
             </c:list-property>
-            <c:simple-property name="jndi-name" required="false" type="string" readOnly="false" description="The jndi name to which to bind this cache container" />
-            <c:simple-property name="start" required="false" type="string" readOnly="false" defaultValue="LAZY" description="The cache container start mode, which can be EAGER (immediate start) or LAZY (on-demand start).">
+            <c:simple-property name="jndi-name" required="false" type="string" readOnly="true" description="The jndi name to which to bind this cache container" />
+            <c:simple-property name="start" required="false" type="string" readOnly="true" defaultValue="LAZY" description="The cache container start mode, which can be EAGER (immediate start) or LAZY (on-demand start).">
                <c:property-options>
                   <c:option value="LAZY" />
                   <c:option value="EAGER" />
                </c:property-options>
             </c:simple-property>
-            <c:simple-property name="listener-executor" required="false" type="string" readOnly="false" description="The executor used for the replication queue" />
-            <c:simple-property name="eviction-executor" required="false" type="string" readOnly="false" description="The scheduled executor used for eviction" />
-            <c:simple-property name="replication-queue-executor" required="false" type="string" readOnly="false" description="The executor used for asynchronous cache operations" />
+            <c:simple-property name="listener-executor" required="false" type="string" readOnly="true" description="The executor used for the replication queue" />
+            <c:simple-property name="eviction-executor" required="false" type="string" readOnly="true" description="The scheduled executor used for eviction" />
+            <c:simple-property name="module" required="false" type="string" readOnly="true" defaultValue="org.jboss.as.clustering.infinispan" description="The module whose class loader should be used when building this cache container&apos;s configuration. The default value is org.jboss.as.clustering.infinispan." />
+            <c:simple-property name="replication-queue-executor" required="false" type="string" readOnly="true" description="The executor used for asynchronous cache operations" />
          </resource-configuration>
 
-         <service name="Cache" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="IspnCacheComponent" createDeletePolicy="both" creationDataType="configuration">
+         <service name="Cache (Managed Server)" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCacheComponent" description="The caches within a cache container">
 
             <plugin-configuration>
                <c:simple-property name="path" readOnly="true" default="distributed-cache|local-cache|invalidation-cache|replicated-cache" />
@@ -126,34 +127,58 @@
                      <c:option value="replicated-cache" />
                   </c:property-options>
                </c:simple-property>
-               <c:simple-property name="start" required="false" type="string" readOnly="false" default="LAZY" description="The cache start mode, which can be EAGER (immediate start) or LAZY (on-demand start).">
+               <c:simple-property name="start" required="false" type="string" readOnly="true" default="LAZY" description="The cache start mode, which can be EAGER (immediate start) or LAZY (on-demand start).">
                   <c:property-options>
                      <c:option value="LAZY" />
                      <c:option value="EAGER" />
                   </c:property-options>
                </c:simple-property>
-               <c:simple-property name="batching" required="false" type="boolean" readOnly="false" default="false" description="If enabled, the invocation batching API will be made available for this cache." />
-               <c:simple-property name="indexing" required="false" type="string" readOnly="false" default="NONE" description="If enabled, entries will be indexed when they are added to the cache. Indexes will be updated as entries change or are removed.">
+               <c:simple-property name="batching" required="false" type="boolean" readOnly="true" default="false" description="If enabled, the invocation batching API will be made available for this cache." />
+               <c:simple-property name="indexing" required="false" type="string" readOnly="true" default="NONE" description="If enabled, entries will be indexed when they are added to the cache. Indexes will be updated as entries change or are removed.">
                   <c:property-options>
                      <c:option value="NONE" />
                      <c:option value="LOCAL" />
                      <c:option value="ALL" />
                   </c:property-options>
                </c:simple-property>
-               <c:simple-property name="jndi-name" required="false" type="string" readOnly="false" description="The jndi-name to which to bind this cache instance." />
+               <c:simple-property name="jndi-name" required="false" type="string" readOnly="true" description="The jndi-name to which to bind this cache instance." />
                <c:simple-property name="mode" required="false" type="string" readOnly="true" default="SYNC" description="Sets the clustered cache mode, ASYNC for asynchronous operation, or SYNC for synchronous operation.">
                   <c:property-options>
                      <c:option value="SYNC" />
                      <c:option value="ASYNC" />
                   </c:property-options>
                </c:simple-property>
-               <c:simple-property name="queue-size" required="false" type="integer" readOnly="false" default="0" description="In ASYNC mode, this attribute can be used to trigger flushing of the queue when it reaches a specific threshold." />
-               <c:simple-property name="queue-flush-interval" required="false" type="long" readOnly="false" default="10"
+               <c:simple-property name="queue-size" required="false" type="integer" readOnly="true" default="0" description="In ASYNC mode, this attribute can be used to trigger flushing of the queue when it reaches a specific threshold." />
+               <c:simple-property name="queue-flush-interval" required="false" type="long" readOnly="true" default="10"
                   description="In ASYNC mode, this attribute controls how often the asynchronous thread used to flush the replication queue runs. This should be a positive integer which represents thread wakeup time in milliseconds." />
-               <c:simple-property name="remote-timeout" required="false" type="long" readOnly="false" default="17500" description="In SYNC mode, the timeout (in ms) used to wait for an acknowledgment when making a remote call, after which the call is aborted and an exception is thrown." />
+               <c:simple-property name="remote-timeout" required="false" type="long" readOnly="true" default="17500" description="In SYNC mode, the timeout (in ms) used to wait for an acknowledgment when making a remote call, after which the call is aborted and an exception is thrown." />
+               <c:simple-property name="async-marshalling" required="false" type="boolean" readOnly="true" defaultValue="false" description="If enabled, this will cause marshalling of entries to be performed asynchronously. The default value is false." />
+               <c:simple-property name="l1-lifespan" required="false" type="long" readOnly="true" defaultValue="600000"
+                  description="Maximum lifespan of an entry placed in the L1 cache. This element configures the L1 cache behavior in &apos;distributed&apos; caches instances. In any other cache modes, this element is ignored. The default value is 600000." />
+               <c:simple-property name="module" required="false" type="string" readOnly="true" description="The module whose class loader should be used when building this cache&apos;s configuration." />
+               <c:simple-property name="owners" required="false" type="integer" readOnly="true" defaultValue="2" description="Number of cluster&#45;wide replicas for each cache entry. The default value is 2." />
+               <c:simple-property name="virtual-nodes" required="false" type="integer" readOnly="true" defaultValue="1"
+                  description="Controls the number of virtual nodes per &apos;real&apos; node. If numVirtualNodes is 1, then virtual nodes are disabled. The topology aware consistent hash must be used if you wish to take advantage of virtual nodes. A default of 1 is used. The default value is 1." />
+            </resource-configuration>
+         </service>
+
+         <service name="Transport (Managed Server)" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.rhq.modules.plugins.jbossas7.BaseComponent" singleton="true" description="The description of the transport used by this cache container">
+
+            <plugin-configuration>
+               <c:simple-property name="path" readOnly="true" default="transport=TRANSPORT" />
+            </plugin-configuration>
+
+            <resource-configuration>
+               <c:simple-property name="cluster" required="false" type="string" readOnly="true" description="The name of the group communication cluster" />
+               <c:simple-property name="executor" required="false" type="string" readOnly="true" description="The executor to use for the transport" />
+               <c:simple-property name="lock-timeout" required="false" type="long" readOnly="true" defaultValue="240000" description="The timeout for locks for the transport. The default value is 240000." />
+               <c:simple-property name="machine" required="false" type="string" readOnly="true" description="A machine identifier for the transport" />
+               <c:simple-property name="rack" required="false" type="string" readOnly="true" description="A rack identifier for the transport" />
+               <c:simple-property name="site" required="false" type="string" readOnly="true" description="A site identifier for the transport" />
+               <c:simple-property name="stack" required="false" type="string" readOnly="true" description="The jgroups stack to use for the transport" />
             </resource-configuration>
          </service>
       </service>
-
    </service>
+
 </plugin>

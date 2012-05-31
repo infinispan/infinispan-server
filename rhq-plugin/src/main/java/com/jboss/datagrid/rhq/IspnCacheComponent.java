@@ -28,55 +28,55 @@ import org.rhq.core.domain.measurement.MeasurementReport;
 import org.rhq.core.domain.measurement.MeasurementScheduleRequest;
 import org.rhq.core.pluginapi.configuration.ConfigurationFacet;
 import org.rhq.core.pluginapi.configuration.ConfigurationUpdateReport;
-import org.rhq.core.pluginapi.measurement.MeasurementFacet;
 import org.rhq.modules.plugins.jbossas7.BaseComponent;
 
 /**
  * Component class for Infinispan caches
- *
  * @author Heiko W. Rupp
  */
-public class IspnCacheComponent extends BaseComponent<IspnCacheComponent> implements ConfigurationFacet, MeasurementFacet {
+public class IspnCacheComponent extends BaseComponent<IspnCacheComponent> implements ConfigurationFacet {
 
-   @Override
-   public void getValues(MeasurementReport report, Set<MeasurementScheduleRequest> metrics) throws Exception {
 
-      Set<MeasurementScheduleRequest> requests = metrics;
-      Set<MeasurementScheduleRequest> todo = new HashSet<MeasurementScheduleRequest>();
+    @Override
+    public void getValues(MeasurementReport report, Set metrics) throws Exception {
 
-      for (MeasurementScheduleRequest req : requests) {
-         if (req.getName().equals("__flavor")) {
-            String flavor = getCacheFlavorFromPath();
-            MeasurementDataTrait trait = new MeasurementDataTrait(req, flavor);
-            report.addData(trait);
-         } else {
-            todo.add(req);
-         }
-      }
+        Set<MeasurementScheduleRequest> requests = metrics;
+        Set<MeasurementScheduleRequest> todo = new HashSet<MeasurementScheduleRequest>();
 
-      super.getValues(report, todo);
-   }
+        for (MeasurementScheduleRequest req: requests) {
+            if (req.getName().equals("__flavor")) {
+                String flavor = getCacheFlavorFromPath();
+                MeasurementDataTrait trait = new MeasurementDataTrait(req,flavor);
+                report.addData(trait);
+            } else {
+               todo.add(req);
+            }
+        }
 
-   private String getCacheFlavorFromPath() {
-      String flavor = getPath().substring(getPath().lastIndexOf(",") + 1);
-      flavor = flavor.substring(0, flavor.indexOf("="));
-      return flavor;
-   }
 
-   @Override
-   public Configuration loadResourceConfiguration() throws Exception {
-      Configuration config = super.loadResourceConfiguration();
-      String f = getCacheFlavorFromPath();
-      PropertySimple flavor = new PropertySimple(IspnCContainerComponent.FLAVOR, f);
-      config.put(flavor);
-      return config;
-   }
+        super.getValues(report, todo);
+    }
 
-   @Override
-   public void updateResourceConfiguration(ConfigurationUpdateReport report) {
+    private String getCacheFlavorFromPath() {
+        String flavor = getPath().substring(getPath().lastIndexOf(",")+1);
+        flavor = flavor.substring(0,flavor.indexOf("="));
+        return flavor;
+    }
 
-      report.getConfiguration().remove(IspnCContainerComponent.FLAVOR);
+    @Override
+    public Configuration loadResourceConfiguration() throws Exception {
+        Configuration config = super.loadResourceConfiguration();
+        String f = getCacheFlavorFromPath();
+        PropertySimple flavor = new PropertySimple(IspnCContainerComponent.FLAVOR,f);
+        config.put(flavor);
+        return config;
+    }
 
-      super.updateResourceConfiguration(report);
-   }
+    @Override
+    public void updateResourceConfiguration(ConfigurationUpdateReport report) {
+
+        report.getConfiguration().remove(IspnCContainerComponent.FLAVOR);
+
+        super.updateResourceConfiguration(report);
+    }
 }
