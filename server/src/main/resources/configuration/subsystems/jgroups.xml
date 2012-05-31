@@ -4,7 +4,7 @@
    <extension-module>org.jboss.as.clustering.jgroups</extension-module>
    <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="${jboss.default.jgroups.stack:udp}">
       <stack name="udp">
-         <transport type="UDP" socket-binding="jgroups-udp" default-executor="jgroups" oob-executor="jgroups-oob" timer-executor="jgroups-timer" />
+         <transport type="UDP" socket-binding="jgroups-udp" />
          <protocol type="PING">
             <property name="timeout">5000</property>
             <property name="num_initial_members">5</property>
@@ -42,7 +42,7 @@
          </protocol>
       </stack>
       <stack name="tcp">
-         <transport type="TCP" socket-binding="jgroups-tcp" default-executor="jgroups" oob-executor="jgroups-oob" timer-executor="jgroups-timer" />
+         <transport type="TCP" socket-binding="jgroups-tcp" />
          <protocol type="MPING" socket-binding="jgroups-mping" />
          <protocol type="MERGE2" />
          <protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd" />
