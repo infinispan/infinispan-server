@@ -25,13 +25,13 @@
 
 		<!-- Version Info -->
       <version.commons.logging>1.1.1-redhat-1</version.commons.logging>
-      <version.io.netty>3.4.5.Final</version.io.netty>
+      <version.io.netty>3.4.6.Final</version.io.netty>
       <version.net.jcip.annotations>1.0-redhat-1</version.net.jcip.annotations>
       <version.org.jboss.as>7.1.2.Final-redhat-1</version.org.jboss.as>
       <version.org.jboss.jandex>1.0.3.Final-redhat-1</version.org.jboss.jandex>
       <version.com.thoughtworks.xstream>1.4.1-redhat-1</version.com.thoughtworks.xstream>
       <version.junit>4.10-redhat-1</version.junit>
-      <version.org.infinispan>5.1.5.ER10-redhat-1</version.org.infinispan>
+      <version.org.infinispan>5.1.5.FINAL-redhat-1</version.org.infinispan>
       <version.org.jgroups>3.0.10.Final-redhat-1</version.org.jgroups>
       <version.org.rhq>4.4.0.JON310GA</version.org.rhq>
       <version.org.scala-lang>2.9.2-redhat-1</version.org.scala-lang>
