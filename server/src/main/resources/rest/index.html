@@ -56,7 +56,7 @@
 			the default cache, named <em><strong>default</strong></em>
 			or one of the named caches in the configuration file. This is because
 			the REST server starts default and pre-defined caches on startup in
-			order to provide a more consistent behaivour.
+			order to provide a more consistent behaviour.
 		</p>
 
 		<p>
@@ -77,11 +77,11 @@
 			A PUT request of the above URL form will place the payload (body) in
 			the given cache, with the given key (if the cache name is new, it
 			will be automatically initialised). For example
-			http://someserver/rest/hr/payRoll/3
+			http://someserver/rest/hr/payRoll_3
 			(in which case
 			hr
 			is the cache name, and
-			payRoll/3
+			payRoll_3
 			is the key). Any existing data will be replaced, and
 			Time-To-Live
 			and
@@ -163,7 +163,7 @@
 		<h6>DELETE /rest/{cacheName}/{cacheKey}</h6>
 		<p>Removes the given key name from the cache.</p>
 		<h6>DELETE /rest/{cacheName}</h6>
-		<p>Removes ALL the entries in the given cache name (ie everything
+		<p>Removes ALL the entries in the given cache name (i.e. everything
 			from that path down).</p>
 		<p>
 			OPTIONAL: Set the header
@@ -179,9 +179,9 @@
 		for more details.
 
 		<h4>6. Deployment</h4>
-		Enterprise Data Grid is a distributed data grid, it shouldn't matter
+		JBoss Data Grid is a distributed data grid, it shouldn't matter
 		how many or which instance of the Server you access, as long as it is
-		part of the Enterprise Data Grid cluster, it will find your data, and
+		part of the JBoss Data Grid cluster, it will find your data, and
 		manage it. You can have as many instances (including the one you are
 		looking at) as you need.
 
