@@ -35,6 +35,7 @@
       <module>server</module>
       <module>library</module>
       <module>rhq-plugin</module>
+      <module>maven-repository</module>
    </modules>
    
    <profiles>

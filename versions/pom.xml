@@ -18,32 +18,91 @@
    <description>JBoss Data Grid - BOM</description>
 
    <properties>
-		<!-- Release Info -->
+      <!-- Release Info -->
       <product.version>${project.version}</product.version>
       <product.codename>Helvellyn</product.codename>
       <product.name>jboss-datagrid</product.name>
 
-		<!-- Version Info -->
+      <!-- Version Info -->
       <version.commons.logging>1.1.1-redhat-1</version.commons.logging>
       <version.io.netty>3.4.6.Final</version.io.netty>
       <version.net.jcip.annotations>1.0-redhat-1</version.net.jcip.annotations>
       <version.org.jboss.as>7.1.2.Final-redhat-1</version.org.jboss.as>
+      <version.org.jboss.component.management>6.0.0-redhat-1</version.org.jboss.component.management>
+      <version.org.jboss.parent>8-redhat-1</version.org.jboss.parent>
       <version.org.jboss.jandex>1.0.3.Final-redhat-1</version.org.jboss.jandex>
       <version.com.thoughtworks.xstream>1.4.1-redhat-1</version.com.thoughtworks.xstream>
       <version.junit>4.10-redhat-1</version.junit>
       <version.org.infinispan>5.1.5.FINAL-redhat-1</version.org.infinispan>
       <version.org.jgroups>3.0.10.Final-redhat-1</version.org.jgroups>
       <version.org.rhq>4.4.0.JON310GA</version.org.rhq>
+      <version.org.rhq.annotations>3.0.4-redhat-1</version.org.rhq.annotations>
       <version.org.scala-lang>2.9.2-redhat-1</version.org.scala-lang>
+      <version.org.sonatype.oss.parent>7-redhat-1</version.org.sonatype.oss.parent>
       <relocations></relocations>
    </properties>
 
    <dependencyManagement>
       <dependencies>
          <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-parent</artifactId>
+            <version>${version.org.jboss.parent}</version>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.component.management</groupId>
+            <artifactId>jboss-component-version-master</artifactId>
+            <version>${version.org.jboss.component.management}</version>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.component.management</groupId>
+            <artifactId>jboss-dependency-management-all</artifactId>
+            <version>${version.org.jboss.component.management}</version>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.component.management</groupId>
+            <artifactId>jboss-dependency-management-build</artifactId>
+            <version>${version.org.jboss.component.management}</version>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.component.management</groupId>
+            <artifactId>jboss-dependency-management-eap</artifactId>
+            <version>${version.org.jboss.component.management}</version>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.component.management</groupId>
+            <artifactId>jboss-project-dependency-relocations</artifactId>
+            <version>${version.org.jboss.component.management}</version>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.marshalling</groupId>
+            <artifactId>jboss-marshalling-parent</artifactId>
+            <version>${version.org.jboss.marshalling.jboss-marshalling}</version>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jboss-datagrid-infinispan</artifactId>
             <version>${version.org.jboss.as}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.jbossts</groupId>
+            <artifactId>jbossjta</artifactId>
+            <version>${version.org.jboss.jbossts.jbossjts}</version>
          </dependency>
 
          <dependency>
@@ -95,6 +154,19 @@
             <artifactId>infinispan</artifactId>
             <version>${version.org.infinispan}</version>
             <classifier>javadoc</classifier>
+         </dependency>
+
+         <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-parent</artifactId>
+            <version>${version.org.infinispan}</version>
+            <type>pom</type>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.rhq.helpers</groupId>
+                  <artifactId>rhq-pluginAnnotations</artifactId>
+               </exclusion>
+            </exclusions>
          </dependency>
 
          <dependency>
@@ -239,6 +311,13 @@
          </dependency>
 
          <dependency>
+            <groupId>org.sonatype.oss</groupId>
+            <artifactId>oss-parent</artifactId>
+            <version>${version.org.sonatype.oss.parent}</version>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
@@ -267,6 +346,12 @@
             <groupId>org.rhq</groupId>
             <artifactId>rhq-core-native-system</artifactId>
             <version>${version.org.rhq}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.rhq.helpers</groupId>
+            <artifactId>rhq-pluginAnnotations</artifactId>
+            <version>${version.org.rhq.annotations}</version>
          </dependency>
       </dependencies>
 
