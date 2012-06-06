@@ -34,7 +34,7 @@
       </service>
    </service>
 
-   <service name="Infinispan (Managed Server)" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnComponent" singleton="true" description="The Infinispan subsystem">
+   <service name="Infinispan" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnComponent" singleton="true" description="The Infinispan subsystem">
    
       <runs-inside>
          <parent-resource-type name="Profile" plugin="JBossAS7" />
@@ -47,7 +47,7 @@
          <c:simple-property name="managedRuntime" default="true" type="boolean" readOnly="true" />
       </plugin-configuration>
 
-      <service name="Cache Container (Managed Server)" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCContainerComponent" description="A cache container">
+      <service name="Cache Container" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCContainerComponent" description="A cache container">
 
          <plugin-configuration>
             <c:simple-property name="path" readOnly="true" default="cache-container" />
@@ -77,7 +77,7 @@
             <c:simple-property name="replication-queue-executor" required="false" type="string" readOnly="true" description="The executor used for asynchronous cache operations" />
          </resource-configuration>
 
-         <service name="Cache (Managed Server)" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCacheComponent" description="The caches within a cache container">
+         <service name="Cache" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCacheComponent" description="The caches within a cache container">
 
             <plugin-configuration>
                <c:simple-property name="path" readOnly="true" default="distributed-cache|local-cache|invalidation-cache|replicated-cache" />
@@ -162,7 +162,7 @@
             </resource-configuration>
          </service>
 
-         <service name="Transport (Managed Server)" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.rhq.modules.plugins.jbossas7.BaseComponent" singleton="true" description="The description of the transport used by this cache container">
+         <service name="Transport" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.rhq.modules.plugins.jbossas7.BaseComponent" singleton="true" description="The description of the transport used by this cache container">
 
             <plugin-configuration>
                <c:simple-property name="path" readOnly="true" default="transport=TRANSPORT" />
