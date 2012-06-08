@@ -16,7 +16,7 @@
    <parent>
       <groupId>com.jboss.datagrid</groupId>
       <artifactId>jboss-datagrid-versions</artifactId>
-      <version>6.0.0.CR1-redhat-1</version>
+      <version>6.0.0.CR2-redhat-1</version>
       <relativePath>../versions/pom.xml</relativePath>
    </parent>
 
