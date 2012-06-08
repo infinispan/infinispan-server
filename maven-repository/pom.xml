@@ -19,39 +19,13 @@
 
    <dependencies>
       <dependency>
-         <groupId>org.jboss</groupId>
-         <artifactId>jboss-parent</artifactId>
-         <type>pom</type>
+         <groupId>org.jgroups</groupId>
+         <artifactId>jgroups</artifactId>
       </dependency>
       <dependency>
-         <groupId>org.jboss.component.management</groupId>
-         <artifactId>jboss-component-version-master</artifactId>
-         <type>pom</type>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.component.management</groupId>
-         <artifactId>jboss-dependency-management-all</artifactId>
-         <type>pom</type>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.component.management</groupId>
-         <artifactId>jboss-dependency-management-build</artifactId>
-         <type>pom</type>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.component.management</groupId>
-         <artifactId>jboss-dependency-management-eap</artifactId>
-         <type>pom</type>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.component.management</groupId>
-         <artifactId>jboss-project-dependency-relocations</artifactId>
-         <type>pom</type>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.marshalling</groupId>
-         <artifactId>jboss-marshalling-parent</artifactId>
-         <type>pom</type>
+         <groupId>org.jgroups</groupId>
+         <artifactId>jgroups</artifactId>
+         <classifier>sources</classifier>
       </dependency>
       <dependency>
          <groupId>org.infinispan</groupId>
@@ -64,24 +38,44 @@
       </dependency>
       <dependency>
          <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-core</artifactId>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan</groupId>
          <artifactId>infinispan-cachestore-jdbc</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-cachestore-jdbc</artifactId>
+         <classifier>sources</classifier>
       </dependency>
       <dependency>
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-cachestore-remote</artifactId>
       </dependency>
       <dependency>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <type>pom</type>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-cachestore-remote</artifactId>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-client-hotrod</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-client-hotrod</artifactId>
+         <classifier>sources</classifier>
       </dependency>
       <dependency>
          <groupId>org.jboss.jbossts</groupId>
          <artifactId>jbossjta</artifactId>
       </dependency>
       <dependency>
-         <groupId>net.jcip</groupId>
-         <artifactId>jcip-annotations</artifactId>
+         <groupId>org.jboss.jbossts</groupId>
+         <artifactId>jbossjta</artifactId>
+         <classifier>sources</classifier>
       </dependency>
       <dependency>
          <groupId>org.rhq</groupId>
@@ -120,6 +114,8 @@
                   </executions>
                   <configuration>
                      <copyPom>true</copyPom>
+                     <excludeTransitive>true</excludeTransitive>
+                     <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
                      <useRepositoryLayout>true</useRepositoryLayout>
                   </configuration>
                </plugin>
