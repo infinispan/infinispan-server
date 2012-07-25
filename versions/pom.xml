@@ -211,6 +211,19 @@
                </exclusion>
             </exclusions>
          </dependency>
+         
+         <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-cachestore-parent</artifactId>
+            <version>${version.org.infinispan}</version>
+            <type>pom</type>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.rhq.helpers</groupId>
+                  <artifactId>rhq-pluginAnnotations</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
 
          <dependency>
             <groupId>org.infinispan</groupId>
