@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- See src/resources/configuration/ReadMe.txt for how the configuration assembly works -->
+<config>
+   <extension-module>org.jboss.as.clustering.jgroups</extension-module>
+   <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="${jboss.default.jgroups.stack:udp}">
+      <?JGROUPS-TRANSPORT?>
+   </subsystem>
+   
+   <supplement name="topology">
+      <replacement placeholder="JGROUPS-TRANSPORT">
+         <stack name="udp">
+            <transport type="UDP" socket-binding="jgroups-udp" site="${jboss.jgroups.topology.site:s1}" rack="${jboss.jgroups.topology.rack:r1}" machine="${jboss.jgroups.topology.machine:m1}">
+               <property name="timer_type">new</property>
+               <property name="timer.min_threads">4</property>
+               <property name="timer.max_threads">4</property>
+               <property name="timer.keep_alive_time">5000000000</property>
+               <property name="timer.queue_max_size">500</property>
+               <property name="thread_pool.enabled">true</property>
+               <property name="thread_pool.min_threads">200</property>
+               <property name="thread_pool.max_threads">200</property>
+               <property name="thread_pool.keep_alive_time">5000000000</property>
+               <property name="thread_pool.queue_enabled">true</property>
+               <property name="thread_pool.queue_max_size">100000</property>
+               <property name="thread_pool.rejection_policy">discard</property>
+               <property name="oob_thread_pool.enabled">true</property>
+               <property name="oob_thread_pool.min_threads">200</property>
+               <property name="oob_thread_pool.max_threads">200</property>
+               <property name="oob_thread_pool.keep_alive_time">1000000000</property>
+               <property name="oob_thread_pool.queue_enabled">true</property>
+               <property name="oob_thread_pool.queue_max_size">100000</property>
+               <property name="oob_thread_pool.rejection_policy">discard</property>
+            </transport>
+            <protocol type="PING">
+               <property name="timeout">5000</property>
+               <property name="num_initial_members">5</property>
+            </protocol>
+            <protocol type="MERGE2" />
+            <protocol type="FD_SOCK" socket-binding="jgroups-udp-fd" />
+            <protocol type="FD_ALL" />
+            <protocol type="pbcast.NAKACK" />
+            <protocol type="UNICAST2">
+               <property name="timeout">300,600,1200</property>
+               <property name="stable_interval">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.STABLE">
+               <property name="stability_delay">500</property>
+               <property name="desired_avg_gossip">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.GMS" />
+            <protocol type="UFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="MFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="FRAG2">
+               <property name="frag_size">8000</property>
+            </protocol>
+            <protocol type="RSVP">
+               <property name="timeout">60000</property>
+               <property name="resend_interval">500</property>
+               <property name="ack_on_delivery">false</property>
+            </protocol>
+         </stack>
+         <stack name="tcp">
+            <transport type="TCP" socket-binding="jgroups-tcp" site="${jboss.jgroups.topology.site:s1}" rack="${jboss.jgroups.topology.rack:r1}" machine="${jboss.jgroups.topology.machine:m1}">
+               <property name="timer_type">new</property>
+               <property name="timer.min_threads">4</property>
+               <property name="timer.max_threads">4</property>
+               <property name="timer.keep_alive_time">5000000000</property>
+               <property name="timer.queue_max_size">500</property>
+               <property name="thread_pool.enabled">true</property>
+               <property name="thread_pool.min_threads">200</property>
+               <property name="thread_pool.max_threads">200</property>
+               <property name="thread_pool.keep_alive_time">5000000000</property>
+               <property name="thread_pool.queue_enabled">true</property>
+               <property name="thread_pool.queue_max_size">100000</property>
+               <property name="thread_pool.rejection_policy">discard</property>
+               <property name="oob_thread_pool.enabled">true</property>
+               <property name="oob_thread_pool.min_threads">200</property>
+               <property name="oob_thread_pool.max_threads">200</property>
+               <property name="oob_thread_pool.keep_alive_time">1000000000</property>
+               <property name="oob_thread_pool.queue_enabled">true</property>
+               <property name="oob_thread_pool.queue_max_size">100000</property>
+               <property name="oob_thread_pool.rejection_policy">discard</property>
+            </transport>
+            <protocol type="MPING" socket-binding="jgroups-mping" />
+            <protocol type="MERGE2" />
+            <protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd" />
+            <protocol type="FD" />
+            <protocol type="VERIFY_SUSPECT" />
+            <protocol type="pbcast.NAKACK">
+               <property name="use_mcast_xmit">false</property>
+            </protocol>
+            <protocol type="UNICAST2">
+               <property name="timeout">300,600,1200</property>
+               <property name="stable_interval">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.STABLE">
+               <property name="stability_delay">500</property>
+               <property name="desired_avg_gossip">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.GMS" />
+            <protocol type="UFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="MFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="FRAG2" />
+            <protocol type="RSVP">
+               <property name="timeout">60000</property>
+               <property name="resend_interval">500</property>
+               <property name="ack_on_delivery">false</property>
+            </protocol>
+         </stack>
+      </replacement>
+   </supplement>
+   <supplement name="two-nodes">
+      <replacement placeholder="JGROUPS-TRANSPORT">
+         <stack name="udp">
+            <transport type="UDP" socket-binding="jgroups-udp">
+               <property name="timer_type">new</property>
+               <property name="timer.min_threads">4</property>
+               <property name="timer.max_threads">4</property>
+               <property name="timer.keep_alive_time">5000000000</property>
+               <property name="timer.queue_max_size">500</property>
+               <property name="thread_pool.enabled">true</property>
+               <property name="thread_pool.min_threads">200</property>
+               <property name="thread_pool.max_threads">200</property>
+               <property name="thread_pool.keep_alive_time">5000000000</property>
+               <property name="thread_pool.queue_enabled">true</property>
+               <property name="thread_pool.queue_max_size">100000</property>
+               <property name="thread_pool.rejection_policy">discard</property>
+               <property name="oob_thread_pool.enabled">true</property>
+               <property name="oob_thread_pool.min_threads">200</property>
+               <property name="oob_thread_pool.max_threads">200</property>
+               <property name="oob_thread_pool.keep_alive_time">1000000000</property>
+               <property name="oob_thread_pool.queue_enabled">true</property>
+               <property name="oob_thread_pool.queue_max_size">100000</property>
+               <property name="oob_thread_pool.rejection_policy">discard</property>
+            </transport>
+            <protocol type="PING">
+               <property name="timeout">5000</property>
+               <property name="num_initial_members">5</property>
+            </protocol>
+            <protocol type="MERGE2" />
+            <protocol type="FD_SOCK" socket-binding="jgroups-udp-fd" />
+            <protocol type="FD_ALL" />
+            <protocol type="pbcast.NAKACK" />
+            <protocol type="UNICAST" />
+            <protocol type="pbcast.STABLE">
+               <property name="stability_delay">500</property>
+               <property name="desired_avg_gossip">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.GMS" />
+            <protocol type="UFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="MFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="FRAG2">
+               <property name="frag_size">8000</property>
+            </protocol>
+         </stack>
+         <stack name="tcp">
+            <transport type="TCP" socket-binding="jgroups-tcp">
+               <property name="timer_type">new</property>
+               <property name="timer.min_threads">4</property>
+               <property name="timer.max_threads">4</property>
+               <property name="timer.keep_alive_time">5000000000</property>
+               <property name="timer.queue_max_size">500</property>
+               <property name="thread_pool.enabled">true</property>
+               <property name="thread_pool.min_threads">200</property>
+               <property name="thread_pool.max_threads">200</property>
+               <property name="thread_pool.keep_alive_time">5000000000</property>
+               <property name="thread_pool.queue_enabled">true</property>
+               <property name="thread_pool.queue_max_size">100000</property>
+               <property name="thread_pool.rejection_policy">discard</property>
+               <property name="oob_thread_pool.enabled">true</property>
+               <property name="oob_thread_pool.min_threads">200</property>
+               <property name="oob_thread_pool.max_threads">200</property>
+               <property name="oob_thread_pool.keep_alive_time">1000000000</property>
+               <property name="oob_thread_pool.queue_enabled">true</property>
+               <property name="oob_thread_pool.queue_max_size">100000</property>
+               <property name="oob_thread_pool.rejection_policy">discard</property>
+            </transport>
+            <protocol type="MPING" socket-binding="jgroups-mping" />
+            <protocol type="MERGE2" />
+            <protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd" />
+            <protocol type="FD" />
+            <protocol type="VERIFY_SUSPECT" />
+            <protocol type="pbcast.NAKACK">
+               <property name="use_mcast_xmit">false</property>
+            </protocol>
+            <protocol type="UNICAST" />
+            <protocol type="pbcast.STABLE">
+               <property name="stability_delay">500</property>
+               <property name="desired_avg_gossip">5000</property>
+               <property name="max_bytes">1m</property>
+            </protocol>
+            <protocol type="pbcast.GMS" />
+            <protocol type="UFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="MFC">
+               <property name="max_credits">200k</property>
+               <property name="min_threshold">0.20</property>
+            </protocol>
+            <protocol type="FRAG2" />
+         </stack>
+      </replacement>
+   </supplement>
+
+   <socket-binding name="jgroups-mping" port="0" multicast-address="${jboss.default.multicast.address:234.99.54.14}" multicast-port="45700" />
+   <socket-binding name="jgroups-tcp" port="7600" />
+   <socket-binding name="jgroups-tcp-fd" port="57600" />
+   <socket-binding name="jgroups-udp" port="55200" multicast-address="${jboss.default.multicast.address:234.99.54.14}" multicast-port="45688" />
+   <socket-binding name="jgroups-udp-fd" port="54200" />
+</config>

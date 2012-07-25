@@ -74,6 +74,18 @@
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-rest-auth.xml"
            paramOutputFile="${generated.configs.examples}/standalone-rest-auth.xml"/>
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-storage-only.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-storage-only.xml"/>
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-topology.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-topology.xml"/>
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-two-nodes.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-two-nodes.xml"/>
     </target>
 
 
