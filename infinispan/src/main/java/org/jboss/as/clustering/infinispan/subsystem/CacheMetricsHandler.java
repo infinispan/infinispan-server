@@ -148,61 +148,75 @@ public class CacheMetricsHandler extends AbstractRuntimeOnlyHandler {
                 case NUMBER_OF_LOCKS_HELD:
                     result.set(((LockManagerImpl) cache.getAdvancedCache().getLockManager()).getNumberOfLocksHeld());
                     break;
-                case AVERAGE_READ_TIME:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getAverageReadTime());
+                case AVERAGE_READ_TIME: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getAverageReadTime() : 0);
                     break;
-                case AVERAGE_WRITE_TIME:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getAverageWriteTime());
+                }
+                case AVERAGE_WRITE_TIME: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getAverageWriteTime() : 0);
                     break;
-                case ELAPSED_TIME:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getElapsedTime());
+                }
+                case ELAPSED_TIME: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getElapsedTime() : 0);
                     break;
-                case EVICTIONS:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getEvictions());
+                }
+                case EVICTIONS: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getEvictions() : 0);
                     break;
-                case HIT_RATIO:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getHitRatio());
+                }
+                case HIT_RATIO: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getHitRatio() : 0);
                     break;
-                case HITS:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getHits());
+                }
+                case HITS: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getHits() : 0);
                     break;
-                case MISSES:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getMisses());
+                }
+                case MISSES: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getMisses() : 0);
                     break;
-                case NUMBER_OF_ENTRIES:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getNumberOfEntries());
+                }
+                case NUMBER_OF_ENTRIES: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getNumberOfEntries() : 0);
                     break;
-                case READ_WRITE_RATIO:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getReadWriteRatio());
+                }
+                case READ_WRITE_RATIO: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getReadWriteRatio() : 0);
                     break;
-                case REMOVE_HITS:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getRemoveHits());
+                }
+                case REMOVE_HITS: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getRemoveHits() : 0);
                     break;
-                case REMOVE_MISSES:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getRemoveMisses());
+                }
+                case REMOVE_MISSES: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getRemoveMisses() : 0);
                     break;
-                case STORES:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getStores());
+                }
+                case STORES: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getStores() : 0);
                     break;
-                case TIME_SINCE_RESET:
-                    result.set(getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(),
-                            CacheMgmtInterceptor.class).getTimeSinceReset());
+                }
+                case TIME_SINCE_RESET: {
+                    CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
+                    result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getTimeSinceReset() : 0);
                     break;
-                case AVERAGE_REPLICATION_TIME:
+                }
+                case AVERAGE_REPLICATION_TIME: {
                     result.set(((RpcManagerImpl) cache.getAdvancedCache().getRpcManager()).getAverageReplicationTime());
                     break;
+                }
                 case REPLICATION_COUNT:
                     result.set(((RpcManagerImpl) cache.getAdvancedCache().getRpcManager()).getReplicationCount());
                     break;
