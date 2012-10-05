@@ -29,7 +29,5 @@
     </resources>
 
     <dependencies>
-        <!-- Do not add dependencies to the console as resources in any
-             dependencies could be served up through the HTTP interface. -->
     </dependencies>
 </module>

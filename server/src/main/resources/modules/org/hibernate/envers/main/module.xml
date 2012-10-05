@@ -34,6 +34,7 @@
         <module name="javax.api"/>
         <module name="javax.persistence.api"/>
         <module name="javax.transaction.api"/>
+	<module name="org.hibernate.commons-annotations"/>
         <module name="org.javassist"/>
     </dependencies>
 </module>

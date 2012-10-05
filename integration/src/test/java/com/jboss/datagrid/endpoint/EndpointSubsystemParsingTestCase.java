@@ -43,6 +43,7 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jboss.datagrid.DataGridConstants;
@@ -52,6 +53,7 @@ import com.jboss.datagrid.endpoint.EndpointExtension;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  */
+@Ignore
 public class EndpointSubsystemParsingTestCase extends AbstractSubsystemTest {
 
    private String subsystemXml;

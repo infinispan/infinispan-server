@@ -29,13 +29,12 @@ import org.jboss.as.controller.SubsystemRegistration;
 import org.jboss.as.controller.parsing.ExtensionParsingContext;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
-import org.jboss.msc.service.ServiceName;
 
 import com.jboss.datagrid.DataGridConstants;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
- * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ * @author Tristan Tarrant
  */
 public class EndpointExtension implements Extension {
 
@@ -44,6 +43,8 @@ public class EndpointExtension implements Extension {
 
    @Override
    public final void initialize(ExtensionContext context) {
+      final boolean registerRuntimeOnly = context.isRuntimeOnlyRegistrationValid();
+
       final SubsystemRegistration registration = context.registerSubsystem(DataGridConstants.SUBSYSTEM_NAME, 1, 0);
       registration.registerXMLElementWriter(parser);
 
@@ -54,15 +55,23 @@ public class EndpointExtension implements Extension {
       final ManagementResourceRegistration hotrodConnector = subsystem.registerSubModel(PathElement.pathElement(ModelKeys.HOTROD_CONNECTOR), EndpointSubsystemProviders.HOTROD_CONNECTOR_DESC);
       hotrodConnector.registerOperationHandler(ADD, HotRodSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_HOTROD_CONNECTOR_DESC, false);
       hotrodConnector.registerOperationHandler(REMOVE, HotRodSubsystemRemove.INSTANCE, EndpointSubsystemProviders.REMOVE_HOTROD_CONNECTOR_DESC, false);
+      HotRodWriteAttributeHandler.INSTANCE.registerAttributes(hotrodConnector);
 
       final ManagementResourceRegistration memcachedConnector = subsystem.registerSubModel(PathElement.pathElement(ModelKeys.MEMCACHED_CONNECTOR), EndpointSubsystemProviders.MEMCACHED_CONNECTOR_DESC);
       memcachedConnector.registerOperationHandler(ADD, MemcachedSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_MEMCACHED_CONNECTOR_DESC, false);
       memcachedConnector.registerOperationHandler(REMOVE, MemcachedSubsystemRemove.INSTANCE, EndpointSubsystemProviders.REMOVE_MEMCACHED_CONNECTOR_DESC, false);
+      MemcachedWriteAttributeHandler.INSTANCE.registerAttributes(memcachedConnector);
 
       final ManagementResourceRegistration restConnector = subsystem.registerSubModel(PathElement.pathElement(ModelKeys.REST_CONNECTOR), EndpointSubsystemProviders.REST_CONNECTOR_DESC);
       restConnector.registerOperationHandler(ADD, RestSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_REST_CONNECTOR_DESC, false);
       restConnector.registerOperationHandler(REMOVE, RestSubsystemRemove.INSTANCE, EndpointSubsystemProviders.REMOVE_REST_CONNECTOR_DESC, false);
+      RestWriteAttributeHandler.INSTANCE.registerAttributes(restConnector);
 
+      // Metrics
+      if(registerRuntimeOnly) {
+         ProtocolServerMetricsHandler.registerMetrics(hotrodConnector, "hotrod");
+         ProtocolServerMetricsHandler.registerMetrics(memcachedConnector, "memcached");
+      }
    }
 
    @Override

@@ -31,8 +31,8 @@
       <!-- Copy the JDG resource files -->
       <copy todir="${output.dir}">
          <fileset dir="${basedir}/src/main/resources">
-            <include name="JBossEULA.txt"/>
-            <include name="LICENSE.txt"/>
+            <include name="JBossEULA.txt" />
+            <include name="LICENSE.txt" />
             <include name="bin/**" />
             <include name="docs/**" />
             <include name="domain/**" />
@@ -41,9 +41,9 @@
             <include name="README.txt" />
          </fileset>
          <fileset dir="${generated.configs}">
-            <include name="standalone/configuration/**.xml"/>
-            <include name="domain/**"/>
-            <include name="docs/**"/>
+            <include name="standalone/configuration/**.xml" />
+            <include name="domain/**" />
+            <include name="docs/**" />
          </fileset>
       </copy>
 
@@ -53,6 +53,14 @@
             <include name="**/*.sh" />
          </fileset>
       </chmod>
+
+      <mkdir dir="${output.dir}/domain/data/content"/>
+      <mkdir dir="${output.dir}/standalone/lib/ext"/>
+      <mkdir dir="${output.dir}/domain/tmp/auth"/>
+      <mkdir dir="${output.dir}/standalone/tmp/auth"/>
+      <!-- This is directory is used by the SASL transparent auth mechanism to validate local user access -->
+      <chmod perm="700" dir="${output.dir}/domain/tmp/auth"/>
+      <chmod perm="700" dir="${output.dir}/standalone/tmp/auth"/>
 
       <!-- These files contain digested passwords, which should not be visible to external users -->
       <chmod perm="600" file="${output.dir}/domain/configuration/mgmt-users.properties" />
@@ -75,7 +83,7 @@
    <target name="jboss-modules">
       <ant antfile="jboss-as-build.xml" inheritall="true" target="modules" />
    </target>
-   
+
    <target name="jboss-bundles" if="osgi.bundles.include">
       <ant antfile="jboss-as-build.xml" inheritall="true" target="bundles" />
    </target>
@@ -95,21 +103,29 @@
       </module-def>
 
       <module-def name="org.jboss.as.clustering.infinispan" src="${jdg.modules.dir}">
-         <maven-resource group="org.jboss.as" artifact="jboss-as-clustering-infinispan" />
+         <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-infinispan" />
       </module-def>
 
-      <!--module-def name="org.jboss.as.console" slot="jdg" src="${jdg.modules.dir}">
-          <maven-resource-with-classifier group="org.jboss.as" artifact="jboss-as-console" classifier="resources"/>
-      </module-def-->
+      <module-def name="org.jboss.as.console" slot="jdg" src="${jdg.modules.dir}" />
 
-      <!--module-def name="org.jboss.as.domain-http-error-context" slot="jdg" src="${jdg.modules.dir}">
-          <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-domain-http-error-context" />
-      </module-def-->
+      <module-def name="org.jboss.as.domain-http-error-context" slot="jdg" src="${jdg.modules.dir}" />
 
       <module-def name="org.jboss.as.product" slot="jdg" src="${jdg.modules.dir}" />
 
       <module-def name="org.jboss.jts" src="${jdg.modules.dir}">
          <maven-resource group="org.jboss.jbossts" artifact="jbossjts" />
+      </module-def>
+
+      <module-def name="org.jboss.netty">
+         <maven-resource group="io.netty" artifact="netty" />
+      </module-def>
+      
+      <module-def name="org.infinispan" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-core" />
+      </module-def>
+
+      <module-def name="org.infinispan.cachestore.remote" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
       </module-def>
 
       <module-def name="org.infinispan.server" src="${jdg.modules.dir}">
@@ -132,12 +148,21 @@
          <maven-resource group="org.scala-lang" artifact="scala-library" />
       </module-def>
    </target>
-   
+
    <target name="trim-modules">
       <delete includeemptydirs="true" verbose="true">
          <fileset dir="${output.dir}/modules" includesfile="trim-modules.txt" />
       </delete>
    </target>
+   
+   <target name="trim-domain">
+      <delete dir="${output.dir}/domain" verbose="true" />
+      <delete>
+         <fileset dir="${output.dir}/bin">
+            <include name="domain.*"/>
+         </fileset>
+      </delete>
+   </target>
 
-   <target name="all" depends="clean, copy-files, jboss-modules, jdg-modules, jboss-bundles, trim-modules" />
+   <target name="all" depends="clean, copy-files, jboss-modules, jdg-modules, jboss-bundles, trim-modules, trim-domain" />
 </project>

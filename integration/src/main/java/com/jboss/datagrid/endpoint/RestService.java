@@ -18,7 +18,6 @@
  */
 package com.jboss.datagrid.endpoint;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -29,11 +28,16 @@ import org.apache.catalina.Loader;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.ApplicationParameter;
-import org.apache.catalina.startup.ContextConfig;
+import org.apache.catalina.deploy.LoginConfig;
+import org.apache.catalina.deploy.SecurityCollection;
+import org.apache.catalina.deploy.SecurityConstraint;
 import org.apache.tomcat.InstanceManager;
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.jboss.as.controller.services.path.PathManager;
+import org.jboss.as.security.plugins.SecurityDomainContext;
 import org.jboss.as.web.VirtualHost;
 import org.jboss.as.web.deployment.WebCtxLoader;
+import org.jboss.as.web.security.JBossWebRealm;
 import org.jboss.dmr.ModelNode;
 import org.jboss.logging.Logger;
 import org.jboss.msc.service.Service;
@@ -44,32 +48,48 @@ import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
+import org.jboss.security.negotiation.NegotiationAuthenticator;
 
 /**
  * A service which starts the REST web application
  *
  * @author Tristan Tarrant <ttarrant@redhat.com>
+ * @since 6.0
  */
 public class RestService implements Service<Context> {
    private static final String DEFAULT_VIRTUAL_SERVER = "default-host";
+   private static final String HOME_DIR = "jboss.home.dir";
    private static final Logger log = Logger.getLogger("com.jboss.datagrid");
    private static final String DEFAULT_CONTEXT_PATH = "";
    private final StandardContext context;
-   private final InjectedValue<String> pathInjector = new InjectedValue<String>();
+   private final InjectedValue<PathManager> pathManagerInjector = new InjectedValue<PathManager>();
    private final InjectedValue<VirtualHost> hostInjector = new InjectedValue<VirtualHost>();
    private final InjectedValue<EmbeddedCacheManager> cacheManagerInjector = new InjectedValue<EmbeddedCacheManager>();
+   private final InjectedValue<SecurityDomainContext> securityDomainContextInjector = new InjectedValue<SecurityDomainContext>();
    private Method cacheManagerSetter;
-   private ModelNode config;
-   private String virtualServer;
-   private String path;
-   private String serverName;
+   private final ModelNode config;
+   private final String virtualServer;
+   private final String path;
+   private final String serverName;
+   private final String securityDomain;
+   private final String authMethod;
+   private final SecurityMode securityMode;
+   private PathManager.Callback.Handle callbackHandle;
 
    public RestService(ModelNode config) {
       this.config = config.clone();
-      this.context = new StandardContext();
-      virtualServer = this.config.hasDefined(ModelKeys.VIRTUAL_SERVER) ? this.config.get(ModelKeys.VIRTUAL_SERVER).asString() : DEFAULT_VIRTUAL_SERVER;
-      path = this.config.hasDefined(ModelKeys.CONTEXT_PATH) ? cleanContextPath(this.config.get(ModelKeys.CONTEXT_PATH).asString()) : DEFAULT_CONTEXT_PATH;
-      this.serverName = config.hasDefined(ModelKeys.NAME)?config.get(ModelKeys.NAME).asString():"";
+
+      context = new StandardContext();
+      virtualServer = this.config.hasDefined(ModelKeys.VIRTUAL_SERVER) ? this.config.get(ModelKeys.VIRTUAL_SERVER)
+            .asString() : DEFAULT_VIRTUAL_SERVER;
+      path = this.config.hasDefined(ModelKeys.CONTEXT_PATH) ? cleanContextPath(this.config.get(ModelKeys.CONTEXT_PATH)
+            .asString()) : DEFAULT_CONTEXT_PATH;
+      serverName = config.hasDefined(ModelKeys.NAME) ? config.get(ModelKeys.NAME).asString() : "";
+      securityDomain = config.hasDefined(ModelKeys.SECURITY_DOMAIN) ? config.get(ModelKeys.SECURITY_DOMAIN).asString()
+            : null;
+      authMethod = config.hasDefined(ModelKeys.AUTH_METHOD) ? config.get(ModelKeys.AUTH_METHOD).asString() : "BASIC";
+      securityMode = config.hasDefined(ModelKeys.SECURITY_MODE) ? SecurityMode.valueOf(config.get(
+            ModelKeys.SECURITY_MODE).asString()) : SecurityMode.READ_WRITE;
 
       // Obtain the setter for injecting the EmbbededCacheManager into the Rest server
       try {
@@ -81,15 +101,16 @@ public class RestService implements Service<Context> {
    }
 
    private static String cleanContextPath(String s) {
-      if(s.endsWith("/"))
-         return s.substring(0, s.length()-1);
-      else
+      if (s.endsWith("/")) {
+         return s.substring(0, s.length() - 1);
+      } else {
          return s;
+      }
    }
 
    /** {@inheritDoc} */
    @Override
-public synchronized void start(StartContext startContext) throws StartException {
+   public synchronized void start(StartContext startContext) throws StartException {
       long startTime = System.currentTimeMillis();
       log.infof("REST Server starting");
       EmbeddedCacheManager cacheManager = cacheManagerInjector.getValue();
@@ -100,8 +121,11 @@ public synchronized void start(StartContext startContext) throws StartException 
       }
       try {
          context.setPath(path);
-         context.addLifecycleListener(new ContextConfig());
-         context.setDocBase(pathInjector.getValue() + File.separatorChar + "rest");
+         context.addLifecycleListener(new RestContextConfig());
+
+         context.setDocBase(pathManagerInjector.getValue().resolveRelativePathEntry("rest", HOME_DIR));
+         callbackHandle = pathManagerInjector.getValue().registerCallback(HOME_DIR,
+               PathManager.ReloadServerCallback.create(), PathManager.Event.UPDATED, PathManager.Event.REMOVED);
 
          final Loader loader = new WebCtxLoader(this.getClass().getClassLoader());
          Host host = hostInjector.getValue().getHost();
@@ -139,22 +163,67 @@ public synchronized void start(StartContext startContext) throws StartException 
 
          context.addServletMapping("/rest/*", "Resteasy");
 
+         if (securityDomain != null) {
+            configureContextSecurity();
+         }
+
          host.addChild(context);
          context.create();
       } catch (Exception e) {
-         throw new StartException("Failed to create context for REST Server "+serverName, e);
+         throw new StartException("Failed to create context for REST Server " + serverName, e);
       }
       try {
          context.start();
          long elapsedTime = Math.max(System.currentTimeMillis() - startTime, 0L);
          log.infof("REST Server started in %dms", Long.valueOf(elapsedTime));
       } catch (LifecycleException e) {
-         throw new StartException("Failed to start context for REST Server "+serverName, e);
+         throw new StartException("Failed to start context for REST Server " + serverName, e);
+      }
+   }
+
+   private void configureContextSecurity() {
+      SecurityConstraint constraint = new SecurityConstraint();
+      SecurityCollection webCollection = new SecurityCollection();
+      webCollection.addPattern("/rest/*");
+      switch (securityMode) {
+      case WRITE:
+         // protect all writes
+         webCollection.addMethod("PUT");
+         webCollection.addMethod("POST");
+         webCollection.addMethod("DELETE");
+         break;
+      case READ_WRITE:
+         // protect all methods
+         break;
+      }
+      constraint.addCollection(webCollection);
+      constraint.setAuthConstraint(true);
+      constraint.addAuthRole("REST");
+      context.addConstraint(constraint);
+      LoginConfig login = new LoginConfig();
+      login.setAuthMethod(authMethod);
+      login.setRealmName("ApplicationRealm");
+      context.setLoginConfig(login);
+
+      JBossWebRealm realm = new JBossWebRealm();
+      SecurityDomainContext securityDomainContext = securityDomainContextInjector.getValue();
+      realm.setAuthenticationManager(securityDomainContext.getAuthenticationManager());
+      realm.setAuthorizationManager(securityDomainContext.getAuthorizationManager());
+      realm.setMappingManager(securityDomainContext.getMappingManager());
+      realm.setAuditManager(securityDomainContext.getAuditManager());
+      context.setRealm(realm);
+      context.addValve(new RestSecurityContext(path, securityDomain));
+      if ("SPNEGO".equals(authMethod)) {
+         context.addValve(new NegotiationAuthenticator());
       }
    }
 
    public String getVirtualServer() {
       return virtualServer;
+   }
+
+   public String getSecurityDomain() {
+      return securityDomain;
    }
 
    private static void addContextApplicationParameter(Context context, String paramName, String paramValue) {
@@ -166,7 +235,10 @@ public synchronized void start(StartContext startContext) throws StartException 
 
    /** {@inheritDoc} */
    @Override
-public synchronized void stop(StopContext stopContext) {
+   public synchronized void stop(StopContext stopContext) {
+      if (callbackHandle != null) {
+         callbackHandle.remove();
+      }
       try {
          hostInjector.getValue().getHost().removeChild(context);
          context.stop();
@@ -189,7 +261,7 @@ public synchronized void stop(StopContext stopContext) {
 
    /** {@inheritDoc} */
    @Override
-public synchronized Context getValue() throws IllegalStateException {
+   public synchronized Context getValue() throws IllegalStateException {
       final Context context = this.context;
       if (context == null) {
          throw new IllegalStateException();
@@ -197,8 +269,8 @@ public synchronized Context getValue() throws IllegalStateException {
       return context;
    }
 
-   public InjectedValue<String> getPathInjector() {
-      return pathInjector;
+   public InjectedValue<PathManager> getPathManagerInjector() {
+      return pathManagerInjector;
    }
 
    public InjectedValue<VirtualHost> getHostInjector() {
@@ -209,20 +281,27 @@ public synchronized Context getValue() throws IllegalStateException {
       return cacheManagerInjector;
    }
 
+   public InjectedValue<SecurityDomainContext> getSecurityDomainContextInjector() {
+      return securityDomainContextInjector;
+   }
+
    private static class LocalInstanceManager implements InstanceManager {
 
       @Override
-      public Object newInstance(String className) throws IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException {
+      public Object newInstance(String className) throws IllegalAccessException, InvocationTargetException,
+            InstantiationException, ClassNotFoundException {
          return Class.forName(className).newInstance();
       }
 
       @Override
-      public Object newInstance(String fqcn, ClassLoader classLoader) throws IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException {
+      public Object newInstance(String fqcn, ClassLoader classLoader) throws IllegalAccessException,
+            InvocationTargetException, InstantiationException, ClassNotFoundException {
          return Class.forName(fqcn, false, classLoader).newInstance();
       }
 
       @Override
-      public Object newInstance(Class<?> c) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+      public Object newInstance(Class<?> c) throws IllegalAccessException, InvocationTargetException,
+            InstantiationException {
          return c.newInstance();
       }
 
@@ -235,5 +314,4 @@ public synchronized Context getValue() throws IllegalStateException {
       public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException {
       }
    }
-
 }

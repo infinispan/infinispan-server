@@ -2,6 +2,7 @@ package com.jboss.datagrid.endpoint;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
+import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.PathAddress;
@@ -17,6 +18,16 @@ import com.jboss.datagrid.DataGridConstants;
 public class EndpointUtils {
    private static final String INFINISPAN_SERVICE_NAME = "infinispan";
 
+   public static ServiceName getCacheServiceName(String cacheContainerName, String cacheName) {
+      ServiceName cacheServiceName = getCacheContainerServiceName(cacheContainerName);
+      if (cacheName != null) {
+         cacheServiceName = cacheServiceName.append(cacheName);
+      } else {
+         cacheServiceName = cacheServiceName.append(CacheContainer.DEFAULT_CACHE_NAME);
+      }
+      return cacheServiceName;
+   }
+
    public static ServiceName getCacheContainerServiceName(String cacheContainerName) {
       ServiceName cacheContainerServiceName = ServiceName.JBOSS.append(INFINISPAN_SERVICE_NAME);
       if (cacheContainerName != null) {
@@ -28,10 +39,16 @@ public class EndpointUtils {
    public static ServiceName getServiceName(final ModelNode node, final String... prefix) {
       final PathAddress address = PathAddress.pathAddress(node.require(OP_ADDR));
       final String name = address.getLastElement().getValue();
-      if (prefix.length > 0)
+      if (prefix.length > 0) {
          return DataGridConstants.DATAGRID.append(prefix).append(name);
-      else
+      } else {
          return DataGridConstants.DATAGRID.append(name);
+      }
+   }
+
+   public static void addCacheDependency(OperationContext context, ServiceBuilder<?> builder, String cacheContainerName, String cacheName) {
+      ServiceName cacheServiceName = getCacheServiceName(cacheContainerName, cacheName);
+      builder.addDependency(ServiceBuilder.DependencyType.REQUIRED, cacheServiceName);
    }
 
    public static void addCacheContainerDependency(OperationContext context, ServiceBuilder<?> builder, String cacheContainerName, InjectedValue<EmbeddedCacheManager> target) {

@@ -10,7 +10,7 @@
            <alias name="example.com"/>
        </virtual-server>
    </subsystem>
-   <socket-binding name="http" port="8080"/>
-   <socket-binding name="https" port="8443"/>
-   <socket-binding name="ajp" port="8009"/>
+   <socket-binding name="http" interface="management" port="8080"/>
+   <socket-binding name="https" interface="management" port="8443"/>
+   <socket-binding name="ajp" interface="management" port="8009"/>
 </config>

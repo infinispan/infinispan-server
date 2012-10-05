@@ -24,6 +24,8 @@ import java.util.Properties;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.server.core.Main;
 import org.infinispan.server.core.ProtocolServer;
+import org.infinispan.server.core.transport.Transport;
+import org.infinispan.util.ReflectionUtil;
 import org.jboss.as.network.SocketBinding;
 import org.jboss.dmr.ModelNode;
 import org.jboss.logging.Logger;
@@ -32,8 +34,6 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
-
-import com.jboss.datagrid.SecurityActions;
 
 /**
  * The service that configures and starts the endpoints supported by data grid.
@@ -56,11 +56,13 @@ class ProtocolServerService implements Service<ProtocolServer> {
    // Topology state transfer properties
    private final Properties topologyStateTransferProperties = new Properties();
    // The class which determines the type of server
-   private Class<? extends ProtocolServer> serverClass;
+   private final Class<? extends ProtocolServer> serverClass;
    // The server which handles the protocol
    private ProtocolServer protocolServer;
+   // The transport used by the protocol server
+   private Transport transport;
    // The name of the server
-   private String serverName;
+   private final String serverName;
 
    ProtocolServerService(ModelNode config, Class<? extends ProtocolServer> serverClass) {
       this.config = config.clone();
@@ -78,7 +80,6 @@ class ProtocolServerService implements Service<ProtocolServer> {
       assert connectorProperties.isEmpty();
       assert topologyStateTransferProperties.isEmpty();
 
-      ClassLoader origTCCL = SecurityActions.getContextClassLoader();
       boolean done = false;
       try {
          loadConnectorProperties(config);
@@ -104,8 +105,6 @@ class ProtocolServerService implements Service<ProtocolServer> {
          if (!done) {
             doStop();
          }
-
-         SecurityActions.setContextClassLoader(origTCCL);
       }
    }
 
@@ -127,8 +126,6 @@ class ProtocolServerService implements Service<ProtocolServer> {
       props.putAll(topologyStateTransferProperties);
 
       // Start the server and record it
-
-      SecurityActions.setContextClassLoader(serverClass.getClassLoader());
       ProtocolServer server;
       try {
          server = serverClass.newInstance();
@@ -138,6 +135,12 @@ class ProtocolServerService implements Service<ProtocolServer> {
       log.debugf("Starting connector: %s", serverName);
       server.start(props, getCacheManager().getValue());
       protocolServer = server;
+
+      try {
+         transport = (Transport) ReflectionUtil.getValue(protocolServer, "transport");
+      } catch (Exception e) {
+         throw new StartException("failed to instantiate the server: " + serverName, e.getCause());
+      }
    }
 
    @Override
@@ -259,5 +262,9 @@ class ProtocolServerService implements Service<ProtocolServer> {
       Properties newProps = new Properties();
       newProps.putAll(p);
       return newProps;
+   }
+
+   public Transport getTransport() {
+      return transport;
    }
 }

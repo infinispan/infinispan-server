@@ -17,7 +17,7 @@
    <parent>
       <groupId>com.jboss.datagrid</groupId>
       <artifactId>jboss-datagrid-versions</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.1.0-SNAPSHOT</version>
       <relativePath>versions/pom.xml</relativePath>
    </parent>
 
@@ -30,9 +30,12 @@
 
    <modules>
       <module>versions</module>
+      <module>infinispan</module>
       <module>integration</module>
       <module>server</module>
       <module>library</module>
+      <module>rhq-plugin</module>
+      <module>maven-repository</module>
    </modules>
    
    <profiles>

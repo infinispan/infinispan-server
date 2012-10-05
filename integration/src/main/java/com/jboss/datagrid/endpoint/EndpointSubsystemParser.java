@@ -40,10 +40,10 @@ import org.jboss.staxmapper.XMLExtendedStreamWriter;
 
 /**
  * The parser for the data grid endpoint subsystem configuration.
- * 
+ *
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
  * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
- * 
+ *
  */
 class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<List<ModelNode>>, XMLElementWriter<SubsystemMarshallingContext> {
 
@@ -96,7 +96,7 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
 
    /**
     * Handle parsing of the hotrod and memcached connector configuration
-    * 
+    *
     * @param reader
     * @param connector
     */
@@ -138,22 +138,23 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
             ParseUtils.unexpectedAttribute(reader, i);
          }
       }
-      
+
       final ModelNode address = parentAddress.clone();
       address.add(name, providedName);
       address.protect();
       op.get(OP_ADDR).set(address);
-      
+
       return op;
    }
 
    /**
     * Handle parsing of the Rest connector configuration
-    * 
+    *
     * @param reader
     * @param connector
+    * @throws XMLStreamException
     */
-   private ModelNode readRestConnector(final XMLExtendedStreamReader reader, final String name, ModelNode parentAddress) {
+   private ModelNode readRestConnector(final XMLExtendedStreamReader reader, final String name, ModelNode parentAddress) throws XMLStreamException {
       final ModelNode op = new ModelNode();
       op.get(OP).set(ADD);
 
@@ -167,13 +168,19 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
          String attrName = reader.getAttributeLocalName(i);
          String attrValue = reader.getAttributeValue(i);
          if (ModelKeys.NAME.equals(attrName)) {
-            op.get(ModelKeys.NAME).set(attrValue);
+            EndpointAttributeDefinitions.NAME.parseAndSetParameter(attrValue, op, reader);
          } else if (ModelKeys.CACHE_CONTAINER.equals(attrName)) {
-            op.get(ModelKeys.CACHE_CONTAINER).set(attrValue);
+            EndpointAttributeDefinitions.CACHE_CONTAINER.parseAndSetParameter(attrValue, op, reader);
          } else if (ModelKeys.VIRTUAL_SERVER.equals(attrName)) {
-            op.get(ModelKeys.VIRTUAL_SERVER).set(attrValue);
+            EndpointAttributeDefinitions.VIRTUAL_SERVER.parseAndSetParameter(attrValue, op, reader);
          } else if (ModelKeys.CONTEXT_PATH.equals(attrName)) {
-            op.get(ModelKeys.CONTEXT_PATH).set(attrValue);
+            EndpointAttributeDefinitions.CONTEXT_PATH.parseAndSetParameter(attrValue, op, reader);
+         } else if (ModelKeys.SECURITY_DOMAIN.equals(attrName)) {
+            EndpointAttributeDefinitions.SECURITY_DOMAIN.parseAndSetParameter(attrValue, op, reader);
+         } else if (ModelKeys.AUTH_METHOD.equals(attrName)) {
+            EndpointAttributeDefinitions.AUTH_METHOD.parseAndSetParameter(attrValue, op, reader);
+         } else if (ModelKeys.SECURITY_MODE.equals(attrName)) {
+            EndpointAttributeDefinitions.SECURITY_MODE.parseAndSetParameter(attrValue, op, reader);
          } else {
             ParseUtils.unexpectedAttribute(reader, i);
          }
@@ -211,7 +218,7 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
    public void writeContent(final XMLExtendedStreamWriter writer, final SubsystemMarshallingContext context) throws XMLStreamException {
       context.startSubsystemElement(namespaceUri, false);
       final ModelNode node = context.getModelNode();
-      writeConnectors(writer, node);      
+      writeConnectors(writer, node);
       writer.writeEndElement();
    }
 

@@ -75,6 +75,7 @@ class MemcachedSubsystemAdd extends AbstractAddStepHandler implements Descriptio
       // Setup the various dependencies with injectors and install the service
       ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "memcached"), service);
       EndpointUtils.addCacheContainerDependency(context, builder, service.getCacheContainerName(), service.getCacheManager());
+      EndpointUtils.addCacheDependency(context, builder, service.getCacheContainerName(), "memcachedCache");
       EndpointUtils.addSocketBindingDependency(builder, service.getRequiredSocketBindingName(), service.getSocketBinding());
       builder.install();
    }

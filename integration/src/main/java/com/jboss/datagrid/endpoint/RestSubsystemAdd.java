@@ -30,8 +30,10 @@ import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.operations.common.Util;
-import org.jboss.as.server.ServerEnvironment;
-import org.jboss.as.server.services.path.AbstractPathService;
+import org.jboss.as.controller.services.path.PathManager;
+import org.jboss.as.controller.services.path.PathManagerService;
+import org.jboss.as.security.plugins.SecurityDomainContext;
+import org.jboss.as.security.service.SecurityDomainService;
 import org.jboss.as.web.VirtualHost;
 import org.jboss.as.web.WebSubsystemServices;
 import org.jboss.dmr.ModelNode;
@@ -39,7 +41,11 @@ import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
 
 /**
- * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ *
+ * RestSubsystemAdd.
+ *
+ * @author Tristan Tarrant
+ * @since 6.0
  */
 class RestSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
 
@@ -58,6 +64,9 @@ class RestSubsystemAdd extends AbstractAddStepHandler implements DescriptionProv
       copyIfSet(ModelKeys.CACHE_CONTAINER, source, target);
       copyIfSet(ModelKeys.VIRTUAL_SERVER, source, target);
       copyIfSet(ModelKeys.CONTEXT_PATH, source, target);
+      copyIfSet(ModelKeys.SECURITY_DOMAIN, source, target);
+      copyIfSet(ModelKeys.AUTH_METHOD, source, target);
+      copyIfSet(ModelKeys.SECURITY_MODE, source, target);
    }
 
    @Override
@@ -75,8 +84,15 @@ class RestSubsystemAdd extends AbstractAddStepHandler implements DescriptionProv
       // Setup the various dependencies with injectors and install the service
       ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "rest"), service);
       EndpointUtils.addCacheContainerDependency(context, builder, service.getCacheContainerName(), service.getCacheManager());
-      builder.addDependency(AbstractPathService.pathNameOf(ServerEnvironment.HOME_DIR), String.class, service.getPathInjector());
+      builder.addDependency(PathManagerService.SERVICE_NAME, PathManager.class, service.getPathManagerInjector());
       builder.addDependency(WebSubsystemServices.JBOSS_WEB_HOST.append(service.getVirtualServer()), VirtualHost.class, service.getHostInjector());
+      if (service.getSecurityDomain()!=null) {
+         builder.addDependency(
+               SecurityDomainService.SERVICE_NAME.append(service.getSecurityDomain()),
+               SecurityDomainContext.class,
+               service.getSecurityDomainContextInjector()
+         );
+      }
       builder.addListener(verificationHandler);
       builder.setInitialMode(ServiceController.Mode.ACTIVE);
       builder.install();

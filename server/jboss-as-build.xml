@@ -104,6 +104,13 @@
             </patternset>
             <mapper type="flatten"/>
         </unzip>
+        <!-- Copy the JBoss Modules specific schemas to the JBOSS_HOME/docs/schema folder -->
+        <unzip src="${org.jboss.modules:jboss-modules:jar}" dest="${output.dir}/docs/schema/">
+            <patternset>
+                <include name="schema/*.xsd"/>
+            </patternset>
+            <mapper type="flatten"/>
+        </unzip>
 
     </target>
 
@@ -199,6 +206,10 @@
             <maven-resource group="org.jboss.com.sun.httpserver" artifact="httpserver"/>
         </module-def>
 
+        <module-def name="org.jboss.common-beans">
+            <maven-resource group="org.jboss.common" artifact="jboss-common-beans"/>
+        </module-def>
+    	
         <module-def name="org.jboss.common-core">
             <maven-resource group="org.jboss" artifact="jboss-common-core"/>
         </module-def>
@@ -242,8 +253,8 @@
             <maven-resource group="org.jboss.logmanager" artifact="jboss-logmanager"/>
         </module-def>
 
-        <module-def name="org.jboss.logmanager.log4j">
-            <maven-resource group="org.jboss.logmanager" artifact="jboss-logmanager-log4j"/>
+        <module-def name="org.jboss.log4j.logmanager">
+            <maven-resource group="org.jboss.logmanager" artifact="log4j-jboss-logmanager"/>
         </module-def>
 
         <module-def name="org.jboss.remoting3">
@@ -470,14 +481,6 @@
             <maven-resource group="net.jcip" artifact="jcip-annotations"/>
         </module-def>
 
-        <module-def name="net.sourceforge.cssparser">
-            <maven-resource group="net.sourceforge.cssparser" artifact="cssparser"/>
-        </module-def>
-
-        <module-def name="net.sourceforge.nekohtml">
-            <maven-resource group="net.sourceforge.nekohtml" artifact="nekohtml"/>
-        </module-def>
-
         <module-def name="org.apache.commons.beanutils">
             <maven-resource group="commons-beanutils" artifact="commons-beanutils"/>
         </module-def>
@@ -555,7 +558,7 @@
         <module-def name="org.apache.james.mime4j">
             <maven-resource group="org.apache.james" artifact="apache-mime4j"/>
         </module-def>
-    	
+
         <module-def name="org.apache.juddi.juddi-client">
             <maven-resource group="org.apache.juddi" artifact="juddi-client"/>
         </module-def>
@@ -628,9 +631,12 @@
 
         <module-def name="org.hibernate">
             <maven-resource group="org.hibernate" artifact="hibernate-core" />
-            <maven-resource group="org.hibernate.common" artifact="hibernate-commons-annotations" />
             <maven-resource group="org.hibernate" artifact="hibernate-entitymanager" />
             <maven-resource group="org.hibernate" artifact="hibernate-infinispan"/>
+        </module-def>
+
+        <module-def name="org.hibernate.commons-annotations">
+            <maven-resource group="org.hibernate.common" artifact="hibernate-commons-annotations"/>
         </module-def>
 
         <module-def name="org.hibernate.envers">
@@ -919,14 +925,6 @@
             <maven-resource group="org.jboss" artifact="jboss-iiop-client"/>
         </module-def>
 
-        <module-def name="org.jboss.interceptor">
-            <maven-resource group="org.jboss.interceptor" artifact="jboss-interceptor-core"/>
-        </module-def>
-
-        <module-def name="org.jboss.interceptor.spi">
-            <maven-resource group="org.jboss.interceptor" artifact="jboss-interceptor-spi"/>
-        </module-def>
-
         <module-def name="org.jboss.ironjacamar.api">
             <maven-resource group="org.jboss.ironjacamar" artifact="ironjacamar-common-api"/>
             <maven-resource group="org.jboss.ironjacamar" artifact="ironjacamar-common-spi"/>
@@ -971,14 +969,16 @@
         <module-def name="org.jboss.osgi.framework">
             <maven-resource group="org.jboss.osgi.deployment" artifact="jbosgi-deployment"/>
             <maven-resource group="org.jboss.osgi.framework" artifact="jbosgi-framework-core"/>
-            <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-api"/>
-            <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-spi"/>
-            <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-felix"/>
         </module-def>
 
         <module-def name="org.jboss.osgi.repository">
             <maven-resource group="org.jboss.osgi.repository" artifact="jbosgi-repository-api"/>
             <maven-resource group="org.jboss.osgi.repository" artifact="jbosgi-repository-core"/>
+        </module-def>
+
+        <module-def name="org.jboss.osgi.resolver">
+            <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-api"/>
+            <maven-resource group="org.jboss.osgi.resolver" artifact="jbosgi-resolver-felix"/>
         </module-def>
 
         <module-def name="org.jboss.osgi.metadata">
@@ -1149,9 +1149,8 @@
         </module-def>
 
         <module-def name="org.picketlink">
-            <maven-resource group="org.picketlink" artifact="picketlink-fed" jandex="true"/>
-            <maven-resource group="org.picketlink" artifact="picketlink-bindings" jandex="true"/>
-            <maven-resource group="org.picketlink" artifact="picketlink-bindings-jboss"/>
+            <maven-resource group="org.picketlink" artifact="picketlink-core" jandex="true"/>
+            <maven-resource group="org.picketlink.distribution" artifact="picketlink-jbas7" jandex="true"/>
         </module-def>
 
         <module-def name="org.picketbox">
@@ -1182,10 +1181,6 @@
 
         <module-def name="org.slf4j.ext">
             <maven-resource group="org.slf4j" artifact="slf4j-ext"/>
-        </module-def>
-
-        <module-def name="org.w3c.css.sac">
-            <maven-resource group="org.w3c.css" artifact="sac"/>
         </module-def>
 
         <module-def name="org.yaml.snakeyaml">
@@ -1219,7 +1214,7 @@
         </bundle-def>
 
         <bundle-def name="javax.servlet.api" slot="v25">
-            <maven-bundle group="org.jboss.osgi.http" artifact="jbosgi-http-api"/>
+            <maven-bundle group="org.jboss.spec.javax.servlet" artifact="jboss-servlet-api_2.5_spec"/>
         </bundle-def>
 
         <bundle-def name="org.jboss.osgi.logging">

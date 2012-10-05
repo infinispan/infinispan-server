@@ -5,8 +5,6 @@ com/sun/xml/messaging/saaj/main/**
 gnu/getopt/main/**
 javax/wsdl4j/api/main/**
 javax/xml/jaxp-provider/main/**
-net/sourceforge/cssparser/main/**
-net/sourceforge/nekohtml/main/**
 nu/xom/main/**
 org/antlr/main/**
 org/apache/commons/beanutils/main/**
@@ -19,6 +17,7 @@ org/apache/juddi/juddi-client/main/**
 org/apache/juddi/scout/main/**
 org/apache/juddi/uddi-ws/main/**
 org/apache/neethi/main/**
+org/apache/santuario/xmlsec/main/**
 org/apache/velocity/main/**
 org/apache/ws/security/main/**
 org/apache/ws/xmlschema/main/**
@@ -33,17 +32,14 @@ org/hornetq/ra/main/**
 org/jaxen/main/**
 org/jboss/as/aggregate/main/**
 org/jboss/as/appclient/main/**
-org/jboss/as/cli/main/**
-org/jboss/as/clustering/api/main/**
 org/jboss/as/clustering/ejb3/infinispan/main/**
-org/jboss/as/clustering/impl/main/**
-org/jboss/as/clustering/registry/main/**
-org/jboss/as/clustering/service/main/**
 org/jboss/as/clustering/singleton/main/**
 org/jboss/as/cmp/main/**
 org/jboss/as/configadmin/main/**
-org/jboss/as/console/**
+org/jboss/as/console/eap/**
+org/jboss/as/console/main/**
 org/jboss/as/deployment-scanner/main/**
+org/jboss/as/domain-http-error-context/eap/**
 org/jboss/as/domain-http-error-context/main/**
 org/jboss/as/ee/deployment/main/**
 org/jboss/as/ejb3/main/**
@@ -51,7 +47,6 @@ org/jboss/as/jaxr/main/**
 org/jboss/as/jaxrs/main/**
 org/jboss/as/jpa/main/**
 org/jboss/as/jpa/hibernate/main/**
-org/jboss/as/jpa/openjpa/main/**
 org/jboss/as/jpa/spi/main/**
 org/jboss/as/jpa/util/main/**
 org/jboss/as/jsr77/main/**
@@ -68,13 +63,12 @@ org/jboss/as/weld/main/**
 org/jboss/as/xts/main/**
 org/jboss/iiop-client/main/**
 org/jboss/integration/ext-content/main/**
-org/jboss/interceptor/main/**
-org/jboss/interceptor/spi/main/**
 org/jboss/jaxbintros/main/**
 org/jboss/logging/jul-to-slf4j-stub/main/**
 org/jboss/osgi/framework/main/**
 org/jboss/osgi/metadata/main/**
 org/jboss/osgi/repository/main/**
+org/jboss/osgi/resolver/main/**
 org/jboss/osgi/spi/main/**
 org/jboss/osgi/vfs/main/**
 org/jboss/resteasy/resteasy-atom-provider/main/**
@@ -85,7 +79,6 @@ org/jboss/resteasy/resteasy-jettison-provider/main/**
 org/jboss/resteasy/resteasy-jsapi/main/**
 org/jboss/resteasy/resteasy-multipart-provider/main/**
 org/jboss/resteasy/resteasy-yaml-provider/main/**
-org/jboss/security/xacml/main/**
 org/jboss/shrinkwrap/core/main/**
 org/jboss/weld/api/main/**
 org/jboss/weld/core/main/**
@@ -112,5 +105,4 @@ org/jdom/main/**
 org/osgi/core/main/**
 org/picketlink/main/**
 org/slf4j/ext/main/**
-org/w3c/css/sac/main/**
 org/yaml/snakeyaml/main/**
