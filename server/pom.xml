@@ -38,6 +38,16 @@
 
    <dependencies>
       <dependency>
+         <groupId>org.antlr</groupId>
+         <artifactId>antlr-runtime</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.fusesource.jansi</groupId>
+         <artifactId>jansi</artifactId>
+      </dependency>
+      
+      <dependency>
          <groupId>org.jboss.as</groupId>
          <artifactId>jboss-as-build</artifactId>
          <type>pom</type>
@@ -51,6 +61,16 @@
       <dependency>
          <groupId>org.jboss.as</groupId>
          <artifactId>jboss-as-clustering-jgroups</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.as</groupId>
+         <artifactId>jboss-as-clustering-jgroups</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.jreadline</groupId>
+         <artifactId>jreadline</artifactId>
       </dependency>
 
       <dependency>
@@ -117,6 +137,16 @@
       <dependency>
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-client-hotrod</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-cli-client</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-cli-server</artifactId>
       </dependency>
       
    </dependencies>
