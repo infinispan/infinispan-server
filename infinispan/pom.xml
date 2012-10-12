@@ -36,8 +36,12 @@
     <groupId>com.jboss.datagrid</groupId>
     <artifactId>jboss-datagrid-infinispan</artifactId>
     <packaging>jar</packaging>
-
+    
     <name>JBoss Data Grid - Infinispan Subsystem</name>
+    
+    <properties>
+      <version.org.infinispan>5.2.0.Beta1</version.org.infinispan>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -67,18 +71,22 @@
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>
+            <version>${version.org.infinispan}</version>
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-cachestore-jdbc</artifactId>
+            <version>${version.org.infinispan}</version>
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-cachestore-remote</artifactId>
+            <version>${version.org.infinispan}</version>
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-client-hotrod</artifactId>
+            <version>${version.org.infinispan}</version>
         </dependency>
         <dependency>
             <groupId>net.jcip</groupId>

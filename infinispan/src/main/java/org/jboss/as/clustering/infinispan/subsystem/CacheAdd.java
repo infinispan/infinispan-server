@@ -22,7 +22,7 @@ import org.infinispan.Cache;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
-import org.infinispan.configuration.cache.LoaderConfigurationBuilder;
+import org.infinispan.configuration.cache.LegacyStoreConfigurationBuilder;
 import org.infinispan.configuration.parsing.ConfigurationBuilderHolder;
 import org.infinispan.configuration.parsing.Parser;
 import org.infinispan.eviction.EvictionStrategy;
@@ -462,7 +462,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
                     .preload(preload)
                     .passivation(passivation)
             ;
-            LoaderConfigurationBuilder storeBuilder = builder.loaders().addCacheLoader()
+            LegacyStoreConfigurationBuilder storeBuilder = builder.loaders().addStore()
                     .fetchPersistentState(fetchState)
                     .purgeOnStartup(purge)
                     .purgeSynchronously(true);
@@ -516,7 +516,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
     }
 
 
-    private void buildCacheStore(OperationContext context, LoaderConfigurationBuilder builder, String containerName, ModelNode store, String storeKey, List<Dependency<?>> dependencies)
+    private void buildCacheStore(OperationContext context, LegacyStoreConfigurationBuilder builder, String containerName, ModelNode store, String storeKey, List<Dependency<?>> dependencies)
             throws OperationFailedException {
         final Properties properties = new TypedProperties();
         if (store.hasDefined(ModelKeys.PROPERTY)) {
