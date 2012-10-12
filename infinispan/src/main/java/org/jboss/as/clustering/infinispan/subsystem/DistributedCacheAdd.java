@@ -60,7 +60,7 @@ public class DistributedCacheAdd extends SharedStateCacheAdd {
 
         // process the additional distributed attributes and elements
         builder.clustering().hash().numOwners(owners);
-        builder.clustering().hash().numVirtualNodes(virtualNodes);
+        builder.clustering().hash().numSegments(virtualNodes);
         if (lifespan > 0) {
             builder.clustering().l1().lifespan(lifespan);
         } else {
