@@ -2,7 +2,6 @@ asm/asm/main/**
 ch/qos/cal10n/main/**
 com/google/guava/main/**
 com/sun/xml/messaging/saaj/main/**
-gnu/getopt/main/**
 javax/wsdl4j/api/main/**
 javax/xml/jaxp-provider/main/**
 nu/xom/main/**

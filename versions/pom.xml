@@ -26,11 +26,15 @@
     <!-- Version Info -->
     <version.com.github.relaxng.relaxngDatatype>2011.1</version.com.github.relaxng.relaxngDatatype>
     <version.commons.logging>1.1.1</version.commons.logging>
+    <version.gnu.getopt>1.0.13</version.gnu.getopt>
     <version.io.netty>3.4.6.Final</version.io.netty>
     <version.net.jcip.annotations>1.0</version.net.jcip.annotations>
+    <version.org.antlr.antlr-runtime>3.4</version.org.antlr.antlr-runtime>
+    <version.org.fusesource.jansi>1.8</version.org.fusesource.jansi>
     <version.org.jboss.as>7.1.2.Final</version.org.jboss.as>
     <version.org.jboss.jandex>1.0.3.Final</version.org.jboss.jandex>
     <version.org.jboss.jbossts.jbossjts>4.16.2.Final</version.org.jboss.jbossts.jbossjts>
+    <version.org.jboss.jreadline>0.16</version.org.jboss.jreadline>
     <version.com.thoughtworks.xstream>1.4.1</version.com.thoughtworks.xstream>
     <version.junit>4.10</version.junit>
     <version.org.infinispan>5.2.0.Beta1</version.org.infinispan>
@@ -47,6 +51,12 @@
         <groupId>com.github.relaxng</groupId>
         <artifactId>relaxngDatatype</artifactId>
         <version>${version.com.github.relaxng.relaxngDatatype}</version>
+      </dependency>
+      
+      <dependency>
+          <groupId>org.fusesource.jansi</groupId>
+          <artifactId>jansi</artifactId>
+          <version>${version.org.fusesource.jansi}</version>
       </dependency>
 
       <dependency>
@@ -91,6 +101,12 @@
         <artifactId>xstream</artifactId>
         <version>${version.com.thoughtworks.xstream}</version>
       </dependency>
+      
+      <dependency>
+        <groupId>gnu-getopt</groupId>
+        <artifactId>getopt</artifactId>
+        <version>${version.gnu.getopt}</version>
+      </dependency>
 
       <dependency>
         <groupId>io.netty</groupId>
@@ -103,6 +119,12 @@
         <artifactId>jcip-annotations</artifactId>
         <version>${version.net.jcip.annotations}</version>
       </dependency>
+      
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr-runtime</artifactId>
+        <version>${version.org.antlr.antlr-runtime}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.jboss.as</groupId>
@@ -110,6 +132,12 @@
         <version>${version.org.jboss.as}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.jboss.jreadline</groupId>
+        <artifactId>jreadline</artifactId>
+        <version>${version.org.jboss.jreadline}</version>
       </dependency>
 
       <dependency>
@@ -323,6 +351,30 @@
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-rhq-plugin</artifactId>
+        <version>${version.org.infinispan}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.rhq.helpers</groupId>
+            <artifactId>rhq-pluginAnnotations</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-cli-server</artifactId>
+        <version>${version.org.infinispan}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.rhq.helpers</groupId>
+            <artifactId>rhq-pluginAnnotations</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-cli-client</artifactId>
         <version>${version.org.infinispan}</version>
         <exclusions>
           <exclusion>

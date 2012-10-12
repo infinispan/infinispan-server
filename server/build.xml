@@ -90,6 +90,10 @@
 
    <!-- These modules are for JDG-specific functionality -->
    <target name="jdg-modules">
+      <module-def name="org.antlr.antlr-runtime" src="${jdg.modules.dir}">
+         <maven-resource group="org.antlr" artifact="antlr-runtime" />
+      </module-def>
+      
       <module-def name="com.thoughtworks.xstream" src="${jdg.modules.dir}">
          <maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
       </module-def>
@@ -100,6 +104,10 @@
 
       <module-def name="javax.activation.api" src="${jdg.modules.dir}">
          <maven-resource group="javax.activation" artifact="activation" />
+      </module-def>
+      
+      <module-def name="org.fusesource.jansi" src="${jdg.modules.dir}">
+         <maven-resource group="org.fusesource.jansi" artifact="jansi"/>
       </module-def>
 
       <module-def name="org.jboss.as.clustering.infinispan" src="${jdg.modules.dir}">
@@ -112,6 +120,10 @@
 
       <module-def name="org.jboss.as.product" slot="jdg" src="${jdg.modules.dir}" />
 
+      <module-def name="org.jboss.jreadline" src="${jdg.modules.dir}">
+         <maven-resource group="org.jboss.jreadline" artifact="jreadline"/>
+      </module-def>
+
       <module-def name="org.jboss.jts" src="${jdg.modules.dir}">
          <maven-resource group="org.jboss.jbossts" artifact="jbossjts" />
       </module-def>
@@ -122,6 +134,14 @@
       
       <module-def name="org.infinispan" src="${jdg.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-core" />
+      </module-def>
+      
+      <module-def name="org.infinispan.cli.client" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cli-client" />
+      </module-def>
+      
+      <module-def name="org.infinispan.cli.server" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cli-server" />
       </module-def>
 
       <module-def name="org.infinispan.cachestore.remote" src="${jdg.modules.dir}">
