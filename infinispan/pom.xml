@@ -40,7 +40,7 @@
     <name>JBoss Data Grid - Infinispan Subsystem</name>
     
     <properties>
-      <version.org.infinispan>5.2.0.Beta1</version.org.infinispan>
+      <version.org.infinispan>5.2.0.Beta2</version.org.infinispan>
     </properties>
 
     <dependencies>
