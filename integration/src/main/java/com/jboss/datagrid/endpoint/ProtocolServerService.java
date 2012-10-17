@@ -43,6 +43,8 @@ import org.jboss.msc.value.InjectedValue;
 class ProtocolServerService implements Service<ProtocolServer> {
 
    private static final Logger log = Logger.getLogger(ProtocolServerService.class);
+   
+   private static final String DEFAULT_WORKER_THREADS = "160";
 
    // The cacheManager that will be injected by the container (specified by the cacheContainer
    // attribute)
@@ -205,6 +207,8 @@ class ProtocolServerService implements Service<ProtocolServer> {
       if (config.hasDefined(ModelKeys.WORKER_THREADS)) {
          connectorProperties.setProperty(Main.PROP_KEY_WORKER_THREADS(), config.get(ModelKeys.WORKER_THREADS)
                .asString());
+      } else {
+         connectorProperties.setProperty(Main.PROP_KEY_WORKER_THREADS(), DEFAULT_WORKER_THREADS);
       }
       if (config.hasDefined(ModelKeys.IDLE_TIMEOUT)) {
          connectorProperties.setProperty(Main.PROP_KEY_IDLE_TIMEOUT(), config.get(ModelKeys.IDLE_TIMEOUT).asString());
