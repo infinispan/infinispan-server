@@ -100,4 +100,11 @@ public interface InfinispanLogger extends BasicLogger {
     @Message(id = 10285, value = "'%s' cache container installed.")
     void cacheContainerInstalled(String containerName);
 
+    /**
+     * Logs a warning message indicating that the specified topology attribute of the transport element
+     * is no longer valid
+     */
+    @LogMessage(level = WARN)
+    @Message(id = 10286, value = "The 'virtualNodes' attribute has been deprecated and has no effect. Please use the 'segments' attribute instead")
+    void virtualNodesDeprecated();
 }
