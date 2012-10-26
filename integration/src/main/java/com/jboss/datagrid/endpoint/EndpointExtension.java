@@ -22,6 +22,8 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DESCRIBE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REMOVE;
 
+import java.util.List;
+
 import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.ExtensionContext;
 import org.jboss.as.controller.PathElement;
@@ -29,6 +31,8 @@ import org.jboss.as.controller.SubsystemRegistration;
 import org.jboss.as.controller.parsing.ExtensionParsingContext;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
+import org.jboss.dmr.ModelNode;
+import org.jboss.staxmapper.XMLElementReader;
 
 import com.jboss.datagrid.DataGridConstants;
 
@@ -38,15 +42,15 @@ import com.jboss.datagrid.DataGridConstants;
  */
 public class EndpointExtension implements Extension {
 
-   private final String namespaceUri = DataGridConstants.NS_DATAGRID_1_0;
-   private final EndpointSubsystemParser parser = new EndpointSubsystemParser(DataGridConstants.SUBSYSTEM_NAME, namespaceUri);
+   private static final int MANAGEMENT_API_MAJOR_VERSION = 1;
+   private static final int MANAGEMENT_API_MINOR_VERSION = 0;
 
    @Override
    public final void initialize(ExtensionContext context) {
       final boolean registerRuntimeOnly = context.isRuntimeOnlyRegistrationValid();
 
-      final SubsystemRegistration registration = context.registerSubsystem(DataGridConstants.SUBSYSTEM_NAME, 1, 0);
-      registration.registerXMLElementWriter(parser);
+      final SubsystemRegistration registration = context.registerSubsystem(DataGridConstants.SUBSYSTEM_NAME, MANAGEMENT_API_MAJOR_VERSION, MANAGEMENT_API_MINOR_VERSION);
+      registration.registerXMLElementWriter(new EndpointSubsystemWriter());
 
       final ManagementResourceRegistration subsystem = registration.registerSubsystemModel(EndpointSubsystemProviders.SUBSYSTEM);
       subsystem.registerOperationHandler(ADD, EndpointSubsystemAdd.INSTANCE, EndpointSubsystemAdd.INSTANCE, false);
@@ -75,7 +79,12 @@ public class EndpointExtension implements Extension {
    }
 
    @Override
-   public final void initializeParsers(ExtensionParsingContext context) {
-      context.setSubsystemXmlMapping(DataGridConstants.SUBSYSTEM_NAME, namespaceUri, parser);
+   public void initializeParsers(ExtensionParsingContext context) {
+       for (Namespace namespace: Namespace.values()) {
+           XMLElementReader<List<ModelNode>> reader = namespace.getXMLReader();
+           if (reader != null) {
+               context.setSubsystemXmlMapping(DataGridConstants.SUBSYSTEM_NAME, namespace.getUri(), reader);
+           }
+       }
    }
 }

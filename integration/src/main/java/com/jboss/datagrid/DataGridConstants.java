@@ -30,10 +30,6 @@ public class DataGridConstants {
 
    public static final ServiceName DATAGRID = JBOSS.append(SUBSYSTEM_NAME);
 
-   // XML namespaces (NS_*)
-
-   public static final String NS_DATAGRID_1_0 = "urn:jboss:domain:datagrid:1.0";
-
    public static String VERSION = DataGridConstants.class.getPackage().getImplementationVersion();
 
    private DataGridConstants() {
