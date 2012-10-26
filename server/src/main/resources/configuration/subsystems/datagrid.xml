@@ -2,7 +2,7 @@
 <!-- See src/resources/configuration/ReadMe.txt for how the configuration assembly works -->
 <config default-supplement="default">
    <extension-module>com.jboss.datagrid</extension-module>
-   <subsystem xmlns="urn:jboss:domain:datagrid:1.0">
+   <subsystem xmlns="urn:jboss:datagrid:endpoint:6.1">
       <?CONNECTORS?>
    </subsystem>
    <supplement name="default">

@@ -44,8 +44,6 @@ import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
-import com.jboss.datagrid.DataGridConstants;
-
 /**
  * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  */
@@ -62,7 +60,7 @@ public class EndpointSubsystemProviders {
          node.get(DESCRIPTION).set(bundle.getString("endpoint.description"));
          node.get(HEAD_COMMENT_ALLOWED).set(true);
          node.get(TAIL_COMMENT_ALLOWED).set(true);
-         node.get(NAMESPACE).set(DataGridConstants.NS_DATAGRID_1_0);
+         node.get(NAMESPACE).set(Namespace.CURRENT.getUri());
 
          for (String connectorType : ModelKeys.CONNECTORS) {
             node.get(CHILDREN, connectorType, DESCRIPTION).set(bundle.getString(connectorType + ".description"));

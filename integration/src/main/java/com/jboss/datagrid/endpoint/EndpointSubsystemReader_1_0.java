@@ -30,13 +30,11 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 
 import org.jboss.as.controller.parsing.ParseUtils;
-import org.jboss.as.controller.persistence.SubsystemMarshallingContext;
 import org.jboss.dmr.ModelNode;
-import org.jboss.dmr.Property;
 import org.jboss.staxmapper.XMLElementReader;
-import org.jboss.staxmapper.XMLElementWriter;
 import org.jboss.staxmapper.XMLExtendedStreamReader;
-import org.jboss.staxmapper.XMLExtendedStreamWriter;
+
+import com.jboss.datagrid.DataGridConstants;
 
 /**
  * The parser for the data grid endpoint subsystem configuration.
@@ -45,21 +43,13 @@ import org.jboss.staxmapper.XMLExtendedStreamWriter;
  * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
  *
  */
-class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<List<ModelNode>>, XMLElementWriter<SubsystemMarshallingContext> {
-
-   private final String subsystemName;
-   private final String namespaceUri;
-
-   EndpointSubsystemParser(String subsystemName, String namespaceUri) {
-      this.subsystemName = subsystemName;
-      this.namespaceUri = namespaceUri;
-   }
+class EndpointSubsystemReader_1_0 implements XMLStreamConstants, XMLElementReader<List<ModelNode>> {
 
    @Override
    public void readElement(final XMLExtendedStreamReader reader, final List<ModelNode> list) throws XMLStreamException {
 
       final ModelNode address = new ModelNode();
-      address.add(SUBSYSTEM, subsystemName);
+      address.add(SUBSYSTEM, DataGridConstants.SUBSYSTEM_NAME);
       address.protect();
 
       final ModelNode subsystem = new ModelNode();
@@ -210,44 +200,6 @@ class EndpointSubsystemParser implements XMLStreamConstants, XMLElementReader<Li
             topologyStateTransfer.get(ModelKeys.LAZY_RETRIEVAL).set(Boolean.parseBoolean(attrValue));
          } else {
             ParseUtils.unexpectedAttribute(reader, i);
-         }
-      }
-   }
-
-   @Override
-   public void writeContent(final XMLExtendedStreamWriter writer, final SubsystemMarshallingContext context) throws XMLStreamException {
-      context.startSubsystemElement(namespaceUri, false);
-      final ModelNode node = context.getModelNode();
-      writeConnectors(writer, node);
-      writer.writeEndElement();
-   }
-
-   private void writeConnectors(final XMLExtendedStreamWriter writer, final ModelNode node) throws XMLStreamException {
-      for (String connectorType : ModelKeys.CONNECTORS) {
-         if (node.hasDefined(connectorType)) {
-            ModelNode connectors = node.get(connectorType);
-            for (Property property : connectors.asPropertyList()) {
-               ModelNode connector = property.getValue();
-               writer.writeEmptyElement(connectorType);
-               for (String connectorAttribute : ModelKeys.CONNECTOR_ATTRIBUTES) {
-                  if (connector.hasDefined(connectorAttribute)) {
-                     writer.writeAttribute(connectorAttribute, connector.get(connectorAttribute).asString());
-                  }
-               }
-               writeTopologyStateTransfer(writer, connector);
-            }
-         }
-      }
-   }
-
-   private void writeTopologyStateTransfer(final XMLExtendedStreamWriter writer, final ModelNode node) throws XMLStreamException {
-      if (node.hasDefined(ModelKeys.TOPOLOGY_STATE_TRANSFER)) {
-         ModelNode topologyStateTransfer = node.get(ModelKeys.TOPOLOGY_STATE_TRANSFER);
-         writer.writeEmptyElement(ModelKeys.TOPOLOGY_STATE_TRANSFER);
-         for (String connectorAttribute : ModelKeys.TOPOLOGY_ATTRIBUTES) {
-            if (topologyStateTransfer.hasDefined(connectorAttribute)) {
-               writer.writeAttribute(connectorAttribute, topologyStateTransfer.get(connectorAttribute).asString());
-            }
          }
       }
    }
