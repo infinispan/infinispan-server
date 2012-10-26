@@ -28,11 +28,14 @@ import java.util.Map;
 import org.infinispan.Cache;
 import org.infinispan.interceptors.ActivationInterceptor;
 import org.infinispan.interceptors.CacheMgmtInterceptor;
+import org.infinispan.interceptors.CacheStoreInterceptor;
 import org.infinispan.interceptors.InvalidationInterceptor;
 import org.infinispan.interceptors.PassivationInterceptor;
 import org.infinispan.interceptors.TxInterceptor;
 import org.infinispan.interceptors.base.CommandInterceptor;
 import org.infinispan.remoting.rpc.RpcManagerImpl;
+import org.infinispan.util.concurrent.locks.DeadlockDetectingLockManager;
+import org.infinispan.util.concurrent.locks.LockManager;
 import org.infinispan.util.concurrent.locks.LockManagerImpl;
 import org.jboss.as.controller.AbstractRuntimeOnlyHandler;
 import org.jboss.as.controller.AttributeDefinition;
@@ -51,10 +54,18 @@ public class CacheMetricsHandler extends AbstractRuntimeOnlyHandler {
 
     public enum CacheMetrics {
         CACHE_STATUS(MetricKeys.CACHE_STATUS, ModelType.STRING, true),
+
         // LockManager
         NUMBER_OF_LOCKS_AVAILABLE(MetricKeys.NUMBER_OF_LOCKS_AVAILABLE, ModelType.INT, true),
         NUMBER_OF_LOCKS_HELD(MetricKeys.NUMBER_OF_LOCKS_HELD, ModelType.INT, true),
         CONCURRENCY_LEVEL(MetricKeys.CONCURRENCY_LEVEL, ModelType.INT, true),
+
+        // DeadlockDetectingLockManager
+        TOTAL_NUMBER_OF_DETECTED_DEADLOCKS(MetricKeys.TOTAL_NUMBER_OF_DETECTED_DEADLOCKS, ModelType.LONG, true),
+        NUMBER_OF_LOCAL_DETECTED_DEADLOCKS(MetricKeys.NUMBER_OF_LOCAL_DETECTED_DEADLOCKS, ModelType.LONG, true),
+        NUMBER_OF_REMOTE_DETECTED_DEADLOCKS(MetricKeys.NUMBER_OF_REMOTE_DETECTED_DEADLOCKS, ModelType.LONG, true),
+        NUMBER_OF_UNSOLVABLE_DEADLOCKS(MetricKeys.NUMBER_OF_UNSOLVABLE_DEADLOCKS, ModelType.LONG, true),
+
         // CacheMgmtInterceptor
         AVERAGE_READ_TIME(MetricKeys.AVERAGE_READ_TIME, ModelType.LONG, true),
         AVERAGE_WRITE_TIME(MetricKeys.AVERAGE_WRITE_TIME, ModelType.LONG, true),
@@ -69,23 +80,31 @@ public class CacheMetricsHandler extends AbstractRuntimeOnlyHandler {
         REMOVE_MISSES(MetricKeys.REMOVE_MISSES, ModelType.LONG, true),
         STORES(MetricKeys.STORES, ModelType.LONG, true),
         TIME_SINCE_RESET(MetricKeys.TIME_SINCE_RESET, ModelType.LONG, true),
+
         // RpcManager
         AVERAGE_REPLICATION_TIME(MetricKeys.AVERAGE_REPLICATION_TIME, ModelType.LONG, true, true),
         REPLICATION_COUNT(MetricKeys.REPLICATION_COUNT, ModelType.LONG, true, true),
         REPLICATION_FAILURES(MetricKeys.REPLICATION_FAILURES, ModelType.LONG, true, true),
         SUCCESS_RATIO(MetricKeys.SUCCESS_RATIO, ModelType.DOUBLE, true, true),
+
         // TxInterceptor
         COMMITS(MetricKeys.COMMITS, ModelType.LONG, true),
         PREPARES(MetricKeys.PREPARES, ModelType.LONG, true),
         ROLLBACKS(MetricKeys.ROLLBACKS, ModelType.LONG, true),
+
         // InvalidationInterceptor
         INVALIDATIONS(MetricKeys.INVALIDATIONS, ModelType.LONG, true),
+
         // PassivationInterceptor
         PASSIVATIONS(MetricKeys.PASSIVATIONS, ModelType.STRING, true),
+
         // ActivationInterceptor
         ACTIVATIONS(MetricKeys.ACTIVATIONS, ModelType.STRING, true),
         CACHE_LOADER_LOADS(MetricKeys.CACHE_LOADER_LOADS, ModelType.LONG, true),
         CACHE_LOADER_MISSES(MetricKeys.CACHE_LOADER_MISSES, ModelType.LONG, true),
+
+        // CacheStoreInterceptor
+        CACHE_LOADER_STORES(MetricKeys.CACHE_LOADER_STORES, ModelType.LONG, true),
         ;
 
         private static final Map<String, CacheMetrics> MAP = new HashMap<String, CacheMetrics>();
@@ -148,6 +167,26 @@ public class CacheMetricsHandler extends AbstractRuntimeOnlyHandler {
                 case NUMBER_OF_LOCKS_HELD:
                     result.set(((LockManagerImpl) cache.getAdvancedCache().getLockManager()).getNumberOfLocksHeld());
                     break;
+                case NUMBER_OF_LOCAL_DETECTED_DEADLOCKS: {
+                    LockManager lockManager = cache.getAdvancedCache().getLockManager();
+                    result.set(lockManager instanceof DeadlockDetectingLockManager ? ((DeadlockDetectingLockManager)lockManager).getDetectedLocalDeadlocks() : 0);
+                    break;
+                }
+                case NUMBER_OF_REMOTE_DETECTED_DEADLOCKS: {
+                    LockManager lockManager = cache.getAdvancedCache().getLockManager();
+                    result.set(lockManager instanceof DeadlockDetectingLockManager ? ((DeadlockDetectingLockManager)lockManager).getDetectedRemoteDeadlocks() : 0);
+                    break;
+                }
+                case NUMBER_OF_UNSOLVABLE_DEADLOCKS: {
+                    LockManager lockManager = cache.getAdvancedCache().getLockManager();
+                    result.set(lockManager instanceof DeadlockDetectingLockManager ? ((DeadlockDetectingLockManager)lockManager).getOverlapWithNotDeadlockAwareLockOwners() : 0);
+                    break;
+                }
+                case TOTAL_NUMBER_OF_DETECTED_DEADLOCKS: {
+                    LockManager lockManager = cache.getAdvancedCache().getLockManager();
+                    result.set(lockManager instanceof DeadlockDetectingLockManager ? ((DeadlockDetectingLockManager)lockManager).getTotalNumberOfDetectedDeadlocks() : 0);
+                    break;
+                }
                 case AVERAGE_READ_TIME: {
                     CacheMgmtInterceptor cacheMgmtInterceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache().getInterceptorChain(), CacheMgmtInterceptor.class);
                     result.set(cacheMgmtInterceptor!=null ? cacheMgmtInterceptor.getAverageReadTime() : 0);
@@ -272,6 +311,12 @@ public class CacheMetricsHandler extends AbstractRuntimeOnlyHandler {
                     ActivationInterceptor interceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache()
                             .getInterceptorChain(), ActivationInterceptor.class);
                     result.set(interceptor!=null?interceptor.getCacheLoaderMisses():0);
+                    break;
+                }
+                case CACHE_LOADER_STORES: {
+                    CacheStoreInterceptor interceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache()
+                            .getInterceptorChain(), CacheStoreInterceptor.class);
+                    result.set(interceptor!=null?interceptor.getCacheLoaderStores():0);
                     break;
                 }
             }

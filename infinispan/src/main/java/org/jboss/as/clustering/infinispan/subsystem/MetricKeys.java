@@ -35,6 +35,12 @@ public class MetricKeys {
     public static final String CONCURRENCY_LEVEL = "concurrencyLevel";
     public static final String NUMBER_OF_LOCKS_AVAILABLE = "numberOfLocksAvailable";
     public static final String NUMBER_OF_LOCKS_HELD = "numberOfLocksHeld";
+
+    public static final String TOTAL_NUMBER_OF_DETECTED_DEADLOCKS = "totalNumberOfDetectedDeadlocks";
+    public static final String NUMBER_OF_LOCAL_DETECTED_DEADLOCKS = "numberOfLocalDetectedDeadlocks";
+    public static final String NUMBER_OF_REMOTE_DETECTED_DEADLOCKS = "numberOfRemoteDetectedDeadlocks";
+    public static final String NUMBER_OF_UNSOLVABLE_DEADLOCKS = "numberOfUnsolvableDeadlocks";
+
     public static final String AVERAGE_READ_TIME = "averageReadTime";
     public static final String AVERAGE_WRITE_TIME = "averageWriteTime";
     public static final String ELAPSED_TIME = "elapsedTime";
@@ -54,12 +60,17 @@ public class MetricKeys {
     public static final String REPLICATION_COUNT = "replicationCount";
     public static final String REPLICATION_FAILURES = "replicationFailures";
     public static final String SUCCESS_RATIO = "successRatio";
+
     public static final String COMMITS = "commits";
     public static final String PREPARES = "prepares";
     public static final String ROLLBACKS = "rollbacks";
+
     public static final String INVALIDATIONS = "invalidations";
     public static final String PASSIVATIONS = "passivations";
+
     public static final String ACTIVATIONS = "activations";
     public static final String CACHE_LOADER_LOADS = "cacheLoaderLoads";
     public static final String CACHE_LOADER_MISSES = "cacheLoaderMisses";
+
+    public static final String CACHE_LOADER_STORES = "cacheLoaderStores";
 }
