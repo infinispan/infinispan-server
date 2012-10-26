@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.as.clustering.infinispan.subsystem;
+package com.jboss.datagrid.endpoint;
 
 import java.util.List;
 
@@ -28,34 +28,26 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.staxmapper.XMLElementReader;
 
 /**
- * @author Paul Ferraro
  * @author Tristan Tarrant
  */
 public enum Namespace {
     // must be first
-    UNKNOWN(0, 0, null),
+    UNKNOWN(null, 0, 0, null),
 
-    INFINISPAN_1_0(1, 0, new InfinispanSubsystemXMLReader_1_0()),
-    INFINISPAN_1_1(1, 1, new InfinispanSubsystemXMLReader_1_1()),
-    INFINISPAN_1_2(1, 2, new InfinispanSubsystemXMLReader_1_2()), // IMPORTANT: Management API version != XSD version!
-    INFINISPAN_1_3(1, 3, new InfinispanSubsystemXMLReader_1_3()), // IMPORTANT: Management API version != XSD version!
-    JDG_INFINISPAN_6_1("datagrid", 6, 1, new InfinispanSubsystemXMLReader_6_1()),
+    JDG_ENDPOINT_1_0("domain:datagrid", 1, 0, new EndpointSubsystemReader_1_0()),
+    JDG_ENDPOINT_6_1("datagrid:endpoint", 6, 1, new EndpointSubsystemReader_1_0()),
     ;
-    private static final String URN_PATTERN = "urn:jboss:%s:%s:%d.%d";
+    private static final String URN_PATTERN = "urn:jboss:%s:%d.%d";
 
     /**
      * The current namespace version.
      */
-    public static final Namespace CURRENT = JDG_INFINISPAN_6_1;
+    public static final Namespace CURRENT = JDG_ENDPOINT_6_1;
 
     private final int major;
     private final int minor;
     private final XMLElementReader<List<ModelNode>> reader;
     private final String domain;
-
-    Namespace(int major, int minor, XMLElementReader<List<ModelNode>> reader) {
-        this("domain", major, minor, reader);
-    }
 
     Namespace(String domain, int major, int minor, XMLElementReader<List<ModelNode>> reader) {
         this.domain = domain;
@@ -70,7 +62,7 @@ public enum Namespace {
      * @return the URI
      */
     public String getUri() {
-        return String.format(URN_PATTERN, domain, InfinispanExtension.SUBSYSTEM_NAME, this.major, this.minor);
+        return String.format(URN_PATTERN, domain, this.major, this.minor);
     }
 
     public XMLElementReader<List<ModelNode>> getXMLReader() {
