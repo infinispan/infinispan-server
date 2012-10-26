@@ -203,7 +203,23 @@ public class InfinispanSubsystemDescribe implements OperationStepHandler {
 
         // command to recreate the cache store configuration
         // we need to take account of properties here
-        if (cache.getValue().get(ModelKeys.STORE, ModelKeys.STORE_NAME).isDefined()) {
+        if (cache.getValue().get(ModelKeys.LOADER, ModelKeys.LOADER_NAME).isDefined()) {
+            ModelNode loader = cache.getValue().get(ModelKeys.LOADER, ModelKeys.LOADER_NAME);
+            ModelNode loaderAddress = address.clone();
+            loaderAddress.add(ModelKeys.LOADER, ModelKeys.LOADER_NAME);
+            result.add(CacheConfigOperationHandlers.createLoaderOperation(CommonAttributes.COMMON_LOADER_ATTRIBUTES, loaderAddress, loader,
+                    CommonAttributes.LOADER_ATTRIBUTES));
+            addCacheLoaderPropertyCommands(loader, loaderAddress, result);
+        }
+        else if (cache.getValue().get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME).isDefined()) {
+            ModelNode loader = cache.getValue().get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME);
+            ModelNode loaderAddress = address.clone();
+            loaderAddress.add(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME);
+            result.add(CacheConfigOperationHandlers.createLoaderOperation(CommonAttributes.COMMON_LOADER_ATTRIBUTES, loaderAddress, loader,
+                    CommonAttributes.CLUSTER_LOADER_ATTRIBUTES));
+            addCacheLoaderPropertyCommands(loader, loaderAddress, result);
+        }
+        else if (cache.getValue().get(ModelKeys.STORE, ModelKeys.STORE_NAME).isDefined()) {
             ModelNode store = cache.getValue().get(ModelKeys.STORE, ModelKeys.STORE_NAME);
             ModelNode storeAddress = address.clone();
             storeAddress.add(ModelKeys.STORE, ModelKeys.STORE_NAME);
@@ -284,6 +300,17 @@ public class InfinispanSubsystemDescribe implements OperationStepHandler {
             writeBehindAddress.add(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME);
             ModelNode createOperation = CacheConfigOperationHandlers.createOperation(CommonAttributes.WRITE_BEHIND_ATTRIBUTES, writeBehindAddress, writeBehind);
             result.add(createOperation);
+        }
+    }
+
+    private static void addCacheLoaderPropertyCommands(ModelNode loader, ModelNode address, ModelNode result) throws OperationFailedException {
+
+        if (loader.hasDefined(ModelKeys.PROPERTY)) {
+             for (Property property : loader.get(ModelKeys.PROPERTY).asPropertyList()) {
+                 ModelNode propertyAddress = address.clone().add(ModelKeys.PROPERTY, property.getName());
+                 AttributeDefinition[] ATTRIBUTE = {CommonAttributes.VALUE} ;
+                 result.add(CacheConfigOperationHandlers.createOperation(ATTRIBUTE, propertyAddress, property.getValue()));
+             }
         }
     }
 

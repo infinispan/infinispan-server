@@ -42,6 +42,8 @@ public class ModelKeys {
     static final String CHUNK_SIZE = "chunk-size";
     static final String CLASS = "class";
     static final String CLUSTER = "cluster";
+    static final String CLUSTER_LOADER = "cluster-loader";
+    static final String CLUSTER_LOADER_NAME = "CLUSTER_LOADER";
     static final String CONCURRENCY_LEVEL = "concurrency-level";
     static final String DATA_COLUMN = "data-column";
     static final String DATASOURCE = "datasource";
@@ -79,6 +81,8 @@ public class ModelKeys {
     static final String L1_LIFESPAN = "l1-lifespan";
     static final String LIFESPAN = "lifespan";
     static final String LISTENER_EXECUTOR = "listener-executor";
+    static final String LOADER = "loader";
+    static final String LOADER_NAME = "LOADER";
     static final String LOCAL_CACHE = "local-cache";
     static final String LOCK_TIMEOUT = "lock-timeout";
     static final String LOCKING = "locking";

@@ -560,9 +560,12 @@ public interface CommonAttributes {
             setAllowNull(true).
             build();
 
+    AttributeDefinition[] COMMON_LOADER_ATTRIBUTES = {SHARED, PRELOAD};
     AttributeDefinition[] COMMON_STORE_ATTRIBUTES = {SHARED, PRELOAD, PASSIVATION, FETCH_STATE, PURGE, SINGLETON};
+    AttributeDefinition[] LOADER_ATTRIBUTES = {CLASS};
     AttributeDefinition[] STORE_ATTRIBUTES = {CLASS};
     AttributeDefinition[] WRITE_BEHIND_ATTRIBUTES = {FLUSH_LOCK_TIMEOUT, MODIFICATION_QUEUE_SIZE, THREAD_POOL_SIZE, SHUTDOWN_TIMEOUT};
+    AttributeDefinition[] CLUSTER_LOADER_ATTRIBUTES = {REMOTE_TIMEOUT};
     AttributeDefinition[] FILE_STORE_ATTRIBUTES = {RELATIVE_TO, PATH};
     AttributeDefinition[] COMMON_JDBC_STORE_ATTRIBUTES = {DATA_SOURCE};
     AttributeDefinition[] STRING_KEYED_JDBC_STORE_ATTRIBUTES = {STRING_KEYED_TABLE};
