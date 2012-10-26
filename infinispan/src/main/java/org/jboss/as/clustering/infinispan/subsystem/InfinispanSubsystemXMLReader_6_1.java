@@ -1,5 +1,7 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
+import static org.jboss.as.clustering.infinispan.InfinispanLogger.ROOT_LOGGER;
+
 import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.as.controller.parsing.ParseUtils;
@@ -303,8 +305,12 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
                     CommonAttributes.OWNERS.parseAndSetParameter(value, cache, reader);
                     break;
                 }
+                case SEGMENTS: {
+                    CommonAttributes.SEGMENTS.parseAndSetParameter(value, cache, reader);
+                    break;
+                }
                 case VIRTUAL_NODES: {
-                    CommonAttributes.VIRTUAL_NODES.parseAndSetParameter(value, cache, reader);
+                    ROOT_LOGGER.virtualNodesDeprecated();
                     break;
                 }
                 case L1_LIFESPAN: {

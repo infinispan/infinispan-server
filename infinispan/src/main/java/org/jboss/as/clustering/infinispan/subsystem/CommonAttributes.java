@@ -411,6 +411,13 @@ public interface CommonAttributes {
                     .setValidator(new EnumValidator<EvictionStrategy>(EvictionStrategy.class, true, false))
                     .setDefaultValue(new ModelNode().set(EvictionStrategy.NONE.name()))
                     .build();
+    SimpleAttributeDefinition SEGMENTS =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.SEGMENTS, ModelType.INT, true)
+                    .setXmlName(Attribute.SEGMENTS.getLocalName())
+                    .setAllowExpression(false)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set(80))
+                    .build();
     SimpleAttributeDefinition STRIPING =
             new SimpleAttributeDefinitionBuilder(ModelKeys.STRIPING, ModelType.BOOLEAN, true)
                     .setXmlName(Attribute.STRIPING.getLocalName())
@@ -455,20 +462,13 @@ public interface CommonAttributes {
                     .setAllowExpression(false)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .build();
-    SimpleAttributeDefinition VIRTUAL_NODES =
-            new SimpleAttributeDefinitionBuilder(ModelKeys.VIRTUAL_NODES, ModelType.INT, true)
-                    .setXmlName(Attribute.VIRTUAL_NODES.getLocalName())
-                    .setAllowExpression(false)
-                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
-                    .setDefaultValue(new ModelNode().set(1))
-                    .build();
 
     AttributeDefinition[] CACHE_CONTAINER_ATTRIBUTES = {DEFAULT_CACHE, ALIASES, JNDI_NAME, START, LISTENER_EXECUTOR, EVICTION_EXECUTOR, REPLICATION_QUEUE_EXECUTOR, CACHE_CONTAINER_MODULE};
     AttributeDefinition[] TRANSPORT_ATTRIBUTES = {STACK, CLUSTER, EXECUTOR, LOCK_TIMEOUT};
 
     AttributeDefinition[] CACHE_ATTRIBUTES = { START, BATCHING, INDEXING, JNDI_NAME, CACHE_MODULE};
     AttributeDefinition[] CLUSTERED_CACHE_ATTRIBUTES = { ASYNC_MARSHALLING, ClusteredCacheAdd.MODE, QUEUE_SIZE, QUEUE_FLUSH_INTERVAL, REMOTE_TIMEOUT};
-    AttributeDefinition[] DISTRIBUTED_CACHE_ATTRIBUTES = {OWNERS, VIRTUAL_NODES, L1_LIFESPAN};
+    AttributeDefinition[] DISTRIBUTED_CACHE_ATTRIBUTES = {OWNERS, SEGMENTS, L1_LIFESPAN};
 
     AttributeDefinition[] LOCKING_ATTRIBUTES = {ISOLATION, STRIPING, ACQUIRE_TIMEOUT, CONCURRENCY_LEVEL};
     AttributeDefinition[] TRANSACTION_ATTRIBUTES = {MODE, STOP_TIMEOUT, LOCKING};
