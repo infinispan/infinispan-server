@@ -90,7 +90,7 @@
                <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                <transaction mode="NONE" />
                <eviction strategy="LRU" max-entries="1000" />
-               <remote-store cache="default" socket-timeout="60000" tcp-no-delay="true" fetch-state="false" passivation="true" preload="true" purge="false">
+               <remote-store cache="default" socket-timeout="60000" tcp-no-delay="true" passivation="false">
                   <remote-server outbound-socket-binding="remote-store-hotrod-server" />
                   <write-behind flush-lock-timeout="1" modification-queue-size="1024" shutdown-timeout="25000" thread-pool-size="1" />
                </remote-store>
@@ -99,13 +99,13 @@
                <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                <transaction mode="NONE" />
                <eviction strategy="LIRS" max-entries="1000" />
-               <remote-store cache="memcachedCache" socket-timeout="60000" tcp-no-delay="true" fetch-state="false" passivation="true" preload="true" purge="false">
+               <remote-store cache="memcachedCache" socket-timeout="60000" tcp-no-delay="true" passivation="false">
                   <remote-server outbound-socket-binding="remote-store-hotrod-server" />
                </remote-store>
             </local-cache>
             <local-cache name="namedCache" start="EAGER">
                <expiration lifespan="2000" max-idle="1000" />
-               <remote-store cache="namedCache" socket-timeout="60000" tcp-no-delay="true" fetch-state="false" passivation="true" preload="true" purge="false">
+               <remote-store cache="namedCache" socket-timeout="60000" tcp-no-delay="true" passivation="false">
                   <remote-server outbound-socket-binding="remote-store-hotrod-server" />
                </remote-store>
             </local-cache>
