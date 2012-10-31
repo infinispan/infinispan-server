@@ -60,6 +60,10 @@
        <!-- Example configs -->
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-ccl-ha.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-ccl-ha.xml"/>
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-fcs-local.xml"
            paramOutputFile="${generated.configs.examples}/standalone-fcs-local.xml"/>
        <generate-server-config 

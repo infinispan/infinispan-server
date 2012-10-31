@@ -13,6 +13,7 @@ import org.jboss.dmr.ModelNode;
 
 /**
  * @author Richard Achmatowicz (c) 2011 Red Hat Inc.
+ * @author Tristan Tarrant
  */
 public class DistributedCacheAdd extends SharedStateCacheAdd {
 
@@ -34,7 +35,7 @@ public class DistributedCacheAdd extends SharedStateCacheAdd {
         super.populate(fromModel, toModel);
 
         CommonAttributes.OWNERS.validateAndSet(fromModel, toModel);
-        CommonAttributes.VIRTUAL_NODES.validateAndSet(fromModel, toModel);
+        CommonAttributes.SEGMENTS.validateAndSet(fromModel, toModel);
         CommonAttributes.L1_LIFESPAN.validateAndSet(fromModel, toModel);
     }
 
@@ -55,12 +56,12 @@ public class DistributedCacheAdd extends SharedStateCacheAdd {
         super.processModelNode(context, containerName, cache, builder, dependencies);
 
         final int owners = CommonAttributes.OWNERS.resolveModelAttribute(context, cache).asInt();
-        final int virtualNodes = CommonAttributes.VIRTUAL_NODES.resolveModelAttribute(context, cache).asInt();
+        final int segments = CommonAttributes.SEGMENTS.resolveModelAttribute(context, cache).asInt();
         final long lifespan = CommonAttributes.L1_LIFESPAN.resolveModelAttribute(context, cache).asLong();
 
         // process the additional distributed attributes and elements
         builder.clustering().hash().numOwners(owners);
-        builder.clustering().hash().numSegments(virtualNodes);
+        builder.clustering().hash().numSegments(segments);
         if (lifespan > 0) {
             builder.clustering().l1().lifespan(lifespan);
         } else {

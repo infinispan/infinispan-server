@@ -136,7 +136,7 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
                         writer.writeAttribute(Attribute.NAME.getLocalName(), distributedCacheName);
                         // distributed cache attributes
                         this.writeOptional(writer, Attribute.OWNERS, distributedCache, ModelKeys.OWNERS);
-                        this.writeOptional(writer, Attribute.VIRTUAL_NODES, distributedCache, ModelKeys.VIRTUAL_NODES);
+                        this.writeOptional(writer, Attribute.SEGMENTS, distributedCache, ModelKeys.SEGMENTS);
                         this.writeOptional(writer, Attribute.L1_LIFESPAN, distributedCache, ModelKeys.L1_LIFESPAN);
 
                         processCommonClusteredCacheAttributes(writer, distributedCache);
@@ -215,7 +215,23 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
             writer.writeEndElement();
         }
 
-        if (cache.get(ModelKeys.STORE, ModelKeys.STORE_NAME).isDefined()) {
+        if (cache.get(ModelKeys.LOADER, ModelKeys.LOADER_NAME).isDefined()) {
+            ModelNode loader = cache.get(ModelKeys.LOADER, ModelKeys.LOADER_NAME);
+            writer.writeStartElement(Element.LOADER.getLocalName());
+            this.writeRequired(writer, Attribute.CLASS, loader, ModelKeys.CLASS);
+            this.writeLoaderAttributes(writer, loader);
+            this.writeLoaderProperties(writer, loader);
+            writer.writeEndElement();
+        }
+        else if (cache.get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME).isDefined()) {
+            ModelNode loader = cache.get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME);
+            writer.writeStartElement(Element.CLUSTER_LOADER.getLocalName());
+            this.writeOptional(writer, Attribute.REMOTE_TIMEOUT, loader, ModelKeys.REMOTE_TIMEOUT);
+            this.writeLoaderAttributes(writer, loader);
+            this.writeLoaderProperties(writer, loader);
+            writer.writeEndElement();
+        }
+        else if (cache.get(ModelKeys.STORE, ModelKeys.STORE_NAME).isDefined()) {
             ModelNode store = cache.get(ModelKeys.STORE, ModelKeys.STORE_NAME);
             writer.writeStartElement(Element.STORE.getLocalName());
             this.writeRequired(writer, Attribute.CLASS, store, ModelKeys.CLASS);
@@ -321,6 +337,27 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
             this.writeOptional(writer, Attribute.NAME, column, ModelKeys.NAME);
             this.writeOptional(writer, Attribute.TYPE, column, ModelKeys.TYPE);
             writer.writeEndElement();
+        }
+    }
+
+    private void writeLoaderAttributes(XMLExtendedStreamWriter writer, ModelNode loader) throws XMLStreamException {
+        this.writeOptional(writer, Attribute.SHARED, loader, ModelKeys.SHARED);
+        this.writeOptional(writer, Attribute.PRELOAD, loader, ModelKeys.PRELOAD);
+    }
+
+    private void writeLoaderProperties(XMLExtendedStreamWriter writer, ModelNode loader) throws XMLStreamException {
+        if (loader.hasDefined(ModelKeys.PROPERTY)) {
+            // the format of the property elements
+            //  "property" => {
+            //       "relative-to" => {"value" => "fred"},
+            //   }
+            for (Property property: loader.get(ModelKeys.PROPERTY).asPropertyList()) {
+                writer.writeStartElement(Element.PROPERTY.getLocalName());
+                writer.writeAttribute(Attribute.NAME.getLocalName(), property.getName());
+                Property complexValue = property.getValue().asProperty();
+                writer.writeCharacters(complexValue.getValue().asString());
+                writer.writeEndElement();
+            }
         }
     }
 

@@ -62,6 +62,9 @@ public class InfinispanExtension implements Extension {
     private static final PathElement evictionPath = PathElement.pathElement(ModelKeys.EVICTION, ModelKeys.EVICTION_NAME);
     private static final PathElement expirationPath = PathElement.pathElement(ModelKeys.EXPIRATION, ModelKeys.EXPIRATION_NAME);
     private static final PathElement stateTransferPath = PathElement.pathElement(ModelKeys.STATE_TRANSFER, ModelKeys.STATE_TRANSFER_NAME);
+    private static final PathElement loaderPath = PathElement.pathElement(ModelKeys.LOADER, ModelKeys.LOADER_NAME);
+    private static final PathElement loaderPropertyPath = PathElement.pathElement(ModelKeys.PROPERTY);
+    private static final PathElement clusterLoaderPath = PathElement.pathElement(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME);
     private static final PathElement storePath = PathElement.pathElement(ModelKeys.STORE, ModelKeys.STORE_NAME);
     private static final PathElement storeWriteBehindPath = PathElement.pathElement(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME);
     private static final PathElement storePropertyPath = PathElement.pathElement(ModelKeys.PROPERTY);
@@ -71,8 +74,8 @@ public class InfinispanExtension implements Extension {
     private static final PathElement mixedKeyedJdbcStorePath = PathElement.pathElement(ModelKeys.MIXED_KEYED_JDBC_STORE, ModelKeys.MIXED_KEYED_JDBC_STORE_NAME);
     private static final PathElement remoteStorePath = PathElement.pathElement(ModelKeys.REMOTE_STORE, ModelKeys.REMOTE_STORE_NAME);
 
-    private static final int MANAGEMENT_API_MAJOR_VERSION = 1;
-    private static final int MANAGEMENT_API_MINOR_VERSION = 3;
+    private static final int MANAGEMENT_API_MAJOR_VERSION = 6;
+    private static final int MANAGEMENT_API_MINOR_VERSION = 1;
 
     /**
      * {@inheritDoc}
@@ -194,6 +197,21 @@ public class InfinispanExtension implements Extension {
         expiration.registerOperationHandler(ADD, CacheConfigOperationHandlers.EXPIRATION_ADD, InfinispanSubsystemProviders.EXPIRATION_ADD);
         expiration.registerOperationHandler(REMOVE, CacheConfigOperationHandlers.REMOVE, InfinispanSubsystemProviders.EXPIRATION_REMOVE);
         CacheConfigOperationHandlers.EXPIRATION_ATTR.registerAttributes(expiration);
+
+        // register the loader=LOADER handlers
+        final ManagementResourceRegistration loader = resource.registerSubModel(loaderPath, InfinispanSubsystemProviders.LOADER);
+        loader.registerOperationHandler(ADD, CacheConfigOperationHandlers.LOADER_ADD, InfinispanSubsystemProviders.LOADER_ADD);
+        loader.registerOperationHandler(REMOVE, CacheConfigOperationHandlers.REMOVE, InfinispanSubsystemProviders.STORE_REMOVE);
+        CacheConfigOperationHandlers.LOADER_ATTR.registerAttributes(loader);
+        createPropertyRegistration(loader);
+
+        // register the cluster-loader=CLUSTER_LOADER handlers
+        final ManagementResourceRegistration clusterLoader = resource.registerSubModel(clusterLoaderPath, InfinispanSubsystemProviders.CLUSTER_LOADER);
+        clusterLoader.registerOperationHandler(ADD, CacheConfigOperationHandlers.CLUSTER_LOADER_ADD, InfinispanSubsystemProviders.CLUSTER_LOADER_ADD);
+        clusterLoader.registerOperationHandler(REMOVE, CacheConfigOperationHandlers.REMOVE, InfinispanSubsystemProviders.STORE_REMOVE);
+        CacheConfigOperationHandlers.CLUSTER_LOADER_ATTR.registerAttributes(clusterLoader);
+        createStoreWriteBehindRegistration(clusterLoader);
+        createPropertyRegistration(clusterLoader);
 
         // register the store=STORE handlers
         final ManagementResourceRegistration store = resource.registerSubModel(storePath, InfinispanSubsystemProviders.STORE);

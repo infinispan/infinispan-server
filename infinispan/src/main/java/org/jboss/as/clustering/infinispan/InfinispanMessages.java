@@ -150,4 +150,15 @@ public interface InfinispanMessages {
     @Message(id = 10299, value = "Value for property with key %s is not defined")
     OperationFailedException propertyValueNotDefined(String propertyKey);
 
+    /**
+     * Creates an exception indicating an invalid cache loader.
+     *
+     * @param cause           the cause of the error.
+     * @param cacheLoaderName the name of the cache loader.
+     *
+     * @return an {@link IllegalArgumentException} for the error.
+     */
+    @Message(id = 10300, value = "%s is not a valid cache loader")
+    IllegalArgumentException invalidCacheLoader(@Cause Throwable cause, String cacheLoaderName);
+
 }

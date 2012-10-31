@@ -252,6 +252,57 @@ public class InfinispanSubsystemProviders {
         }
     };
 
+    static final DescriptionProvider LOADER = new DescriptionProvider() {
+        @Override
+        public ModelNode getModelDescription(Locale locale) {
+            return InfinispanDescriptions.getCacheLoaderDescription(locale);
+        }
+    };
+    static final DescriptionProvider LOADER_ADD = new DescriptionProvider() {
+        @Override
+        public ModelNode getModelDescription(Locale locale) {
+            return InfinispanDescriptions.getCacheLoaderAddDescription(locale);
+        }
+    };
+    static final DescriptionProvider LOADER_REMOVE = new DescriptionProvider() {
+        @Override
+        public ModelNode getModelDescription(Locale locale) {
+            return InfinispanDescriptions.getCacheLoaderRemoveDescription(locale);
+        }
+    };
+
+    static final DescriptionProvider LOADER_PROPERTY = new DescriptionProvider() {
+        @Override
+        public ModelNode getModelDescription(Locale locale) {
+            return InfinispanDescriptions.getCacheLoaderPropertyDescription(locale);
+        }
+    };
+    static final DescriptionProvider LOADER_PROPERTY_ADD = new DescriptionProvider() {
+        @Override
+        public ModelNode getModelDescription(Locale locale) {
+            return InfinispanDescriptions.getCacheLoaderPropertyAddDescription(locale);
+        }
+    };
+    static final DescriptionProvider LOADER_PROPERTY_REMOVE = new DescriptionProvider() {
+        @Override
+        public ModelNode getModelDescription(Locale locale) {
+            return InfinispanDescriptions.getCacheLoaderPropertyRemoveDescription(locale);
+        }
+    };
+
+    static final DescriptionProvider CLUSTER_LOADER = new DescriptionProvider() {
+        @Override
+        public ModelNode getModelDescription(Locale locale) {
+            return InfinispanDescriptions.getClusterCacheLoaderDescription(locale);
+        }
+    };
+    static final DescriptionProvider CLUSTER_LOADER_ADD = new DescriptionProvider() {
+        @Override
+        public ModelNode getModelDescription(Locale locale) {
+            return InfinispanDescriptions.getClusterCacheLoaderAddDescription(locale);
+        }
+    };
+
     static final DescriptionProvider STORE = new DescriptionProvider() {
         @Override
         public ModelNode getModelDescription(Locale locale) {
@@ -321,19 +372,6 @@ public class InfinispanSubsystemProviders {
             return InfinispanDescriptions.getFileCacheStoreAddDescription(locale);
         }
     };
-
-//    static final DescriptionProvider JDBC_STORE = new DescriptionProvider() {
-//        @Override
-//        public ModelNode getModelDescription(Locale locale) {
-//            return InfinispanDescriptions.getJdbcCacheStoreDescription(locale);
-//        }
-//    };
-//    static final DescriptionProvider JDBC_STORE_ADD = new DescriptionProvider() {
-//        @Override
-//        public ModelNode getModelDescription(Locale locale) {
-//            return InfinispanDescriptions.getJdbcCacheStoreAddDescription(locale);
-//        }
-//    };
 
     static final DescriptionProvider STRING_KEYED_JDBC_STORE = new DescriptionProvider() {
         @Override

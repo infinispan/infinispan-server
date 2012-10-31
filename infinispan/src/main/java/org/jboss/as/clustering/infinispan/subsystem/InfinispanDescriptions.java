@@ -441,6 +441,92 @@ public class InfinispanDescriptions {
         return op;
     }
 
+    // cache loader element
+    static ModelNode getCacheLoaderDescription(Locale locale) {
+        ResourceBundle resources = getResources(locale);
+        final ModelNode loader = createDescription(resources, "infinispan.cache.loader");
+        for (AttributeDefinition attr : CommonAttributes.COMMON_STORE_ATTRIBUTES) {
+            attr.addResourceAttributeDescription(resources, "infinispan.cache.loader", loader);
+        }
+        for (AttributeDefinition attr : CommonAttributes.LOADER_ATTRIBUTES) {
+            attr.addResourceAttributeDescription(resources, "infinispan.cache.loader", loader);
+        }
+        addCacheLoaderPropertyCacheChildren("infinispan.cache.loader", loader, resources);
+        return loader ;
+    }
+
+    static ModelNode getCacheLoaderAddDescription(Locale locale) {
+        ResourceBundle resources = getResources(locale);
+        final ModelNode op = createOperationDescription(ADD, resources, "infinispan.cache.loader.add");
+        for (AttributeDefinition attr : CommonAttributes.COMMON_LOADER_ATTRIBUTES) {
+            attr.addOperationParameterDescription(resources, "infinispan.cache.loader", op);
+        }
+        // optional properties parameter
+        CommonAttributes.PROPERTIES.addOperationParameterDescription(resources, "infinispan.cache.loader", op);
+        for (AttributeDefinition attr : CommonAttributes.LOADER_ATTRIBUTES) {
+            attr.addOperationParameterDescription(resources, "infinispan.cache.loader", op);
+        }
+        return op;
+    }
+
+    static ModelNode getCacheLoaderRemoveDescription(Locale locale) {
+        ResourceBundle resources = getResources(locale);
+        final ModelNode op = createOperationDescription(REMOVE, resources, "infinispan.cache.loader.remove");
+        op.get(REQUEST_PROPERTIES).setEmptyObject();
+        return op;
+    }
+
+    // cache loader property element
+    static ModelNode getCacheLoaderPropertyDescription(Locale locale) {
+        ResourceBundle resources = getResources(locale);
+        final ModelNode storeProperty = createDescription(resources, "infinispan.cache.loader.property");
+        VALUE.addResourceAttributeDescription(resources, "infinispan.cache.loader.property", storeProperty);
+        return storeProperty ;
+    }
+
+    static ModelNode getCacheLoaderPropertyAddDescription(Locale locale) {
+        ResourceBundle resources = getResources(locale);
+        final ModelNode op = createOperationDescription(ADD, resources, "infinispan.cache.loader.property.add");
+        VALUE.addOperationParameterDescription(resources, "infinispan.cache.loader.property", op);
+        return op;
+    }
+
+    static ModelNode getCacheLoaderPropertyRemoveDescription(Locale locale) {
+        ResourceBundle resources = getResources(locale);
+        final ModelNode op = createOperationDescription(REMOVE, resources, "infinispan.cache.loader.property.remove");
+        op.get(REQUEST_PROPERTIES).setEmptyObject();
+        return op;
+    }
+
+    // cluster cache loader element
+    static ModelNode getClusterCacheLoaderDescription(Locale locale) {
+        ResourceBundle resources = getResources(locale);
+        final ModelNode loader = createDescription(resources, "infinispan.cache.loader");
+        for (AttributeDefinition attr : CommonAttributes.COMMON_LOADER_ATTRIBUTES) {
+            attr.addResourceAttributeDescription(resources, "infinispan.cache.loader", loader);
+        }
+        for (AttributeDefinition attr : CommonAttributes.CLUSTER_LOADER_ATTRIBUTES) {
+            attr.addResourceAttributeDescription(resources, "infinispan.cache.cluster-loader", loader);
+        }
+        addCacheStoreWriteBehindCacheChildren("infinispan.cache.loader", loader, resources);
+        addCacheStorePropertyCacheChildren("infinispan.cache.loader", loader, resources);
+        return loader ;
+    }
+
+    static ModelNode getClusterCacheLoaderAddDescription(Locale locale) {
+        ResourceBundle resources = getResources(locale);
+        final ModelNode op = createOperationDescription(ADD, resources, "infinispan.cache.loader.add");
+        for (AttributeDefinition attr : CommonAttributes.COMMON_LOADER_ATTRIBUTES) {
+            attr.addOperationParameterDescription(resources, "infinispan.cache.loader", op);
+        }
+        // optional properties parameter
+        CommonAttributes.PROPERTIES.addOperationParameterDescription(resources, "infinispan.cache.loader", op);
+        for (AttributeDefinition attr : CommonAttributes.CLUSTER_LOADER_ATTRIBUTES) {
+            attr.addOperationParameterDescription(resources, "infinispan.cache.cluster-loader", op);
+        }
+        return op;
+    }
+
     // cache store element
     static ModelNode getCacheStoreDescription(Locale locale) {
         ResourceBundle resources = getResources(locale);
@@ -787,6 +873,14 @@ public class InfinispanDescriptions {
         description.get(CHILDREN, ModelKeys.STATE_TRANSFER, ALLOWED).setEmptyList();
         description.get(CHILDREN, ModelKeys.STATE_TRANSFER, ALLOWED).add(ModelKeys.STATE_TRANSFER_NAME);
         description.get(CHILDREN, ModelKeys.STATE_TRANSFER, MODEL_DESCRIPTION);
+    }
+
+    private static void addCacheLoaderPropertyCacheChildren(String keyPrefix, ModelNode description, ResourceBundle resources) {
+        // child properties
+        description.get(CHILDREN, ModelKeys.PROPERTY, DESCRIPTION).set(resources.getString(keyPrefix + ".property"));
+        description.get(CHILDREN, ModelKeys.PROPERTY, MIN_OCCURS).set(0);
+        description.get(CHILDREN, ModelKeys.PROPERTY, MAX_OCCURS).set(1);
+        description.get(CHILDREN, ModelKeys.PROPERTY, MODEL_DESCRIPTION);
     }
 
     private static void addCacheStoreWriteBehindCacheChildren(String keyPrefix, ModelNode description, ResourceBundle resources) {

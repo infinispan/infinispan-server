@@ -27,13 +27,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-clustering</artifactId>
-        <version>7.1.2.Final</version>
-        <relativePath />
-    </parent>
+      <groupId>com.jboss.datagrid</groupId>
+      <artifactId>jboss-datagrid-versions</artifactId>
+      <version>6.1.0-SNAPSHOT</version>
+      <relativePath>../versions/pom.xml</relativePath>
+   </parent>
 
-    <groupId>com.jboss.datagrid</groupId>
     <artifactId>jboss-datagrid-infinispan</artifactId>
     <packaging>jar</packaging>
     
@@ -71,22 +70,18 @@
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>
-            <version>${version.org.infinispan}</version>
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-cachestore-jdbc</artifactId>
-            <version>${version.org.infinispan}</version>
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-cachestore-remote</artifactId>
-            <version>${version.org.infinispan}</version>
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-client-hotrod</artifactId>
-            <version>${version.org.infinispan}</version>
         </dependency>
         <dependency>
             <groupId>net.jcip</groupId>
@@ -95,13 +90,18 @@
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-clustering-common</artifactId>
-            <version>${project.version}</version><!--$NO-MVN-MAN-VER$-->
+            <version>${version.org.jboss.as}</version><!--$NO-MVN-MAN-VER$-->
             <scope>test</scope>
             <classifier>tests</classifier>
         </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-subsystem-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.byteman</groupId>
+            <artifactId>byteman-bmunit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -127,6 +127,11 @@
             <groupId>org.rhq.helpers</groupId>
             <artifactId>rhq-pluginAnnotations</artifactId>
             <scope>provided</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
          </dependency>
     </dependencies>
 
