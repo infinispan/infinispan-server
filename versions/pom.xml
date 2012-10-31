@@ -27,7 +27,7 @@
     <version.com.github.relaxng.relaxngDatatype>2011.1</version.com.github.relaxng.relaxngDatatype>
     <version.commons.logging>1.1.1</version.commons.logging>
     <version.gnu.getopt>1.0.13</version.gnu.getopt>
-    <version.io.netty>3.4.6.Final</version.io.netty>
+    <version.io.netty>3.5.9.Final</version.io.netty>
     <version.net.jcip.annotations>1.0</version.net.jcip.annotations>
     <version.org.antlr.antlr-runtime>3.4</version.org.antlr.antlr-runtime>
     <version.org.fusesource.jansi>1.8</version.org.fusesource.jansi>
@@ -37,8 +37,8 @@
     <version.org.jboss.jreadline>0.16</version.org.jboss.jreadline>
     <version.com.thoughtworks.xstream>1.4.1</version.com.thoughtworks.xstream>
     <version.junit>4.10</version.junit>
-    <version.org.infinispan>5.2.0.Beta2</version.org.infinispan>
-    <version.org.jgroups>3.2.0.CR1</version.org.jgroups>
+    <version.org.infinispan>5.2.0.Beta3</version.org.infinispan>
+    <version.org.jgroups>3.2.0.Final</version.org.jgroups>
     <version.org.rhq>4.4.0</version.org.rhq>
     <version.org.rhq.annotations>3.0.4</version.org.rhq.annotations>
     <version.org.scala-lang>2.9.2</version.org.scala-lang>
