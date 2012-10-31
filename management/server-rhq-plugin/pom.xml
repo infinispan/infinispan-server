@@ -17,12 +17,12 @@
       <groupId>com.jboss.datagrid</groupId>
       <artifactId>jboss-datagrid-versions</artifactId>
       <version>6.1.0-SNAPSHOT</version>
-      <relativePath>../versions/pom.xml</relativePath>
+      <relativePath>../../versions/pom.xml</relativePath>
    </parent>
 
-   <artifactId>jboss-datagrid-rhq-plugin</artifactId>
-   <name>JBoss Data Grid - RHQ/JON plugin</name>
-   <description>JBoss Data Grid - RHQ/JON plugin</description>
+   <artifactId>jboss-datagrid-server-rhq-plugin</artifactId>
+   <name>JBoss Data Grid - Server RHQ/JON plugin</name>
+   <description>JBoss Data Grid - Server RHQ/JON plugin</description>
 
    <dependencies>
       <dependency>
@@ -167,7 +167,7 @@
                      <descriptors>
                         <descriptor>${project.basedir}/src/main/assemblies/plugin.xml</descriptor>
                      </descriptors>
-                     <finalName>${product.name}-rhq-plugin-${product.version}</finalName>
+                     <finalName>${product.name}-server-rhq-plugin-${product.version}</finalName>
                      <outputDirectory>${project.build.directory}</outputDirectory>
                      <workDirectory>${project.build.directory}/assembly/work</workDirectory>
                      <appendAssemblyId>false</appendAssemblyId>
