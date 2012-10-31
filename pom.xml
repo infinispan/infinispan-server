@@ -34,7 +34,8 @@
       <module>integration</module>
       <module>server</module>
       <module>library</module>
-      <module>rhq-plugin</module>
+      <module>management/library-rhq-plugin</module>
+      <module>management/server-rhq-plugin</module>
       <module>maven-repository</module>
    </modules>
    
