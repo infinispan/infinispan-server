@@ -20,15 +20,18 @@ import javax.transaction.TransactionSynchronizationRegistry;
 
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.CacheMode;
+import org.infinispan.configuration.cache.ClusterCacheLoaderConfigurationBuilder;
 import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.cache.FileCacheStoreConfigurationBuilder;
 import org.infinispan.configuration.cache.FileCacheStoreConfigurationBuilder.FsyncMode;
+import org.infinispan.configuration.cache.LoaderConfigurationBuilder;
 import org.infinispan.configuration.cache.LoadersConfigurationBuilder;
 import org.infinispan.configuration.cache.StoreConfigurationBuilder;
 import org.infinispan.configuration.parsing.ConfigurationBuilderHolder;
 import org.infinispan.configuration.parsing.ParserRegistry;
 import org.infinispan.eviction.EvictionStrategy;
+import org.infinispan.loaders.CacheLoader;
 import org.infinispan.loaders.CacheStore;
 import org.infinispan.loaders.jdbc.configuration.AbstractJdbcCacheStoreConfigurationBuilder;
 import org.infinispan.loaders.jdbc.configuration.JdbcBinaryCacheStoreConfigurationBuilder;
@@ -440,6 +443,32 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             }
         }
 
+        // loaders are a child resource
+        String loaderKey = this.findLoaderKey(cache);
+        if (loaderKey != null) {
+            ModelNode loader = this.getLoaderModelNode(cache);
+
+            final boolean shared = BaseStoreResource.SHARED.resolveModelAttribute(context, loader).asBoolean();
+            final boolean preload = BaseStoreResource.PRELOAD.resolveModelAttribute(context, loader).asBoolean();
+
+            LoadersConfigurationBuilder loadersBuilder = builder.loaders()
+                    .shared(shared)
+                    .preload(preload)
+            ;
+            LoaderConfigurationBuilder<?, ?> loaderBuilder = this.buildCacheLoader(context, loadersBuilder, containerName, loader, loaderKey, dependencies);
+
+            final Properties properties = new TypedProperties();
+            if (loader.hasDefined(ModelKeys.PROPERTY)) {
+                for (Property property : loader.get(ModelKeys.PROPERTY).asPropertyList()) {
+                    String propertyName = property.getName();
+                    Property complexValue = property.getValue().asProperty();
+                    String propertyValue = complexValue.getValue().asString();
+                    properties.setProperty(propertyName, propertyValue);
+                }
+            }
+            loaderBuilder.withProperties(properties);
+        }
+
         // stores are a child resource
         String storeKey = this.findStoreKey(cache);
         if (storeKey != null) {
@@ -489,6 +518,24 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         }
     }
 
+    private String findLoaderKey(ModelNode cache) {
+        if (cache.hasDefined(ModelKeys.LOADER)) {
+            return ModelKeys.LOADER;
+        } else if (cache.hasDefined(ModelKeys.CLUSTER_LOADER)) {
+            return ModelKeys.CLUSTER_LOADER;
+        }
+        return null;
+    }
+
+    private ModelNode getLoaderModelNode(ModelNode cache) {
+        if (cache.hasDefined(ModelKeys.LOADER)) {
+            return cache.get(ModelKeys.LOADER, ModelKeys.LOADER_NAME);
+        } else if (cache.hasDefined(ModelKeys.CLUSTER_LOADER)) {
+            return cache.get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME);
+        }
+        return null;
+    }
+
     private String findStoreKey(ModelNode cache) {
         if (cache.hasDefined(ModelKeys.STORE)) {
             return ModelKeys.STORE;
@@ -523,6 +570,24 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         return null;
     }
 
+    private LoaderConfigurationBuilder<?, ?> buildCacheLoader(OperationContext context, LoadersConfigurationBuilder loadersBuilder, String containerName, ModelNode loader, String loaderKey, List<Dependency<?>> dependencies) throws OperationFailedException {
+        if (loaderKey.equals(ModelKeys.CLUSTER_LOADER)) {
+            final ClusterCacheLoaderConfigurationBuilder builder = loadersBuilder.addClusterCacheLoader();
+
+            if (loader.hasDefined(ModelKeys.REMOTE_TIMEOUT)) {
+                builder.remoteCallTimeout(loader.require(ModelKeys.REMOTE_TIMEOUT).asLong());
+            }
+            return builder;
+        } else {
+            String className = loader.require(ModelKeys.CLASS).asString();
+            try {
+                Class<? extends CacheLoader> loaderClass = CacheLoader.class.getClassLoader().loadClass(className).asSubclass(CacheLoader.class);
+                return loadersBuilder.loaders().addLoader().cacheLoader(loaderClass.newInstance());
+            } catch (Exception e) {
+                throw InfinispanMessages.MESSAGES.invalidCacheLoader(e, className);
+            }
+        }
+    }
 
     private StoreConfigurationBuilder<?, ?> buildCacheStore(OperationContext context, LoadersConfigurationBuilder loadersBuilder, String containerName, ModelNode store, String storeKey, List<Dependency<?>> dependencies) throws OperationFailedException {
 

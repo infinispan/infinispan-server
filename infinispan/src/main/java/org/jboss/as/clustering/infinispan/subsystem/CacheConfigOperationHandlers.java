@@ -41,6 +41,9 @@ public class CacheConfigOperationHandlers {
     static final OperationStepHandler EXPIRATION_ADD = new CacheConfigAdd(EXPIRATION_ATTRIBUTES);
     static final OperationStepHandler STATE_TRANSFER_ADD = new CacheConfigAdd(STATE_TRANSFER_ATTRIBUTES);
 
+    static final OperationStepHandler LOADER_ADD = new CacheLoaderAdd();
+    static final OperationStepHandler LOADER_PROPERTY_ADD = new CacheConfigAdd(new AttributeDefinition[]{LoaderPropertyResource.VALUE});
+    static final OperationStepHandler CLUSTER_LOADER_ADD = new ClusterCacheLoaderAdd();
     static final OperationStepHandler STORE_ADD = new CacheStoreAdd();
     static final OperationStepHandler STORE_WRITE_BEHIND_ADD = new CacheConfigAdd(WRITE_BEHIND_ATTRIBUTES);
     static final OperationStepHandler STORE_PROPERTY_ADD = new CacheConfigAdd(new AttributeDefinition[]{StorePropertyResource.VALUE});
@@ -76,6 +79,105 @@ public class CacheConfigOperationHandlers {
             context.reloadRequired();
         }
      }
+
+    /**
+     * Base class for adding cache loaders.
+     *
+     * This class needs to do the following:
+     * - check that its parent has no existing defined cache loader
+     * - process its model attributes
+     * - create any child resources required for the loader resource, such as a set of properties
+     *
+     */
+    abstract static class AbstractCacheLoaderAdd extends AbstractAddStepHandler {
+        private final AttributeDefinition[] attributes;
+
+        AbstractCacheLoaderAdd() {
+            this.attributes = BaseStoreResource.COMMON_LOADER_PARAMETERS;
+        }
+
+        @Override
+        protected void populateModel(OperationContext context, ModelNode operation, Resource resource) throws OperationFailedException {
+            final ModelNode model = resource.getModel();
+
+            // need to check that the parent does not contain some other cache loader ModelNode
+            if (isCacheLoaderDefined(context, operation)) {
+                String loaderName = getDefinedCacheLoader(context, operation);
+                throw InfinispanMessages.MESSAGES.cacheLoaderAlreadyDefined(loaderName);
+            }
+
+            // Process attributes
+            for(final AttributeDefinition attribute : attributes) {
+                // we use PROPERTIES only to allow the user to pass in a list of properties on store add commands
+                // don't copy these into the model
+                if (attribute.getName().equals(BaseStoreResource.PROPERTIES.getName()))
+                    continue ;
+                attribute.validateAndSet(operation, model);
+            }
+
+            // Process type specific properties if required
+            populateSubclassModel(context, operation, model);
+
+            // The cache config parameters  <property name=>value</property>
+            if(operation.hasDefined(ModelKeys.PROPERTIES)) {
+                for(Property property : operation.get(ModelKeys.PROPERTIES).asPropertyList()) {
+                    // create a new property=name resource
+                    final Resource param = context.createResource(PathAddress.pathAddress(PathElement.pathElement(ModelKeys.PROPERTY, property.getName())));
+                    final ModelNode value = property.getValue();
+                    if(! value.isDefined()) {
+                        throw InfinispanMessages.MESSAGES.propertyValueNotDefined(property.getName());
+                    }
+                    // set the value of the property
+                    param.getModel().get(ModelDescriptionConstants.VALUE).set(value);
+                }
+            }
+        }
+
+        abstract void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException ;
+
+        @Override
+        protected void populateModel(ModelNode operation, ModelNode model) throws OperationFailedException {
+            // do nothing
+        }
+    }
+
+    /**
+     * Add a basic cache loader to a cache.
+     */
+    private static class CacheLoaderAdd extends AbstractCacheLoaderAdd {
+        private final AttributeDefinition[] attributes;
+
+        CacheLoaderAdd() {
+            this.attributes = LoaderResource.LOADER_ATTRIBUTES;
+        }
+
+        @Override
+        protected void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
+            // this abstract method is called when populateModel() is called in the base class
+            for(final AttributeDefinition attribute : attributes) {
+                attribute.validateAndSet(operation, model);
+            }
+        }
+    }
+
+    /**
+     * Add a cluster cache loader to a cache.
+     */
+    private static class ClusterCacheLoaderAdd extends AbstractCacheLoaderAdd {
+        private final AttributeDefinition[] attributes;
+
+        ClusterCacheLoaderAdd() {
+            this.attributes = ClusterLoaderResource.CLUSTER_LOADER_ATTRIBUTES;
+        }
+
+        @Override
+        protected void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
+            // this abstract method is called when populateModel() is called in the base class
+            for(final AttributeDefinition attribute : attributes) {
+                attribute.validateAndSet(operation, model);
+            }
+        }
+    }
 
     /**
      * Base class for adding cache stores.
@@ -287,6 +389,31 @@ public class CacheConfigOperationHandlers {
         ModelNode cache = Resource.Tools.readModel(context.readResourceFromRoot(cacheAddress));
         return cache ;
     }
+
+    private static boolean isCacheLoaderDefined(OperationContext context, ModelNode operation) {
+        ModelNode cache = getCache(context, getCacheAddress(operation)) ;
+
+        return (hasCustomLoader(cache) || hasClusterLoader(cache)) ;
+   }
+
+   private static String getDefinedCacheLoader(OperationContext context, ModelNode operation) {
+       ModelNode cache = getCache(context, getCacheAddress(operation)) ;
+       if (hasCustomLoader(cache))
+           return ModelKeys.LOADER;
+       else if (hasClusterLoader(cache))
+           return ModelKeys.CLUSTER_LOADER;
+       else
+           return null ;
+   }
+
+   private static boolean hasCustomLoader(ModelNode cache) {
+       return cache.hasDefined(ModelKeys.LOADER) && cache.get(ModelKeys.LOADER, ModelKeys.LOADER_NAME).isDefined() ;
+   }
+
+   private static boolean hasClusterLoader(ModelNode cache) {
+       return cache.hasDefined(ModelKeys.CLUSTER_LOADER) && cache.get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME).isDefined() ;
+   }
+
     private static boolean isCacheStoreDefined(OperationContext context, ModelNode operation) {
          ModelNode cache = getCache(context, getCacheAddress(operation)) ;
 

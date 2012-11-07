@@ -1,4 +1,4 @@
-<!--
+  <!--
   ~ JBoss, Home of Professional Open Source.
   ~ Copyright 2012, Red Hat, Inc., and individual contributors
   ~ as indicated by the @author tags. See the copyright.txt file in the
@@ -58,6 +58,10 @@
            paramOutputFile="${generated.configs.domain}/domain.xml"/>
        
        <!-- Example configs -->
+       <generate-server-config
+           paramTemplateFile="configuration/standalone/template.xml"
+           paramSubsystemsFile="configuration/examples/subsystems-ccl-ha.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-ccl-ha.xml"/>
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-fcs-local.xml"

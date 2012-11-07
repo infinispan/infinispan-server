@@ -190,4 +190,25 @@ public interface InfinispanMessages {
     @Message(id = 10303, value = "cannot remove alias % from empty list.")
     OperationFailedException cannotRemoveAliasFromEmptyList(String aliasName);
 
+
+    /**
+     * Creates an exception indicating the a cache loader cannot be added as one already exists.
+     *
+     * @param existingLoaderName the loader which already exists.
+     *
+     * @return an {@link OperationFailedException} for the error.
+     */
+    @Message(id = 11000, value = "Cache loader cannot be created: cache loader %s is already defined")
+    OperationFailedException cacheLoaderAlreadyDefined(String existingStoreName);
+
+    /**
+     * Creates an exception indicating an invalid cache loader.
+     *
+     * @param cause           the cause of the error.
+     * @param cacheLoaderName the name of the cache loader.
+     *
+     * @return an {@link IllegalArgumentException} for the error.
+     */
+     @Message(id = 11001, value = "%s is not a valid cache loader")
+     IllegalArgumentException invalidCacheLoader(@Cause Throwable cause, String cacheLoaderName);
 }
