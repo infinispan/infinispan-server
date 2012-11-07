@@ -71,7 +71,6 @@ public class InfinispanSubsystemTestCase extends ClusteringSubsystemTest {
       return Arrays.asList(data);
     }
 
-
     @Override
     protected ValidationConfiguration getModelValidationConfiguration() {
         // use this configuration to report any exceptional cases for DescriptionProviders
@@ -131,7 +130,7 @@ public class InfinispanSubsystemTestCase extends ClusteringSubsystemTest {
     public void testParseAndMarshalModel() throws Exception {
        // Parse the subsystem xml and install into the first controller
 
-       KernelServices servicesA = super.installInController(getSubsystemXml());
+        KernelServices servicesA = super.installInController(getSubsystemXml());
 
        // Get the model and the persisted xml from the first controller
        ModelNode modelA = servicesA.readWholeModel();

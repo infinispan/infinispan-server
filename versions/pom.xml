@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>8</version>
+    <version>9</version>
     <relativePath />
   </parent>
 
@@ -65,11 +65,17 @@
         <version>${version.org.jboss.marshalling.jboss-marshalling}</version>
         <type>pom</type>
       </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>jboss-datagrid-jgroups</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>jboss-datagrid-infinispan</artifactId>
-        <version>${version.org.jboss.as}</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
@@ -77,11 +83,18 @@
         <artifactId>jbossjta</artifactId>
         <version>${version.org.jboss.jbossts.jbossjts}</version>
       </dependency>
+      
       <dependency>
         <groupId>org.jboss.jbossts</groupId>
         <artifactId>jbossjta</artifactId>
         <version>${version.org.jboss.jbossts.jbossjts}</version>
         <classifier>sources</classifier>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>jboss-datagrid-server-common</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
@@ -132,6 +145,14 @@
         <version>${version.org.jboss.as}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.jboss.as</groupId>
+        <artifactId>jboss-as-clustering-common</artifactId>
+        <version>${version.org.jboss.as}</version>
+        <scope>test</scope>
+        <classifier>tests</classifier>
       </dependency>
       
       <dependency>

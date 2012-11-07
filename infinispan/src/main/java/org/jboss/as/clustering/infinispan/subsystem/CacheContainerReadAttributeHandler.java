@@ -3,7 +3,6 @@ package org.jboss.as.clustering.infinispan.subsystem;
 import static org.jboss.as.controller.ControllerMessages.MESSAGES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +13,6 @@ import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.operations.validation.ParametersValidator;
 import org.jboss.as.controller.operations.validation.StringLengthValidator;
-import org.jboss.as.controller.registry.AttributeAccess;
-import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelNode;
 
 /**
@@ -31,7 +28,7 @@ public class CacheContainerReadAttributeHandler implements OperationStepHandler 
     private final Map<String, AttributeDefinition> attributeDefinitions ;
 
     private CacheContainerReadAttributeHandler() {
-        this(CommonAttributes.CACHE_CONTAINER_ATTRIBUTES);
+        this(CacheContainerResource.CACHE_CONTAINER_ATTRIBUTES);
     }
 
     private CacheContainerReadAttributeHandler(final AttributeDefinition... definitions) {
@@ -63,18 +60,6 @@ public class CacheContainerReadAttributeHandler implements OperationStepHandler 
         context.getResult().set(currentValue);
 
         // since we are not updating the model, there is no need for a RUNTIME step
-        context.completeStep(OperationContext.RollbackHandler.NOOP_ROLLBACK_HANDLER);
-    }
-
-    public void registerAttributes(final ManagementResourceRegistration registry) {
-
-        final EnumSet<AttributeAccess.Flag> flags = EnumSet.of(AttributeAccess.Flag.RESTART_ALL_SERVICES);
-        for (AttributeDefinition attr : CommonAttributes.CACHE_CONTAINER_ATTRIBUTES) {
-           registry.registerReadWriteAttribute(attr.getName(), this, CacheContainerWriteAttributeHandler.INSTANCE, flags);
-        }
-    }
-
-    protected AttributeDefinition getAttributeDefinition(final String attributeName) {
-        return attributeDefinitions == null ? null : attributeDefinitions.get(attributeName);
+        context.completeStep();
     }
 }

@@ -1,25 +1,18 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import static org.jboss.as.clustering.infinispan.subsystem.CommonAttributes.CACHE_ATTRIBUTES;
-import static org.jboss.as.clustering.infinispan.subsystem.CommonAttributes.CLUSTERED_CACHE_ATTRIBUTES;
-import static org.jboss.as.clustering.infinispan.subsystem.CommonAttributes.DISTRIBUTED_CACHE_ATTRIBUTES;
 import static org.jboss.as.controller.ControllerMessages.MESSAGES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VALUE;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.infinispan.configuration.cache.CacheMode;
 import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.operations.validation.ParametersValidator;
-import org.jboss.as.controller.registry.AttributeAccess;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelNode;
 
@@ -28,19 +21,14 @@ import org.jboss.dmr.ModelNode;
  *
  * @author Richard Achmatowicz (c) 2011 Red Hat Inc.
  */
-public class CacheWriteAttributeHandler implements OperationStepHandler, SelfRegisteringAttributeHandler {
-
-    /** The basic and clustered cache attributes operation handler. */
-    static final SelfRegisteringAttributeHandler CACHE_ATTR = new CacheWriteAttributeHandler(CACHE_ATTRIBUTES);
-    static final SelfRegisteringAttributeHandler CLUSTERED_CACHE_ATTR = new CacheWriteAttributeHandler(CLUSTERED_CACHE_ATTRIBUTES);
-    static final SelfRegisteringAttributeHandler DISTRIBUTED_CACHE_ATTR = new CacheWriteAttributeHandler(DISTRIBUTED_CACHE_ATTRIBUTES);
+public class CacheWriteAttributeHandler implements OperationStepHandler {
 
     public static final CacheWriteAttributeHandler INSTANCE = new CacheWriteAttributeHandler();
     private final ParametersValidator nameValidator = new ParametersValidator();
 
     private final Map<String, AttributeDefinition> attributeDefinitions;
 
-    private CacheWriteAttributeHandler(final AttributeDefinition... definitions) {
+    public CacheWriteAttributeHandler(final AttributeDefinition... definitions) {
         assert definitions != null : MESSAGES.nullVar("definitions").getLocalizedMessage();
         attributeDefinitions = new HashMap<String, AttributeDefinition>();
         for (AttributeDefinition def : definitions) {
@@ -81,9 +69,7 @@ public class CacheWriteAttributeHandler implements OperationStepHandler, SelfReg
                 @Override
                 public void execute(OperationContext context, ModelNode operation) throws OperationFailedException {
                     context.reloadRequired();
-                    if (context.completeStep() == OperationContext.ResultAction.ROLLBACK) {
-                        context.revertReloadRequired();
-                    }
+                    context.completeStep();
                 }
             }, OperationContext.Stage.RUNTIME);
         }
@@ -107,34 +93,8 @@ public class CacheWriteAttributeHandler implements OperationStepHandler, SelfReg
      }
 
     public void registerAttributes(final ManagementResourceRegistration registry) {
-
-        final EnumSet<AttributeAccess.Flag> flags = EnumSet.of(AttributeAccess.Flag.RESTART_ALL_SERVICES);
         for (AttributeDefinition attr : attributeDefinitions.values()) {
-           registry.registerReadWriteAttribute(attr.getName(), CacheReadAttributeHandler.INSTANCE, this, flags);
+           registry.registerReadWriteAttribute(attr, CacheReadAttributeHandler.INSTANCE, this);
         }
     }
-
-    /*
-     * The operation address is of the form /subsystem=infinispan/cache-container=X/cache-type=Y:write-attribute()
-     */
-    public static CacheMode getCacheMode(ModelNode operation) {
-
-        PathAddress cacheAddress = PathAddress.pathAddress(operation.get(OP_ADDR));
-        String cacheType = cacheAddress.getLastElement().getKey();
-
-        CacheMode mode = null;
-        if (cacheType.equals(ModelKeys.LOCAL_CACHE)) {
-            mode = CacheMode.LOCAL;
-        } else if (cacheType.equals(ModelKeys.INVALIDATION_CACHE)) {
-            mode = CacheMode.INVALIDATION_SYNC;
-        }
-        else if (cacheType.equals(ModelKeys.REPLICATED_CACHE)) {
-            mode = CacheMode.REPL_SYNC;
-        }
-        else if (cacheType.equals(ModelKeys.DISTRIBUTED_CACHE)) {
-            mode = CacheMode.DIST_SYNC;
-        }
-        return mode;
-    }
-
 }

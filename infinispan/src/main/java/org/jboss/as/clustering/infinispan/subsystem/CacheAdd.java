@@ -64,6 +64,7 @@ import org.jboss.logging.Logger;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.msc.inject.Injector;
+import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
@@ -115,7 +116,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    log.warn(e.getMessage(), e);
+                    log.warn(e.getLocalizedMessage(), e);
                 }
             }
         } catch (IOException e) {
@@ -171,10 +172,10 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
 
         // get model attributes
         ModelNode resolvedValue = null;
-        final String jndiName = ((resolvedValue = CommonAttributes.JNDI_NAME.resolveModelAttribute(context, cacheModel)).isDefined()) ? resolvedValue.asString() : null;
-        final ServiceController.Mode initialMode = StartMode.valueOf(CommonAttributes.START.resolveModelAttribute(context, cacheModel).asString()).getMode();
+        final String jndiName = ((resolvedValue = CacheResource.JNDI_NAME.resolveModelAttribute(context, cacheModel)).isDefined()) ? resolvedValue.asString() : null;
+        final ServiceController.Mode initialMode = StartMode.valueOf(CacheResource.START.resolveModelAttribute(context, cacheModel).asString()).getMode();
 
-        final ModuleIdentifier moduleId = (resolvedValue = CommonAttributes.CACHE_MODULE.resolveModelAttribute(context, cacheModel)).isDefined() ? ModuleIdentifier.fromString(resolvedValue.asString()) : null;
+        final ModuleIdentifier moduleId = (resolvedValue = CacheResource.CACHE_MODULE.resolveModelAttribute(context, cacheModel)).isDefined() ? ModuleIdentifier.fromString(resolvedValue.asString()) : null;
 
         // create a list for dependencies which may need to be added during processing
         List<Dependency<?>> dependencies = new LinkedList<Dependency<?>>();
@@ -186,7 +187,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
 
         // get container Model to pick up the value of the default cache of the container
         // AS7-3488 make default-cache no required attribute
-        String defaultCache = CommonAttributes.DEFAULT_CACHE.resolveModelAttribute(context, containerModel).asString();
+        String defaultCache = CacheContainerResource.DEFAULT_CACHE.resolveModelAttribute(context, containerModel).asString();
 
         ServiceTarget target = context.getServiceTarget();
         Configuration config = builder.build();
@@ -199,10 +200,10 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         log.debugf("Cache configuration service for %s installed for container %s", cacheName, containerName);
 
         // now install the corresponding cache service (starts a configured cache)
-        controllers.add(this.installCacheService(target, containerName, cacheName, defaultCache, initialMode, builder, config, verificationHandler));
+        controllers.add(this.installCacheService(target, containerName, cacheName, defaultCache, initialMode, config, verificationHandler));
 
         // install a name service entry for the cache
-        controllers.add(this.installJndiService(target, containerName, cacheName, jndiName, verificationHandler));
+        controllers.add(this.installJndiService(target, containerName, cacheName, InfinispanJndiName.createCacheJndiName(jndiName, containerName, cacheName), verificationHandler));
         log.debugf("Cache service for cache %s installed for container %s", cacheName, containerName);
 
         return controllers;
@@ -220,9 +221,8 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         // remove all services started by CacheAdd, in reverse order
         // remove the binder service
         ModelNode resolvedValue = null;
-        final String jndiNameString = (resolvedValue = CommonAttributes.JNDI_NAME.resolveModelAttribute(context, model)).isDefined() ? resolvedValue.asString() : null;
-        final String jndiName = InfinispanJndiName.createCacheJndiNameOrDefault(jndiNameString, containerName, cacheName);
-        ContextNames.BindInfo bindInfo = ContextNames.bindInfoFor(jndiName);
+        final String jndiName = (resolvedValue = CacheResource.JNDI_NAME.resolveModelAttribute(context, model)).isDefined() ? resolvedValue.asString() : null;
+        ContextNames.BindInfo bindInfo = ContextNames.bindInfoFor(InfinispanJndiName.createCacheJndiName(jndiName, containerName, cacheName));
         context.removeService(bindInfo.getBinderServiceName()) ;
         // remove the CacheService instance
         context.removeService(CacheService.getServiceName(containerName, cacheName));
@@ -245,11 +245,10 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
     ServiceController<?> installCacheConfigurationService(ServiceTarget target, String containerName, String cacheName, String defaultCache, ModuleIdentifier moduleId,
             ConfigurationBuilder builder, Configuration config, List<Dependency<?>> dependencies, ServiceVerificationHandler verificationHandler) {
 
-        InjectedValue<EmbeddedCacheManager> container = new InjectedValue<EmbeddedCacheManager>();
-        CacheConfigurationDependencies cacheConfigurationDependencies = new CacheConfigurationDependencies(container);
-        CacheConfigurationService cacheConfigurationService = new CacheConfigurationService(cacheName, builder, moduleId, cacheConfigurationDependencies);
-
-        ServiceBuilder<?> configBuilder = target.addService(CacheConfigurationService.getServiceName(containerName, cacheName), cacheConfigurationService)
+        final InjectedValue<EmbeddedCacheManager> container = new InjectedValue<EmbeddedCacheManager>();
+        final CacheConfigurationDependencies cacheConfigurationDependencies = new CacheConfigurationDependencies(container);
+        final Service<Configuration> service = new CacheConfigurationService(cacheName, builder, moduleId, cacheConfigurationDependencies);
+        final ServiceBuilder<?> configBuilder = target.addService(CacheConfigurationService.getServiceName(containerName, cacheName), service)
                 .addDependency(EmbeddedCacheManagerService.getServiceName(containerName), EmbeddedCacheManager.class, container)
                 .addDependency(Services.JBOSS_SERVICE_MODULE_LOADER, ModuleLoader.class, cacheConfigurationDependencies.getModuleLoaderInjector())
                 .setInitialMode(ServiceController.Mode.PASSIVE)
@@ -275,42 +274,38 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
     }
 
     ServiceController<?> installCacheService(ServiceTarget target, String containerName, String cacheName, String defaultCache, ServiceController.Mode initialMode,
-            ConfigurationBuilder builder, Configuration config, ServiceVerificationHandler verificationHandler) {
+            Configuration config, ServiceVerificationHandler verificationHandler) {
 
-        InjectedValue<EmbeddedCacheManager> container = new InjectedValue<EmbeddedCacheManager>();
-        CacheDependencies cacheDependencies = new CacheDependencies(container);
-        CacheService<Object, Object> cacheService = new CacheService<Object, Object>(cacheName, cacheDependencies);
-
-        ServiceBuilder<?> cacheBuilder = target.addService(CacheService.getServiceName(containerName, cacheName), cacheService)
+        final InjectedValue<EmbeddedCacheManager> container = new InjectedValue<EmbeddedCacheManager>();
+        final CacheDependencies cacheDependencies = new CacheDependencies(container);
+        final Service<Cache<Object, Object>> service = new CacheService<Object, Object>(cacheName, cacheDependencies);
+        final ServiceBuilder<?> builder = target.addService(CacheService.getServiceName(containerName, cacheName), service)
                 .addDependency(CacheConfigurationService.getServiceName(containerName, cacheName))
                 .addDependency(EmbeddedCacheManagerService.getServiceName(containerName), EmbeddedCacheManager.class, container)
                 .setInitialMode(initialMode)
         ;
         if (config.transaction().recovery().enabled()) {
-            cacheBuilder.addDependency(TxnServices.JBOSS_TXN_ARJUNA_RECOVERY_MANAGER, XAResourceRecoveryRegistry.class, cacheDependencies.getRecoveryRegistryInjector());
+            builder.addDependency(TxnServices.JBOSS_TXN_ARJUNA_RECOVERY_MANAGER, XAResourceRecoveryRegistry.class, cacheDependencies.getRecoveryRegistryInjector());
         }
 
         // add an alias for the default cache
         if (cacheName.equals(defaultCache)) {
-            cacheBuilder.addAliases(CacheService.getServiceName(containerName, null));
+            builder.addAliases(CacheService.getServiceName(containerName, null));
         }
 
         if (initialMode == ServiceController.Mode.ACTIVE) {
-            cacheBuilder.addListener(verificationHandler);
+            builder.addListener(verificationHandler);
         }
 
-        return cacheBuilder.install();
+        return builder.install();
     }
 
     @SuppressWarnings("rawtypes")
-    ServiceController<?> installJndiService(ServiceTarget target, String containerName, String cacheName, String jndiNameString, ServiceVerificationHandler verificationHandler) {
+    ServiceController<?> installJndiService(ServiceTarget target, String containerName, String cacheName, String jndiName, ServiceVerificationHandler verificationHandler) {
 
-        String jndiName = InfinispanJndiName.createCacheJndiNameOrDefault(jndiNameString, containerName, cacheName);
-
-        ServiceName cacheServiceName = CacheService.getServiceName(containerName, cacheName);
-        ContextNames.BindInfo bindInfo = ContextNames.bindInfoFor(jndiName);
-
-        BinderService binder = new BinderService(bindInfo.getBindName());
+        final ServiceName cacheServiceName = CacheService.getServiceName(containerName, cacheName);
+        final ContextNames.BindInfo bindInfo = ContextNames.bindInfoFor(jndiName);
+        final BinderService binder = new BinderService(bindInfo.getBindName());
         return target.addService(bindInfo.getBinderServiceName(), binder)
                 .addAliases(ContextNames.JAVA_CONTEXT_SERVICE_NAME.append(jndiName))
                 .addDependency(cacheServiceName, Cache.class, new ManagedReferenceInjector<Cache>(binder.getManagedObjectInjector()))
@@ -321,8 +316,8 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
     }
 
     private <T> void addDependency(ServiceBuilder<?> builder, Dependency<T> dependency) {
-        ServiceName name = dependency.getName();
-        Injector<T> injector = dependency.getInjector();
+        final ServiceName name = dependency.getName();
+        final Injector<T> injector = dependency.getInjector();
         if (injector != null) {
             builder.addDependency(name, dependency.getType(), injector);
         } else {
@@ -338,11 +333,11 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
      */
     void populate(ModelNode fromModel, ModelNode toModel) throws OperationFailedException {
 
-        CommonAttributes.START.validateAndSet(fromModel, toModel);
-        CommonAttributes.BATCHING.validateAndSet(fromModel, toModel);
-        CommonAttributes.INDEXING.validateAndSet(fromModel, toModel);
-        CommonAttributes.JNDI_NAME.validateAndSet(fromModel, toModel);
-        CommonAttributes.CACHE_MODULE.validateAndSet(fromModel, toModel);
+        CacheResource.START.validateAndSet(fromModel, toModel);
+        CacheResource.BATCHING.validateAndSet(fromModel, toModel);
+        CacheResource.INDEXING.validateAndSet(fromModel, toModel);
+        CacheResource.JNDI_NAME.validateAndSet(fromModel, toModel);
+        CacheResource.CACHE_MODULE.validateAndSet(fromModel, toModel);
     }
 
     /**
@@ -356,25 +351,24 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
     void processModelNode(OperationContext context, String containerName, ModelNode cache, ConfigurationBuilder builder, List<Dependency<?>> dependencies)
             throws OperationFailedException {
 
-        final Indexing indexing = Indexing.valueOf(CommonAttributes.INDEXING.resolveModelAttribute(context, cache).asString());
-        final boolean batching = CommonAttributes.BATCHING.resolveModelAttribute(context, cache).asBoolean();
+        final Indexing indexing = Indexing.valueOf(CacheResource.INDEXING.resolveModelAttribute(context, cache).asString());
+        final boolean batching = CacheResource.BATCHING.resolveModelAttribute(context, cache).asBoolean();
 
         // set the cache mode (may be modified when setting up clustering attributes)
         builder.clustering().cacheMode(this.mode);
 
         builder.indexing()
-                .enabled(indexing.isEnabled())
-                .indexLocalOnly(indexing.isLocalOnly())
-        ;
+            .enabled(indexing.isEnabled())
+            .indexLocalOnly(indexing.isLocalOnly());
 
         // locking is a child resource
         if (cache.hasDefined(ModelKeys.LOCKING) && cache.get(ModelKeys.LOCKING, ModelKeys.LOCKING_NAME).isDefined()) {
             ModelNode locking = cache.get(ModelKeys.LOCKING, ModelKeys.LOCKING_NAME);
 
-            final IsolationLevel isolationLevel = IsolationLevel.valueOf(CommonAttributes.ISOLATION.resolveModelAttribute(context, locking).asString());
-            final boolean striping = CommonAttributes.STRIPING.resolveModelAttribute(context, locking).asBoolean();
-            final long acquireTimeout = CommonAttributes.ACQUIRE_TIMEOUT.resolveModelAttribute(context, locking).asLong();
-            final int concurrencyLevel = CommonAttributes.CONCURRENCY_LEVEL.resolveModelAttribute(context, locking).asInt();
+            final IsolationLevel isolationLevel = IsolationLevel.valueOf(LockingResource.ISOLATION.resolveModelAttribute(context, locking).asString());
+            final boolean striping = LockingResource.STRIPING.resolveModelAttribute(context, locking).asBoolean();
+            final long acquireTimeout = LockingResource.ACQUIRE_TIMEOUT.resolveModelAttribute(context, locking).asLong();
+            final int concurrencyLevel = LockingResource.CONCURRENCY_LEVEL.resolveModelAttribute(context, locking).asInt();
 
             builder.locking()
                     .isolationLevel(isolationLevel)
@@ -390,9 +384,9 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         if (cache.hasDefined(ModelKeys.TRANSACTION) && cache.get(ModelKeys.TRANSACTION, ModelKeys.TRANSACTION_NAME).isDefined()) {
             ModelNode transaction = cache.get(ModelKeys.TRANSACTION, ModelKeys.TRANSACTION_NAME);
 
-            final long stopTimeout = CommonAttributes.STOP_TIMEOUT.resolveModelAttribute(context, transaction).asLong();
-            txMode = TransactionMode.valueOf(CommonAttributes.MODE.resolveModelAttribute(context, transaction).asString());
-            lockingMode = LockingMode.valueOf(CommonAttributes.LOCKING.resolveModelAttribute(context, transaction).asString());
+            final long stopTimeout = TransactionResource.STOP_TIMEOUT.resolveModelAttribute(context, transaction).asLong();
+            txMode = TransactionMode.valueOf(TransactionResource.MODE.resolveModelAttribute(context, transaction).asString());
+            lockingMode = LockingMode.valueOf(TransactionResource.LOCKING.resolveModelAttribute(context, transaction).asString());
 
             builder.transaction().cacheStopTimeout(stopTimeout);
         }
@@ -416,11 +410,11 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         if (cache.hasDefined(ModelKeys.EVICTION) && cache.get(ModelKeys.EVICTION, ModelKeys.EVICTION_NAME).isDefined()) {
             ModelNode eviction = cache.get(ModelKeys.EVICTION, ModelKeys.EVICTION_NAME);
 
-            final EvictionStrategy strategy = EvictionStrategy.valueOf(CommonAttributes.EVICTION_STRATEGY.resolveModelAttribute(context, eviction).asString());
+            final EvictionStrategy strategy = EvictionStrategy.valueOf(EvictionResource.EVICTION_STRATEGY.resolveModelAttribute(context, eviction).asString());
             builder.eviction().strategy(strategy);
 
             if (strategy.isEnabled()) {
-                final int maxEntries = CommonAttributes.MAX_ENTRIES.resolveModelAttribute(context, eviction).asInt();
+                final int maxEntries = EvictionResource.MAX_ENTRIES.resolveModelAttribute(context, eviction).asInt();
                 builder.eviction().maxEntries(maxEntries);
             }
         }
@@ -429,9 +423,9 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
 
             ModelNode expiration = cache.get(ModelKeys.EXPIRATION, ModelKeys.EXPIRATION_NAME);
 
-            final long maxIdle = CommonAttributes.MAX_IDLE.resolveModelAttribute(context, expiration).asLong();
-            final long lifespan = CommonAttributes.LIFESPAN.resolveModelAttribute(context, expiration).asLong();
-            final long interval = CommonAttributes.INTERVAL.resolveModelAttribute(context, expiration).asLong();
+            final long maxIdle = ExpirationResource.MAX_IDLE.resolveModelAttribute(context, expiration).asLong();
+            final long lifespan = ExpirationResource.LIFESPAN.resolveModelAttribute(context, expiration).asLong();
+            final long interval = ExpirationResource.INTERVAL.resolveModelAttribute(context, expiration).asLong();
 
             builder.expiration()
                     .maxIdle(maxIdle)
@@ -451,12 +445,13 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         if (storeKey != null) {
             ModelNode store = this.getStoreModelNode(cache);
 
-            final boolean shared = CommonAttributes.SHARED.resolveModelAttribute(context, store).asBoolean();
-            final boolean preload = CommonAttributes.PRELOAD.resolveModelAttribute(context, store).asBoolean();
-            final boolean passivation = CommonAttributes.PASSIVATION.resolveModelAttribute(context, store).asBoolean();
-            final boolean fetchState = CommonAttributes.FETCH_STATE.resolveModelAttribute(context, store).asBoolean();
-            final boolean purge = CommonAttributes.PURGE.resolveModelAttribute(context, store).asBoolean();
-            final boolean singleton = CommonAttributes.SINGLETON.resolveModelAttribute(context, store).asBoolean();
+            final boolean shared = BaseStoreResource.SHARED.resolveModelAttribute(context, store).asBoolean();
+            final boolean preload = BaseStoreResource.PRELOAD.resolveModelAttribute(context, store).asBoolean();
+            final boolean passivation = BaseStoreResource.PASSIVATION.resolveModelAttribute(context, store).asBoolean();
+            final boolean fetchState = BaseStoreResource.FETCH_STATE.resolveModelAttribute(context, store).asBoolean();
+            final boolean purge = BaseStoreResource.PURGE.resolveModelAttribute(context, store).asBoolean();
+            final boolean singleton = BaseStoreResource.SINGLETON.resolveModelAttribute(context, store).asBoolean();
+            // TODO Fix me
             final boolean async = store.hasDefined(ModelKeys.WRITE_BEHIND) && store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME).isDefined();
 
             LoadersConfigurationBuilder loadersBuilder = builder.loaders()
@@ -474,10 +469,10 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             if (async) {
                 ModelNode writeBehind = store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME);
                 storeBuilder.async().enable()
-                        .flushLockTimeout(CommonAttributes.FLUSH_LOCK_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
-                        .modificationQueueSize(CommonAttributes.MODIFICATION_QUEUE_SIZE.resolveModelAttribute(context, writeBehind).asInt())
-                        .shutdownTimeout(CommonAttributes.SHUTDOWN_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
-                        .threadPoolSize(CommonAttributes.THREAD_POOL_SIZE.resolveModelAttribute(context, writeBehind).asInt())
+                        .flushLockTimeout(StoreWriteBehindResource.FLUSH_LOCK_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
+                        .modificationQueueSize(StoreWriteBehindResource.MODIFICATION_QUEUE_SIZE.resolveModelAttribute(context, writeBehind).asInt())
+                        .shutdownTimeout(StoreWriteBehindResource.SHUTDOWN_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
+                        .threadPoolSize(StoreWriteBehindResource.THREAD_POOL_SIZE.resolveModelAttribute(context, writeBehind).asInt())
                 ;
             }
 
@@ -535,8 +530,8 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         if (storeKey.equals(ModelKeys.FILE_STORE)) {
             final FileCacheStoreConfigurationBuilder builder = loadersBuilder.addStore(FileCacheStoreConfigurationBuilder.class);
 
-            final String path = ((resolvedValue = CommonAttributes.PATH.resolveModelAttribute(context, store)).isDefined()) ? resolvedValue.asString() : InfinispanExtension.SUBSYSTEM_NAME + File.separatorChar + containerName;
-            final String relativeTo = ((resolvedValue = CommonAttributes.RELATIVE_TO.resolveModelAttribute(context, store)).isDefined()) ? resolvedValue.asString() : ServerEnvironment.SERVER_DATA_DIR;
+            final String path = ((resolvedValue = FileStoreResource.PATH.resolveModelAttribute(context, store)).isDefined()) ? resolvedValue.asString() : InfinispanExtension.SUBSYSTEM_NAME + File.separatorChar + containerName;
+            final String relativeTo = ((resolvedValue = FileStoreResource.RELATIVE_TO.resolveModelAttribute(context, store)).isDefined()) ? resolvedValue.asString() : ServerEnvironment.SERVER_DATA_DIR;
             Injector<PathManager> injector = new SimpleInjector<PathManager>() {
                 volatile PathManager.Callback.Handle callbackHandle;
                 @Override
@@ -558,7 +553,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         } else if (storeKey.equals(ModelKeys.STRING_KEYED_JDBC_STORE) || storeKey.equals(ModelKeys.BINARY_KEYED_JDBC_STORE) || storeKey.equals(ModelKeys.MIXED_KEYED_JDBC_STORE)) {
             final AbstractJdbcCacheStoreConfigurationBuilder<?, ?> builder = this.buildJdbcStore(loadersBuilder, context, store);
 
-            final String datasource = CommonAttributes.DATA_SOURCE.resolveModelAttribute(context, store).asString();
+            final String datasource = BaseJDBCStoreResource.DATA_SOURCE.resolveModelAttribute(context, store).asString();
 
             dependencies.add(new Dependency<Object>(ServiceName.JBOSS.append("data-source", datasource)));
             builder.dataSource().jndiUrl(datasource);
@@ -628,9 +623,9 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
     }
 
     private void buildTable(TableManipulationConfigurationBuilder<?, ?> builder, OperationContext context, ModelNode table, String defaultTableNamePrefix) throws OperationFailedException {
-        ModelNode tableNamePrefix = CommonAttributes.PREFIX.resolveModelAttribute(context, table);
-        builder.batchSize(CommonAttributes.BATCH_SIZE.resolveModelAttribute(context, table).asInt())
-                .fetchSize(CommonAttributes.FETCH_SIZE.resolveModelAttribute(context, table).asInt())
+        ModelNode tableNamePrefix = BaseJDBCStoreResource.PREFIX.resolveModelAttribute(context, table);
+        builder.batchSize(BaseJDBCStoreResource.BATCH_SIZE.resolveModelAttribute(context, table).asInt())
+                .fetchSize(BaseJDBCStoreResource.FETCH_SIZE.resolveModelAttribute(context, table).asInt())
                 .tableNamePrefix(tableNamePrefix.isDefined() ? tableNamePrefix.asString() : defaultTableNamePrefix)
                 .idColumnName(this.getColumnProperty(table, ModelKeys.ID_COLUMN, ModelKeys.NAME, "id"))
                 .idColumnType(this.getColumnProperty(table, ModelKeys.ID_COLUMN, ModelKeys.TYPE, "VARCHAR"))
