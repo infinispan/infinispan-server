@@ -97,6 +97,10 @@
       <module-def name="com.thoughtworks.xstream" src="${jdg.modules.dir}">
          <maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
       </module-def>
+      
+      <module-def name="com.jboss.datagrid.common" src="${jdg.modules.dir}">
+         <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-server-common" />
+      </module-def>
 
       <module-def name="com.jboss.datagrid" src="${jdg.modules.dir}">
          <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-server-integration" />
@@ -112,6 +116,10 @@
 
       <module-def name="org.jboss.as.clustering.infinispan" src="${jdg.modules.dir}">
          <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-infinispan" />
+      </module-def>
+      
+      <module-def name="org.jboss.as.clustering.jgroups" src="${jdg.modules.dir}">
+         <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-jgroups" />
       </module-def>
 
       <module-def name="org.jboss.as.console" slot="jdg" src="${jdg.modules.dir}" />

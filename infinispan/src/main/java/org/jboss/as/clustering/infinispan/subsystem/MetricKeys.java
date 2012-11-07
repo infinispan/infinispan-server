@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -19,58 +19,61 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.jboss.as.clustering.infinispan.subsystem;
 
+/**
+ * @author Tristan Tarrant
+ */
+
 public class MetricKeys {
-    public static final String CACHE_MANAGER_STATUS = "cacheManagerStatus";
-    public static final String IS_COORDINATOR = "isCoordinator";
-    public static final String COORDINATOR_ADDRESS = "coordinatorAddress";
-    public static final String LOCAL_ADDRESS = "localAddress";
-    public static final String CLUSTER_NAME = "clusterName";
-
-    public static final String BYTES_READ = "bytesRead";
-    public static final String BYTES_WRITTEN = "bytesWritten";
-
-    public static final String CACHE_STATUS = "cacheStatus";
-    public static final String CONCURRENCY_LEVEL = "concurrencyLevel";
-    public static final String NUMBER_OF_LOCKS_AVAILABLE = "numberOfLocksAvailable";
-    public static final String NUMBER_OF_LOCKS_HELD = "numberOfLocksHeld";
-
-    public static final String TOTAL_NUMBER_OF_DETECTED_DEADLOCKS = "totalNumberOfDetectedDeadlocks";
-    public static final String NUMBER_OF_LOCAL_DETECTED_DEADLOCKS = "numberOfLocalDetectedDeadlocks";
-    public static final String NUMBER_OF_REMOTE_DETECTED_DEADLOCKS = "numberOfRemoteDetectedDeadlocks";
-    public static final String NUMBER_OF_UNSOLVABLE_DEADLOCKS = "numberOfUnsolvableDeadlocks";
-
-    public static final String AVERAGE_READ_TIME = "averageReadTime";
-    public static final String AVERAGE_WRITE_TIME = "averageWriteTime";
-    public static final String ELAPSED_TIME = "elapsedTime";
+    // cache container
+    public static final String CACHE_MANAGER_STATUS = "cache-manager-status";
+    public static final String IS_COORDINATOR = "is-coordinator";
+    public static final String COORDINATOR_ADDRESS = "coordinator-address";
+    public static final String LOCAL_ADDRESS = "local-address";
+    public static final String CLUSTER_NAME = "cluster-name";
+    // cache
+    public static final String BYTES_READ = "bytes-read";
+    public static final String BYTES_WRITTEN = "bytes-written";
+    public static final String CACHE_STATUS = "cache-status";
+    // LockManager
+    public static final String NUMBER_OF_LOCKS_AVAILABLE = "number-of-locks-available";
+    public static final String NUMBER_OF_LOCKS_HELD = "number-of-locks-held";
+    public static final String CONCURRENCY_LEVEL = "concurrency-level";
+    // cache management interceptor
+    public static final String AVERAGE_READ_TIME = "average-read-time";
+    public static final String AVERAGE_WRITE_TIME = "average-write-time";
+    public static final String ELAPSED_TIME = "elapsed-time";
     public static final String EVICTIONS = "evictions";
-    public static final String HIT_RATIO = "hitRatio";
+    public static final String HIT_RATIO = "hit-ratio";
     public static final String HITS = "hits";
     public static final String MISSES = "misses";
-    public static final String NUMBER_OF_ENTRIES = "numberOfEntries";
-    public static final String READ_WRITE_RATIO = "readWriteRatio";
-    public static final String REMOVE_HITS = "removeHits";
-    public static final String REMOVE_MISSES = "removeMisses";
+    public static final String NUMBER_OF_ENTRIES = "number-of-entries";
+    public static final String READ_WRITE_RATIO = "read-write-ratio";
+    public static final String REMOVE_HITS = "remove-hits";
+    public static final String REMOVE_MISSES = "remove-misses";
     public static final String STORES = "stores";
-    public static final String TIME_SINCE_RESET = "timeSinceReset";
-    public static final String JOIN_COMPLETE = "joinComplete";
-    public static final String STATE_TRANSFER_IN_PROGRESS = "stateTransferInProgress";
-    public static final String AVERAGE_REPLICATION_TIME = "averageReplicationTime";
-    public static final String REPLICATION_COUNT = "replicationCount";
-    public static final String REPLICATION_FAILURES = "replicationFailures";
-    public static final String SUCCESS_RATIO = "successRatio";
-
+    public static final String TIME_SINCE_RESET = "time-since-reset";
+    // transaction manager
     public static final String COMMITS = "commits";
     public static final String PREPARES = "prepares";
     public static final String ROLLBACKS = "rollbacks";
-
+    // invalidation interceptor
     public static final String INVALIDATIONS = "invalidations";
+    // passivation interceptor
     public static final String PASSIVATIONS = "passivations";
-
+    // activation interceptor
     public static final String ACTIVATIONS = "activations";
-    public static final String CACHE_LOADER_LOADS = "cacheLoaderLoads";
-    public static final String CACHE_LOADER_MISSES = "cacheLoaderMisses";
+    public static final String CACHE_LOADER_LOADS = "cache-loader-loads";
+    public static final String CACHE_LOADER_MISSES = "cache-loader-misses";
+    public static final String CACHE_LOADER_STORES = "cache-loader-stores";
 
-    public static final String CACHE_LOADER_STORES = "cacheLoaderStores";
+    public static final String JOIN_COMPLETE = "join-complete";
+    public static final String STATE_TRANSFER_IN_PROGRESS = "state-transfer-in-progress";
+    // Rpc manager
+    public static final String AVERAGE_REPLICATION_TIME = "average-replication-time";
+    public static final String REPLICATION_COUNT = "replication-count";
+    public static final String REPLICATION_FAILURES = "replication-failures";
+    public static final String SUCCESS_RATIO = "success-ratio";
 }

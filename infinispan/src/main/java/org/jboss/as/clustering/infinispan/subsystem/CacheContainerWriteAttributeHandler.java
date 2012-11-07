@@ -4,7 +4,6 @@ import static org.jboss.as.controller.ControllerMessages.MESSAGES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VALUE;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +13,6 @@ import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.operations.validation.ParametersValidator;
-import org.jboss.as.controller.registry.AttributeAccess;
-import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelNode;
 
 /**
@@ -30,11 +27,11 @@ public class CacheContainerWriteAttributeHandler implements OperationStepHandler
 
     private final Map<String, AttributeDefinition> attributeDefinitions;
 
-    private CacheContainerWriteAttributeHandler() {
-        this(CommonAttributes.CACHE_CONTAINER_ATTRIBUTES);
+    public CacheContainerWriteAttributeHandler() {
+        this(CacheContainerResource.CACHE_CONTAINER_ATTRIBUTES);
     }
 
-    private CacheContainerWriteAttributeHandler(final AttributeDefinition... definitions) {
+    public CacheContainerWriteAttributeHandler(final AttributeDefinition... definitions) {
         assert definitions != null : MESSAGES.nullVar("definitions").getLocalizedMessage();
         attributeDefinitions = new HashMap<String, AttributeDefinition>();
         for (AttributeDefinition def : definitions) {
@@ -97,11 +94,4 @@ public class CacheContainerWriteAttributeHandler implements OperationStepHandler
          return attributeDefinitions == null ? null : attributeDefinitions.get(attributeName);
      }
 
-    public void registerAttributes(final ManagementResourceRegistration registry) {
-
-        final EnumSet<AttributeAccess.Flag> flags = EnumSet.of(AttributeAccess.Flag.RESTART_ALL_SERVICES);
-        for (AttributeDefinition attr : CommonAttributes.CACHE_CONTAINER_ATTRIBUTES) {
-           registry.registerReadWriteAttribute(attr.getName(), CacheContainerReadAttributeHandler.INSTANCE, this, flags);
-        }
-    }
 }

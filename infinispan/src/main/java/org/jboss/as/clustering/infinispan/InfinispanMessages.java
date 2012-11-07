@@ -70,10 +70,10 @@ public interface InfinispanMessages {
      * @param cause          the cause of the error.
      * @param cacheStoreName the name of the cache store.
      *
-     * @return an {@link IllegalArgumentException} for the error.
+     * @return an {@link OperationFailedException} for the error.
      */
     @Message(id = 10292, value = "%s is not a valid cache store")
-    IllegalArgumentException invalidCacheStore(@Cause Throwable cause, String cacheStoreName);
+    OperationFailedException invalidCacheStore(@Cause Throwable cause, String cacheStoreName);
 
     /**
      * Creates an exception indicating an invalid cache store.
@@ -84,7 +84,7 @@ public interface InfinispanMessages {
      * @return an {@link IllegalArgumentException} for the error.
      */
     @Message(id = 10293, value = "%s is not a valid default cache. The %s cache container does not contain a cache with that name")
-    IllegalArgumentException invalidCacheStore(String cacheStoreName, String cacheContainerName);
+    IllegalArgumentException invalidDefaultCache(String cacheName, String cacheContainerName);
 
     /**
      * Creates an exception indicating the an executor property is invalid.
@@ -149,5 +149,45 @@ public interface InfinispanMessages {
      */
     @Message(id = 10299, value = "Value for property with key %s is not defined")
     OperationFailedException propertyValueNotDefined(String propertyKey);
+
+    /**
+     * A message indicating that the resource could not be located.
+     *
+     * @param resourceName the name of the resource.
+     *
+     * @return the String message.
+     */
+    @Message(id = 10300, value = "Failed to locate %s")
+    String notFound(String resourceName);
+
+    /**
+     * A message indicating that the resource could not be parsed.
+     *
+     * @param resourceName the name of the resource.
+     *
+     * @return IllegalStateException instance.
+     */
+    @Message(id = 10301, value = "Failed to parse %s")
+    IllegalStateException failedToParse(@Cause Throwable cause, String resourceName);
+
+    /**
+     * Creates an exception indicating a singleton resource already exists.
+     *
+     * @param resourceName the name of the resource.
+     *
+     * @return an {@link OperationFailedException} for the error.
+     */
+    @Message(id = 10302, value = "Add operation failed: singleton %s already exists.")
+    OperationFailedException singletonResourceAlreadyExists(String resourceName);
+
+    /**
+     * Creates an exception indicating unable to remove an alias from an empty list of aliases.
+     *
+     * @param aliasName the name of the alias.
+     *
+     * @return an {@link OperationFailedException} for the error.
+     */
+    @Message(id = 10303, value = "cannot remove alias % from empty list.")
+    OperationFailedException cannotRemoveAliasFromEmptyList(String aliasName);
 
 }

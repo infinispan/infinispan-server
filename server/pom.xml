@@ -52,6 +52,11 @@
          <artifactId>jboss-as-build</artifactId>
          <type>pom</type>
       </dependency>
+      
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jboss-datagrid-server-common</artifactId>
+      </dependency>
 
       <dependency>
          <groupId>${project.groupId}</groupId>
@@ -59,13 +64,8 @@
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.as</groupId>
-         <artifactId>jboss-as-clustering-jgroups</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>org.jboss.as</groupId>
-         <artifactId>jboss-as-clustering-jgroups</artifactId>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jboss-datagrid-jgroups</artifactId>
       </dependency>
 
       <dependency>
