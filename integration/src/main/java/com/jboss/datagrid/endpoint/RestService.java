@@ -41,7 +41,6 @@ import org.jboss.as.web.security.JBossWebRealm;
 import org.jboss.dmr.ModelNode;
 import org.jboss.logging.Logger;
 import org.jboss.msc.service.Service;
-import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
@@ -49,6 +48,8 @@ import org.jboss.msc.value.InjectedValue;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.security.negotiation.NegotiationAuthenticator;
+
+import static com.jboss.datagrid.EndpointLogger.ROOT_LOGGER;
 
 /**
  * A service which starts the REST web application
@@ -96,7 +97,7 @@ public class RestService implements Service<Context> {
          Class<?> cls = Class.forName("org.infinispan.rest.ManagerInstance", true, getClass().getClassLoader());
          cacheManagerSetter = cls.getMethod("instance_$eq", EmbeddedCacheManager.class);
       } catch (Exception e) {
-         throw new ServiceRegistryException("failed to locate ManagerInstance.instance", e);
+         throw ROOT_LOGGER.cannotLocateManagerInstance(e);
       }
    }
 
@@ -111,13 +112,12 @@ public class RestService implements Service<Context> {
    /** {@inheritDoc} */
    @Override
    public synchronized void start(StartContext startContext) throws StartException {
-      long startTime = System.currentTimeMillis();
-      log.infof("REST Server starting");
+      ROOT_LOGGER.endpointStarting("REST");
       EmbeddedCacheManager cacheManager = cacheManagerInjector.getValue();
       try {
          cacheManagerSetter.invoke(null, cacheManager);
       } catch (Exception e) {
-         throw new StartException("Could not set the cacheManager on the REST Server", e);
+         throw ROOT_LOGGER.restCacheManagerInjectionFailed(e);
       }
       try {
          context.setPath(path);
@@ -170,14 +170,13 @@ public class RestService implements Service<Context> {
          host.addChild(context);
          context.create();
       } catch (Exception e) {
-         throw new StartException("Failed to create context for REST Server " + serverName, e);
+         throw ROOT_LOGGER.restContextCreationFailed(e);
       }
       try {
          context.start();
-         long elapsedTime = Math.max(System.currentTimeMillis() - startTime, 0L);
-         log.infof("REST Server started in %dms", Long.valueOf(elapsedTime));
+         ROOT_LOGGER.httpEndpointStarted("REST", path, "rest");
       } catch (LifecycleException e) {
-         throw new StartException("Failed to start context for REST Server " + serverName, e);
+         throw ROOT_LOGGER.restContextStartFailed(e);
       }
    }
 
@@ -243,12 +242,12 @@ public class RestService implements Service<Context> {
          hostInjector.getValue().getHost().removeChild(context);
          context.stop();
       } catch (LifecycleException e) {
-         log.error("exception while stopping context", e);
+         ROOT_LOGGER.contextStopFailed(e);
       }
       try {
          context.destroy();
       } catch (Exception e) {
-         log.error("exception while destroying context", e);
+         ROOT_LOGGER.contextDestroyFailed(e);
       }
    }
 
