@@ -77,6 +77,8 @@ public class BaseStoreResource extends SimpleResourceDefinition {
             setAllowNull(true).
             build();
 
+    static final AttributeDefinition[] COMMON_LOADER_ATTRIBUTES = {SHARED, PRELOAD};
+    static final AttributeDefinition[] COMMON_LOADER_PARAMETERS = {SHARED, PRELOAD, PROPERTIES};
     static final AttributeDefinition[] COMMON_STORE_ATTRIBUTES = {SHARED, PRELOAD, PASSIVATION, FETCH_STATE, PURGE, SINGLETON};
     static final AttributeDefinition[] COMMON_STORE_PARAMETERS = {SHARED, PRELOAD, PASSIVATION, FETCH_STATE, PURGE, SINGLETON, PROPERTIES};
 

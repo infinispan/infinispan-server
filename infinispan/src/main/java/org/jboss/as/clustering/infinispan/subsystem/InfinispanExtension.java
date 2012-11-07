@@ -170,6 +170,8 @@ public class InfinispanExtension implements Extension {
             sharedAttributeResolver.put(ModelKeys.EVICTION, null);
             sharedAttributeResolver.put(ModelKeys.EXPIRATION, null);
             sharedAttributeResolver.put(ModelKeys.STATE_TRANSFER, null);
+            sharedAttributeResolver.put(ModelKeys.LOADER, null);
+            sharedAttributeResolver.put(ModelKeys.CLUSTER_LOADER, null);
             sharedAttributeResolver.put(ModelKeys.STORE, null);
             sharedAttributeResolver.put(ModelKeys.FILE_STORE, null);
             sharedAttributeResolver.put(ModelKeys.REMOTE_STORE, null);

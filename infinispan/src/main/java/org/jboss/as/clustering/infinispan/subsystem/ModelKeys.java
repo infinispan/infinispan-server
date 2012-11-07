@@ -42,6 +42,8 @@ public class ModelKeys {
     static final String CHUNK_SIZE = "chunk-size";
     static final String CLASS = "class";
     static final String CLUSTER = "cluster";
+    static final String CLUSTER_LOADER = "cluster-loader";
+    static final String CLUSTER_LOADER_NAME = "CLUSTER_LOADER";
     static final String CONCURRENCY_LEVEL = "concurrency-level";
     static final String DATA_COLUMN = "data-column";
     static final String DATASOURCE = "datasource";
@@ -69,6 +71,8 @@ public class ModelKeys {
     static final String ISOLATION = "isolation";
     static final String JDBC_STORE = "jdbc-store";
     static final String JDBC_STORE_NAME = "JDBC_STORE";
+    static final String LOADER = "loader";
+    static final String LOADER_NAME = "LOADER";
     static final String STRING_KEYED_JDBC_STORE = "string-keyed-jdbc-store";
     static final String STRING_KEYED_JDBC_STORE_NAME = "STRING_KEYED_JDBC_STORE";
     static final String STRING_KEYED_TABLE = "string-keyed-table";
