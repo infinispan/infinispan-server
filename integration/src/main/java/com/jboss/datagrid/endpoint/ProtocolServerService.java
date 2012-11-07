@@ -18,6 +18,8 @@
  */
 package com.jboss.datagrid.endpoint;
 
+import static com.jboss.datagrid.EndpointLogger.ROOT_LOGGER;
+
 import java.net.InetSocketAddress;
 import java.util.Properties;
 
@@ -26,9 +28,9 @@ import org.infinispan.server.core.Main;
 import org.infinispan.server.core.ProtocolServer;
 import org.infinispan.server.core.transport.Transport;
 import org.infinispan.util.ReflectionUtil;
+import org.jboss.as.network.NetworkUtils;
 import org.jboss.as.network.SocketBinding;
 import org.jboss.dmr.ModelNode;
-import org.jboss.logging.Logger;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
@@ -41,9 +43,6 @@ import org.jboss.msc.value.InjectedValue;
  * @author Tristan Tarrant
  */
 class ProtocolServerService implements Service<ProtocolServer> {
-
-   private static final Logger log = Logger.getLogger(ProtocolServerService.class);
-   
    private static final String DEFAULT_WORKER_THREADS = "160";
 
    // The cacheManager that will be injected by the container (specified by the cacheContainer
@@ -76,8 +75,7 @@ class ProtocolServerService implements Service<ProtocolServer> {
 
    @Override
    public synchronized void start(final StartContext context) throws StartException {
-      long startTime = System.currentTimeMillis();
-      log.infof("%s starting", serverName);
+      ROOT_LOGGER.endpointStarting(serverName);
 
       assert connectorProperties.isEmpty();
       assert topologyStateTransferProperties.isEmpty();
@@ -88,21 +86,17 @@ class ProtocolServerService implements Service<ProtocolServer> {
          loadTopologyStateTransferProperties(config);
          validateConfiguration();
 
-         // Log translated properties for debugging purposes
-         log.debugf("Connector properties for: %s", connectorProperties);
-         log.debugf("Topology state transfer properties: %s", topologyStateTransferProperties);
-
          // Start the connector
          startProtocolServer();
 
-         long elapsedTime = Math.max(System.currentTimeMillis() - startTime, 0L);
-         log.infof("%s started in %dms", serverName, Long.valueOf(elapsedTime));
+         SocketBinding binding = socketBinding.getValue();
+         ROOT_LOGGER.endpointStarted(serverName, NetworkUtils.formatAddress(binding.getAddress()), binding.getAbsolutePort());
 
          done = true;
       } catch (StartException e) {
          throw e;
       } catch (Exception e) {
-         throw new StartException("Failed to start " + serverName, e);
+         throw ROOT_LOGGER.failedStart(e, serverName);
       } finally {
          if (!done) {
             doStop();
@@ -113,7 +107,7 @@ class ProtocolServerService implements Service<ProtocolServer> {
    private void validateConfiguration() throws StartException {
       // There has to be at least one connector defined.
       if (connectorProperties.isEmpty()) {
-         throw new StartException("No connector is defined in the endpoint subsystem");
+         throw ROOT_LOGGER.noConnectorDefined();
       }
    }
 
@@ -132,16 +126,16 @@ class ProtocolServerService implements Service<ProtocolServer> {
       try {
          server = serverClass.newInstance();
       } catch (Exception e) {
-         throw new StartException("failed to instantiate the server: " + serverName, e);
+         throw ROOT_LOGGER.failedConnectorInstantiation(e,  serverName);
       }
-      log.debugf("Starting connector: %s", serverName);
+      ROOT_LOGGER.connectorStarting(serverName);
       server.start(props, getCacheManager().getValue());
       protocolServer = server;
 
       try {
          transport = (Transport) ReflectionUtil.getValue(protocolServer, "transport");
       } catch (Exception e) {
-         throw new StartException("failed to instantiate the server: " + serverName, e.getCause());
+         throw ROOT_LOGGER.failedTransportInstantiation(e.getCause(), serverName);
       }
    }
 
@@ -151,22 +145,19 @@ class ProtocolServerService implements Service<ProtocolServer> {
    }
 
    private void doStop() {
-      long stopTime = System.currentTimeMillis();
       try {
          if (protocolServer != null) {
-            log.debugf("Stopping connector: %s", serverName);
+            ROOT_LOGGER.connectorStopping(serverName);
             try {
                protocolServer.stop();
             } catch (Exception e) {
-               log.warnf(e, "failed to stop connector: %s", serverName);
+               ROOT_LOGGER.connectorStopFailed(e, serverName);
             }
          }
       } finally {
          connectorProperties.clear();
          topologyStateTransferProperties.clear();
-
-         long elapsedTime = Math.max(System.currentTimeMillis() - stopTime, 0L);
-         log.infof("%s stopped in %dms", serverName, Long.valueOf(elapsedTime));
+         ROOT_LOGGER.connectorStopped(serverName);
       }
    }
 

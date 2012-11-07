@@ -22,6 +22,8 @@
 
 package com.jboss.datagrid.endpoint;
 
+import static com.jboss.datagrid.EndpointLogger.ROOT_LOGGER;
+
 import java.io.IOException;
 import java.security.Principal;
 
@@ -36,7 +38,6 @@ import org.apache.catalina.authenticator.Constants;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
-import org.jboss.as.web.WebLogger;
 import org.jboss.as.web.security.JBossGenericPrincipal;
 import org.jboss.security.RunAsIdentity;
 import org.jboss.security.SecurityConstants;
@@ -75,8 +76,6 @@ public class RestSecurityContext extends ValveBase {
       // The cached web container principal
       JBossGenericPrincipal principal = null;
       HttpSession hsession = request.getSession(false);
-
-      WebLogger.WEB_SECURITY_LOGGER.tracef("Begin invoke, caller=" + caller);
 
       boolean createdSecurityContext = false;
       SecurityContext sc = SecurityActions.getSecurityContext();
@@ -126,15 +125,13 @@ public class RestSecurityContext extends ValveBase {
 
             // If there is a caller use this as the identity to propagate
             if (principal != null) {
-               WebLogger.WEB_SECURITY_LOGGER.tracef("Restoring principal info from cache");
                if (createdSecurityContext) {
                   sc.getUtil().createSubjectInfo(principal.getUserPrincipal(), principal.getCredentials(),
                         principal.getSubject());
                }
             }
          } catch (Throwable e) {
-            //TODO:decide whether to log this as info or warn
-            WebLogger.WEB_SECURITY_LOGGER.debug("Failed to determine servlet", e);
+            ROOT_LOGGER.failedToDetermineServlet(e);
          }
          // set JACC contextID
          PolicyContext.setContextID(name);
@@ -145,7 +142,6 @@ public class RestSecurityContext extends ValveBase {
             SecurityActions.popRunAsIdentity();
          }
       } finally {
-         WebLogger.WEB_SECURITY_LOGGER.tracef("End invoke, caller=" + caller);
          SecurityActions.clearSecurityContext();
          SecurityRolesAssociation.setSecurityRoles(null);
          PolicyContext.setContextID(null);
