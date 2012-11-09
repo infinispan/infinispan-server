@@ -34,7 +34,7 @@
       <replacement placeholder="CACHE-CONTAINERS">
          <cache-container name="clustered" default-cache="default" >
             <transport executor="infinispan-transport" lock-timeout="60000" />
-            <distributed-cache name="default" mode="SYNC" virtual-nodes="1" owners="2" remote-timeout="30000" start="EAGER">
+            <distributed-cache name="default" mode="SYNC" segments="20" owners="2" remote-timeout="30000" start="EAGER">
                <locking isolation="READ_COMMITTED" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                <transaction mode="NONE" />
                <eviction strategy="LRU" max-entries="1000" />
@@ -53,7 +53,7 @@
                </mixed-keyed-jdbc-store>
             </distributed-cache>
 
-            <distributed-cache name="memcachedCache" mode="SYNC" virtual-nodes="1" owners="2" remote-timeout="30000" start="EAGER">
+            <distributed-cache name="memcachedCache" mode="SYNC" segments="20" owners="2" remote-timeout="30000" start="EAGER">
                <locking isolation="READ_COMMITTED" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                <transaction mode="NONE" />
                <eviction strategy="LRU" max-entries="1000" />
