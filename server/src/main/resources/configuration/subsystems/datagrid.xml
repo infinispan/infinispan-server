@@ -12,7 +12,7 @@
             <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000" />
          </hotrod-connector>
          <memcached-connector socket-binding="memcached" cache-container="local" />
-         <rest-connector virtual-server="default-host" cache-container="local" />
+         <rest-connector virtual-server="default-host" cache-container="local" security-domain="other" auth-method="BASIC" />
       </replacement>
    </supplement>
    <supplement name="ha">
@@ -22,9 +22,9 @@
             <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000" />
          </hotrod-connector>
          <memcached-connector socket-binding="memcached" cache-container="clustered" />
-         <rest-connector virtual-server="default-host" cache-container="clustered" />
+         <rest-connector virtual-server="default-host" cache-container="clustered" security-domain="other" auth-method="BASIC" />
       </replacement>
    </supplement>
-   <socket-binding name="hotrod" interface="management" port="11222" />
-   <socket-binding name="memcached" interface="management" port="11211" />
+   <socket-binding name="hotrod" port="11222" />
+   <socket-binding name="memcached" port="11211" />
 </config>
