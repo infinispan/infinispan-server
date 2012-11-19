@@ -203,6 +203,7 @@ public class RestService implements Service<Context> {
       login.setAuthMethod(authMethod);
       login.setRealmName("ApplicationRealm");
       context.setLoginConfig(login);
+      context.addSecurityRole("REST");
 
       JBossWebRealm realm = new JBossWebRealm();
       SecurityDomainContext securityDomainContext = securityDomainContextInjector.getValue();
