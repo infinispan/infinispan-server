@@ -128,8 +128,8 @@
 
       <module-def name="org.jboss.as.product" slot="jdg" src="${jdg.modules.dir}" />
 
-      <module-def name="org.jboss.jreadline" src="${jdg.modules.dir}">
-         <maven-resource group="org.jboss.jreadline" artifact="jreadline"/>
+      <module-def name="org.jboss.aesh" src="${jdg.modules.dir}">
+         <maven-resource group="org.jboss.aesh" artifact="aesh"/>
       </module-def>
 
       <module-def name="org.jboss.jts" src="${jdg.modules.dir}">
