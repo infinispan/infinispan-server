@@ -40,6 +40,7 @@
     <version.org.infinispan>5.2.0.Beta5</version.org.infinispan>
     <version.org.jgroups>3.2.4.Final</version.org.jgroups>
     <version.org.rhq>4.4.0</version.org.rhq>
+    <version.org.rhq.parent>4.0.1</version.org.rhq.parent>
     <version.org.rhq.annotations>3.0.4</version.org.rhq.annotations>
     <version.org.scala-lang>2.9.2</version.org.scala-lang>
     <relocations></relocations>
@@ -442,7 +443,7 @@
         <groupId>org.rhq</groupId>
         <artifactId>rhq-parent</artifactId>
         <type>pom</type>
-        <version>${version.org.rhq}</version>
+        <version>${version.org.rhq.parent}</version>
       </dependency>
 
       <dependency>
