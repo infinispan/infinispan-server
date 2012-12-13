@@ -5,6 +5,14 @@
    <subsystem xmlns="urn:jboss:datagrid:endpoint:6.1">
       <?CONNECTORS?>
    </subsystem>
+   <supplement name="hotrod-rolling-upgrade">
+      <replacement placeholder="@@default-cache-container@@" attributeValue="local" />
+      <replacement placeholder="CONNECTORS">
+         <hotrod-connector socket-binding="hotrod" cache-container="local">
+            <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000" />
+         </hotrod-connector>
+      </replacement>
+   </supplement>
    <supplement name="rest-auth">
       <replacement placeholder="@@default-cache-container@@" attributeValue="local" />
       <replacement placeholder="CONNECTORS">

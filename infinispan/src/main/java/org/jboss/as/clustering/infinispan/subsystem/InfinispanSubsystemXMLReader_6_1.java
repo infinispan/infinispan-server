@@ -776,6 +776,14 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
                     RemoteStoreResource.CACHE.parseAndSetParameter(value, store, reader);
                     break;
                 }
+                case HOTROD_WRAPPING: {
+                    RemoteStoreResource.HOTROD_WRAPPING.parseAndSetParameter(value, store, reader);
+                    break;
+                }
+                case RAW_VALUES: {
+                    RemoteStoreResource.RAW_VALUES.parseAndSetParameter(value, store, reader);
+                    break;
+                }
                 case SOCKET_TIMEOUT: {
                     RemoteStoreResource.SOCKET_TIMEOUT.parseAndSetParameter(value, store, reader);
                     break;
@@ -784,6 +792,7 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
                     RemoteStoreResource.TCP_NO_DELAY.parseAndSetParameter(value, store, reader);
                     break;
                 }
+
                 default: {
                     this.parseStoreAttribute(reader, i, attribute, value, store);
                 }
