@@ -77,7 +77,7 @@
             <c:simple-property name="replication-queue-executor" required="false" type="string" readOnly="true" description="The executor used for asynchronous cache operations" />
          </resource-configuration>
 
-         <service name="Cache" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCacheComponent" description="The caches within a cache container">
+         <service name="Cache" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCacheComponent" description="The caches within a cache container" createDeletePolicy="both" creationDataType="configuration">
 
             <plugin-configuration>
                <c:simple-property name="path" readOnly="true" default="distributed-cache|local-cache|invalidation-cache|replicated-cache" />
