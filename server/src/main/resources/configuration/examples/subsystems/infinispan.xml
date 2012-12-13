@@ -56,6 +56,21 @@
          </cache-container>
       </replacement>
    </supplement>
+   <supplement name="hotrod-rolling-upgrade">
+      <replacement placeholder="@@default-cache-container@@" attributeValue="local" />
+      <replacement placeholder="CACHE-CONTAINERS">
+         <cache-container name="local" default-cache="default">
+            <local-cache name="default" start="EAGER">
+               <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
+               <transaction mode="NONE" />
+               <eviction strategy="LRU" max-entries="1000" />
+               <remote-store cache="default" socket-timeout="60000" tcp-no-delay="true" passivation="true" hotrod-wrapping="true">
+                  <remote-server outbound-socket-binding="remote-store-hotrod-server" />
+               </remote-store>
+            </local-cache>
+         </cache-container>
+      </replacement>
+   </supplement>
    <supplement name="jdbc-ha">
       <replacement placeholder="@@default-cache-container@@" attributeValue="clustered" />
       <replacement placeholder="CACHE-CONTAINERS">

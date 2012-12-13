@@ -37,12 +37,26 @@ public class RemoteStoreResource extends BaseStoreResource {
                     .setAllowExpression(false)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .build();
+    static final SimpleAttributeDefinition HOTROD_WRAPPING =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.HOTROD_WRAPPING, ModelType.BOOLEAN, true)
+                    .setXmlName(Attribute.HOTROD_WRAPPING.getLocalName())
+                    .setAllowExpression(false)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set(false))
+                    .build();
     static final SimpleAttributeDefinition TCP_NO_DELAY =
             new SimpleAttributeDefinitionBuilder(ModelKeys.TCP_NO_DELAY, ModelType.BOOLEAN, true)
                     .setXmlName(Attribute.TCP_NO_DELAY.getLocalName())
                     .setAllowExpression(false)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setDefaultValue(new ModelNode().set(true))
+                    .build();
+    static final SimpleAttributeDefinition RAW_VALUES =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.RAW_VALUES, ModelType.BOOLEAN, true)
+                    .setXmlName(Attribute.RAW_VALUES.getLocalName())
+                    .setAllowExpression(false)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set(false))
                     .build();
     static final SimpleAttributeDefinition SOCKET_TIMEOUT =
             new SimpleAttributeDefinitionBuilder(ModelKeys.SOCKET_TIMEOUT, ModelType.LONG, true)
@@ -65,13 +79,15 @@ public class RemoteStoreResource extends BaseStoreResource {
             setAllowNull(true).
             build();
 
-    static final AttributeDefinition[] REMOTE_STORE_ATTRIBUTES = {CACHE, TCP_NO_DELAY, SOCKET_TIMEOUT, REMOTE_SERVERS};
+    static final AttributeDefinition[] REMOTE_STORE_ATTRIBUTES = {CACHE, HOTROD_WRAPPING, TCP_NO_DELAY, RAW_VALUES, SOCKET_TIMEOUT, REMOTE_SERVERS};
 
     // operations
     private static final OperationDefinition REMOTE_STORE_ADD_DEFINITION = new SimpleOperationDefinitionBuilder(ADD, InfinispanExtension.getResourceDescriptionResolver(ModelKeys.REMOTE_STORE))
         .setParameters(COMMON_STORE_PARAMETERS)
         .addParameter(CACHE)
+        .addParameter(HOTROD_WRAPPING)
         .addParameter(TCP_NO_DELAY)
+        .addParameter(RAW_VALUES)
         .addParameter(SOCKET_TIMEOUT)
         .addParameter(REMOTE_SERVERS)
         .setAttributeResolver(InfinispanExtension.getResourceDescriptionResolver(ModelKeys.REMOTE_STORE))

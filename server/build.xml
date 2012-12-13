@@ -171,6 +171,10 @@
       <module-def name="org.infinispan.server.rest" src="${jdg.modules.dir}">
          <maven-resource-with-classifier group="org.infinispan" artifact="infinispan-server-rest" classifier="classes" />
       </module-def>
+      
+      <module-def name="org.infinispan.upgrade-tools" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-upgrade-tools" />
+      </module-def>
 
       <module-def name="org.scala-lang.library" src="${jdg.modules.dir}">
          <maven-resource group="org.scala-lang" artifact="scala-library" />

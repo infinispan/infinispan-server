@@ -62,6 +62,7 @@ public class ModelKeys {
     static final String FILE_STORE = "file-store";
     static final String FILE_STORE_NAME = "FILE_STORE";
     static final String FLUSH_LOCK_TIMEOUT = "flush-lock-timeout";
+    static final String HOTROD_WRAPPING = "hotrod-wrapping";
     static final String ID_COLUMN = "id-column";
     static final String INDEX = "index";
     static final String INDEXING = "indexing";
@@ -108,6 +109,7 @@ public class ModelKeys {
     static final String QUEUE_FLUSH_INTERVAL = "queue-flush-interval";
     static final String QUEUE_SIZE = "queue-size";
     static final String RACK = "rack";
+    static final String RAW_VALUES = "raw-values";
     static final String RELATIVE_TO = "relative-to";
     static final String REMOTE_SERVER = "remote-server";
     static final String REMOTE_SERVERS = "remote-servers";

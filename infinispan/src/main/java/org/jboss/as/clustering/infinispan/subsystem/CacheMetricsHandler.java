@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.infinispan.Cache;
+import org.infinispan.eviction.ActivationManager;
 import org.infinispan.interceptors.ActivationInterceptor;
 import org.infinispan.interceptors.CacheMgmtInterceptor;
 import org.infinispan.interceptors.CacheStoreInterceptor;
@@ -260,9 +261,8 @@ public class CacheMetricsHandler extends AbstractRuntimeOnlyHandler {
                     break;
                 }
                 case ACTIVATIONS: {
-                    ActivationInterceptor interceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache()
-                            .getInterceptorChain(), ActivationInterceptor.class);
-                    result.set(interceptor != null ? interceptor.getActivations() : "");
+                    ActivationManager manager = cache.getAdvancedCache().getComponentRegistry().getComponent(ActivationManager.class);
+                    result.set(manager != null ? manager.getActivationCount() : 0);
                     break;
                 }
                 case CACHE_LOADER_LOADS: {

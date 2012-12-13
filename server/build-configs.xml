@@ -76,6 +76,10 @@
            paramOutputFile="${generated.configs.examples}/standalone-rcs-local.xml"/>
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-hotrod-rolling-upgrade.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-hotrod-rolling-upgrade.xml"/>
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-storage-only.xml"
            paramOutputFile="${generated.configs.examples}/standalone-storage-only.xml"/>
        <generate-server-config 

@@ -274,6 +274,8 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
             ModelNode store = cache.get(ModelKeys.REMOTE_STORE, ModelKeys.REMOTE_STORE_NAME);
             writer.writeStartElement(Element.REMOTE_STORE.getLocalName());
             this.writeOptional(writer, Attribute.CACHE, store, ModelKeys.CACHE);
+            this.writeOptional(writer, Attribute.HOTROD_WRAPPING, store, ModelKeys.HOTROD_WRAPPING);
+            this.writeOptional(writer, Attribute.RAW_VALUES, store, ModelKeys.RAW_VALUES);
             this.writeOptional(writer, Attribute.SOCKET_TIMEOUT, store, ModelKeys.SOCKET_TIMEOUT);
             this.writeOptional(writer, Attribute.TCP_NO_DELAY, store, ModelKeys.TCP_NO_DELAY);
             this.writeStoreAttributes(writer, store);
