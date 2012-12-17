@@ -505,6 +505,10 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
             String value = reader.getAttributeValue(i);
             Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
             switch (attribute) {
+                case AWAIT_INITIAL_TRANSFER: {
+                    StateTransferResource.AWAIT_INITIAL_TRANSFER.parseAndSetParameter(value, stateTransfer, reader);
+                    break;
+                }
                 case ENABLED: {
                     StateTransferResource.ENABLED.parseAndSetParameter(value, stateTransfer, reader);
                     break;
