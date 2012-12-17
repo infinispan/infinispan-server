@@ -31,6 +31,7 @@ public class ModelKeys {
     static final String ALIAS = "alias";
     static final String ALIASES = "aliases";
     static final String ASYNC_MARSHALLING = "async-marshalling";
+    static final String AWAIT_INITIAL_TRANSFER = "await-initial-transfer";
     static final String BATCH_SIZE = "batch-size";
     static final String BATCHING = "batching";
     static final String BINARY_KEYED_TABLE = "binary-keyed-table";

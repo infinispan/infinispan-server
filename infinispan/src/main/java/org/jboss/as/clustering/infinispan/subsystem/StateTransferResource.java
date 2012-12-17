@@ -51,7 +51,15 @@ public class StateTransferResource extends SimpleResourceDefinition {
                     .setDefaultValue(new ModelNode().set(60000))
                     .build();
 
-    static final AttributeDefinition[] STATE_TRANSFER_ATTRIBUTES = {ENABLED, TIMEOUT, CHUNK_SIZE};
+    static final SimpleAttributeDefinition AWAIT_INITIAL_TRANSFER =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.AWAIT_INITIAL_TRANSFER, ModelType.BOOLEAN, true)
+                    .setXmlName(Attribute.ENABLED.getLocalName())
+                    .setAllowExpression(false)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set(true))
+                    .build();
+
+    static final AttributeDefinition[] STATE_TRANSFER_ATTRIBUTES = {ENABLED, TIMEOUT, CHUNK_SIZE, AWAIT_INITIAL_TRANSFER};
 
     public StateTransferResource() {
         super(STATE_TRANSFER_PATH,

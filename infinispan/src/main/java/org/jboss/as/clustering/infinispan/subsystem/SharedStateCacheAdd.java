@@ -53,10 +53,12 @@ public abstract class SharedStateCacheAdd extends ClusteredCacheAdd {
             final boolean enabled = StateTransferResource.ENABLED.resolveModelAttribute(context, stateTransfer).asBoolean();
             final long timeout = StateTransferResource.TIMEOUT.resolveModelAttribute(context, stateTransfer).asLong();
             final int chunkSize = StateTransferResource.CHUNK_SIZE.resolveModelAttribute(context, stateTransfer).asInt();
+            final boolean awaitInitialTransfer = StateTransferResource.AWAIT_INITIAL_TRANSFER.resolveModelAttribute(context, stateTransfer).asBoolean();
 
             builder.clustering().stateTransfer().fetchInMemoryState(enabled);
             builder.clustering().stateTransfer().timeout(timeout);
             builder.clustering().stateTransfer().chunkSize(chunkSize);
+            builder.clustering().stateTransfer().waitForInitialStateTransferToComplete(awaitInitialTransfer);
         }
     }
 }
