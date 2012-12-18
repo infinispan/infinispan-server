@@ -48,6 +48,7 @@ public enum Attribute {
     CLASS(ModelKeys.CLASS),
     CLUSTER(ModelKeys.CLUSTER),
     CONCURRENCY_LEVEL(ModelKeys.CONCURRENCY_LEVEL),
+    CONCURRENT_UPDATES(ModelKeys.CONCURRENT_UPDATES),
     DATASOURCE(ModelKeys.DATASOURCE),
     DEFAULT_CACHE(ModelKeys.DEFAULT_CACHE),
     @Deprecated DEFAULT_CACHE_CONTAINER("default-cache-container"),

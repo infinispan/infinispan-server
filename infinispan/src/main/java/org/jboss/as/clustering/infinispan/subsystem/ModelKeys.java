@@ -46,6 +46,7 @@ public class ModelKeys {
     static final String CLUSTER_LOADER = "cluster-loader";
     static final String CLUSTER_LOADER_NAME = "CLUSTER_LOADER";
     static final String CONCURRENCY_LEVEL = "concurrency-level";
+    static final String CONCURRENT_UPDATES = "concurrent-updates";
     static final String DATA_COLUMN = "data-column";
     static final String DATASOURCE = "datasource";
     static final String DEFAULT_CACHE = "default-cache";

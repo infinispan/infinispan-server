@@ -555,6 +555,10 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
                     LockingResource.CONCURRENCY_LEVEL.parseAndSetParameter(value, locking, reader);
                     break;
                 }
+                case CONCURRENT_UPDATES: {
+                    LockingResource.CONCURRENT_UPDATES.parseAndSetParameter(value, locking, reader);
+                    break;
+                }
                 default: {
                     throw ParseUtils.unexpectedAttribute(reader, i);
                 }
