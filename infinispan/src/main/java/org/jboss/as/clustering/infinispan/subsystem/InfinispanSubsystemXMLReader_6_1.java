@@ -254,9 +254,6 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
 
         // ModelNode for the cache add operation
         ModelNode cache = Util.getEmptyOperation(ADD, null);
-        // NOTE: this list is used to avoid lost attribute updates to the cache
-        // object once it has been added to the operations list
-        List<ModelNode> additionalConfigurationOperations = new ArrayList<ModelNode>();
 
         // set the cache mode to local
         // cache.get(ModelKeys.MODE).set(Configuration.CacheMode.LOCAL.name());
@@ -273,6 +270,10 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
 
         // update the cache address with the cache name
         addCacheNameToAddress(cache, containerAddress, ModelKeys.LOCAL_CACHE) ;
+
+        // NOTE: this list is used to avoid lost attribute updates to the cache
+        // object once it has been added to the operations list
+        List<ModelNode> additionalConfigurationOperations = new ArrayList<ModelNode>();
 
         while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
             Element element = Element.forName(reader.getLocalName());
@@ -331,12 +332,8 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
         while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
             Element element = Element.forName(reader.getLocalName());
             switch (element) {
-                case STATE_TRANSFER: {
-                    this.parseStateTransfer(reader, cache, additionalConfigurationOperations);
-                    break;
-                }
                 default: {
-                    this.parseCacheElement(reader, element, cache, additionalConfigurationOperations);
+                    this.parseSharedStateCacheElement(reader, element, cache, additionalConfigurationOperations);
                 }
             }
         }
@@ -373,12 +370,8 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
         while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
             Element element = Element.forName(reader.getLocalName());
             switch (element) {
-                case STATE_TRANSFER: {
-                    this.parseStateTransfer(reader, cache, additionalConfigurationOperations);
-                    break;
-                }
                 default: {
-                    this.parseCacheElement(reader, element, cache, additionalConfigurationOperations);
+                    this.parseSharedStateCacheElement(reader, element, cache, additionalConfigurationOperations);
                 }
             }
         }
@@ -439,6 +432,22 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
         cache.remove(ModelKeys.NAME);
     }
 
+    private void parseSharedStateCacheElement(XMLExtendedStreamReader reader, Element element, ModelNode cache,
+            List<ModelNode> operations) throws XMLStreamException {
+        switch (element) {
+            case STATE_TRANSFER: {
+                this.parseStateTransfer(reader, cache, operations);
+                break;
+            }
+            case BACKUPS: {
+                this.parseBackups(reader, cache, operations);
+                break;
+            }
+            default: {
+                this.parseCacheElement(reader, element, cache, operations);
+            }
+        }
+    }
 
     protected void parseCacheElement(XMLExtendedStreamReader reader, Element element, ModelNode cache, List<ModelNode> operations) throws XMLStreamException {
         switch (element) {
@@ -1172,5 +1181,100 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
         }
         String value = reader.getElementText();
         node.get(ModelKeys.PROPERTIES).add(property, value);
+    }
+
+    private void parseBackups(XMLExtendedStreamReader reader, ModelNode cache, List<ModelNode> operations) throws XMLStreamException {
+
+        while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
+            Element element = Element.forName(reader.getLocalName());
+            switch (element) {
+                case BACKUP: {
+                    this.parseBackup(reader, cache, operations);
+                    break;
+                }
+                default: {
+                    throw ParseUtils.unexpectedElement(reader);
+                }
+            }
+        }
+    }
+
+    private void parseBackup(XMLExtendedStreamReader reader, ModelNode cache, List<ModelNode> operations) throws XMLStreamException {
+
+        ModelNode operation = com.jboss.datagrid.server.common.Util.createAddOperation();
+        String site = null;
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String value = reader.getAttributeValue(i);
+            Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+            switch (attribute) {
+                case SITE: {
+                    site = value;
+                    break;
+                }
+                case STRATEGY: {
+                    BackupSiteResource.STRATEGY.parseAndSetParameter(value, operation, reader);
+                    break;
+                }
+                case BACKUP_FAILURE_POLICY: {
+                    BackupSiteResource.FAILURE_POLICY.parseAndSetParameter(value, operation, reader);
+                    break;
+                }
+                case TIMEOUT: {
+                    BackupSiteResource.REPLICATION_TIMEOUT.parseAndSetParameter(value, operation, reader);
+                    break;
+                }
+                case ENABLED: {
+                    BackupSiteResource.ENABLED.parseAndSetParameter(value, operation, reader);
+                    break;
+                }
+                default: {
+                    throw ParseUtils.unexpectedAttribute(reader, i);
+                }
+            }
+        }
+
+        if (site == null) {
+            throw ParseUtils.missingRequired(reader, Collections.singleton(Attribute.SITE));
+        }
+
+        PathAddress address = PathAddress.pathAddress(cache.get(OP_ADDR)).append(PathElement.pathElement(ModelKeys.BACKUP, site));
+        operation.get(OP_ADDR).set(address.toModelNode());
+
+        while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
+            Element element = Element.forName(reader.getLocalName());
+            switch (element) {
+                case TAKE_OFFLINE: {
+                    this.parseTakeOffline(reader, operation);
+                    break;
+                }
+                default: {
+                    throw ParseUtils.unexpectedElement(reader);
+                }
+            }
+        }
+
+        operations.add(operation);
+    }
+
+    private void parseTakeOffline(XMLExtendedStreamReader reader, ModelNode operation) throws XMLStreamException {
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String value = reader.getAttributeValue(i);
+            Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+            switch (attribute) {
+                case TAKE_BACKUP_OFFLINE_AFTER_FAILURES: {
+                    BackupSiteResource.TAKE_OFFLINE_AFTER_FAILURES.parseAndSetParameter(value, operation, reader);
+                    break;
+                }
+                case TAKE_BACKUP_OFFLINE_MIN_WAIT: {
+                    BackupSiteResource.TAKE_OFFLINE_MIN_WAIT.parseAndSetParameter(value, operation, reader);
+                    break;
+                }
+                default: {
+                    throw ParseUtils.unexpectedAttribute(reader, i);
+                }
+            }
+        }
+        ParseUtils.requireNoContent(reader);
     }
 }

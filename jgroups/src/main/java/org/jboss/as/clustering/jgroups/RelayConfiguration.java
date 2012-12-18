@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2011, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -23,27 +23,11 @@ package org.jboss.as.clustering.jgroups;
 
 import java.util.List;
 
-import javax.management.MBeanServer;
-
-import org.jboss.as.server.ServerEnvironment;
-
 /**
- * Defines the configuration of a JGroups protocol stack.
+ * Configuration of the RELAY2 protocol.
  * @author Paul Ferraro
  */
-public interface ProtocolStackConfiguration {
-
-    String getName();
-
-    ProtocolDefaults getDefaults();
-
-    MBeanServer getMBeanServer();
-
-    TransportConfiguration getTransport();
-
-    List<ProtocolConfiguration> getProtocols();
-
-    ServerEnvironment getEnvironment();
-
-    RelayConfiguration getRelay();
+public interface RelayConfiguration extends ProtocolConfiguration {
+    String getSiteName();
+    List<RemoteSiteConfiguration> getRemoteSites();
 }
