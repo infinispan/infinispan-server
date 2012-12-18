@@ -90,6 +90,22 @@ import com.jboss.datagrid.server.common.SimpleOperationDefinitionBuilder;
                          addProtocolPropertyCommands(protocol.getValue(), protocolAddress, result);
                      }
                  }
+                 // relay=RELAY
+                 if (stack.getValue().get(ModelKeys.RELAY, ModelKeys.RELAY_NAME).isDefined()) {
+                     ModelNode relay = stack.getValue().get(ModelKeys.RELAY, ModelKeys.RELAY_NAME);
+                     ModelNode relayAddress = stackAddress.clone();
+                     relayAddress.add(ModelKeys.RELAY, ModelKeys.RELAY_NAME);
+                     result.add(createOperation(RelayResource.ATTRIBUTES, relayAddress, relay));
+                     addProtocolPropertyCommands(relay, relayAddress, result);
+                     // remote-site=*
+                     if (relay.get(ModelKeys.REMOTE_SITE).isDefined()) {
+                         for (final Property remoteSite : relay.get(ModelKeys.REMOTE_SITE).asPropertyList()) {
+                             ModelNode remoteSiteAddress = relayAddress.clone().add(ModelKeys.REMOTE_SITE, remoteSite.getName());
+                             // no optional transport:add parameters will be present, so use attributes list
+                             result.add(createOperation(RemoteSiteResource.ATTRIBUTES, remoteSiteAddress, remoteSite.getValue()));
+                         }
+                     }
+                 }
              }
          }
          context.getResult().set(result);

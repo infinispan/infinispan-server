@@ -64,6 +64,10 @@ public class JGroupsSubsystemXMLWriter implements XMLElementWriter<SubsystemMars
                         this.writeProtocol(writer, protocol.getValue(), Element.PROTOCOL);
                     }
                 }
+                if (stack.hasDefined(ModelKeys.RELAY)) {
+                    ModelNode relay = stack.get(ModelKeys.RELAY, ModelKeys.RELAY_NAME);
+                    this.writeRelay(writer, relay, Element.RELAY);
+                }
                 writer.writeEndElement();
             }
         }
@@ -102,6 +106,20 @@ public class JGroupsSubsystemXMLWriter implements XMLElementWriter<SubsystemMars
                 writer.writeEndElement();
             }
         }
+    }
+
+    private void writeRelay(XMLExtendedStreamWriter writer, ModelNode relay, Element element) throws XMLStreamException {
+        writer.writeStartElement(element.getLocalName());
+        RelayResource.SITE.marshallAsAttribute(relay, writer);
+        for (Property property : relay.get(ModelKeys.REMOTE_SITE).asPropertyList()) {
+            writer.writeStartElement(Element.REMOTE_SITE.getLocalName());
+            writer.writeAttribute(Attribute.NAME.getLocalName(), property.getName());
+            ModelNode remoteSite = property.getValue();
+            RemoteSiteResource.STACK.marshallAsAttribute(remoteSite, writer);
+            RemoteSiteResource.CLUSTER_NAME.marshallAsAttribute(remoteSite, writer);
+            writer.writeEndElement();
+        }
+        writer.writeEndElement();
     }
 
     private void writeRequired(XMLExtendedStreamWriter writer, Attribute attribute, ModelNode model, String key) throws XMLStreamException {
