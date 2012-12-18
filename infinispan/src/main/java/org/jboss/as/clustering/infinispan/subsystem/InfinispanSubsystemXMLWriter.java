@@ -177,6 +177,7 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
             this.writeOptional(writer, Attribute.STRIPING, locking, ModelKeys.STRIPING);
             this.writeOptional(writer, Attribute.ACQUIRE_TIMEOUT, locking, ModelKeys.ACQUIRE_TIMEOUT);
             this.writeOptional(writer, Attribute.CONCURRENCY_LEVEL, locking, ModelKeys.CONCURRENCY_LEVEL);
+            this.writeOptional(writer, Attribute.CONCURRENT_UPDATES, locking, ModelKeys.CONCURRENT_UPDATES);
             writer.writeEndElement();
         }
 

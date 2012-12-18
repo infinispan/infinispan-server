@@ -372,12 +372,14 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             final boolean striping = LockingResource.STRIPING.resolveModelAttribute(context, locking).asBoolean();
             final long acquireTimeout = LockingResource.ACQUIRE_TIMEOUT.resolveModelAttribute(context, locking).asLong();
             final int concurrencyLevel = LockingResource.CONCURRENCY_LEVEL.resolveModelAttribute(context, locking).asInt();
+            final boolean concurrentUpdates = LockingResource.CONCURRENT_UPDATES.resolveModelAttribute(context, locking).asBoolean();
 
             builder.locking()
                     .isolationLevel(isolationLevel)
                     .useLockStriping(striping)
                     .lockAcquisitionTimeout(acquireTimeout)
                     .concurrencyLevel(concurrencyLevel)
+                    .supportsConcurrentUpdates(concurrentUpdates)
             ;
         }
 

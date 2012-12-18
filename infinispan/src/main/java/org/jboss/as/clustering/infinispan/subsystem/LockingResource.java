@@ -60,7 +60,15 @@ public class LockingResource extends SimpleResourceDefinition {
                     .setDefaultValue(new ModelNode().set(false))
                     .build();
 
-    static final AttributeDefinition[] LOCKING_ATTRIBUTES = { ACQUIRE_TIMEOUT, CONCURRENCY_LEVEL, ISOLATION, STRIPING};
+    static final SimpleAttributeDefinition CONCURRENT_UPDATES =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.CONCURRENT_UPDATES, ModelType.BOOLEAN, true)
+                    .setXmlName(Attribute.CONCURRENT_UPDATES.getLocalName())
+                    .setAllowExpression(false)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set(true))
+                    .build();
+
+    static final AttributeDefinition[] LOCKING_ATTRIBUTES = { ACQUIRE_TIMEOUT, CONCURRENCY_LEVEL, ISOLATION, STRIPING, CONCURRENT_UPDATES };
 
     public LockingResource() {
         super(LOCKING_PATH,
