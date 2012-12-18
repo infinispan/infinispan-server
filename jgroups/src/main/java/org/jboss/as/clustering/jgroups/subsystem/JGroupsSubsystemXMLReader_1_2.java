@@ -118,12 +118,31 @@ public class JGroupsSubsystemXMLReader_1_2 implements XMLElementReader<List<Mode
         operations.add(stack);
         this.parseTransport(reader, stackAddress, operations);
 
-        while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT) && Element.forName(reader.getLocalName()) == Element.PROTOCOL) {
-            this.parseProtocol(reader, stackAddress, operations);
-        }
-
-        if (reader.hasNext() && (reader.getEventType() != XMLStreamConstants.END_ELEMENT) && Element.forName(reader.getLocalName()) == Element.RELAY) {
-            this.parseRelay(reader, stackAddress, operations);
+        boolean hasRelay = false;
+        while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
+            Element element = Element.forName(reader.getLocalName());
+            switch (element) {
+                case PROTOCOL: {
+                    if (!hasRelay) {
+                        this.parseProtocol(reader, stackAddress, operations);
+                    } else {
+                        throw ParseUtils.unexpectedElement(reader);
+                    }
+                    break;
+                }
+                case RELAY: {
+                    if (!hasRelay) {
+                        this.parseRelay(reader, stackAddress, operations);
+                        hasRelay = true;
+                    } else {
+                        throw ParseUtils.unexpectedElement(reader);
+                    }
+                    break;
+                }
+                default: {
+                    throw ParseUtils.unexpectedElement(reader);
+                }
+            }
         }
     }
 
