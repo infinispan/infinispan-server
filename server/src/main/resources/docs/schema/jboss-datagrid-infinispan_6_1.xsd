@@ -344,6 +344,13 @@
     <xs:complexType name="clustered-cache" abstract="true">
         <xs:complexContent>
             <xs:extension base="tns:cache">
+                <xs:sequence>
+                    <xs:element name="backups" type="tns:backups" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>The state transfer configuration for distribution and replicated caches.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
                 <xs:attribute name="async-marshalling" type="xs:boolean" default="false">
                     <xs:annotation>
                         <xs:documentation>
@@ -820,6 +827,64 @@
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>
+    
+    <xs:complexType name="backups">
+        <xs:sequence>
+            <xs:element name="backup" type="tns:backup" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="backup">
+        <xs:sequence>
+            <xs:element name="take-offline" type="tns:take-offline" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="site" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="strategy" type="tns:mode" default="ASYNC">
+            <xs:annotation>
+                <xs:documentation></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="failure-policy" type="tns:backup-failure-policy" default="WARN">
+            <xs:annotation>
+                <xs:documentation></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="timeout" type="xs:long" default="10000">
+            <xs:annotation>
+                <xs:documentation></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="enabled" type="xs:boolean" default="true">
+            <xs:annotation>
+                <xs:documentation></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="take-offline">
+        <xs:attribute name="after-failures" type="xs:int" default="0">
+            <xs:annotation>
+                <xs:documentation></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="min-wait" type="xs:long" default="0">
+            <xs:annotation>
+                <xs:documentation></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
 
     <xs:complexType name="property">
         <xs:simpleContent>
@@ -1008,5 +1073,25 @@
             <xs:documentation>A list of aliases.</xs:documentation>
         </xs:annotation>
         <xs:list itemType="xs:string"/>
+    </xs:simpleType>
+    
+    <xs:simpleType name="backup-failure-policy">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="IGNORE">
+                <xs:annotation>
+                    <xs:documentation></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="WARN">
+                <xs:annotation>
+                    <xs:documentation></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="FAIL">
+                <xs:annotation>
+                    <xs:documentation></xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
     </xs:simpleType>
 </xs:schema>

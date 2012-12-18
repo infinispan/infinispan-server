@@ -32,6 +32,10 @@ public class ModelKeys {
     static final String ALIASES = "aliases";
     static final String ASYNC_MARSHALLING = "async-marshalling";
     static final String AWAIT_INITIAL_TRANSFER = "await-initial-transfer";
+    static final String BACKUP = "backup";
+    static final String BACKUP_FAILURE_POLICY = "failure-policy";
+    static final String BACKUP_STRATEGY = "strategy";
+    static final String BACKUPS = "backups";
     static final String BATCH_SIZE = "batch-size";
     static final String BATCHING = "batching";
     static final String BINARY_KEYED_TABLE = "binary-keyed-table";
@@ -135,6 +139,9 @@ public class ModelKeys {
     static final String STORE_NAME = "STORE";
     static final String STRATEGY = "strategy";
     static final String STRIPING = "striping";
+    static final String TAKE_BACKUP_OFFLINE_AFTER_FAILURES = "after-failures";
+    static final String TAKE_BACKUP_OFFLINE_MIN_WAIT = "min-wait";
+    static final String TAKE_OFFLINE = "take-offline";
     static final String TCP_NO_DELAY = "tcp-no-delay";
     static final String THREAD_POOL_SIZE = "thread-pool-size";
     static final String TIMEOUT = "timeout";
@@ -148,4 +155,4 @@ public class ModelKeys {
     static final String WAIT = "wait";
     static final String WRITE_BEHIND = "write-behind";
     static final String WRITE_BEHIND_NAME = "WRITE_BEHIND";
-}
+    }

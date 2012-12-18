@@ -47,6 +47,8 @@ import org.jgroups.JChannel;
 import org.jgroups.conf.ProtocolStackConfigurator;
 import org.jgroups.jmx.JmxConfigurator;
 import org.jgroups.protocols.TP;
+import org.jgroups.protocols.relay.RELAY2;
+import org.jgroups.protocols.relay.config.RelayConfig;
 import org.jgroups.stack.Protocol;
 import org.jgroups.util.SocketFactory;
 
@@ -86,6 +88,11 @@ public class JChannelFactory implements ChannelFactory, ChannelListener, Protoco
             }
         } else {
             this.init(transport);
+        }
+
+        Protocol top = channel.getProtocolStack().getTopProtocol();
+        if (top instanceof RELAY2) {
+            this.init((RELAY2) top, id);
         }
 
         channel.setName(this.configuration.getEnvironment().getNodeName() + "/" + id);
@@ -141,6 +148,22 @@ public class JChannelFactory implements ChannelFactory, ChannelListener, Protoco
             if (!(transport.getTimer() instanceof TimerSchedulerAdapter)) {
                 this.setValue(transport, "timer", new TimerSchedulerAdapter(new ManagedScheduledExecutorService(timerExecutor)));
             }
+        }
+    }
+
+    private void init(RELAY2 relay, final String id) {
+        List<RemoteSiteConfiguration> remoteSites = this.configuration.getRelay().getRemoteSites();
+        for (short i = 0; i < remoteSites.size(); ++i) {
+            final RemoteSiteConfiguration remoteSite = remoteSites.get(i);
+            RelayConfig.SiteConfig site = new RelayConfig.SiteConfig(remoteSite.getName(), i);
+            RelayConfig.BridgeConfig bridge = new RelayConfig.BridgeConfig(remoteSite.getClusterName()) {
+                @Override
+                public JChannel createChannel() throws Exception {
+                    return (JChannel) remoteSite.getChannelFactory().createChannel(id + "/" + remoteSite.getName());
+                }
+            };
+            site.addBridge(bridge);
+            relay.addSite(remoteSite.getName(), site);
         }
     }
 
@@ -203,6 +226,14 @@ public class JChannelFactory implements ChannelFactory, ChannelListener, Protoco
             }
             configs.add(config);
         }
+
+        RelayConfiguration relay = this.configuration.getRelay();
+        if (relay != null) {
+            config = this.createProtocol(relay);
+            this.setProperty(relay, config, "site", relay.getSiteName());
+            configs.add(config);
+        }
+
         return configs;
     }
 
