@@ -589,7 +589,7 @@ public class ProtocolStackAdd extends AbstractAddStepHandler implements Descript
         }
 
         @Override
-        public String getClusterName() {
+        public String getCluster() {
             return this.clusterName;
         }
     }
