@@ -65,9 +65,9 @@ public abstract class SharedStateCacheAdd extends ClusteredCacheAdd {
             builder.clustering().stateTransfer().waitForInitialStateTransferToComplete(awaitInitialTransfer);
         }
 
-        if (cache.hasDefined(ModelKeys.BACKUPS)) {
+        if (cache.hasDefined(ModelKeys.BACKUP)) {
             SitesConfigurationBuilder sitesBuilder = builder.sites();
-            for (Property property : cache.get(ModelKeys.BACKUPS).asPropertyList()) {
+            for (Property property : cache.get(ModelKeys.BACKUP).asPropertyList()) {
                 String siteName = property.getName();
                 ModelNode site = property.getValue();
                 sitesBuilder
