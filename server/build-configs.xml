@@ -90,6 +90,10 @@
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-two-nodes.xml"
            paramOutputFile="${generated.configs.examples}/standalone-two-nodes.xml"/>
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-xsite.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-xsite.xml"/>
     </target>
 
 
