@@ -45,19 +45,19 @@ public class RemoteSiteResource extends SimpleResourceDefinition {
 
     static final SimpleAttributeDefinition STACK = new SimpleAttributeDefinitionBuilder(ModelKeys.STACK, ModelType.STRING, true)
             .setXmlName(Attribute.STACK.getLocalName())
-            .setAllowExpression(false)
+            .setAllowExpression(true)
             .setFlags(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
             .build()
     ;
 
-    static final SimpleAttributeDefinition CLUSTER_NAME = new SimpleAttributeDefinitionBuilder(ModelKeys.CLUSTER_NAME, ModelType.STRING, false)
-            .setXmlName(Attribute.CLUSTER_NAME.getLocalName())
-            .setAllowExpression(false)
+    static final SimpleAttributeDefinition CLUSTER = new SimpleAttributeDefinitionBuilder(ModelKeys.CLUSTER, ModelType.STRING, true)
+            .setXmlName(Attribute.CLUSTER.getLocalName())
+            .setAllowExpression(true)
             .setFlags(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
             .build()
     ;
 
-    static final AttributeDefinition[] ATTRIBUTES = new AttributeDefinition[] { STACK, CLUSTER_NAME };
+    static final AttributeDefinition[] ATTRIBUTES = new AttributeDefinition[] { STACK, CLUSTER };
 
     RemoteSiteResource() {
         super(PathElement.pathElement(ModelKeys.REMOTE_SITE), RESOLVER, new AddStepHandler(ATTRIBUTES), ReloadRequiredRemoveStepHandler.INSTANCE);

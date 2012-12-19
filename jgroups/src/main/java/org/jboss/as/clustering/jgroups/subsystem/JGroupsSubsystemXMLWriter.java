@@ -116,7 +116,7 @@ public class JGroupsSubsystemXMLWriter implements XMLElementWriter<SubsystemMars
             writer.writeAttribute(Attribute.NAME.getLocalName(), property.getName());
             ModelNode remoteSite = property.getValue();
             RemoteSiteResource.STACK.marshallAsAttribute(remoteSite, writer);
-            RemoteSiteResource.CLUSTER_NAME.marshallAsAttribute(remoteSite, writer);
+            RemoteSiteResource.CLUSTER.marshallAsAttribute(remoteSite, writer);
             writer.writeEndElement();
         }
         writer.writeEndElement();

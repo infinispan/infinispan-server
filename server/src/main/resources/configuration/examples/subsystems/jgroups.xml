@@ -95,9 +95,8 @@
             <protocol type="FRAG2" />
             <protocol type="RSVP" />
             <relay site="LON">
-               <remote-site name="LON" stack="tcp" cluster-name="global" />
-               <remote-site name="NYC" stack="tcp" cluster-name="global" />
-               <remote-site name="SFO" stack="tcp" cluster-name="global" />
+               <remote-site name="NYC" stack="tcp" cluster="global" />
+               <remote-site name="SFO" stack="tcp" cluster="global" />
             </relay>
          </stack>
          <stack name="tcp">

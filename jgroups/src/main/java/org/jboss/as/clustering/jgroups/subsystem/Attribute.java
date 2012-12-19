@@ -30,7 +30,7 @@ public enum Attribute {
     // must be first
     UNKNOWN(null),
 
-    CLUSTER_NAME(ModelKeys.CLUSTER_NAME),
+    CLUSTER(ModelKeys.CLUSTER),
     DEFAULT_EXECUTOR(ModelKeys.DEFAULT_EXECUTOR),
     DEFAULT_STACK(ModelKeys.DEFAULT_STACK),
     DIAGNOSTICS_SOCKET_BINDING(ModelKeys.DIAGNOSTICS_SOCKET_BINDING),

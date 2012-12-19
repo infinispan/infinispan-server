@@ -184,7 +184,7 @@
                 <xs:documentation>The stack name used to create a bridge channel to this remote site.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="cluster-name" type="xs:string">
+        <xs:attribute name="cluster" type="xs:string">
             <xs:annotation>
                 <xs:documentation>The cluster name of the channel that bridges this remote site.</xs:documentation>
             </xs:annotation>
