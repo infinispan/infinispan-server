@@ -42,7 +42,7 @@
       <xs:complexContent>
          <xs:extension base="tns:protocol-connector">
             <xs:sequence>
-                <xs:element name="topologyStateTransfer" type="tns:topologyStateTransfer" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="topology-state-transfer" type="tns:topology-state-transfer" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
          </xs:extension>
       </xs:complexContent>
@@ -63,7 +63,7 @@
       <xs:attribute name="security-mode" type="tns:security-mode" use="optional" />
    </xs:complexType>
 
-   <xs:complexType name="topologyStateTransfer">
+   <xs:complexType name="topology-state-transfer">
       <xs:attribute name="lock-timeout" type="xs:int" use="optional" />
       <xs:attribute name="replication-timeout" type="xs:int" use="optional" />
       <xs:attribute name="update-timeout" type="xs:int" use="optional" />
