@@ -217,7 +217,7 @@ public class ProtocolStackAdd extends AbstractAddStepHandler implements Descript
                 for (Property remoteSiteProperty : relay.get(ModelKeys.REMOTE_SITE).asPropertyList()) {
                     final String remoteSiteName = remoteSiteProperty.getName();
                     final ModelNode remoteSite = remoteSiteProperty.getValue();
-                    final String clusterName = RemoteSiteResource.CLUSTER_NAME.resolveModelAttribute(context, remoteSite)
+                    final String clusterName = RemoteSiteResource.CLUSTER.resolveModelAttribute(context, remoteSite)
                             .asString();
                     final String stack = RemoteSiteResource.STACK.resolveModelAttribute(context, remoteSite).asString();
                     final InjectedValue<ChannelFactory> channelFactory = new InjectedValue<ChannelFactory>();

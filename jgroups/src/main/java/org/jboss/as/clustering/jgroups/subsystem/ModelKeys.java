@@ -27,7 +27,7 @@ package org.jboss.as.clustering.jgroups.subsystem;
  */
 class ModelKeys {
     static final String ADD_PROTOCOL = "add-protocol";
-    static final String CLUSTER_NAME = "cluster-name";
+    static final String CLUSTER = "cluster";
     static final String DEFAULT_EXECUTOR = "default-executor";
     static final String DEFAULT_STACK = "default-stack";
     static final String DIAGNOSTICS_SOCKET_BINDING = "diagnostics-socket-binding";

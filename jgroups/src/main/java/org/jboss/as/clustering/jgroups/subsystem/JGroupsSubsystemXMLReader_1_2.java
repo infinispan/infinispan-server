@@ -364,8 +364,8 @@ public class JGroupsSubsystemXMLReader_1_2 implements XMLElementReader<List<Mode
                     RemoteSiteResource.STACK.parseAndSetParameter(value, operation, reader);
                     break;
                 }
-                case CLUSTER_NAME: {
-                    RemoteSiteResource.CLUSTER_NAME.parseAndSetParameter(value, operation, reader);
+                case CLUSTER: {
+                    RemoteSiteResource.CLUSTER.parseAndSetParameter(value, operation, reader);
                     break;
                 }
                 default: {

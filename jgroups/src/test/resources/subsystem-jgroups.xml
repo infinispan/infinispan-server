@@ -19,9 +19,9 @@
         <protocol type="MFC"/>
         <protocol type="FRAG2"/>
         <protocol type="RSVP"/>
-        <relay site="LONDON">
-            <remote-site name="SFO" stack="minimal" cluster-name="global"/>
-            <remote-site name="NYC" stack="minimal" cluster-name="global"/>
+        <relay site="LON">
+            <remote-site name="SFO" stack="maximal" cluster="global"/>
+            <remote-site name="NYC" stack="maximal" cluster="global"/>
         </relay>
     </stack>
 </subsystem>
