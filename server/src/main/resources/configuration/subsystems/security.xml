@@ -4,7 +4,7 @@
    <extension-module>org.jboss.as.security</extension-module>
    <subsystem xmlns="urn:jboss:domain:security:1.1">
        <security-domains>
-           <security-domain name="other" cache-type="default">
+           <security-domain name="other" cache-type="infinispan">
                <authentication>
                    <login-module code="Remoting" flag="optional">
                        <module-option name="password-stacking" value="useFirstPass"/>
@@ -17,7 +17,7 @@
                    </login-module>
                </authentication>
            </security-domain>
-           <security-domain name="jboss-web-policy" cache-type="default">
+           <security-domain name="jboss-web-policy" cache-type="infinispan">
                <authorization>
                    <policy-module code="Delegating" flag="required"/>
                </authorization>

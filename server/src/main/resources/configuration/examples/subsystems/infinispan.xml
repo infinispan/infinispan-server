@@ -30,6 +30,8 @@
                <cluster-loader remote-timeout="60000" />
             </distributed-cache>
          </cache-container>
+         <cache-container name="security">
+         </cache-container>
       </replacement>
    </supplement>
    <supplement name="fcs-local">
@@ -54,6 +56,8 @@
                </file-store>
             </local-cache>
          </cache-container>
+         <cache-container name="security">
+         </cache-container>
       </replacement>
    </supplement>
    <supplement name="hotrod-rolling-upgrade">
@@ -63,11 +67,12 @@
             <local-cache name="default" start="EAGER">
                <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                <transaction mode="NONE" />
-               <eviction strategy="LRU" max-entries="1000" />
-               <remote-store cache="default" socket-timeout="60000" tcp-no-delay="true" passivation="true" hotrod-wrapping="true">
+               <remote-store cache="default" socket-timeout="60000" tcp-no-delay="true" hotrod-wrapping="true">
                   <remote-server outbound-socket-binding="remote-store-hotrod-server" />
                </remote-store>
             </local-cache>
+         </cache-container>
+         <cache-container name="security">
          </cache-container>
       </replacement>
    </supplement>
@@ -122,6 +127,8 @@
                </binary-keyed-jdbc-store>
             </distributed-cache>
          </cache-container>
+         <cache-container name="security">
+         </cache-container>
       </replacement>
    </supplement>
    <supplement name="rcs-local">
@@ -152,6 +159,8 @@
                </remote-store>
             </local-cache>
          </cache-container>
+         <cache-container name="security">
+         </cache-container>
       </replacement>
    </supplement>
    <supplement name="rest-auth">
@@ -166,6 +175,8 @@
             <local-cache name="namedCache" start="EAGER">
                <expiration lifespan="2000" max-idle="1000" />
             </local-cache>
+         </cache-container>
+         <cache-container name="security">
          </cache-container>
       </replacement>
    </supplement>
@@ -199,6 +210,8 @@
                   <backup site="SFO" strategy="ASYNC" />
                </backups>
             </distributed-cache>
+         </cache-container>
+         <cache-container name="security">
          </cache-container>
       </replacement>
    </supplement>
