@@ -19,4 +19,5 @@
          <rest-connector virtual-server="default-host" cache-container="local" security-domain="other" auth-method="BASIC" />
       </replacement>
    </supplement>
+   <socket-binding name="hotrod" port="11222" />
 </config>
