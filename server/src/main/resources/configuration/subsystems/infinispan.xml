@@ -19,6 +19,8 @@
             </local-cache>
             <local-cache name="namedCache" start="EAGER" />
          </cache-container>
+         <cache-container name="security">
+         </cache-container>
       </replacement>
    </supplement>
    <supplement name="ha">
@@ -37,6 +39,8 @@
             </distributed-cache>
 
             <distributed-cache name="namedCache" mode="SYNC" start="EAGER" />
+         </cache-container>
+         <cache-container name="security">
          </cache-container>
       </replacement>
    </supplement>
