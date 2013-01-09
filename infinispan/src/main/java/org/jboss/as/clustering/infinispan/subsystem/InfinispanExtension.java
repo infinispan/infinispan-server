@@ -132,6 +132,7 @@ public class InfinispanExtension implements Extension {
             sharedAttributeResolver.put(MetricKeys.ACTIVATIONS, "cache");
             sharedAttributeResolver.put(MetricKeys.CACHE_LOADER_LOADS, "cache");
             sharedAttributeResolver.put(MetricKeys.CACHE_LOADER_MISSES, "cache");
+            sharedAttributeResolver.put(MetricKeys.CACHE_LOADER_STORES, "cache");
 
             sharedAttributeResolver.put(ClusteredCacheResource.ASYNC_MARSHALLING.getName(), "clustered-cache");
             sharedAttributeResolver.put(ClusteredCacheResource.MODE.getName(), "clustered-cache");
