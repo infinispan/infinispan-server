@@ -166,7 +166,7 @@ public class EmbeddedCacheManagerConfigurationService implements Service<Embedde
 
             RelayConfiguration relay = stack.getRelay();
             if (relay != null) {
-                builder.sites().localSite(relay.getSiteName());
+                builder.site().localSite(relay.getSiteName());
             }
         }
 
