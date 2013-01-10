@@ -5,7 +5,7 @@
    <subsystem xmlns="urn:jboss:datagrid:infinispan:6.1" default-cache-container="@@default-cache-container@@">
       <?CACHE-CONTAINERS?>
    </subsystem>
-   <supplement name="ccl-ha">
+   <supplement name="ccl-clustered">
       <replacement placeholder="@@default-cache-container@@" attributeValue="clustered" />
       <replacement placeholder="CACHE-CONTAINERS">
          <cache-container name="clustered" default-cache="default" >
@@ -76,7 +76,7 @@
          </cache-container>
       </replacement>
    </supplement>
-   <supplement name="jdbc-ha">
+   <supplement name="jdbc-clustered">
       <replacement placeholder="@@default-cache-container@@" attributeValue="clustered" />
       <replacement placeholder="CACHE-CONTAINERS">
          <cache-container name="clustered" default-cache="default" >
