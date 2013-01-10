@@ -50,8 +50,8 @@
            paramOutputFile="${generated.configs.standalone}/standalone.xml"/>
       <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
-           paramSubsystemsFile="configuration/standalone/subsystems-ha.xml"
-           paramOutputFile="${generated.configs.standalone}/standalone-ha.xml"/>
+           paramSubsystemsFile="configuration/standalone/subsystems-clustered.xml"
+           paramOutputFile="${generated.configs.standalone}/clustered.xml"/>
       <generate-domain-config 
            paramTemplateFile="configuration/domain/template.xml" 
            paramSubsystemsFile="configuration/domain/subsystems.xml"
@@ -60,16 +60,16 @@
        <!-- Example configs -->
        <generate-server-config
            paramTemplateFile="configuration/standalone/template.xml"
-           paramSubsystemsFile="configuration/examples/subsystems-ccl-ha.xml"
-           paramOutputFile="${generated.configs.examples}/standalone-ccl-ha.xml"/>
+           paramSubsystemsFile="configuration/examples/subsystems-ccl-clustered.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-ccl-clustered.xml"/>
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-fcs-local.xml"
            paramOutputFile="${generated.configs.examples}/standalone-fcs-local.xml"/>
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
-           paramSubsystemsFile="configuration/examples/subsystems-jdbc-ha.xml"
-           paramOutputFile="${generated.configs.examples}/standalone-jdbc-ha.xml"/>
+           paramSubsystemsFile="configuration/examples/subsystems-jdbc-clustered.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-jdbc-clustered.xml"/>
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-rcs-local.xml"
