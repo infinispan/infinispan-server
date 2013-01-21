@@ -62,7 +62,7 @@ public abstract class SharedStateCacheAdd extends ClusteredCacheAdd {
             builder.clustering().stateTransfer().fetchInMemoryState(enabled);
             builder.clustering().stateTransfer().timeout(timeout);
             builder.clustering().stateTransfer().chunkSize(chunkSize);
-            builder.clustering().stateTransfer().waitForInitialStateTransferToComplete(awaitInitialTransfer);
+            builder.clustering().stateTransfer().awaitInitialTransfer(awaitInitialTransfer);
         }
 
         if (cache.hasDefined(ModelKeys.BACKUP)) {
