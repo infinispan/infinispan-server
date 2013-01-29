@@ -37,11 +37,10 @@
     <version.org.jboss.aesh>0.24</version.org.jboss.aesh>
     <version.com.thoughtworks.xstream>1.4.1</version.com.thoughtworks.xstream>
     <version.junit>4.10</version.junit>
-    <version.org.infinispan>5.2.0.CR2</version.org.infinispan>
+    <version.org.infinispan>5.2.0.CR3</version.org.infinispan>
     <version.org.jgroups>3.2.6.Final</version.org.jgroups>
     <version.org.rhq>4.4.0</version.org.rhq>
     <version.org.rhq.parent>4.0.1</version.org.rhq.parent>
-    <version.org.rhq.annotations>3.0.4</version.org.rhq.annotations>
     <version.org.scala-lang>2.10.0</version.org.scala-lang>
     <relocations></relocations>
   </properties>
@@ -180,24 +179,12 @@
         <artifactId>infinispan-parent</artifactId>
         <version>${version.org.infinispan}</version>
         <type>pom</type>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-core</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -205,24 +192,12 @@
         <artifactId>infinispan-core</artifactId>
         <version>${version.org.infinispan}</version>
         <classifier>sources</classifier>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-query</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -230,24 +205,12 @@
         <artifactId>infinispan-cachestore-parent</artifactId>
         <version>${version.org.infinispan}</version>
         <type>pom</type>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-cachestore-remote</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -255,24 +218,12 @@
         <artifactId>infinispan-cachestore-remote</artifactId>
         <version>${version.org.infinispan}</version>
         <classifier>sources</classifier>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-cachestore-jdbc</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -280,24 +231,12 @@
         <artifactId>infinispan-cachestore-jdbc</artifactId>
         <version>${version.org.infinispan}</version>
         <classifier>sources</classifier>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-client-hotrod</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -305,12 +244,6 @@
         <artifactId>infinispan-client-hotrod</artifactId>
         <version>${version.org.infinispan}</version>
         <classifier>sources</classifier>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -325,36 +258,18 @@
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-server-core</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-server-hotrod</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-server-memcached</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -362,60 +277,30 @@
         <artifactId>infinispan-server-rest</artifactId>
         <version>${version.org.infinispan}</version>
         <classifier>classes</classifier>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-rhq-plugin</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-cli-server</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-cli-client</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-upgrade-tools</artifactId>
         <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.rhq.helpers</groupId>
-            <artifactId>rhq-pluginAnnotations</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -481,12 +366,6 @@
         <artifactId>rhq-core-native-system</artifactId>
         <version>${version.org.rhq}</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.rhq.helpers</groupId>
-        <artifactId>rhq-pluginAnnotations</artifactId>
-        <version>${version.org.rhq.annotations}</version>
-      </dependency>
     </dependencies>
 
   </dependencyManagement>
@@ -502,5 +381,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
+  
 </project>
+

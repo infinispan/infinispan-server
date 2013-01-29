@@ -77,6 +77,7 @@
                               <exclude>org.ops4j.base</exclude>
                               <exclude>org.ops4j.pax.swissbox</exclude>
                               <exclude>org.ops4j.pax.web</exclude>
+                              <exclude>org.rhq.helpers:rhq-pluginAnnotations</exclude>
                               <exclude>org.slf4j:slf4j-nop</exclude>
                               <exclude>org.slf4j:slf4j-jdk14</exclude>
                               <exclude>org.slf4j:slf4j-log4j12</exclude>
@@ -145,18 +146,6 @@
          <groupId>org.jboss.as</groupId>
          <artifactId>jboss-as-subsystem-test</artifactId>
          <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.rhq.helpers</groupId>
-         <artifactId>rhq-pluginAnnotations</artifactId>
-         <scope>provided</scope>
-         <exclusions>
-            <exclusion>
-               <artifactId>i18nlog</artifactId>
-               <groupId>i18nlog</groupId>
-            </exclusion>
-         </exclusions>
       </dependency>
       
    </dependencies>
