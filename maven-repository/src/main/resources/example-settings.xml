@@ -7,9 +7,23 @@
          <id>jboss-datagrid-repository</id>
          <repositories>
             <repository>
+               <id>jboss-eap-repository</id>
+               <name>JBoss EAP Maven Repository</name>
+               <url>file:///path/to/repo/jboss-eap-maven-repository</url>
+               <layout>default</layout>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>false</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </repository>
+            <repository>
                <id>jboss-datagrid-repository</id>
                <name>JBoss Data Grid Maven Repository</name>
-               <url>file:///path/to/repo/jboss-datagrid-maven-repository-6.0.0</url>
+               <url>file:///path/to/repo/jboss-datagrid-maven-repository</url>
                <layout>default</layout>
                <releases>
                   <enabled>true</enabled>
@@ -22,10 +36,24 @@
             </repository>
          </repositories>
          <pluginRepositories>
+         	<pluginRepository>
+               <id>jboss-eap-repository</id>
+               <name>JBoss EAP Maven Repository</name>
+               <url>file:///path/to/repo/jboss-eap-maven-repository</url>
+               <layout>default</layout>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>false</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </pluginRepository>
             <pluginRepository>
-               <id>jboss-datagrid-repository-group</id>
+               <id>jboss-datagrid-repository</id>
                <name>JBoss Data Grid Maven Repository</name>
-               <url>file:///path/to/repo/jboss-datagrid-maven-repository-6.0.0</url>
+               <url>file:///path/to/repo/jboss-datagrid-maven-repository</url>
                <layout>default</layout>
                <releases>
                   <enabled>true</enabled>
@@ -40,7 +68,7 @@
       </profile>
    </profiles>
    <activeProfiles>
-    <!-- Optionally, make the repository active by default -->
+    <!-- make the profile active by default -->
       <activeProfile>jboss-datagrid-repository</activeProfile>
    </activeProfiles>
 

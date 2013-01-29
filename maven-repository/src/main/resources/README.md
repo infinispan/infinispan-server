@@ -1,7 +1,8 @@
 JBoss JDG Maven Repository
 ==========================
 
-This archive contains Maven repository artifacts for JBoss Data Grid 6.0.0.  
+This archive contains Maven repository artifacts for JBoss Data Grid ${project.version}. This repository should
+be used in conjunction with at least version 6.0.1 of JBoss EAP's Maven repository.
  
 Installation (Option 1) - Local File System
 --------------------------------
@@ -9,9 +10,9 @@ Installation (Option 1) - Local File System
 For initial testing in a small team, the repository can be extracted to 
 a directory on the local file system.
 
-    unzip jboss-datagrid-maven-repository-6.0.0.zip
+    unzip jboss-datagrid-maven-repository-${project.version}.zip
 
-This will create a Maven repository in a directory called "jboss-datagrid-maven-repository-6.0.0".
+This will create a Maven repository in a directory called "jboss-datagrid-maven-repository-${project.version}".
 
 Make a note of the both location of this directory for later use.
 
@@ -24,9 +25,9 @@ in a standard webserver such as Apache httpd, or a Maven repository manager such
 To install the repository in Apache, simply unzip the repository in a web accessible 
 directory on the Apache server.
 
-    unzip jboss-datagrid-maven-repository-6.0.0.zip
+    unzip jboss-datagrid-maven-repository-${project.version}.zip
 
-This will create a Maven repository in a directory called "jboss-datagrid-maven-repository-6.0.0".
+This will create a Maven repository in a directory called "jboss-datagrid-maven-repository-${project.version}".
 Apache should then be configured to allow read access and directory browsing in this directory.
 
  
@@ -54,9 +55,9 @@ The URL of the repository will depend on where the
 repository is located (i.e. on the filesystem, web server etc).  A few example 
 URLs are provided here:
 
-* File system - file:///path/to/repo/jboss-datagrid-maven-repository-6.0.0
-* Apache Web Server - http://intranet.acme.com/jboss-datagrid-maven-repository-6.0.0
-* Nexus Repository Manager - https://intranet.acme.com/nexus/content/repositories/jboss-datagrid-maven-repository-6.0.0
+* File system - file:///path/to/repo/jboss-datagrid-maven-repository-${project.version}
+* Apache Web Server - http://intranet.acme.com/jboss-datagrid-maven-repository-${project.version}
+* Nexus Repository Manager - https://intranet.acme.com/nexus/content/repositories/jboss-datagrid-maven-repository-${project.version}
 
 An example Maven settings file (example-settings.xml) is included in the root directory of the Maven
 repository zip file.  An excerpt containing the relevant portions of settings.xml is provided below.
@@ -70,10 +71,11 @@ More information about configuring your Maven  settings is available on the Apac
         <profile>
           <id>jboss-datagrid-repository</id>
           <repositories>
+            ...
             <repository>
               <id>jboss-datagrid-repository</id>
               <name>JBoss Data Grid Maven Repository</name>
-              <url>file:///path/to/repo/jboss-datagrid-maven-repository-6.0.0</url>
+              <url>file:///path/to/repo/jboss-datagrid-maven-repository-${project.version}</url>
               <layout>default</layout>
               <releases>
                 <enabled>true</enabled>
@@ -84,12 +86,14 @@ More information about configuring your Maven  settings is available on the Apac
                 <updatePolicy>never</updatePolicy>
               </snapshots>
             </repository>
+            ...
           </repositories>
           <pluginRepositories>
+            ...
             <pluginRepository>
               <id>jboss-datagrid-repository-group</id>
               <name>JBoss Data Grid Maven Repository</name>
-              <url>file:///path/to/repo/jboss-datagrid-maven-repository-6.0.0</url>
+              <url>file:///path/to/repo/jboss-datagrid-maven-repository-${project.version}</url>
               <layout>default</layout>
               <releases>
                 <enabled>true</enabled>
@@ -100,6 +104,7 @@ More information about configuring your Maven  settings is available on the Apac
                 <updatePolicy>never</updatePolicy>
               </snapshots>
             </pluginRepository>
+            ...
           </pluginRepositories>
         </profile>
 
