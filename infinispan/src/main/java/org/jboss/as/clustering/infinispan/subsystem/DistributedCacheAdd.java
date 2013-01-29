@@ -1,15 +1,15 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-
-import java.util.List;
-
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.dmr.ModelNode;
+
+import java.util.List;
+
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 
 /**
  * @author Richard Achmatowicz (c) 2011 Red Hat Inc.
@@ -65,7 +65,8 @@ public class DistributedCacheAdd extends SharedStateCacheAdd {
             .numSegments(segments)
         ;
         if (lifespan > 0) {
-            builder.clustering().l1().lifespan(lifespan);
+            // is disabled by default in L1ConfigurationBuilder
+            builder.clustering().l1().enable().lifespan(lifespan);
         } else {
             builder.clustering().l1().disable();
         }
