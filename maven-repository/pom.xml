@@ -82,15 +82,6 @@
          <artifactId>jbossjta</artifactId>
          <classifier>sources</classifier>
       </dependency>
-      <dependency>
-         <groupId>org.rhq</groupId>
-         <artifactId>rhq-parent</artifactId>
-         <type>pom</type>
-      </dependency>
-      <dependency>
-         <groupId>org.rhq.helpers</groupId>
-         <artifactId>rhq-pluginAnnotations</artifactId>
-      </dependency>
    </dependencies>
 
    <profiles>
