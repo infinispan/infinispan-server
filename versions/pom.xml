@@ -20,7 +20,6 @@
   <properties>
     <!-- Release Info -->
     <product.version>${project.version}</product.version>
-    <product.codename>Helvellyn</product.codename>
     <product.name>jboss-datagrid</product.name>
 
     <!-- Version Info -->
@@ -196,12 +195,6 @@
 
       <dependency>
         <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-query</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.infinispan</groupId>
         <artifactId>infinispan-cachestore-parent</artifactId>
         <version>${version.org.infinispan}</version>
         <type>pom</type>
@@ -279,12 +272,6 @@
         <classifier>classes</classifier>
       </dependency>
 
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-rhq-plugin</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-      
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-cli-server</artifactId>
