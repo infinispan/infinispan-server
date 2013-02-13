@@ -149,6 +149,7 @@ public class InfinispanExtension implements Extension {
             sharedAttributeResolver.put(BaseStoreResource.PASSIVATION.getName(), "store");
             sharedAttributeResolver.put(BaseStoreResource.PRELOAD.getName(), "store");
             sharedAttributeResolver.put(BaseStoreResource.PURGE.getName(), "store");
+            sharedAttributeResolver.put(BaseStoreResource.READ_ONLY.getName(), "store");
             sharedAttributeResolver.put(BaseStoreResource.SHARED.getName(), "store");
             sharedAttributeResolver.put(BaseStoreResource.SINGLETON.getName(), "store");
             sharedAttributeResolver.put(BaseStoreResource.PROPERTY.getName(), "store");

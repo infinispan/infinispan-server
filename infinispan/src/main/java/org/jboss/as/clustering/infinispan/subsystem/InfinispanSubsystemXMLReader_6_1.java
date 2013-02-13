@@ -1107,6 +1107,10 @@ public class InfinispanSubsystemXMLReader_6_1 implements XMLElementReader<List<M
                 BaseStoreResource.SINGLETON.parseAndSetParameter(value, store, reader);
                 break;
             }
+            case READ_ONLY: {
+                BaseStoreResource.READ_ONLY.parseAndSetParameter(value, store, reader);
+                break;
+            }
             default: {
                 throw ParseUtils.unexpectedAttribute(reader, index);
             }

@@ -482,6 +482,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             final boolean fetchState = BaseStoreResource.FETCH_STATE.resolveModelAttribute(context, store).asBoolean();
             final boolean purge = BaseStoreResource.PURGE.resolveModelAttribute(context, store).asBoolean();
             final boolean singleton = BaseStoreResource.SINGLETON.resolveModelAttribute(context, store).asBoolean();
+            final boolean readOnly = BaseStoreResource.READ_ONLY.resolveModelAttribute(context, store).asBoolean();
             // TODO Fix me
             final boolean async = store.hasDefined(ModelKeys.WRITE_BEHIND) && store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME).isDefined();
 
@@ -494,6 +495,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
                     .fetchPersistentState(fetchState)
                     .purgeOnStartup(purge)
                     .purgeSynchronously(true)
+                    .ignoreModifications(readOnly)
             ;
             storeBuilder.singletonStore().enabled(singleton);
 
