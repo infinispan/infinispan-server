@@ -524,6 +524,11 @@
                 <xs:documentation>If true, the singleton store cache store is enabled. SingletonStore is a delegating cache store used for situations when only one instance in a cluster should interact with the underlying store.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="read-only" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>If true, the cache store will only be used to load entries. Any modifications made to the caches will not be applied to the store.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="write-behind">

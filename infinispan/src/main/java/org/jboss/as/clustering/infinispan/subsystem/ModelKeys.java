@@ -116,6 +116,7 @@ public class ModelKeys {
     static final String QUEUE_SIZE = "queue-size";
     static final String RACK = "rack";
     static final String RAW_VALUES = "raw-values";
+    static final String READ_ONLY = "read-only";
     static final String RELATIVE_TO = "relative-to";
     static final String REMOTE_SERVER = "remote-server";
     static final String REMOTE_SERVERS = "remote-servers";

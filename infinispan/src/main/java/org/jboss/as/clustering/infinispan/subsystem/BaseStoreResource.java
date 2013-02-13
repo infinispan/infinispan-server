@@ -70,6 +70,13 @@ public class BaseStoreResource extends SimpleResourceDefinition {
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setDefaultValue(new ModelNode().set(false))
                     .build();
+    static final SimpleAttributeDefinition READ_ONLY =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.READ_ONLY, ModelType.BOOLEAN, true)
+                    .setXmlName(Attribute.READ_ONLY.getLocalName())
+                    .setAllowExpression(false)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set(false))
+                    .build();
 
     // used to pass in a list of properties to the store add command
     static final SimpleAttributeDefinition PROPERTY = new SimpleAttributeDefinition(ModelKeys.PROPERTY, ModelType.PROPERTY, true);
@@ -79,8 +86,8 @@ public class BaseStoreResource extends SimpleResourceDefinition {
 
     static final AttributeDefinition[] COMMON_LOADER_ATTRIBUTES = {SHARED, PRELOAD};
     static final AttributeDefinition[] COMMON_LOADER_PARAMETERS = {SHARED, PRELOAD, PROPERTIES};
-    static final AttributeDefinition[] COMMON_STORE_ATTRIBUTES = {SHARED, PRELOAD, PASSIVATION, FETCH_STATE, PURGE, SINGLETON};
-    static final AttributeDefinition[] COMMON_STORE_PARAMETERS = {SHARED, PRELOAD, PASSIVATION, FETCH_STATE, PURGE, SINGLETON, PROPERTIES};
+    static final AttributeDefinition[] COMMON_STORE_ATTRIBUTES = {SHARED, PRELOAD, PASSIVATION, FETCH_STATE, PURGE, SINGLETON, READ_ONLY};
+    static final AttributeDefinition[] COMMON_STORE_PARAMETERS = {SHARED, PRELOAD, PASSIVATION, FETCH_STATE, PURGE, SINGLETON, READ_ONLY, PROPERTIES};
 
     // operations
     private static final OperationDefinition CACHE_STORE_ADD_DEFINITION = new SimpleOperationDefinitionBuilder(ADD, InfinispanExtension.getResourceDescriptionResolver(ModelKeys.STORE))
