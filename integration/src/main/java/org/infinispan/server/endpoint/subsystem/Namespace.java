@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.as.clustering.infinispan.subsystem;
+package org.infinispan.server.endpoint.subsystem;
 
 import java.util.List;
 
@@ -28,25 +28,21 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.staxmapper.XMLElementReader;
 
 /**
- * @author Paul Ferraro
  * @author Tristan Tarrant
  */
 public enum Namespace {
     // must be first
-    UNKNOWN("jboss:domain:infinispan", 0, 0, null),
+    UNKNOWN(null, 0, 0, null),
 
-    INFINISPAN_1_0("jboss:domain:infinispan", 1, 0, new InfinispanSubsystemXMLReader_1_0()),
-    INFINISPAN_1_1("jboss:domain:infinispan", 1, 1, new InfinispanSubsystemXMLReader_1_1()),
-    INFINISPAN_1_2("jboss:domain:infinispan", 1, 2, new InfinispanSubsystemXMLReader_1_2()), // IMPORTANT: Management API version != XSD version!
-    INFINISPAN_1_3("jboss:domain:infinispan", 1, 3, new InfinispanSubsystemXMLReader_1_3()), // IMPORTANT: Management API version != XSD version!
-    INFINISPAN_SERVER_5_2("infinispan:server:core", 5, 2, new InfinispanSubsystemXMLReader_5_2()),
+    INFINISPAN_ENDPOINT_1_0("jboss:domain:datagrid", 1, 0, new EndpointSubsystemReader_1_0()),
+    INFINISPAN_ENDPOINT_5_2("infinispan:server:endpoint", 5, 2, new EndpointSubsystemReader_1_0()),
     ;
     private static final String URN_PATTERN = "urn:%s:%d.%d";
 
     /**
      * The current namespace version.
      */
-    public static final Namespace CURRENT = INFINISPAN_SERVER_5_2;
+    public static final Namespace CURRENT = INFINISPAN_ENDPOINT_5_2;
 
     private final int major;
     private final int minor;

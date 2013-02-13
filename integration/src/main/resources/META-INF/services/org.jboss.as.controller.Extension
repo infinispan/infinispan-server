@@ -17,4 +17,4 @@
 # 02110-1301 USA
 #
 
-com.jboss.datagrid.endpoint.EndpointExtension
+org.infinispan.server.endpoint.subsystem.EndpointExtension

@@ -2,7 +2,7 @@
 <!-- See src/resources/configuration/ReadMe.txt for how the configuration assembly works -->
 <config default-supplement="default">
    <extension-module>com.jboss.datagrid</extension-module>
-   <subsystem xmlns="urn:jboss:datagrid:endpoint:6.1">
+   <subsystem xmlns="urn:infinispan:server:endpoint:5.2">
       <?CONNECTORS?>
    </subsystem>
    <supplement name="hotrod-rolling-upgrade">
