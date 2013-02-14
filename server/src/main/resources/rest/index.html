@@ -1,4 +1,4 @@
- <!DOCTYPE html> 
+<!DOCTYPE html> 
 <!--
  ~ Copyright 2012 Red Hat, Inc. and/or its affiliates.
  ~
@@ -58,7 +58,13 @@
 			the REST server starts default and pre-defined caches on startup in
 			order to provide a more consistent behaviour.
 		</p>
-
+		<p>
+			Please also note that by default the REST server is protected using BASIC HTTP authentication.
+			You should use the provided <strong>add-user.sh</strong> or <strong>add-user.bat</strong> scripts, depending 
+			on your platform, to add valid users. Alternatively you can configure the <em><strong>security</strong></em> subsystem 
+			for your environment. Refer to the <a target="docs" href="https://docs.jboss.org/author/display/AS7/Security+subsystem+configuration">Security</a>
+			subsystem documentation for further details.
+		</p>
 		<p>
 			<a target="docs" href="http://community.jboss.org/wiki/InfinispanRESTserver">The
 				chapter</a> in the community user guide has more details.
