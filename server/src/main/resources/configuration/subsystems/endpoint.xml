@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- See src/resources/configuration/ReadMe.txt for how the configuration assembly works -->
 <config default-supplement="default">
-   <extension-module>com.jboss.datagrid</extension-module>
+   <extension-module>org.infinispan.server.endpoint</extension-module>
    <subsystem xmlns="urn:infinispan:server:endpoint:5.2">
       <?CONNECTORS?>
    </subsystem>
