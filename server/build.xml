@@ -98,11 +98,11 @@
          <maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
       </module-def>
       
-      <module-def name="com.jboss.datagrid.common" src="${jdg.modules.dir}">
+      <module-def name="org.infinispan.server.common" src="${jdg.modules.dir}">
          <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-server-common" />
       </module-def>
 
-      <module-def name="com.jboss.datagrid" src="${jdg.modules.dir}">
+      <module-def name="org.infinispan.server.endpoint" src="${jdg.modules.dir}">
          <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-server-integration" />
       </module-def>
 

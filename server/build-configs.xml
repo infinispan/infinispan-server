@@ -52,16 +52,12 @@
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/standalone/subsystems-clustered.xml"
            paramOutputFile="${generated.configs.standalone}/clustered.xml"/>
-      <generate-domain-config 
-           paramTemplateFile="configuration/domain/template.xml" 
-           paramSubsystemsFile="configuration/domain/subsystems.xml"
-           paramOutputFile="${generated.configs.domain}/domain.xml"/>
        
        <!-- Example configs -->
        <generate-server-config
            paramTemplateFile="configuration/standalone/template.xml"
            paramSubsystemsFile="configuration/examples/subsystems-ccl-clustered.xml"
-           paramOutputFile="${generated.configs.examples}/standalone-ccl-clustered.xml"/>
+           paramOutputFile="${generated.configs.examples}/clustered-ccl.xml"/>
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-fcs-local.xml"
@@ -69,7 +65,7 @@
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-jdbc-clustered.xml"
-           paramOutputFile="${generated.configs.examples}/standalone-jdbc-clustered.xml"/>
+           paramOutputFile="${generated.configs.examples}/clustered-jdbc.xml"/>
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-rcs-local.xml"
@@ -81,19 +77,19 @@
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-storage-only.xml"
-           paramOutputFile="${generated.configs.examples}/standalone-storage-only.xml"/>
+           paramOutputFile="${generated.configs.examples}/clustered-storage-only.xml"/>
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-topology.xml"
-           paramOutputFile="${generated.configs.examples}/standalone-topology.xml"/>
+           paramOutputFile="${generated.configs.examples}/clustered-topology.xml"/>
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-two-nodes.xml"
-           paramOutputFile="${generated.configs.examples}/standalone-two-nodes.xml"/>
+           paramOutputFile="${generated.configs.examples}/clustered-two-nodes.xml"/>
        <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-xsite.xml"
-           paramOutputFile="${generated.configs.examples}/standalone-xsite.xml"/>
+           paramOutputFile="${generated.configs.examples}/clustered-xsite.xml"/>
     </target>
 
 

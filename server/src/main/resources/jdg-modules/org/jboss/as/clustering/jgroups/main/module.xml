@@ -33,7 +33,7 @@
 
     <dependencies>
         <module name="javax.api"/>
-        <module name="com.jboss.datagrid.common"/>
+        <module name="org.infinispan.server.common"/>
         <module name="org.jboss.as.clustering.common"/>
         <module name="org.jboss.as.controller"/>
         <module name="org.jboss.as.jmx"/>
