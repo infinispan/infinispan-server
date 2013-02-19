@@ -14,6 +14,9 @@ import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
+import com.jboss.datagrid.server.common.OperationDefinition;
+import com.jboss.datagrid.server.common.SimpleOperationDefinitionBuilder;
+
 /**
  * Base class for cache resources which require common cache attributes and clustered cache attributes.
  *
@@ -67,6 +70,13 @@ public class ClusteredCacheResource extends CacheResource  {
 
     static final AttributeDefinition[] CLUSTERED_CACHE_ATTRIBUTES = { ASYNC_MARSHALLING, MODE, QUEUE_SIZE, QUEUE_FLUSH_INTERVAL, REMOTE_TIMEOUT};
 
+    // operations
+    static final OperationDefinition RESET_RPC_STATISTICS =
+            new SimpleOperationDefinitionBuilder(
+                    "reset-rpc-statistics",
+                    InfinispanExtension.getResourceDescriptionResolver("clustered-cache")
+            ).build();
+
 
     public ClusteredCacheResource(PathElement pathElement, ResourceDescriptionResolver descriptionResolver, AbstractAddStepHandler addHandler, OperationStepHandler removeHandler, boolean runtimeRegistration) {
         super(pathElement, descriptionResolver, addHandler, removeHandler, runtimeRegistration);
@@ -91,5 +101,8 @@ public class ClusteredCacheResource extends CacheResource  {
     @Override
     public void registerOperations(ManagementResourceRegistration resourceRegistration) {
         super.registerOperations(resourceRegistration);
+        if (isRuntimeRegistration()) {
+            resourceRegistration.registerOperationHandler(ClusteredCacheResource.RESET_RPC_STATISTICS.getName(), CacheCommands.ResetRpcManagerStatisticsCommand.INSTANCE, ClusteredCacheResource.RESET_RPC_STATISTICS.getDescriptionProvider());
+        }
     }
 }

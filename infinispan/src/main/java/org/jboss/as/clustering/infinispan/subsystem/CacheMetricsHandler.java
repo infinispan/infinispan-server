@@ -305,7 +305,7 @@ public class CacheMetricsHandler extends AbstractRuntimeOnlyHandler {
         }
     }
 
-    private static <T extends CommandInterceptor> T getFirstInterceptorWhichExtends(List<CommandInterceptor> interceptors,
+    public static <T extends CommandInterceptor> T getFirstInterceptorWhichExtends(List<CommandInterceptor> interceptors,
                                                                                     Class<T> interceptorClass) {
         for (CommandInterceptor interceptor : interceptors) {
             boolean isSubclass = interceptorClass.isAssignableFrom(interceptor.getClass());

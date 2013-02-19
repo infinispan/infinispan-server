@@ -211,4 +211,13 @@ public interface InfinispanMessages {
      */
      @Message(id = 11001, value = "%s is not a valid cache loader")
      IllegalArgumentException invalidCacheLoader(@Cause Throwable cause, String cacheLoaderName);
+
+     /**
+      * Returns a message for failed operations
+      *
+      * @param message
+      * @return
+      */
+     @Message(id = 11002, value = "Failed to invoke operation: %s")
+     String failedToInvokeOperation(String message);
 }
