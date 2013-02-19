@@ -156,4 +156,6 @@ public class ModelKeys {
     static final String WAIT = "wait";
     static final String WRITE_BEHIND = "write-behind";
     static final String WRITE_BEHIND_NAME = "WRITE_BEHIND";
-    }
+
+    static final String TX_INTERNAL_ID = "internal-id";
+}

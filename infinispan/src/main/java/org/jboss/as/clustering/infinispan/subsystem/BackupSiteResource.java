@@ -39,6 +39,9 @@ import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
+import com.jboss.datagrid.server.common.OperationDefinition;
+import com.jboss.datagrid.server.common.SimpleOperationDefinitionBuilder;
+
 /**
  * @author Paul Ferraro
  *
@@ -92,8 +95,24 @@ public class BackupSiteResource extends SimpleResourceDefinition {
 
     static final AttributeDefinition[] ATTRIBUTES = new AttributeDefinition[] { FAILURE_POLICY, STRATEGY, REPLICATION_TIMEOUT, ENABLED, TAKE_OFFLINE_AFTER_FAILURES, TAKE_OFFLINE_MIN_WAIT };
 
-    BackupSiteResource() {
+    // operations
+    static final OperationDefinition BACKUP_BRING_SITE_ONLINE =
+            new SimpleOperationDefinitionBuilder("bring-site-online", InfinispanExtension.getResourceDescriptionResolver("backup.ops"))
+                .build();
+
+    static final OperationDefinition BACKUP_TAKE_SITE_OFFLINE =
+            new SimpleOperationDefinitionBuilder("take-site-offline", InfinispanExtension.getResourceDescriptionResolver("backup.ops"))
+                .build();
+
+    static final OperationDefinition BACKUP_SITE_STATUS =
+            new SimpleOperationDefinitionBuilder("site-status", InfinispanExtension.getResourceDescriptionResolver("backup.ops"))
+                .build();
+
+    private final boolean runtimeRegistration;
+
+    BackupSiteResource(boolean runtimeRegistration) {
         super(PathElement.pathElement(ModelKeys.BACKUP), InfinispanExtension.getResourceDescriptionResolver(ModelKeys.BACKUP), new CacheConfigAdd(ATTRIBUTES), ReloadRequiredRemoveStepHandler.INSTANCE);
+        this.runtimeRegistration = runtimeRegistration;
     }
 
     @Override
@@ -102,5 +121,19 @@ public class BackupSiteResource extends SimpleResourceDefinition {
         for (AttributeDefinition attribute: ATTRIBUTES) {
             registration.registerReadWriteAttribute(attribute, null, writeHandler);
         }
+    }
+
+    @Override
+    public void registerOperations(ManagementResourceRegistration resourceRegistration) {
+        super.registerOperations(resourceRegistration);
+        if (runtimeRegistration) {
+            resourceRegistration.registerOperationHandler(BackupSiteResource.BACKUP_BRING_SITE_ONLINE.getName(), CacheCommands.BackupBringSiteOnlineCommand.INSTANCE, BackupSiteResource.BACKUP_BRING_SITE_ONLINE.getDescriptionProvider());
+            resourceRegistration.registerOperationHandler(BackupSiteResource.BACKUP_TAKE_SITE_OFFLINE.getName(), CacheCommands.BackupTakeSiteOfflineCommand.INSTANCE, BackupSiteResource.BACKUP_TAKE_SITE_OFFLINE.getDescriptionProvider());
+            resourceRegistration.registerOperationHandler(BackupSiteResource.BACKUP_SITE_STATUS.getName(), CacheCommands.BackupSiteStatusCommand.INSTANCE, BackupSiteResource.BACKUP_SITE_STATUS.getDescriptionProvider());
+        }
+    }
+
+    public boolean isRuntimeRegistration() {
+        return runtimeRegistration;
     }
 }

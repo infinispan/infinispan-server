@@ -837,7 +837,7 @@
         <xs:sequence>
             <xs:element name="backup" type="tns:backup" maxOccurs="unbounded">
                 <xs:annotation>
-                    <xs:documentation></xs:documentation>
+                    <xs:documentation>Configures a specific site where this cache backups data.</xs:documentation>
                 </xs:annotation>
             </xs:element>
         </xs:sequence>
@@ -847,33 +847,33 @@
         <xs:sequence>
             <xs:element name="take-offline" type="tns:take-offline" minOccurs="0">
                 <xs:annotation>
-                    <xs:documentation></xs:documentation>
+                    <xs:documentation>Determines whether this backup is taken offline (ignored) after a certain number of tries.</xs:documentation>
                 </xs:annotation>
             </xs:element>
         </xs:sequence>
         <xs:attribute name="site" type="xs:string" use="required">
             <xs:annotation>
-                <xs:documentation></xs:documentation>
+                <xs:documentation>Name of the remote site where this cache backups data.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="strategy" type="tns:mode" default="ASYNC">
             <xs:annotation>
-                <xs:documentation></xs:documentation>
+                <xs:documentation>The strategy used for backing up data: "SYNC" or "ASYNC". Defaults to "ASYNC"</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="failure-policy" type="tns:backup-failure-policy" default="WARN">
             <xs:annotation>
-                <xs:documentation></xs:documentation>
+                <xs:documentation>Decides what the system would do in case of failure during backup. Defaults to "FAIL"</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="timeout" type="xs:long" default="10000">
             <xs:annotation>
-                <xs:documentation></xs:documentation>
+                <xs:documentation>The timeout(millis) to be used when backing up data remotely. Defaults to 10 secs.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="enabled" type="xs:boolean" default="true">
             <xs:annotation>
-                <xs:documentation></xs:documentation>
+                <xs:documentation>If 'false' then no data is backed up to this site. Defaults to 'true'.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>
@@ -881,12 +881,12 @@
     <xs:complexType name="take-offline">
         <xs:attribute name="after-failures" type="xs:int" default="0">
             <xs:annotation>
-                <xs:documentation></xs:documentation>
+                <xs:documentation>The number of failed request operations after which this site should be taken offline. Defaults to 0 (never). A negative value would mean that the site will be taken offline after 'min-wait'.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="min-wait" type="xs:long" default="0">
             <xs:annotation>
-                <xs:documentation></xs:documentation>
+                <xs:documentation>The minimal number of millis to wait before taking this site offline, even in the case 'after-failures' is reached. If smaller or equal to 0, then only 'after-failures' is considered.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>

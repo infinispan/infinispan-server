@@ -82,6 +82,37 @@
             <plugin-configuration>
                <c:simple-property name="path" readOnly="true" default="distributed-cache|local-cache|invalidation-cache|replicated-cache" />
             </plugin-configuration>
+            
+            <operation name="clear-cache" description="Clears the contents of this cache">
+               <results>
+                  <c:simple-property name="operationResult"/>
+               </results>
+            </operation>
+            <operation name="reset-statistics" description="Resets statistics gathered by this cache">
+               <results>
+                  <c:simple-property name="operationResult"/>
+               </results>
+            </operation>
+            <operation name="reset-activation-statistics" description="Resets activation statistics gathered by this cache">
+               <results>
+                  <c:simple-property name="operationResult"/>
+               </results>
+            </operation>
+            <operation name="reset-invalidation-statistics" description="Resets invalidation statistics gathered by this cache">
+               <results>
+                  <c:simple-property name="operationResult"/>
+               </results>
+            </operation>
+            <operation name="reset-passivation-statistics" description="Resets passivation statistics gathered by this cache">
+               <results>
+                  <c:simple-property name="operationResult"/>
+               </results>
+            </operation>
+            <operation name="reset-rpc-statistics" description="Resets RPC statistics gathered by this cache">
+               <results>
+                  <c:simple-property name="operationResult"/>
+               </results>
+            </operation>
 
             <metric property="cache-status" displayName="Cache Status" displayType="summary" units="none" dataType="trait" description="The current runtime status of a cache" />
 
@@ -162,6 +193,70 @@
                <c:simple-property name="segments" required="false" type="integer" readOnly="true" defaultValue="1"
                   description="The total number of segments in use" />
             </resource-configuration>
+            
+            <service name="Backup" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.rhq.modules.plugins.jbossas7.BaseComponent" singleton="true" description="The cross-site backup configuration for this cache">
+               <plugin-configuration>
+                  <c:simple-property name="path" readOnly="true" default="backup" />
+               </plugin-configuration>
+   
+               <operation name="status" description="Shows the site's status">
+                  <results>
+                     <c:simple-property name="operationResult"/>
+                  </results>
+               </operation>
+               <operation name="bring-site-online" description="Brings this site online">
+                  <results>
+                     <c:simple-property name="operationResult"/>
+                  </results>
+               </operation>
+               <operation name="take-site-offline" description="Takes this site offline">
+                  <results>
+                     <c:simple-property name="operationResult"/>
+                  </results>
+               </operation>
+            </service>
+            
+            <service name="Transactions" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.rhq.modules.plugins.jbossas7.BaseComponent" singleton="true" description="Operations on transactions on this cache">
+
+               <plugin-configuration>
+                  <c:simple-property name="path" readOnly="true" default="transaction=TRANSACTION" />
+               </plugin-configuration>
+   
+               <operation name="reset-transaction-statistics" description="Resets transaction statistics">
+                  <results>
+                     <c:simple-property name="operationResult"/>
+                  </results>
+               </operation>
+               <operation name="list-in-doubt-transactions" description="Lists in-doubt transactions">
+                  <results>
+                     <c:simple-property name="operationResult"/>
+                  </results>
+               </operation>
+               <operation name="force-commit-transaction" description="Forces the commit of an in-doubt transaction by its internal ID.">
+                  <parameters>
+                     <c:simple-property name="internal-id" required="true" type="long" readOnly="false" description="The internal ID of the transaction"/>
+                  </parameters>
+                  <results>
+                     <c:simple-property name="operationResult"/>
+                  </results>
+               </operation>
+               <operation name="force-rollback-transaction" description="Forces the rollback of an in-doubt transaction by its internal ID.">
+                  <parameters>
+                     <c:simple-property name="internal-id" required="true" type="long" readOnly="false" description="The internal ID of the transaction"/>
+                  </parameters>
+                  <results>
+                     <c:simple-property name="operationResult"/>
+                  </results>
+               </operation>
+               <operation name="forget-transaction" description="Removes recovery info for the given transaction by its internal ID.">
+                  <parameters>
+                     <c:simple-property name="internal-id" required="true" type="long" readOnly="false" description="The internal ID of the transaction"/>
+                  </parameters>
+                  <results>
+                     <c:simple-property name="operationResult"/>
+                  </results>
+               </operation>
+            </service>
          </service>
 
          <service name="Transport" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.rhq.modules.plugins.jbossas7.BaseComponent" singleton="true" description="The description of the transport used by this cache container">
@@ -180,6 +275,7 @@
                <c:simple-property name="stack" required="false" type="string" readOnly="true" description="The jgroups stack to use for the transport" />
             </resource-configuration>
          </service>
+
       </service>
    </service>
 

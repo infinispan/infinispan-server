@@ -23,6 +23,6 @@ public class SharedCacheResource extends ClusteredCacheResource {
         super.registerChildren(registration);
 
         registration.registerSubModel(new StateTransferResource());
-        registration.registerSubModel(new BackupSiteResource());
+        registration.registerSubModel(new BackupSiteResource(isRuntimeRegistration()));
     }
 }

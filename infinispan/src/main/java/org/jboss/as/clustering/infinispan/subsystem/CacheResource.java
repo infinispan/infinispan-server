@@ -14,6 +14,9 @@ import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
+import com.jboss.datagrid.server.common.OperationDefinition;
+import com.jboss.datagrid.server.common.SimpleOperationDefinitionBuilder;
+
 /**
  * Base class for cache resources which require common cache attributes only.
  *
@@ -73,6 +76,31 @@ public class CacheResource extends SimpleResourceDefinition {
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .build();
 
+    // operations
+    static final OperationDefinition CLEAR_CACHE =
+            new SimpleOperationDefinitionBuilder("clear-cache",
+                    InfinispanExtension.getResourceDescriptionResolver("cache")
+            ).build();
+    static final OperationDefinition RESET_STATISTICS =
+            new SimpleOperationDefinitionBuilder("reset-statistics",
+                    InfinispanExtension.getResourceDescriptionResolver("cache")
+            ).build();
+    static final OperationDefinition RESET_ACTIVATION_STATISTICS =
+            new SimpleOperationDefinitionBuilder(
+                    "reset-activation-statistics",
+                    InfinispanExtension.getResourceDescriptionResolver("cache")
+            ).build();
+    static final OperationDefinition RESET_INVALIDATION_STATISTICS =
+            new SimpleOperationDefinitionBuilder(
+                    "reset-invalidation-statistics",
+                    InfinispanExtension.getResourceDescriptionResolver("cache")
+            ).build();
+    static final OperationDefinition RESET_PASSIVATION_STATISTICS =
+            new SimpleOperationDefinitionBuilder(
+                    "reset-passivation-statistics",
+                    InfinispanExtension.getResourceDescriptionResolver("cache")
+            ).build();
+
     private final boolean runtimeRegistration ;
 
     public CacheResource(PathElement pathElement, ResourceDescriptionResolver descriptionResolver, AbstractAddStepHandler addHandler, OperationStepHandler removeHandler, boolean runtimeRegistration) {
@@ -99,6 +127,13 @@ public class CacheResource extends SimpleResourceDefinition {
     @Override
     public void registerOperations(ManagementResourceRegistration resourceRegistration) {
         super.registerOperations(resourceRegistration);
+        if (runtimeRegistration) {
+            resourceRegistration.registerOperationHandler(CacheResource.CLEAR_CACHE.getName(), CacheCommands.ClearCacheCommand.INSTANCE, CacheResource.CLEAR_CACHE.getDescriptionProvider());
+            resourceRegistration.registerOperationHandler(CacheResource.RESET_STATISTICS.getName(), CacheCommands.ResetCacheStatisticsCommand.INSTANCE, CacheResource.RESET_STATISTICS.getDescriptionProvider());
+            resourceRegistration.registerOperationHandler(CacheResource.RESET_ACTIVATION_STATISTICS.getName(), CacheCommands.ResetActivationStatisticsCommand.INSTANCE, CacheResource.RESET_ACTIVATION_STATISTICS.getDescriptionProvider());
+            resourceRegistration.registerOperationHandler(CacheResource.RESET_INVALIDATION_STATISTICS.getName(), CacheCommands.ResetPassivationStatisticsCommand.INSTANCE, CacheResource.RESET_INVALIDATION_STATISTICS.getDescriptionProvider());
+            resourceRegistration.registerOperationHandler(CacheResource.RESET_PASSIVATION_STATISTICS.getName(), CacheCommands.ResetPassivationStatisticsCommand.INSTANCE, CacheResource.RESET_PASSIVATION_STATISTICS.getDescriptionProvider());
+        }
     }
 
     @Override
@@ -106,7 +141,7 @@ public class CacheResource extends SimpleResourceDefinition {
         super.registerChildren(resourceRegistration);
 
         resourceRegistration.registerSubModel(new LockingResource());
-        resourceRegistration.registerSubModel(new TransactionResource());
+        resourceRegistration.registerSubModel(new TransactionResource(runtimeRegistration));
         resourceRegistration.registerSubModel(new EvictionResource());
         resourceRegistration.registerSubModel(new ExpirationResource());
         resourceRegistration.registerSubModel(new LoaderResource());

@@ -50,8 +50,8 @@ public class InfinispanExtension implements Extension {
     static final PathElement SUBSYSTEM_PATH = PathElement.pathElement(ModelDescriptionConstants.SUBSYSTEM, SUBSYSTEM_NAME);
     public static final String RESOURCE_NAME = InfinispanExtension.class.getPackage().getName() + "." +"LocalDescriptions";
 
-    private static final int MANAGEMENT_API_MAJOR_VERSION = 6;
-    private static final int MANAGEMENT_API_MINOR_VERSION = 1;
+    private static final int MANAGEMENT_API_MAJOR_VERSION = 5;
+    private static final int MANAGEMENT_API_MINOR_VERSION = 2;
 
     static ResourceDescriptionResolver getResourceDescriptionResolver(final String... keyPrefix) {
            StringBuilder prefix = new StringBuilder(SUBSYSTEM_NAME);
