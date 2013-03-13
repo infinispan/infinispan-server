@@ -25,6 +25,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REM
 import java.util.List;
 
 import org.infinispan.server.endpoint.DataGridConstants;
+import org.jboss.as.clustering.jgroups.subsystem.JGroupsSubsystemDescribe;
 import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.ExtensionContext;
 import org.jboss.as.controller.PathElement;
@@ -54,7 +55,7 @@ public class EndpointExtension implements Extension {
 
       final ManagementResourceRegistration subsystem = registration.registerSubsystemModel(EndpointSubsystemProviders.SUBSYSTEM);
       subsystem.registerOperationHandler(ADD, EndpointSubsystemAdd.INSTANCE, EndpointSubsystemAdd.INSTANCE, false);
-      subsystem.registerOperationHandler(DESCRIBE, EndpointSubsystemDescribe.INSTANCE, EndpointSubsystemDescribe.INSTANCE, false, OperationEntry.EntryType.PRIVATE);
+      subsystem.registerOperationHandler(EndpointSubsystemDescribe.DEFINITION, EndpointSubsystemDescribe.INSTANCE);
 
       final ManagementResourceRegistration hotrodConnector = subsystem.registerSubModel(PathElement.pathElement(ModelKeys.HOTROD_CONNECTOR), EndpointSubsystemProviders.HOTROD_CONNECTOR_DESC);
       hotrodConnector.registerOperationHandler(ADD, HotRodSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_HOTROD_CONNECTOR_DESC, false);

@@ -27,29 +27,25 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-       <groupId>com.jboss.datagrid</groupId>
-       <artifactId>jboss-datagrid-versions</artifactId>
-       <version>6.1.0-SNAPSHOT</version>
+       <groupId>org.infinispan.server</groupId>
+       <artifactId>infinispan-server-versions</artifactId>
+       <version>5.3.0-SNAPSHOT</version>
        <relativePath>../versions/pom.xml</relativePath>
     </parent>
 
-    <artifactId>jboss-datagrid-infinispan</artifactId>
+    <artifactId>infinispan-server-infinispan</artifactId>
     <packaging>jar</packaging>
 
-    <name>JBoss Data Grid - Infinispan Subsystem</name>
+    <name>Infinispan Server - Infinispan Subsystem</name>
 
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-datagrid-server-common</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-clustering-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-datagrid-jgroups</artifactId>
+            <artifactId>infinispan-server-jgroups</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
@@ -150,4 +146,5 @@
             </plugin>
         </plugins>
     </build>
+    <description>Infinispan Server - Infinispan Subsystem</description>
 </project>

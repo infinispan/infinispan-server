@@ -27,12 +27,12 @@ import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.dmr.ModelNode;
 
 /**
- * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ * @author Tristan Tarrant
  */
 public class MemcachedSubsystemRemove extends AbstractRemoveStepHandler implements DescriptionProvider {
-   
+
    static final MemcachedSubsystemRemove INSTANCE = new MemcachedSubsystemRemove();
-   
+
    @Override
    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model)
             throws OperationFailedException {

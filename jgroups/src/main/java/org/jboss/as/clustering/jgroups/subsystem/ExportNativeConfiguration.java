@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.jboss.as.clustering.jgroups.ChannelFactory;
+import org.jboss.as.clustering.msc.ServiceContainerHelper;
 import org.jboss.as.controller.AbstractRuntimeOnlyHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
@@ -18,8 +19,6 @@ import org.jboss.msc.service.ServiceRegistry;
 import org.jgroups.Channel;
 import org.jgroups.stack.Protocol;
 import org.jgroups.stack.ProtocolStack;
-
-import com.jboss.datagrid.server.common.ServiceContainerHelper;
 
 /**
  * Implements /subsystem=jgroups/stack=X/export-native-configuration() operation.
