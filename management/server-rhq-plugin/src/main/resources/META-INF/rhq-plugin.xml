@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin name="JDG" displayName="JBoss Data Grid Server 6.x" description="Supports management and monitoring of JBoss Data Grid Server 6.x" package="com.jboss.datagrid.rhq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:xmlns:rhq-plugin" xmlns:c="urn:xmlns:rhq-configuration">
+<plugin name="InfinispanServer" displayName="Infinispan Server 5.3.x" description="Supports management and monitoring of Infinispan Server 5.3.x" package="org.infinispan.server.rhq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:xmlns:rhq-plugin" xmlns:c="urn:xmlns:rhq-configuration">
 
    <depends plugin="JBossAS7" useClasses="true" />
 
-   <service name="DataGrid" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.JDGComponent" singleton="true" description="The Data Grid endpoint connectors">
+   <service name="Infinispan Server" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.infinispan.server.rhq.IspnServerComponent" singleton="true" description="The Infinispan Server endpoint connectors">
 
       <runs-inside>
          <parent-resource-type name="Profile" plugin="JBossAS7" />
@@ -17,7 +17,7 @@
          <c:simple-property name="managedRuntime" default="true" type="boolean" readOnly="true" />
       </plugin-configuration>
 
-      <service name="Connector" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.JDGConnector" createDeletePolicy="both" creationDataType="configuration">
+      <service name="Connector" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.infinispan.server.rhq.IspnServerConnector" createDeletePolicy="both" creationDataType="configuration">
 
          <plugin-configuration>
             <c:simple-property name="path" readOnly="true" default="hotrod-connector|memcached-connector" />
@@ -34,7 +34,7 @@
       </service>
    </service>
 
-   <service name="Infinispan" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnComponent" singleton="true" description="The Infinispan subsystem">
+   <service name="Infinispan" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.infinispan.server.rhq.IspnComponent" singleton="true" description="The Infinispan subsystem">
    
       <runs-inside>
          <parent-resource-type name="Profile" plugin="JBossAS7" />
@@ -47,7 +47,7 @@
          <c:simple-property name="managedRuntime" default="true" type="boolean" readOnly="true" />
       </plugin-configuration>
 
-      <service name="Cache Container" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCContainerComponent" description="A cache container">
+      <service name="Cache Container" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.infinispan.server.rhq.IspnCContainerComponent" description="A cache container">
 
          <plugin-configuration>
             <c:simple-property name="path" readOnly="true" default="cache-container" />
@@ -77,7 +77,7 @@
             <c:simple-property name="replication-queue-executor" required="false" type="string" readOnly="true" description="The executor used for asynchronous cache operations" />
          </resource-configuration>
 
-         <service name="Cache" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="com.jboss.datagrid.rhq.IspnCacheComponent" description="The caches within a cache container" createDeletePolicy="both" creationDataType="configuration">
+         <service name="Cache" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.infinispan.server.rhq.IspnCacheComponent" description="The caches within a cache container" createDeletePolicy="both" creationDataType="configuration">
 
             <plugin-configuration>
                <c:simple-property name="path" readOnly="true" default="distributed-cache|local-cache|invalidation-cache|replicated-cache" />

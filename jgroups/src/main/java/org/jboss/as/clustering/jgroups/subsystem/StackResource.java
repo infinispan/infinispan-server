@@ -1,13 +1,12 @@
 package org.jboss.as.clustering.jgroups.subsystem;
 
+import org.jboss.as.controller.OperationDefinition;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathElement;
+import org.jboss.as.controller.SimpleOperationDefinitionBuilder;
 import org.jboss.as.controller.SimpleResourceDefinition;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelType;
-
-import com.jboss.datagrid.server.common.OperationDefinition;
-import com.jboss.datagrid.server.common.SimpleOperationDefinitionBuilder;
 
 /**
  * Resource description for the addressable resource /subsystem=jgroups/stack=X

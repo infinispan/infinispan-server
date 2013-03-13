@@ -29,7 +29,7 @@ import org.jboss.dmr.ModelNode;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
- * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ * @author Tristan Tarrant
  */
 class EndpointSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
 
@@ -42,7 +42,6 @@ class EndpointSubsystemAdd extends AbstractAddStepHandler implements Description
    }
 
    private static void populate(ModelNode source, ModelNode target) {
-      //target.setEmptyObject();
       for(String connectorType : ModelKeys.CONNECTORS) {
          target.get(connectorType).setEmptyObject();
       }

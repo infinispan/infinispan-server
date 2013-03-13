@@ -22,30 +22,25 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
-import java.util.Locale;
-
 import org.jboss.as.controller.OperationContext;
+import org.jboss.as.controller.OperationDefinition;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.descriptions.DescriptionProvider;
-import org.jboss.as.controller.descriptions.common.CommonDescriptions;
+import org.jboss.as.controller.SimpleOperationDefinitionBuilder;
+import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.dmr.ModelNode;
+import org.jboss.dmr.ModelType;
 import org.jboss.dmr.Property;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
- * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ * @author Tristan Tarrant
  */
-class EndpointSubsystemDescribe implements OperationStepHandler, DescriptionProvider {
+class EndpointSubsystemDescribe implements OperationStepHandler {
 
    static final EndpointSubsystemDescribe INSTANCE = new EndpointSubsystemDescribe();
-
-   @Override
-   public ModelNode getModelDescription(Locale locale) {
-       return CommonDescriptions.getSubsystemDescribeOperation(locale);
-   }
 
    @Override
    public void execute(OperationContext context, ModelNode operation)
@@ -60,7 +55,7 @@ class EndpointSubsystemDescribe implements OperationStepHandler, DescriptionProv
       subsystemAdd.get(OP_ADDR).set(rootAddress.toModelNode());
 
       result.add(subsystemAdd);
- 
+
       for(String connectorType : ModelKeys.CONNECTORS) {
          if(subModel.hasDefined(connectorType)) {
             for (final Property connector : subModel.get(connectorType).asPropertyList()) {
@@ -72,7 +67,7 @@ class EndpointSubsystemDescribe implements OperationStepHandler, DescriptionProv
                      addOperation.get(connectorAttribute).set(connector.getValue().get(connectorAttribute));
                   }
                }
-               
+
                result.add(addOperation);
             }
          }
@@ -81,4 +76,13 @@ class EndpointSubsystemDescribe implements OperationStepHandler, DescriptionProv
       context.completeStep();
 
    }
+
+   /*
+    * Description provider for the subsystem describe handler
+    */
+   static OperationDefinition DEFINITION = new SimpleOperationDefinitionBuilder(ModelDescriptionConstants.DESCRIBE, null)
+           .setPrivateEntry()
+           .setReplyType(ModelType.LIST)
+           .setReplyValueType(ModelType.OBJECT)
+           .build();
 }

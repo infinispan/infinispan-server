@@ -29,12 +29,11 @@ import java.util.Properties;
 import org.infinispan.configuration.global.TransportConfigurationBuilder;
 import org.infinispan.remoting.transport.jgroups.JGroupsChannelLookup;
 import org.infinispan.remoting.transport.jgroups.JGroupsTransport;
+import org.jboss.as.clustering.msc.ServiceContainerHelper;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartException;
 import org.jgroups.Channel;
-
-import com.jboss.datagrid.server.common.ServiceContainerHelper;
 
 /**
  * @author Paul Ferraro

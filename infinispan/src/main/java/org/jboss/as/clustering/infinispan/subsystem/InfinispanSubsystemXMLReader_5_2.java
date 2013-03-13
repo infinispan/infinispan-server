@@ -1,8 +1,8 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
+import static org.jboss.as.clustering.infinispan.InfinispanLogger.ROOT_LOGGER;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.clustering.infinispan.InfinispanLogger.ROOT_LOGGER;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1209,7 +1209,7 @@ public class InfinispanSubsystemXMLReader_5_2 implements XMLElementReader<List<M
 
     private void parseBackup(XMLExtendedStreamReader reader, ModelNode cache, List<ModelNode> operations) throws XMLStreamException {
 
-        ModelNode operation = com.jboss.datagrid.server.common.Util.createAddOperation();
+        ModelNode operation = Util.createAddOperation();
         String site = null;
 
         for (int i = 0; i < reader.getAttributeCount(); i++) {

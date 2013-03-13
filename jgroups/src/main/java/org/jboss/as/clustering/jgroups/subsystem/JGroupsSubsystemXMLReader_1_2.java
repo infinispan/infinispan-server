@@ -350,7 +350,7 @@ public class JGroupsSubsystemXMLReader_1_2 implements XMLElementReader<List<Mode
 
     private void parseRemoteSite(XMLExtendedStreamReader reader, final PathAddress relayAddress, List<ModelNode> operations) throws XMLStreamException {
         String site = null;
-        ModelNode operation = com.jboss.datagrid.server.common.Util.createAddOperation();
+        ModelNode operation = Util.createAddOperation();
 
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String value = reader.getAttributeValue(i);

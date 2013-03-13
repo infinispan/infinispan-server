@@ -91,7 +91,7 @@ public class JGroupsExtension implements Extension {
         final boolean registerRuntimeOnly = context.isRuntimeOnlyRegistrationValid();
 
         final ManagementResourceRegistration subsystem = registration.registerSubsystemModel(new JGroupsSubsystemRootResource());
-        subsystem.registerOperationHandler(JGroupsSubsystemDescribe.DEFINITION.getName(),JGroupsSubsystemDescribe.INSTANCE,JGroupsSubsystemDescribe.DEFINITION.getDescriptionProvider());
+        subsystem.registerOperationHandler(JGroupsSubsystemDescribe.DEFINITION,JGroupsSubsystemDescribe.INSTANCE);
 
         subsystem.registerSubModel(new StackResource(registerRuntimeOnly));
 

@@ -36,7 +36,7 @@ import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
 
 /**
- * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ * @author Tristan Tarrant
  */
 class MemcachedSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
 

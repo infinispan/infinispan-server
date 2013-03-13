@@ -26,21 +26,20 @@ import org.infinispan.configuration.cache.BackupConfiguration.BackupStrategy;
 import org.infinispan.configuration.cache.BackupFailurePolicy;
 import org.jboss.as.clustering.infinispan.subsystem.CacheConfigOperationHandlers.CacheConfigAdd;
 import org.jboss.as.controller.AttributeDefinition;
+import org.jboss.as.controller.OperationDefinition;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathElement;
 import org.jboss.as.controller.ReloadRequiredRemoveStepHandler;
 import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
 import org.jboss.as.controller.SimpleAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
+import org.jboss.as.controller.SimpleOperationDefinitionBuilder;
 import org.jboss.as.controller.SimpleResourceDefinition;
 import org.jboss.as.controller.operations.validation.EnumValidator;
 import org.jboss.as.controller.registry.AttributeAccess;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
-
-import com.jboss.datagrid.server.common.OperationDefinition;
-import com.jboss.datagrid.server.common.SimpleOperationDefinitionBuilder;
 
 /**
  * @author Paul Ferraro
