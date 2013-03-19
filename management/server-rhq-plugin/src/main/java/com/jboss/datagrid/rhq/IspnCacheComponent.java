@@ -28,17 +28,16 @@ import org.rhq.core.domain.measurement.MeasurementReport;
 import org.rhq.core.domain.measurement.MeasurementScheduleRequest;
 import org.rhq.core.pluginapi.configuration.ConfigurationFacet;
 import org.rhq.core.pluginapi.configuration.ConfigurationUpdateReport;
-import org.rhq.modules.plugins.jbossas7.BaseComponent;
 
 /**
  * Component class for Infinispan caches
  * @author Heiko W. Rupp
  */
-public class IspnCacheComponent extends BaseComponent<IspnCacheComponent> implements ConfigurationFacet {
+public class IspnCacheComponent extends MetricsRemappingComponent<IspnCacheComponent> implements ConfigurationFacet {
 
 
     @Override
-    public void getValues(MeasurementReport report, Set metrics) throws Exception {
+    public void getValues(MeasurementReport report, Set<MeasurementScheduleRequest> metrics) throws Exception {
 
         Set<MeasurementScheduleRequest> requests = metrics;
         Set<MeasurementScheduleRequest> todo = new HashSet<MeasurementScheduleRequest>();

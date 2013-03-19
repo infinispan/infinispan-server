@@ -5,9 +5,8 @@ import java.util.Set;
 import org.rhq.core.domain.measurement.MeasurementReport;
 import org.rhq.core.domain.measurement.MeasurementScheduleRequest;
 import org.rhq.core.pluginapi.measurement.MeasurementFacet;
-import org.rhq.modules.plugins.jbossas7.BaseComponent;
 
-public class JDGComponent extends BaseComponent<JDGComponent> implements MeasurementFacet {
+public class JDGComponent extends MetricsRemappingComponent<JDGComponent> implements MeasurementFacet {
 
    @Override
    public void getValues(MeasurementReport report, Set<MeasurementScheduleRequest> reqs) throws Exception {

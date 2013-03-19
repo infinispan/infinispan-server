@@ -53,10 +53,10 @@
             <c:simple-property name="path" readOnly="true" default="cache-container" />
          </plugin-configuration>
 
-         <metric property="cache-manager-status" displayName="Cache Container Status" displayType="summary" units="none" dataType="trait" description="The current runtime status of a cache container" />
-         <metric property="cluster-name" displayName="Cluster Name" displayType="summary" units="none" dataType="trait" description="The name of the cluster" />
-         <metric property="coordinator-address" displayName="Coordinator Address" displayType="summary" units="none" dataType="trait" description="The coordinator node's address" />
-         <metric property="local-address" displayName="Local Address" displayType="summary" units="none" dataType="trait" description="The local node's address" />
+         <metric property="cacheManagerStatus" displayName="Cache Container Status" displayType="summary" units="none" dataType="trait" description="The current runtime status of a cache container" />
+         <metric property="clusterName" displayName="Cluster Name" displayType="summary" units="none" dataType="trait" description="The name of the cluster" />
+         <metric property="coordinatorAddress" displayName="Coordinator Address" displayType="summary" units="none" dataType="trait" description="The coordinator node's address" />
+         <metric property="localAddress" displayName="Local Address" displayType="summary" units="none" dataType="trait" description="The local node's address" />
 
          <resource-configuration>
             <c:simple-property name="default-cache" required="false" type="string" readOnly="true" description="The default infinispan cache" />
@@ -114,30 +114,30 @@
                </results>
             </operation>
 
-            <metric property="cache-status" displayName="Cache Status" displayType="summary" units="none" dataType="trait" description="The current runtime status of a cache" />
+            <metric property="cacheStatus" displayName="Cache Status" displayType="summary" units="none" dataType="trait" description="The current runtime status of a cache" />
 
-            <metric property="number-of-locks-available" displayName="[LockManager] Number of locks available" displayType="detail" units="none" dataType="measurement" description="The number of exclusive locks that are available." />
-            <metric property="number-of-locks-held" displayName="[LockManager] Number of locks held" displayType="detail" units="none" dataType="measurement" description="The number of exclusive locks that are held." />
-            <metric property="concurrency-level" displayName="[LockManager] Concurrency level" displayType="detail" units="none" dataType="trait" description="The concurrency level that the Lock Manager has been configured with." />
+            <metric property="numberOfLocksAvailable" displayName="[LockManager] Number of locks available" displayType="detail" units="none" dataType="measurement" description="The number of exclusive locks that are available." />
+            <metric property="numberOfLocksHeld" displayName="[LockManager] Number of locks held" displayType="detail" units="none" dataType="measurement" description="The number of exclusive locks that are held." />
+            <metric property="concurrencyLevel" displayName="[LockManager] Concurrency level" displayType="detail" units="none" dataType="trait" description="The concurrency level that the Lock Manager has been configured with." />
 
-            <metric property="average-read-time" displayName="[Statistics] Average read time" displayType="summary" units="milliseconds" dataType="measurement" description="Average number of milliseconds for a read operation on the cache" />
-            <metric property="hit-ratio" displayName="[Statistics] Hit ratio" displayType="summary" units="percentage" dataType="measurement" description="Percentage hit/(hit+miss) ratio for the cache" />
-            <metric property="elapsed-time" displayName="[Statistics] Seconds since cache started" displayType="summary" units="seconds" dataType="measurement" description="Number of seconds since cache started" />
-            <metric property="read-write-ratio" displayName="[Statistics] Read/write ratio" displayType="summary" units="percentage" dataType="measurement" description="read/writes ratio for the cache" />
-            <metric property="average-write-time" displayName="[Statistics] Average write time" displayType="summary" units="milliseconds" dataType="measurement" description="Average number of milliseconds for a write operation in the cache" />
+            <metric property="averageReadTime" displayName="[Statistics] Average read time" displayType="summary" units="milliseconds" dataType="measurement" description="Average number of milliseconds for a read operation on the cache" />
+            <metric property="hitRatio" displayName="[Statistics] Hit ratio" displayType="summary" units="percentage" dataType="measurement" description="Percentage hit/(hit+miss) ratio for the cache" />
+            <metric property="elapsedTime" displayName="[Statistics] Seconds since cache started" displayType="summary" units="seconds" dataType="measurement" description="Number of seconds since cache started" />
+            <metric property="readWriteRatio" displayName="[Statistics] Read/write ratio" displayType="summary" units="percentage" dataType="measurement" description="read/writes ratio for the cache" />
+            <metric property="averageWriteTime" displayName="[Statistics] Average write time" displayType="summary" units="milliseconds" dataType="measurement" description="Average number of milliseconds for a write operation in the cache" />
             <metric property="hits" displayName="[Statistics] Number of cache hits" displayType="summary" units="none" dataType="measurement" description="Number of cache hits" />
             <metric property="evictions" displayName="[Statistics] Number of cache evictions" displayType="summary" units="none" dataType="measurement" description="Number of cache eviction operations" />
-            <metric property="remove-misses" displayName="[Statistics] Number of cache removal misses" displayType="summary" units="none" dataType="measurement" description="Number of cache removals where keys were not found" />
-            <metric property="time-since-reset" displayName="[Statistics] Seconds since cache statistics were reset" displayType="summary" units="seconds" dataType="measurement" description="Number of seconds since the cache statistics were last reset" />
-            <metric property="number-of-entries" displayName="[Statistics] Number of current cache entries" displayType="summary" units="none" dataType="measurement" description="Number of entries currently in the cache" />
+            <metric property="removeMisses" displayName="[Statistics] Number of cache removal misses" displayType="summary" units="none" dataType="measurement" description="Number of cache removals where keys were not found" />
+            <metric property="timeSinceReset" displayName="[Statistics] Seconds since cache statistics were reset" displayType="summary" units="seconds" dataType="measurement" description="Number of seconds since the cache statistics were last reset" />
+            <metric property="numberOfEntries" displayName="[Statistics] Number of current cache entries" displayType="summary" units="none" dataType="measurement" description="Number of entries currently in the cache" />
             <metric property="stores" displayName="[Statistics] Number of cache puts" displayType="summary" units="none" dataType="measurement" description="number of cache put operations" />
-            <metric property="remove-hits" displayName="[Statistics] Number of cache removal hits" displayType="summary" units="none" dataType="measurement" description="Number of cache removal hits" />
+            <metric property="removeHits" displayName="[Statistics] Number of cache removal hits" displayType="summary" units="none" dataType="measurement" description="Number of cache removal hits" />
             <metric property="misses" displayName="[Statistics] Number of cache misses" displayType="summary" units="none" dataType="measurement" description="Number of cache misses" />
 
-            <metric property="success-ratio" displayName="[RpcManager] Successful replication ratio" displayType="summary" units="percentage" dataType="measurement" description="Successful replications as a ratio of total replications in numeric double format" />
-            <metric property="replication-count" displayName="[RpcManager] Number of successful replications" displayType="summary" units="none" dataType="measurement" description="Number of successful replications" />
-            <metric property="replication-failures" displayName="[RpcManager] Number of failed replications" displayType="summary" units="none" dataType="measurement" description="Number of failed replications" />
-            <metric property="average-replication-time" displayName="[RpcManager] Average time spent in the transport layer" displayType="summary" units="milliseconds" dataType="measurement" description="The average time spent in the transport layer, in milliseconds" />
+            <metric property="successRatio" displayName="[RpcManager] Successful replication ratio" displayType="summary" units="percentage" dataType="measurement" description="Successful replications as a ratio of total replications in numeric double format" />
+            <metric property="replicationCount" displayName="[RpcManager] Number of successful replications" displayType="summary" units="none" dataType="measurement" description="Number of successful replications" />
+            <metric property="replicationFailures" displayName="[RpcManager] Number of failed replications" displayType="summary" units="none" dataType="measurement" description="Number of failed replications" />
+            <metric property="averageReplicationTime" displayName="[RpcManager] Average time spent in the transport layer" displayType="summary" units="milliseconds" dataType="measurement" description="The average time spent in the transport layer, in milliseconds" />
 
             <metric property="commits" displayName="[Transactions] Commits" displayType="summary" units="none" dataType="measurement" description="Number of transaction commits performed since last reset" />
             <metric property="prepares" displayName="[Transactions] Prepares" displayType="summary" units="none" dataType="measurement" description="Number of transaction prepares performed since last reset" />
@@ -146,10 +146,10 @@
             <metric property="invalidations" displayName="[Invalidation] Number of invalidations" displayType="detail" units="none" dataType="measurement" description="Number of invalidations" />
             <metric property="passivations" displayName="[Passivation] Number of cache passivations" displayType="detail" units="none" dataType="measurement" description="Number of passivation events" />
             <metric property="activations" displayName="[Activation] Number of cache entries activated" displayType="detail" units="none" dataType="measurement" description="Number of activation events" />
-            <metric property="cache-loader-loads" displayName="[Activation] Number of cache store loads" displayType="detail" units="none" dataType="measurement" description="Number of entries loaded from cache store" />
-            <metric property="cache-loader-misses" displayName="[Activation] Number of cache store load misses" displayType="detail" units="none" dataType="measurement" description="Number of entries that did not exist in cache store" />
+            <metric property="cacheLoaderLoads" displayName="[Activation] Number of cache store loads" displayType="detail" units="none" dataType="measurement" description="Number of entries loaded from cache store" />
+            <metric property="cacheLoaderMisses" displayName="[Activation] Number of cache store load misses" displayType="detail" units="none" dataType="measurement" description="Number of entries that did not exist in cache store" />
             
-            <metric property="cache-loader-stores" displayName="[CacheStore] Number of cache store stores" displayType="detail" units="none" dataType="measurement" description="Number of entries stored in the cache stores" />
+            <metric property="cacheLoaderStores" displayName="[CacheStore] Number of cache store stores" displayType="detail" units="none" dataType="measurement" description="Number of entries stored in the cache stores" />
 
             <resource-configuration>
                <c:simple-property name="_flavor" displayName="Kind of cache" required="true" readOnly="true" default="local-cache" description="What special kind of cache is this.">
