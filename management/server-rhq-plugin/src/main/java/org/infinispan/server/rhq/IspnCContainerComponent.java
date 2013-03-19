@@ -6,7 +6,6 @@ import org.rhq.core.domain.configuration.PropertySimple;
 import org.rhq.core.domain.resource.CreateResourceStatus;
 import org.rhq.core.pluginapi.inventory.CreateChildResourceFacet;
 import org.rhq.core.pluginapi.inventory.CreateResourceReport;
-import org.rhq.modules.plugins.jbossas7.BaseComponent;
 import org.rhq.modules.plugins.jbossas7.json.Address;
 import org.rhq.modules.plugins.jbossas7.json.Operation;
 import org.rhq.modules.plugins.jbossas7.json.Result;
@@ -15,7 +14,7 @@ import org.rhq.modules.plugins.jbossas7.json.Result;
  * // TODO: Document this
  * @author Heiko W. Rupp
  */
-public class IspnCContainerComponent extends BaseComponent<IspnCContainerComponent> implements CreateChildResourceFacet{
+public class IspnCContainerComponent extends MetricsRemappingComponent<IspnCContainerComponent> implements CreateChildResourceFacet{
     static final String FLAVOR = "_flavor";
 
 //    private final Log log = LogFactory.getLog(IspnCContainerComponent.class);
