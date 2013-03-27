@@ -21,27 +21,18 @@ tr { background-color:rgb(232,232,232);border:1px solid rgb(211,211,211);}
 #banner { background-image: url('banner.png'); background-color:rgb(69,0,0);height:110px;width: 100%;margin: 0px auto;  -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;	background-size: cover;  }
 #banner .prod-info {border-radius: 42px;-moz-border-radius: 42px;-webkit-border-radius: 42px;border: 1px solid #250001;float: right;position: relative;margin-right: 3em;margin-top: 2em;background-color: #250001;padding: 0.55em 1em;color: white; }
 #banner .logo { float:left;margin:14px 0 0 20px;}
-.visible-console #main { padding-bottom:180px !important;}
-.visible-console #console-wrapper { height:175px;}
+.visible-console #main { padding-bottom:50% !important;}
+.visible-console #console-wrapper { height:50%;}
 
 .title { padding: 107px 0 0 0; }
 #main {	padding: 2em 0 1.75em 0; }
 #main, .title, #console { width:800px;margin:0 auto;}
 
 #console-wrapper { position: fixed; bottom: 0; left: 0; z-index: 9999; background: #eee;width: 100%; margin: 0;padding: 5px;	text-align: left; height:15px; display:block;transition:height 1s;-webkit-transition:height 1s; -moz-transition:height 1s; }
-
-.line { height:1em; }
-.line p {margin:0;}
-#console { }
-
 #console-wrapper a { height:20px; position: relative;  padding: 5px 0; -webkit-transition:height 2s; -moz-transition:height 2s;	-o-transition:height 2s; -ms-transition:height 2s; transition:height 2s; }
+#prompt { width: 95%; }
+#history { height: 250px; overflow:scroll; width:95%; background-color:#ccc;}
+#headers { width: 95%; }
 
-#prompt { width: 77%;position: absolute;top: 142px;left: 202px;background-color: black; }
 
-.line input { display: block; width: 95%; }
-
-#headers { width: 190px;position: absolute;top:25px;left: 8px;background-color: red;}
-#headers input { float: left; clear: left; width: 25px; }
-#headers label { float: left; margin-left: 8px;}
-#history { height: 117px;overflow:scroll; position: absolute;margin:0;padding:0; top: 25px;left:202px;width:77%;background-color:red;}
 

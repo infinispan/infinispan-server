@@ -1,6 +1,6 @@
 <!DOCTYPE html> 
 <!--
- ~ Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ ~ Copyright 2012-2013 Red Hat, Inc. and/or its affiliates.
  ~
  ~ This is free software; you can redistribute it and/or modify it
  ~ under the terms of the GNU Lesser General Public License as
@@ -36,7 +36,7 @@
         <h2>Welcome to the Infinispan Server</h2>
         <p>
             This server provides easy to use <a
-                target='info' href="http://en.wikipedia.org/wiki/Representational_State_Transfer">RESTful</a>
+                target="info" href="http://en.wikipedia.org/wiki/Representational_State_Transfer">RESTful</a>
             access to the Server. See below for usage details.
         </p>
 
@@ -110,7 +110,7 @@
             <tr>
                 <td>Content-Type</td>
                 <td>Yes</td>
-                <td>Use <a target='info'  href="http://www.iana.org/assignments/media-types/">media/mime-types</a>,
+                <td>Use <a target="info"  href="http://www.iana.org/assignments/media-types/">media/mime-types</a>,
                     for example "application/json"
                 </td>
             </tr>
@@ -145,10 +145,10 @@
             Content-Type
             header will be supplied which matches what the data was inserted as.
             Browsers can use the cache directly of course (e.g., as a <a
-                target='info'  href="http://en.wikipedia.org/wiki/Content_delivery_network">CDN</a>).
+                target="info"  href="http://en.wikipedia.org/wiki/Content_delivery_network">CDN</a>).
         </p>
         <p>
-            An <a target='info' href="http://en.wikipedia.org/wiki/HTTP_ETag">ETag</a> will be
+            An <a target="info" href="http://en.wikipedia.org/wiki/HTTP_ETag">ETag</a> will be
             returned unique for each entry, as will the
             Last-Modified
             header field indicating the state of the data at the given URL. ETags
@@ -178,40 +178,40 @@
 
         <h4>5. Clients</h4>
         Any HTTP client will do - from any language. See <a
-            target='docs' href="https://docs.jboss.org/author/display/ISPN/Infinispan+REST+Server">here</a>
+            target="docs" href="https://docs.jboss.org/author/display/ISPN/Infinispan+REST+Server">here</a>
         for more details.
 
         <h4>6. Deployment</h4>
-        Infinispan Server is a distributed data grid, it shouldn't matter
+        Infinispan Server is a distributed data grid, it shouldn"t matter
         how many or which instance of the Server you access, as long as it is
         part of the Infinispan Server cluster, it will find your data, and
         manage it. You can have as many instances (including the one you are
         looking at) as you need.
 
     </div> <!--  main -->
-    <div id='console-wrapper'>
+    <div id="console-wrapper">
         <a href="#">[+]</a>
-        <div id='console'>
-        <ol id='history'></ol>
-        <form id='input-form'>
-            <div id='headers'>
-                <input type='text' id='content-type'/>
-                <label for='content-type'>content-type</label>
-                <input type='number' id='timeToLiveSeconds'/>
-                <label for='timeToLiveSeconds'>timeToLiveSeconds</label>
-                <input type='number' id='maxIdleTimeSeconds'/>
-                <label for='maxIdleTimeSeconds'>maxIdleTimeSeconds</label>
-                <input type='checkbox' id='performAsync'/>
-                <label for='performAsync'>performAsync</label>
-            </div>
-            <div id='prompt'>
-                <div class='line'>
-                    <input type='text' class='input'/>
-                    <input  type='submit'/>
-                </div>
-            </div>
-        </form>
+        <div id="console">
+            <h2>RESTful Console</h2>
+            <hr />
+            <ol id="history"></ol>
+            <form id="input-form">
+                <input type="text" id="prompt"/>
+                <table id="headers">
+                    <tr>
+                        <td><label for="content-type">Content-Type</label></td>
+                        <td><input type="text" id="content-type" value="text/plain"/></td>
+                        <td><label for="perform-async">Async</label></td>
+                        <td><input type="checkbox" id="perform-async"/></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ttl">Time to Live (secs)</label></td><td><input type="number" id="ttl"/></td>
+                        <td><label for="max-idle">Max Idle (secs)</label></td><td><input type="number" id="max-idle"/></td>
+                    </tr>
+                </table>
+            </form>
         </div>
     </div>
 </body>
 </html>
+
