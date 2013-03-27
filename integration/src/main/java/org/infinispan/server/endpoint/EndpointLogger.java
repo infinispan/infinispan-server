@@ -134,6 +134,6 @@ public interface EndpointLogger extends BasicLogger {
    @Message(id = 10016, value = "Could not start the web context for the REST Server")
    StartException restContextStartFailed(@Cause Throwable cause);
 
-   @Message(id = 10017, value = "Failed to locate ManagerInstance.instance")
-   ServiceRegistryException cannotLocateManagerInstance(@Cause Throwable t);
+   @Message(id = 10017, value = "Failed to locate ServerBootstrap")
+   ServiceRegistryException cannotLocateServerBootstrap(@Cause Throwable t);
 }
