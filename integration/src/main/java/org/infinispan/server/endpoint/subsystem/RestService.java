@@ -21,6 +21,7 @@ package org.infinispan.server.endpoint.subsystem;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.servlet.ServletContext;
 import org.apache.catalina.Context;
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
@@ -94,10 +95,10 @@ public class RestService implements Service<Context> {
 
       // Obtain the setter for injecting the EmbbededCacheManager into the Rest server
       try {
-         Class<?> cls = Class.forName("org.infinispan.rest.ManagerInstance", true, getClass().getClassLoader());
-         cacheManagerSetter = cls.getMethod("instance_$eq", EmbeddedCacheManager.class);
+         Class<?> cls = Class.forName("org.infinispan.rest.ServerBootstrap", true, getClass().getClassLoader());
+         cacheManagerSetter = cls.getMethod("setToServletContext", ServletContext.class, EmbeddedCacheManager.class);
       } catch (Exception e) {
-         throw ROOT_LOGGER.cannotLocateManagerInstance(e);
+         throw ROOT_LOGGER.cannotLocateServerBootstrap(e);
       }
    }
 
@@ -113,12 +114,6 @@ public class RestService implements Service<Context> {
    @Override
    public synchronized void start(StartContext startContext) throws StartException {
       ROOT_LOGGER.endpointStarting("REST");
-      EmbeddedCacheManager cacheManager = cacheManagerInjector.getValue();
-      try {
-         cacheManagerSetter.invoke(null, cacheManager);
-      } catch (Exception e) {
-         throw ROOT_LOGGER.restCacheManagerInjectionFailed(e);
-      }
       try {
          context.setPath(path);
          context.addLifecycleListener(new RestContextConfig());
@@ -162,6 +157,13 @@ public class RestService implements Service<Context> {
          context.addChild(hsdWrapper);
 
          context.addServletMapping("/rest/*", "Resteasy");
+
+         // Inject cache manager
+         try {
+            cacheManagerSetter.invoke(null, context.getServletContext(), cacheManagerInjector.getValue());
+         } catch (Exception e) {
+            throw ROOT_LOGGER.restCacheManagerInjectionFailed(e);
+         }
 
          if (securityDomain != null) {
             configureContextSecurity();
