@@ -105,6 +105,8 @@
       <module-def name="org.infinispan.server.endpoint" src="${jdg.modules.dir}">
          <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-server-integration" />
       </module-def>
+ 
+      <module-def name="com.jboss.datagrid" src="${jdg.modules.dir}"/>
 
       <module-def name="javax.activation.api" src="${jdg.modules.dir}">
          <maven-resource group="javax.activation" artifact="activation" />
