@@ -66,7 +66,7 @@
                         <descriptor>${project.basedir}/src/main/assemblies/source.xml</descriptor>
                      </descriptors>
                      <finalName>${product.name}-${product.version}</finalName>
-                     <outputDirectory>${project.build.directory}</outputDirectory>
+                     <outputDirectory>${project.build.directory}/distribution</outputDirectory>
                      <workDirectory>${project.build.directory}/assembly/work</workDirectory>
                      <attach>false</attach>
                   </configuration>
