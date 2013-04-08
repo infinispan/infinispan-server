@@ -62,12 +62,13 @@
                   </executions>
                   <configuration>
                      <descriptors>
+                        <descriptor>${project.basedir}/src/main/assemblies/bin.xml</descriptor>
                         <descriptor>${project.basedir}/src/main/assemblies/source.xml</descriptor>
                      </descriptors>
-                     <finalName>${product.name}-sources-${product.version}</finalName>
+                     <finalName>${product.name}-${product.version}</finalName>
                      <outputDirectory>${project.build.directory}</outputDirectory>
                      <workDirectory>${project.build.directory}/assembly/work</workDirectory>
-                     <appendAssemblyId>false</appendAssemblyId>
+                     <attach>false</attach>
                   </configuration>
                </plugin>
             </plugins>

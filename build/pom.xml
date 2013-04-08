@@ -195,42 +195,5 @@
          </plugin>
       </plugins>
    </build>
-
-   <profiles>
-      <profile>
-         <id>distribution</id>
-         <activation>
-            <activeByDefault>false</activeByDefault>
-         </activation>
-         <properties>
-            <maven.test.skip.exec>true</maven.test.skip.exec>
-         </properties>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-assembly-plugin</artifactId>
-                  <executions>
-                     <execution>
-                        <id>assemble</id>
-                        <phase>package</phase>
-                        <goals>
-                           <goal>single</goal>
-                        </goals>
-                     </execution>
-                  </executions>
-                  <configuration>
-                     <descriptors>
-                        <descriptor>${project.basedir}/src/main/assemblies/server.xml</descriptor>
-                     </descriptors>
-                     <finalName>${product.name}-server-${product.version}</finalName>
-                     <outputDirectory>${project.build.directory}</outputDirectory>
-                     <workDirectory>${project.build.directory}/assembly/work</workDirectory>
-                     <appendAssemblyId>false</appendAssemblyId>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-   </profiles>
 </project>
+
