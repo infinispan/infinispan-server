@@ -21,16 +21,15 @@ package org.infinispan.server.endpoint.subsystem;
 import static org.infinispan.server.endpoint.EndpointLogger.ROOT_LOGGER;
 
 import java.net.InetSocketAddress;
-import java.util.Properties;
 
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.server.core.Main;
 import org.infinispan.server.core.ProtocolServer;
+import org.infinispan.server.core.configuration.ProtocolServerConfiguration;
+import org.infinispan.server.core.configuration.ProtocolServerConfigurationBuilder;
 import org.infinispan.server.core.transport.Transport;
 import org.infinispan.util.ReflectionUtil;
 import org.jboss.as.network.NetworkUtils;
 import org.jboss.as.network.SocketBinding;
-import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
@@ -43,19 +42,13 @@ import org.jboss.msc.value.InjectedValue;
  * @author Tristan Tarrant
  */
 class ProtocolServerService implements Service<ProtocolServer> {
-   private static final String DEFAULT_WORKER_THREADS = "160";
-
    // The cacheManager that will be injected by the container (specified by the cacheContainer
    // attribute)
    private final InjectedValue<EmbeddedCacheManager> cacheManager = new InjectedValue<EmbeddedCacheManager>();
    // The socketBinding that will be injected by the container
    private final InjectedValue<SocketBinding> socketBinding = new InjectedValue<SocketBinding>();
    // The configuration for this service
-   private final ModelNode config;
-   // Additional connector properties
-   private final Properties connectorProperties = new Properties();
-   // Topology state transfer properties
-   private final Properties topologyStateTransferProperties = new Properties();
+   private final ProtocolServerConfigurationBuilder<?, ?> configurationBuilder;
    // The class which determines the type of server
    private final Class<? extends ProtocolServer> serverClass;
    // The server which handles the protocol
@@ -65,32 +58,26 @@ class ProtocolServerService implements Service<ProtocolServer> {
    // The name of the server
    private final String serverName;
 
-   ProtocolServerService(ModelNode config, Class<? extends ProtocolServer> serverClass) {
-      this.config = config.clone();
+   ProtocolServerService(String serverName, Class<? extends ProtocolServer> serverClass, ProtocolServerConfigurationBuilder<?, ?> configurationBuilder) {
+      this.configurationBuilder = configurationBuilder;
       this.serverClass = serverClass;
       String serverTypeName = serverClass.getSimpleName();
-      this.serverName = config.hasDefined(ModelKeys.NAME) ? serverTypeName + " "
-            + config.get(ModelKeys.NAME).asString() : serverTypeName;
+      this.serverName = serverName != null ? serverTypeName + " " + serverName : serverTypeName;
    }
 
    @Override
    public synchronized void start(final StartContext context) throws StartException {
       ROOT_LOGGER.endpointStarting(serverName);
 
-      assert connectorProperties.isEmpty();
-      assert topologyStateTransferProperties.isEmpty();
-
       boolean done = false;
       try {
-         loadConnectorProperties(config);
-         loadTopologyStateTransferProperties(config);
-         validateConfiguration();
-
+         SocketBinding socketBinding = getSocketBinding().getValue();
+         InetSocketAddress socketAddress = socketBinding.getSocketAddress();
+         configurationBuilder.host(socketAddress.getAddress().getHostAddress());
+         configurationBuilder.port(socketAddress.getPort());
+         ROOT_LOGGER.endpointStarted(serverName, NetworkUtils.formatAddress(socketAddress), socketAddress.getPort());
          // Start the connector
-         startProtocolServer();
-
-         SocketBinding binding = socketBinding.getValue();
-         ROOT_LOGGER.endpointStarted(serverName, NetworkUtils.formatAddress(binding.getAddress()), binding.getAbsolutePort());
+         startProtocolServer(configurationBuilder.build());
 
          done = true;
       } catch (StartException e) {
@@ -104,32 +91,16 @@ class ProtocolServerService implements Service<ProtocolServer> {
       }
    }
 
-   private void validateConfiguration() throws StartException {
-      // There has to be at least one connector defined.
-      if (connectorProperties.isEmpty()) {
-         throw ROOT_LOGGER.noConnectorDefined();
-      }
-   }
-
-   private void startProtocolServer() throws StartException {
-
-      Properties props = copy(connectorProperties);
-      if (props == null) {
-         return;
-      }
-
-      // Merge topology state transfer settings
-      props.putAll(topologyStateTransferProperties);
-
+   private void startProtocolServer(ProtocolServerConfiguration configuration) throws StartException {
       // Start the server and record it
       ProtocolServer server;
       try {
          server = serverClass.newInstance();
       } catch (Exception e) {
-         throw ROOT_LOGGER.failedConnectorInstantiation(e,  serverName);
+         throw ROOT_LOGGER.failedConnectorInstantiation(e, serverName);
       }
       ROOT_LOGGER.connectorStarting(serverName);
-      server.start(props, getCacheManager().getValue());
+      server.start(configuration, getCacheManager().getValue());
       protocolServer = server;
 
       try {
@@ -155,8 +126,6 @@ class ProtocolServerService implements Service<ProtocolServer> {
             }
          }
       } finally {
-         connectorProperties.clear();
-         topologyStateTransferProperties.clear();
          ROOT_LOGGER.connectorStopped(serverName);
       }
    }
@@ -173,90 +142,8 @@ class ProtocolServerService implements Service<ProtocolServer> {
       return cacheManager;
    }
 
-   String getCacheContainerName() {
-      if (!config.hasDefined(ModelKeys.CACHE_CONTAINER)) {
-         return null;
-      }
-      return config.get(ModelKeys.CACHE_CONTAINER).asString();
-   }
-
-   String getRequiredSocketBindingName() {
-      return config.hasDefined(ModelKeys.SOCKET_BINDING) ? config.get(ModelKeys.SOCKET_BINDING).asString() : null;
-   }
-
    InjectedValue<SocketBinding> getSocketBinding() {
       return socketBinding;
-   }
-
-   private void loadConnectorProperties(ModelNode config) {
-      if (config.hasDefined(ModelKeys.SOCKET_BINDING)) {
-         SocketBinding socketBinding = getSocketBinding().getValue();
-         InetSocketAddress socketAddress = socketBinding.getSocketAddress();
-         connectorProperties.setProperty(Main.PROP_KEY_HOST(), socketAddress.getAddress().getHostAddress());
-         connectorProperties.setProperty(Main.PROP_KEY_PORT(), String.valueOf(socketAddress.getPort()));
-      }
-      if (config.hasDefined(ModelKeys.WORKER_THREADS)) {
-         connectorProperties.setProperty(Main.PROP_KEY_WORKER_THREADS(), config.get(ModelKeys.WORKER_THREADS)
-               .asString());
-      } else {
-         connectorProperties.setProperty(Main.PROP_KEY_WORKER_THREADS(), DEFAULT_WORKER_THREADS);
-      }
-      if (config.hasDefined(ModelKeys.IDLE_TIMEOUT)) {
-         connectorProperties.setProperty(Main.PROP_KEY_IDLE_TIMEOUT(), config.get(ModelKeys.IDLE_TIMEOUT).asString());
-      }
-      if (config.hasDefined(ModelKeys.TCP_NODELAY)) {
-         connectorProperties.setProperty(Main.PROP_KEY_TCP_NO_DELAY(), config.get(ModelKeys.TCP_NODELAY).asString());
-      }
-      if (config.hasDefined(ModelKeys.SEND_BUFFER_SIZE)) {
-         connectorProperties.setProperty(Main.PROP_KEY_SEND_BUF_SIZE(), config.get(ModelKeys.SEND_BUFFER_SIZE)
-               .asString());
-      }
-      if (config.hasDefined(ModelKeys.RECEIVE_BUFFER_SIZE)) {
-         connectorProperties.setProperty(Main.PROP_KEY_RECV_BUF_SIZE(), config.get(ModelKeys.RECEIVE_BUFFER_SIZE)
-               .asString());
-      }
-
-   }
-
-   private void loadTopologyStateTransferProperties(ModelNode config) {
-      if (!config.hasDefined(ModelKeys.TOPOLOGY_STATE_TRANSFER)) {
-         return;
-      }
-
-      config = config.get(ModelKeys.TOPOLOGY_STATE_TRANSFER);
-      if (config.hasDefined(ModelKeys.LOCK_TIMEOUT)) {
-         topologyStateTransferProperties.setProperty(Main.PROP_KEY_TOPOLOGY_LOCK_TIMEOUT(),
-               config.get(ModelKeys.LOCK_TIMEOUT).asString());
-      }
-      if (config.hasDefined(ModelKeys.REPLICATION_TIMEOUT)) {
-         topologyStateTransferProperties.setProperty(Main.PROP_KEY_TOPOLOGY_REPL_TIMEOUT(),
-               config.get(ModelKeys.REPLICATION_TIMEOUT).asString());
-      }
-      if (config.hasDefined(ModelKeys.UPDATE_TIMEOUT)) {
-         topologyStateTransferProperties.setProperty(Main.PROP_KEY_TOPOLOGY_UPDATE_TIMEOUT(),
-               config.get(ModelKeys.UPDATE_TIMEOUT).asString());
-      }
-      if (config.hasDefined(ModelKeys.EXTERNAL_HOST)) {
-         topologyStateTransferProperties.setProperty(Main.PROP_KEY_PROXY_HOST(), config.get(ModelKeys.EXTERNAL_HOST)
-               .asString());
-      }
-      if (config.hasDefined(ModelKeys.EXTERNAL_PORT)) {
-         topologyStateTransferProperties.setProperty(Main.PROP_KEY_PROXY_PORT(), config.get(ModelKeys.EXTERNAL_PORT)
-               .asString());
-      }
-      if (config.hasDefined(ModelKeys.LAZY_RETRIEVAL)) {
-         topologyStateTransferProperties.setProperty(Main.PROP_KEY_TOPOLOGY_STATE_TRANSFER(),
-               Boolean.toString(!config.get(ModelKeys.LAZY_RETRIEVAL).asBoolean(false)));
-      }
-   }
-
-   private static Properties copy(Properties p) {
-      if (p == null) {
-         return null;
-      }
-      Properties newProps = new Properties();
-      newProps.putAll(p);
-      return newProps;
    }
 
    public Transport getTransport() {

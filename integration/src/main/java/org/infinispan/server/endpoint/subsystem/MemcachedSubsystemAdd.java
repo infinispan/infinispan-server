@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.infinispan.server.memcached.MemcachedServer;
+import org.infinispan.server.memcached.configuration.MemcachedServerConfigurationBuilder;
 import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
@@ -38,7 +39,7 @@ import org.jboss.msc.service.ServiceController;
 /**
  * @author Tristan Tarrant
  */
-class MemcachedSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
+class MemcachedSubsystemAdd extends ProtocolServiceSubsystemAdd implements DescriptionProvider {
 
    static final MemcachedSubsystemAdd INSTANCE = new MemcachedSubsystemAdd();
 
@@ -69,14 +70,17 @@ class MemcachedSubsystemAdd extends AbstractAddStepHandler implements Descriptio
    @Override
    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model, ServiceVerificationHandler verificationHandler, List<ServiceController<?>> newControllers)
             throws OperationFailedException {
+
+      MemcachedServerConfigurationBuilder configurationBuilder = new MemcachedServerConfigurationBuilder();
+      this.configureProtocolServer(configurationBuilder, operation);
       // Create the service
-      final ProtocolServerService service = new ProtocolServerService(operation, MemcachedServer.class);
+      final ProtocolServerService service = new ProtocolServerService(getServiceName(operation), MemcachedServer.class, configurationBuilder);
 
       // Setup the various dependencies with injectors and install the service
       ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "memcached"), service);
-      EndpointUtils.addCacheContainerDependency(context, builder, service.getCacheContainerName(), service.getCacheManager());
-      EndpointUtils.addCacheDependency(context, builder, service.getCacheContainerName(), "memcachedCache");
-      EndpointUtils.addSocketBindingDependency(builder, service.getRequiredSocketBindingName(), service.getSocketBinding());
+      EndpointUtils.addCacheContainerDependency(context, builder, getCacheContainerName(operation), service.getCacheManager());
+      EndpointUtils.addCacheDependency(context, builder, getCacheContainerName(operation), "memcachedCache");
+      EndpointUtils.addSocketBindingDependency(builder, getSocketBindingName(operation), service.getSocketBinding());
       builder.install();
    }
 

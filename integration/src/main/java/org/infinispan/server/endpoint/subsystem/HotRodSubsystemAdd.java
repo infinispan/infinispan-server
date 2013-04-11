@@ -21,8 +21,9 @@ package org.infinispan.server.endpoint.subsystem;
 import java.util.List;
 import java.util.Locale;
 
+import org.infinispan.server.core.Main;
 import org.infinispan.server.hotrod.HotRodServer;
-import org.jboss.as.controller.AbstractAddStepHandler;
+import org.infinispan.server.hotrod.configuration.HotRodServerConfigurationBuilder;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.ServiceVerificationHandler;
@@ -36,11 +37,11 @@ import org.jboss.msc.service.ServiceController;
 import static org.infinispan.server.endpoint.subsystem.EndpointUtils.copyIfSet;
 
 /**
- * @author <a href="http://www.dataforte.net/blog/">Tristan Tarrant</a>
+ * @author Tristan Tarrant
  */
-class HotRodSubsystemAdd extends AbstractAddStepHandler implements DescriptionProvider {
+class HotRodSubsystemAdd extends ProtocolServiceSubsystemAdd implements DescriptionProvider {
 
-   static final HotRodSubsystemAdd INSTANCE = new HotRodSubsystemAdd();
+   static final ProtocolServiceSubsystemAdd INSTANCE = new HotRodSubsystemAdd();
 
    static ModelNode createOperation(ModelNode address, ModelNode existing) {
       ModelNode operation = Util.getEmptyOperation(ModelDescriptionConstants.ADD, address);
@@ -69,14 +70,44 @@ class HotRodSubsystemAdd extends AbstractAddStepHandler implements DescriptionPr
    @Override
    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model, ServiceVerificationHandler verificationHandler, List<ServiceController<?>> newControllers)
             throws OperationFailedException {
+      // Create the builder
+      HotRodServerConfigurationBuilder configurationBuilder = new HotRodServerConfigurationBuilder();
+      configureProtocolServer(configurationBuilder, operation);
+      configureProtocolServerTopology(configurationBuilder, operation);
       // Create the service
-      final ProtocolServerService service = new ProtocolServerService(operation, HotRodServer.class);
+      final ProtocolServerService service = new ProtocolServerService(getServiceName(operation), HotRodServer.class, configurationBuilder);
 
       // Setup the various dependencies with injectors and install the service
       ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "hotrod"), service);
-      EndpointUtils.addCacheContainerDependency(context, builder, service.getCacheContainerName(), service.getCacheManager());
-      EndpointUtils.addSocketBindingDependency(builder, service.getRequiredSocketBindingName(), service.getSocketBinding());
+      EndpointUtils.addCacheContainerDependency(context, builder, getCacheContainerName(operation), service.getCacheManager());
+      EndpointUtils.addSocketBindingDependency(builder, getSocketBindingName(operation), service.getSocketBinding());
       builder.install();
+   }
+
+   private void configureProtocolServerTopology(HotRodServerConfigurationBuilder builder, ModelNode config) {
+      if (!config.hasDefined(ModelKeys.TOPOLOGY_STATE_TRANSFER)) {
+         return;
+      }
+
+      config = config.get(ModelKeys.TOPOLOGY_STATE_TRANSFER);
+      if (config.hasDefined(ModelKeys.LOCK_TIMEOUT)) {
+         builder.topologyLockTimeout(config.get(ModelKeys.LOCK_TIMEOUT).asLong());
+      }
+      if (config.hasDefined(ModelKeys.REPLICATION_TIMEOUT)) {
+         builder.topologyReplTimeout(config.get(ModelKeys.REPLICATION_TIMEOUT).asLong());
+      }
+      if (config.hasDefined(ModelKeys.UPDATE_TIMEOUT)) {
+         builder.topologyUpdateTimeout(config.get(ModelKeys.UPDATE_TIMEOUT).asLong());
+      }
+      if (config.hasDefined(ModelKeys.EXTERNAL_HOST)) {
+         builder.proxyHost(config.get(ModelKeys.EXTERNAL_HOST).asString());
+      }
+      if (config.hasDefined(ModelKeys.EXTERNAL_PORT)) {
+         builder.proxyPort(config.get(ModelKeys.EXTERNAL_PORT).asInt());
+      }
+      if (config.hasDefined(ModelKeys.LAZY_RETRIEVAL)) {
+         builder.topologyStateTransfer(!config.get(ModelKeys.LAZY_RETRIEVAL).asBoolean(false));
+      }
    }
 
    @Override
