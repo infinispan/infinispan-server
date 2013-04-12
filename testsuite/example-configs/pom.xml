@@ -67,6 +67,12 @@
                            <directory>${server1.dist}/docs/examples/configs</directory>
                            <filtering>true</filtering>
                         </resource>
+                        <resource>
+                           <directory>${config.dir}</directory>
+                           <includes>
+                              <include>*.jks</include>
+                           </includes>
+                        </resource>
                      </resources>
                   </configuration>
                </execution>
@@ -308,6 +314,21 @@
                      </includes>
                      <systemPropertyVariables>
                         <arquillian.launch>standalone-rcs-local</arquillian.launch>
+                     </systemPropertyVariables>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>standalone-hotrod-ssl.surefire</id>
+                  <phase>test</phase>
+                  <goals>
+                     <goal>test</goal>
+                  </goals>
+                  <configuration>
+                     <includes>
+                        <include>org/infinispan/server/test/configs/SslHotRodConfigExampleTest.java</include>
+                     </includes>
+                     <systemPropertyVariables>
+                        <arquillian.launch>standalone-hotrod-ssl</arquillian.launch>
                      </systemPropertyVariables>
                   </configuration>
                </execution>

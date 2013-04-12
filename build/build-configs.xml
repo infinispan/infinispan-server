@@ -73,6 +73,10 @@
            paramSubsystemsFile="configuration/examples/subsystems-hotrod-rolling-upgrade.xml"
            paramOutputFile="${generated.configs.examples}/standalone-hotrod-rolling-upgrade.xml"/>
        <generate-server-config 
+           paramTemplateFile="configuration/examples/template-ssl.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-hotrod-ssl.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-hotrod-ssl.xml"/>
+       <generate-server-config 
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-storage-only.xml"
            paramOutputFile="${generated.configs.examples}/clustered-storage-only.xml"/>

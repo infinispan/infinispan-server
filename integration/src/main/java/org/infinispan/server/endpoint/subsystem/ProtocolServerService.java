@@ -22,12 +22,15 @@ import static org.infinispan.server.endpoint.EndpointLogger.ROOT_LOGGER;
 
 import java.net.InetSocketAddress;
 
+import javax.net.ssl.SSLContext;
+
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.server.core.ProtocolServer;
 import org.infinispan.server.core.configuration.ProtocolServerConfiguration;
 import org.infinispan.server.core.configuration.ProtocolServerConfigurationBuilder;
 import org.infinispan.server.core.transport.Transport;
 import org.infinispan.util.ReflectionUtil;
+import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.as.network.NetworkUtils;
 import org.jboss.as.network.SocketBinding;
 import org.jboss.msc.service.Service;
@@ -47,12 +50,15 @@ class ProtocolServerService implements Service<ProtocolServer> {
    private final InjectedValue<EmbeddedCacheManager> cacheManager = new InjectedValue<EmbeddedCacheManager>();
    // The socketBinding that will be injected by the container
    private final InjectedValue<SocketBinding> socketBinding = new InjectedValue<SocketBinding>();
+   // The securityRealm that will be injected by the container
+   private final InjectedValue<SecurityRealm> securityRealm = new InjectedValue<SecurityRealm>();
    // The configuration for this service
    private final ProtocolServerConfigurationBuilder<?, ?> configurationBuilder;
    // The class which determines the type of server
    private final Class<? extends ProtocolServer> serverClass;
    // The server which handles the protocol
    private ProtocolServer protocolServer;
+
    // The transport used by the protocol server
    private Transport transport;
    // The name of the server
@@ -75,7 +81,21 @@ class ProtocolServerService implements Service<ProtocolServer> {
          InetSocketAddress socketAddress = socketBinding.getSocketAddress();
          configurationBuilder.host(socketAddress.getAddress().getHostAddress());
          configurationBuilder.port(socketAddress.getPort());
-         ROOT_LOGGER.endpointStarted(serverName, NetworkUtils.formatAddress(socketAddress), socketAddress.getPort());
+
+         SecurityRealm realm = securityRealm.getOptionalValue();
+         final String qual;
+         if (realm != null) {
+            SSLContext sslContext = realm.getSSLContext();
+            if (sslContext == null) {
+               throw ROOT_LOGGER.noSSLContext(serverName, realm.getName());
+            }
+            configurationBuilder.ssl().sslContext(sslContext);
+            qual = " (SSL)";
+         } else {
+            qual = "";
+         }
+
+         ROOT_LOGGER.endpointStarted(serverName + qual, NetworkUtils.formatAddress(socketAddress));
          // Start the connector
          startProtocolServer(configurationBuilder.build());
 
@@ -144,6 +164,10 @@ class ProtocolServerService implements Service<ProtocolServer> {
 
    InjectedValue<SocketBinding> getSocketBinding() {
       return socketBinding;
+   }
+
+   InjectedValue<SecurityRealm> getSecurityRealm() {
+      return securityRealm;
    }
 
    public Transport getTransport() {

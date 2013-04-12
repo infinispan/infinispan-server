@@ -37,10 +37,13 @@ public class ModelKeys {
    public static final String RECEIVE_BUFFER_SIZE = "receive-buffer-size"; // integer
    public static final String VIRTUAL_SERVER = "virtual-server"; // string
    public static final String CONTEXT_PATH = "context-path"; // string
+   public static final String REQUIRE_SSL_CLIENT_AUTH = "require-ssl-client-auth"; // boolean
    public static final String SECURITY_DOMAIN = "security-domain"; // string
+   public static final String SECURITY_REALM = "security-realm"; // string
    public static final String AUTH_METHOD = "auth-method"; // string
    public static final String SECURITY_MODE = "security-mode"; // string
 
+   public static final String TOPOLOGY_STATE_TRANSFER_NAME = "TOPOLOGY_STATE_TRANSFER";
    public static final String TOPOLOGY_STATE_TRANSFER = "topology-state-transfer";
    public static final String LOCK_TIMEOUT = "lock-timeout"; // integer
    public static final String REPLICATION_TIMEOUT = "replication-timeout"; // integer
@@ -49,10 +52,7 @@ public class ModelKeys {
    public static final String EXTERNAL_PORT = "external-port"; // integer
    public static final String LAZY_RETRIEVAL = "lazy-retrieval"; // boolean
 
-
-   public static final String[] CONNECTORS = { HOTROD_CONNECTOR, MEMCACHED_CONNECTOR, REST_CONNECTOR };
-   public static final String[] CONNECTOR_ATTRIBUTES = { SOCKET_BINDING, NAME, CACHE_CONTAINER, WORKER_THREADS, IDLE_TIMEOUT, TCP_NODELAY, SEND_BUFFER_SIZE, RECEIVE_BUFFER_SIZE, VIRTUAL_SERVER, CONTEXT_PATH, SECURITY_DOMAIN, AUTH_METHOD, SECURITY_MODE };
-
-   public static final String[] TOPOLOGY_ATTRIBUTES = { LOCK_TIMEOUT, REPLICATION_TIMEOUT, UPDATE_TIMEOUT, EXTERNAL_HOST, EXTERNAL_PORT, LAZY_RETRIEVAL };
-   public static final String CONNECTOR = "connector";
+   public static final String SECURITY_NAME = "SECURITY";
+   public static final String SECURITY = "security";
+   public static final String SSL = "ssl"; // boolean
 }

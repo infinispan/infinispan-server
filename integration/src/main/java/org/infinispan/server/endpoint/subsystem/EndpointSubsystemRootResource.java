@@ -1,7 +1,8 @@
-package org.jboss.as.clustering.infinispan.subsystem;
+package org.infinispan.server.endpoint.subsystem;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 
+import org.infinispan.server.endpoint.Constants;
 import org.jboss.as.controller.PathElement;
 import org.jboss.as.controller.ReloadRequiredRemoveStepHandler;
 import org.jboss.as.controller.SimpleResourceDefinition;
@@ -13,14 +14,14 @@ import org.jboss.as.controller.registry.ManagementResourceRegistration;
  *
  * @author Richard Achmatowicz (c) 2011 Red Hat Inc.
  */
-public class InfinispanSubsystemRootResource extends SimpleResourceDefinition {
+public class EndpointSubsystemRootResource extends SimpleResourceDefinition {
 
     private final boolean runtimeRegistration;
 
-    public InfinispanSubsystemRootResource(boolean runtimeRegistration) {
-        super(PathElement.pathElement(SUBSYSTEM, InfinispanExtension.SUBSYSTEM_NAME),
-                InfinispanExtension.getResourceDescriptionResolver(),
-                InfinispanSubsystemAdd.INSTANCE,
+    public EndpointSubsystemRootResource(boolean runtimeRegistration) {
+        super(PathElement.pathElement(SUBSYSTEM, Constants.SUBSYSTEM_NAME),
+                EndpointExtension.getResourceDescriptionResolver(Constants.SUBSYSTEM_NAME),
+                EndpointSubsystemAdd.INSTANCE,
                 ReloadRequiredRemoveStepHandler.INSTANCE);
         this.runtimeRegistration = runtimeRegistration;
     }
@@ -38,7 +39,9 @@ public class InfinispanSubsystemRootResource extends SimpleResourceDefinition {
 
     @Override
     public void registerChildren(ManagementResourceRegistration resourceRegistration) {
-        resourceRegistration.registerSubModel(new CacheContainerResource(isRuntimeRegistration()));
+        resourceRegistration.registerSubModel(new HotRodConnectorResource(isRuntimeRegistration()));
+        resourceRegistration.registerSubModel(new MemcachedConnectorResource(isRuntimeRegistration()));
+        resourceRegistration.registerSubModel(new RestConnectorResource(isRuntimeRegistration()));
     }
 
     public boolean isRuntimeRegistration() {

@@ -18,21 +18,25 @@
  */
 package org.infinispan.server.endpoint;
 
+import org.jboss.as.controller.PathElement;
+import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.msc.service.ServiceName;
 
 /**
  * @author <a href="http://gleamynode.net/">Trustin Lee</a>
+ * @author Tristan Tarrant
  */
-public class DataGridConstants {
+public class Constants {
 
    private static final ServiceName JBOSS = ServiceName.of("jboss");
-   public static final String SUBSYSTEM_NAME = "datagrid";
+   public static final String SUBSYSTEM_NAME = "endpoint";
 
    public static final ServiceName DATAGRID = JBOSS.append(SUBSYSTEM_NAME);
+   public static final PathElement SUBSYSTEM_PATH = PathElement.pathElement(ModelDescriptionConstants.SUBSYSTEM, SUBSYSTEM_NAME);
 
-   public static String VERSION = DataGridConstants.class.getPackage().getImplementationVersion();
+   public static String VERSION = Constants.class.getPackage().getImplementationVersion();
 
-   private DataGridConstants() {
+   private Constants() {
       // Constant table
    }
 }

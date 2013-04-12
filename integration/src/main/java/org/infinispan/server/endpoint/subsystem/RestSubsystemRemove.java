@@ -18,21 +18,18 @@
  */
 package org.infinispan.server.endpoint.subsystem;
 
-import java.util.Locale;
-
 import org.jboss.as.controller.AbstractRemoveStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
-import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.dmr.ModelNode;
 
 /**
  * RestSubsystemRemove.
  *
  * @author Tristan Tarrant
- * @since 6.0
+ * @since 5.1
  */
-public class RestSubsystemRemove extends AbstractRemoveStepHandler implements DescriptionProvider {
+public class RestSubsystemRemove extends AbstractRemoveStepHandler {
 
    static final RestSubsystemRemove INSTANCE = new RestSubsystemRemove();
 
@@ -40,11 +37,6 @@ public class RestSubsystemRemove extends AbstractRemoveStepHandler implements De
    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model)
             throws OperationFailedException {
       context.removeService(EndpointUtils.getServiceName(operation, "rest"));
-   }
-
-   @Override
-   public ModelNode getModelDescription(Locale locale) {
-      return EndpointSubsystemProviders.REMOVE_REST_CONNECTOR_DESC.getModelDescription(locale);
    }
 
 }

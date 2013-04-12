@@ -18,30 +18,21 @@
  */
 package org.infinispan.server.endpoint.subsystem;
 
-import java.util.Locale;
-
 import org.jboss.as.controller.AbstractRemoveStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
-import org.jboss.as.controller.descriptions.DescriptionProvider;
 import org.jboss.dmr.ModelNode;
 
 /**
  * @author Tristan Tarrant
  */
-public class MemcachedSubsystemRemove extends AbstractRemoveStepHandler implements DescriptionProvider {
+public class MemcachedSubsystemRemove extends AbstractRemoveStepHandler {
 
    static final MemcachedSubsystemRemove INSTANCE = new MemcachedSubsystemRemove();
 
    @Override
-   protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model)
-            throws OperationFailedException {
+   protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
       context.removeService(EndpointUtils.getServiceName(operation, "memcached"));
-   }
-
-   @Override
-   public ModelNode getModelDescription(Locale locale) {
-      return EndpointSubsystemProviders.REMOVE_MEMCACHED_CONNECTOR_DESC.getModelDescription(locale);
    }
 
 }

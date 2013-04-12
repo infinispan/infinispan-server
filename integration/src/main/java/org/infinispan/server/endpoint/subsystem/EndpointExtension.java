@@ -18,21 +18,14 @@
  */
 package org.infinispan.server.endpoint.subsystem;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DESCRIBE;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REMOVE;
-
 import java.util.List;
 
-import org.infinispan.server.endpoint.DataGridConstants;
-import org.jboss.as.clustering.jgroups.subsystem.JGroupsSubsystemDescribe;
+import org.infinispan.server.endpoint.Constants;
 import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.ExtensionContext;
-import org.jboss.as.controller.PathElement;
 import org.jboss.as.controller.SubsystemRegistration;
+import org.jboss.as.controller.descriptions.ResourceDescriptionResolver;
 import org.jboss.as.controller.parsing.ExtensionParsingContext;
-import org.jboss.as.controller.registry.ManagementResourceRegistration;
-import org.jboss.as.controller.registry.OperationEntry;
 import org.jboss.dmr.ModelNode;
 import org.jboss.staxmapper.XMLElementReader;
 
@@ -44,39 +37,26 @@ import org.jboss.staxmapper.XMLElementReader;
 public class EndpointExtension implements Extension {
 
    private static final int MANAGEMENT_API_MAJOR_VERSION = 1;
-   private static final int MANAGEMENT_API_MINOR_VERSION = 0;
+   private static final int MANAGEMENT_API_MINOR_VERSION = 2;
+   private static final int MANAGEMENT_API_MICRO_VERSION = 0;
+   private static final String RESOURCE_NAME = EndpointExtension.class.getPackage().getName() + ".LocalDescriptions";
+
+   static ResourceDescriptionResolver getResourceDescriptionResolver(String keyPrefix) {
+      /*StringBuilder prefix = new StringBuilder(Constants.SUBSYSTEM_NAME);
+      for (String kp : keyPrefix) {
+          prefix.append('.').append(kp);
+      }*/
+      return new SharedResourceDescriptionResolver(keyPrefix, RESOURCE_NAME, EndpointExtension.class.getClassLoader(), true, true, null);
+  }
+
 
    @Override
    public final void initialize(ExtensionContext context) {
       final boolean registerRuntimeOnly = context.isRuntimeOnlyRegistrationValid();
 
-      final SubsystemRegistration registration = context.registerSubsystem(DataGridConstants.SUBSYSTEM_NAME, MANAGEMENT_API_MAJOR_VERSION, MANAGEMENT_API_MINOR_VERSION);
-      registration.registerXMLElementWriter(new EndpointSubsystemWriter());
-
-      final ManagementResourceRegistration subsystem = registration.registerSubsystemModel(EndpointSubsystemProviders.SUBSYSTEM);
-      subsystem.registerOperationHandler(ADD, EndpointSubsystemAdd.INSTANCE, EndpointSubsystemAdd.INSTANCE, false);
-      subsystem.registerOperationHandler(EndpointSubsystemDescribe.DEFINITION, EndpointSubsystemDescribe.INSTANCE);
-
-      final ManagementResourceRegistration hotrodConnector = subsystem.registerSubModel(PathElement.pathElement(ModelKeys.HOTROD_CONNECTOR), EndpointSubsystemProviders.HOTROD_CONNECTOR_DESC);
-      hotrodConnector.registerOperationHandler(ADD, HotRodSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_HOTROD_CONNECTOR_DESC, false);
-      hotrodConnector.registerOperationHandler(REMOVE, HotRodSubsystemRemove.INSTANCE, EndpointSubsystemProviders.REMOVE_HOTROD_CONNECTOR_DESC, false);
-      HotRodWriteAttributeHandler.INSTANCE.registerAttributes(hotrodConnector);
-
-      final ManagementResourceRegistration memcachedConnector = subsystem.registerSubModel(PathElement.pathElement(ModelKeys.MEMCACHED_CONNECTOR), EndpointSubsystemProviders.MEMCACHED_CONNECTOR_DESC);
-      memcachedConnector.registerOperationHandler(ADD, MemcachedSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_MEMCACHED_CONNECTOR_DESC, false);
-      memcachedConnector.registerOperationHandler(REMOVE, MemcachedSubsystemRemove.INSTANCE, EndpointSubsystemProviders.REMOVE_MEMCACHED_CONNECTOR_DESC, false);
-      MemcachedWriteAttributeHandler.INSTANCE.registerAttributes(memcachedConnector);
-
-      final ManagementResourceRegistration restConnector = subsystem.registerSubModel(PathElement.pathElement(ModelKeys.REST_CONNECTOR), EndpointSubsystemProviders.REST_CONNECTOR_DESC);
-      restConnector.registerOperationHandler(ADD, RestSubsystemAdd.INSTANCE, EndpointSubsystemProviders.ADD_REST_CONNECTOR_DESC, false);
-      restConnector.registerOperationHandler(REMOVE, RestSubsystemRemove.INSTANCE, EndpointSubsystemProviders.REMOVE_REST_CONNECTOR_DESC, false);
-      RestWriteAttributeHandler.INSTANCE.registerAttributes(restConnector);
-
-      // Metrics
-      if(registerRuntimeOnly) {
-         ProtocolServerMetricsHandler.registerMetrics(hotrodConnector, "hotrod");
-         ProtocolServerMetricsHandler.registerMetrics(memcachedConnector, "memcached");
-      }
+      final SubsystemRegistration subsystem = context.registerSubsystem(Constants.SUBSYSTEM_NAME, MANAGEMENT_API_MAJOR_VERSION, MANAGEMENT_API_MINOR_VERSION, MANAGEMENT_API_MICRO_VERSION);
+      subsystem.registerSubsystemModel(new EndpointSubsystemRootResource(registerRuntimeOnly));
+      subsystem.registerXMLElementWriter(new EndpointSubsystemWriter());
    }
 
    @Override
@@ -84,7 +64,7 @@ public class EndpointExtension implements Extension {
        for (Namespace namespace: Namespace.values()) {
            XMLElementReader<List<ModelNode>> reader = namespace.getXMLReader();
            if (reader != null) {
-               context.setSubsystemXmlMapping(DataGridConstants.SUBSYSTEM_NAME, namespace.getUri(), reader);
+               context.setSubsystemXmlMapping(Constants.SUBSYSTEM_NAME, namespace.getUri(), reader);
            }
        }
    }
