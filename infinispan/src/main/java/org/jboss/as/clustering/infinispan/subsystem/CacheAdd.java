@@ -147,7 +147,6 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
 
     @Override
     protected void populateModel(ModelNode operation, ModelNode model) throws OperationFailedException {
-
         this.populate(operation, model);
     }
 

@@ -36,13 +36,14 @@ public enum Namespace {
 
     INFINISPAN_ENDPOINT_1_0("jboss:domain:datagrid", 1, 0, new EndpointSubsystemReader_1_0()),
     INFINISPAN_ENDPOINT_5_2("infinispan:server:endpoint", 5, 2, new EndpointSubsystemReader_1_0()),
+    INFINISPAN_ENDPOINT_5_3("infinispan:server:endpoint", 5, 3, new EndpointSubsystemReader_5_3()),
     ;
     private static final String URN_PATTERN = "urn:%s:%d.%d";
 
     /**
      * The current namespace version.
      */
-    public static final Namespace CURRENT = INFINISPAN_ENDPOINT_5_2;
+    public static final Namespace CURRENT = INFINISPAN_ENDPOINT_5_3;
 
     private final int major;
     private final int minor;

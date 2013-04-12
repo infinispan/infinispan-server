@@ -43,7 +43,7 @@ import org.jboss.staxmapper.XMLExtendedStreamReader;
  * @author Tristan Tarrant
  *
  */
-class EndpointSubsystemReader_1_0 implements XMLStreamConstants, XMLElementReader<List<ModelNode>> {
+class EndpointSubsystemReader_5_3 implements XMLStreamConstants, XMLElementReader<List<ModelNode>> {
 
    @Override
    public void readElement(final XMLExtendedStreamReader reader, final List<ModelNode> operations) throws XMLStreamException {
@@ -103,6 +103,10 @@ class EndpointSubsystemReader_1_0 implements XMLStreamConstants, XMLElementReade
          switch (element) {
          case TOPOLOGY_STATE_TRANSFER: {
             parseTopologyStateTransfer(reader, connector, operations);
+            break;
+         }
+         case SECURITY: {
+            parseSecurity(reader, connector, operations);
             break;
          }
          default: {
@@ -234,7 +238,8 @@ class EndpointSubsystemReader_1_0 implements XMLStreamConstants, XMLElementReade
    }
 
    private void parseTopologyStateTransfer(XMLExtendedStreamReader reader, ModelNode connector, List<ModelNode> operations) throws XMLStreamException {
-      PathAddress address = PathAddress.pathAddress(connector.get(OP_ADDR)).append(PathElement.pathElement(ModelKeys.TOPOLOGY_STATE_TRANSFER, ModelKeys.TOPOLOGY_STATE_TRANSFER_NAME));
+      PathAddress address = PathAddress.pathAddress(connector.get(OP_ADDR)).append(
+            PathElement.pathElement(ModelKeys.TOPOLOGY_STATE_TRANSFER, ModelKeys.TOPOLOGY_STATE_TRANSFER_NAME));
       ModelNode topologyStateTransfer = Util.createAddOperation(address);
 
       for (int i = 0; i < reader.getAttributeCount(); i++) {
@@ -274,5 +279,36 @@ class EndpointSubsystemReader_1_0 implements XMLStreamConstants, XMLElementReade
       ParseUtils.requireNoContent(reader);
       operations.add(topologyStateTransfer);
 
+   }
+
+   private void parseSecurity(XMLExtendedStreamReader reader, ModelNode connector, List<ModelNode> operations) throws XMLStreamException {
+      PathAddress address = PathAddress.pathAddress(connector.get(OP_ADDR)).append(PathElement.pathElement(ModelKeys.SECURITY, ModelKeys.SECURITY_NAME));
+      ModelNode security = Util.createAddOperation(address);
+
+      for (int i = 0; i < reader.getAttributeCount(); i++) {
+         ParseUtils.requireNoNamespaceAttribute(reader, i);
+         String value = reader.getAttributeValue(i);
+         Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+         switch (attribute) {
+         case REQUIRE_CLIENT_AUTH: {
+            SecurityResource.REQUIRE_SSL_CLIENT_AUTH.parseAndSetParameter(value, security, reader);
+            break;
+         }
+         case SECURITY_REALM: {
+            SecurityResource.SECURITY_REALM.parseAndSetParameter(value, security, reader);
+            break;
+         }
+         case SSL: {
+            SecurityResource.SSL.parseAndSetParameter(value, security, reader);
+            break;
+         }
+         default: {
+            ParseUtils.unexpectedAttribute(reader, i);
+         }
+         }
+
+      }
+      ParseUtils.requireNoContent(reader);
+      operations.add(security);
    }
 }

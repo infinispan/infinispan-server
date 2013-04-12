@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012 Red Hat Inc. and/or its affiliates and other contributors
+ * Copyright 2013 Red Hat Inc. and/or its affiliates and other contributors
  * as indicated by the @author tags. All rights reserved.
  * See the copyright.txt in the distribution for a
  * full listing of individual contributors.
@@ -18,13 +18,12 @@
  */
 package org.infinispan.server.endpoint.subsystem;
 
-/**
- * SecurityMode.
- *
- * @author Tristan Tarrant
- * @since 5.2
- */
-public enum SecurityMode {
-   WRITE,
-   READ_WRITE
+public enum AuthMethod {
+   BASIC, DIGEST, CLIENT_CERT, SPNEGO;
+
+   @Override
+   public String toString() {
+      return super.toString().replace('_', '-');
+   }
+
 }

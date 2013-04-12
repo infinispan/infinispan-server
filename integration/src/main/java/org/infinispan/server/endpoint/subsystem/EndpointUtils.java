@@ -4,11 +4,15 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.server.endpoint.DataGridConstants;
+import org.infinispan.server.endpoint.Constants;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
+import org.jboss.as.domain.management.SecurityRealm;
+import org.jboss.as.domain.management.security.SecurityRealmService;
 import org.jboss.as.network.SocketBinding;
+import org.jboss.as.security.plugins.SecurityDomainContext;
+import org.jboss.as.security.service.SecurityDomainService;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceName;
@@ -40,25 +44,35 @@ public class EndpointUtils {
       final PathAddress address = PathAddress.pathAddress(node.require(OP_ADDR));
       final String name = address.getLastElement().getValue();
       if (prefix.length > 0) {
-         return DataGridConstants.DATAGRID.append(prefix).append(name);
+         return Constants.DATAGRID.append(prefix).append(name);
       } else {
-         return DataGridConstants.DATAGRID.append(name);
+         return Constants.DATAGRID.append(name);
       }
    }
 
-   public static void addCacheDependency(OperationContext context, ServiceBuilder<?> builder, String cacheContainerName, String cacheName) {
+   public static void addCacheDependency(ServiceBuilder<?> builder, String cacheContainerName, String cacheName) {
       ServiceName cacheServiceName = getCacheServiceName(cacheContainerName, cacheName);
-      builder.addDependency(ServiceBuilder.DependencyType.REQUIRED, cacheServiceName);
+      builder.addDependency(cacheServiceName);
    }
 
-   public static void addCacheContainerDependency(OperationContext context, ServiceBuilder<?> builder, String cacheContainerName, InjectedValue<EmbeddedCacheManager> target) {
+   public static void addCacheContainerDependency(ServiceBuilder<?> builder, String cacheContainerName, InjectedValue<EmbeddedCacheManager> target) {
       ServiceName cacheContainerServiceName = getCacheContainerServiceName(cacheContainerName);
-      builder.addDependency(ServiceBuilder.DependencyType.REQUIRED, cacheContainerServiceName, EmbeddedCacheManager.class, target);
+      builder.addDependency(cacheContainerServiceName, EmbeddedCacheManager.class, target);
    }
 
    public static void addSocketBindingDependency(ServiceBuilder<?> builder, String socketBindingName, InjectedValue<SocketBinding> target) {
-      final ServiceName socketName = SocketBinding.JBOSS_BINDING_NAME.append(socketBindingName);
+      ServiceName socketName = SocketBinding.JBOSS_BINDING_NAME.append(socketBindingName);
       builder.addDependency(socketName, SocketBinding.class, target);
+   }
+
+   public static void addSecurityDomainDependency(ServiceBuilder<?> builder, String securityDomainName, InjectedValue<SecurityDomainContext> target) {
+      ServiceName securityDomainServiceName = SecurityDomainService.SERVICE_NAME.append(securityDomainName);
+      builder.addDependency(securityDomainServiceName, SecurityDomainContext.class, target);
+   }
+
+   public static void addSecurityRealmDependency(ServiceBuilder<?> builder, String securityRealmName, InjectedValue<SecurityRealm> target) {
+      ServiceName securityRealmServiceName = SecurityRealmService.BASE_SERVICE_NAME.append(securityRealmName);
+      builder.addDependency(securityRealmServiceName, SecurityRealm.class, target);
    }
 
    public static ModelNode pathAddress(PathElement... elements) {

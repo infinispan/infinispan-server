@@ -27,11 +27,11 @@ import static org.jboss.logging.Logger.Level.INFO;
 import static org.jboss.logging.Logger.Level.WARN;
 
 import org.jboss.logging.BasicLogger;
-import org.jboss.logging.Cause;
-import org.jboss.logging.LogMessage;
 import org.jboss.logging.Logger;
-import org.jboss.logging.Message;
-import org.jboss.logging.MessageLogger;
+import org.jboss.logging.annotations.Cause;
+import org.jboss.logging.annotations.LogMessage;
+import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.StartException;
 
@@ -68,8 +68,8 @@ public interface EndpointLogger extends BasicLogger {
     *           the port on which the protocol is listening
     */
    @LogMessage(level = INFO)
-   @Message(id = 10001, value = "%s listening on %s:%d")
-   void endpointStarted(String protocolName, String listenAddress, int listenPort);
+   @Message(id = 10001, value = "%s listening on %s")
+   void endpointStarted(String protocolName, String listenAddress);
 
    /**
     * Logs an informational message indicating that an endpoint has started
@@ -136,4 +136,7 @@ public interface EndpointLogger extends BasicLogger {
 
    @Message(id = 10017, value = "Failed to locate ServerBootstrap")
    ServiceRegistryException cannotLocateServerBootstrap(@Cause Throwable t);
+
+   @Message(id = 10018, value = "Endpoint '%s' requires SSL, but no SSL context is available in realm '%s'")
+   StartException noSSLContext(String endpoint, String realm);
 }

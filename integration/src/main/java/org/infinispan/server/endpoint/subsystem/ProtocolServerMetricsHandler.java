@@ -87,7 +87,7 @@ public class ProtocolServerMetricsHandler extends AbstractRuntimeOnlyHandler {
          }
          context.getResult().set(result);
       }
-      context.completeStep();
+      context.stepCompleted();
    }
 
    protected static void registerMetrics(final ManagementResourceRegistration resourceRegistration, final String name) {
