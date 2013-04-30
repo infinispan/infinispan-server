@@ -24,7 +24,7 @@
       <replacement placeholder="CONNECTORS">
          <hotrod-connector socket-binding="hotrod" cache-container="local">
             <topology-state-transfer lock-timeout="1000" replication-timeout="5000" />
-            <security ssl="true" security-realm="ApplicationRealm" />
+            <security ssl="true" security-realm="ApplicationRealm" require-ssl-client-auth="true"/>
          </hotrod-connector>
       </replacement>
    </supplement>
