@@ -112,7 +112,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         log.debugf("Loading Infinispan defaults from %s", url.toString());
         try {
             InputStream input = url.openStream();
-            ParserRegistry parser = new ParserRegistry(ParserRegistry.class.getClassLoader());
+            ParserRegistry parser = new ParserRegistry(InfinispanExtension.class.getClassLoader());
             try {
                 return parser.parse(input);
             } finally {
