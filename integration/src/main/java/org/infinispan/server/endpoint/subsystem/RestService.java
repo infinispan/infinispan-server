@@ -19,7 +19,6 @@
 package org.infinispan.server.endpoint.subsystem;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import javax.servlet.ServletContext;
 import org.apache.catalina.Context;
@@ -34,13 +33,16 @@ import org.apache.catalina.deploy.SecurityCollection;
 import org.apache.catalina.deploy.SecurityConstraint;
 import org.apache.tomcat.InstanceManager;
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.rest.ServerBootstrap;
+import org.infinispan.rest.configuration.ExtendedHeaders;
+import org.infinispan.rest.configuration.RestServerConfiguration;
+import org.infinispan.rest.configuration.RestServerConfigurationBuilder;
 import org.jboss.as.controller.services.path.PathManager;
 import org.jboss.as.security.plugins.SecurityDomainContext;
 import org.jboss.as.web.VirtualHost;
 import org.jboss.as.web.deployment.WebCtxLoader;
 import org.jboss.as.web.security.JBossWebRealm;
 import org.jboss.dmr.ModelNode;
-import org.jboss.logging.Logger;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
@@ -61,22 +63,20 @@ import static org.infinispan.server.endpoint.EndpointLogger.ROOT_LOGGER;
 public class RestService implements Service<Context> {
    private static final String DEFAULT_VIRTUAL_SERVER = "default-host";
    private static final String HOME_DIR = "jboss.home.dir";
-   private static final Logger log = Logger.getLogger("com.jboss.datagrid");
    private static final String DEFAULT_CONTEXT_PATH = "";
    private final StandardContext context;
    private final InjectedValue<PathManager> pathManagerInjector = new InjectedValue<PathManager>();
    private final InjectedValue<VirtualHost> hostInjector = new InjectedValue<VirtualHost>();
    private final InjectedValue<EmbeddedCacheManager> cacheManagerInjector = new InjectedValue<EmbeddedCacheManager>();
    private final InjectedValue<SecurityDomainContext> securityDomainContextInjector = new InjectedValue<SecurityDomainContext>();
-   private Method cacheManagerSetter;
    private final ModelNode config;
    private final String virtualServer;
    private final String path;
-   private final String serverName;
    private final String securityDomain;
    private final String authMethod;
    private final SecurityMode securityMode;
    private PathManager.Callback.Handle callbackHandle;
+   private final RestServerConfiguration configuration;
 
    public RestService(ModelNode config) {
       this.config = config.clone();
@@ -86,20 +86,17 @@ public class RestService implements Service<Context> {
             .asString() : DEFAULT_VIRTUAL_SERVER;
       path = this.config.hasDefined(ModelKeys.CONTEXT_PATH) ? cleanContextPath(this.config.get(ModelKeys.CONTEXT_PATH)
             .asString()) : DEFAULT_CONTEXT_PATH;
-      serverName = config.hasDefined(ModelKeys.NAME) ? config.get(ModelKeys.NAME).asString() : "";
       securityDomain = config.hasDefined(ModelKeys.SECURITY_DOMAIN) ? config.get(ModelKeys.SECURITY_DOMAIN).asString()
             : null;
       authMethod = config.hasDefined(ModelKeys.AUTH_METHOD) ? config.get(ModelKeys.AUTH_METHOD).asString() : "BASIC";
       securityMode = config.hasDefined(ModelKeys.SECURITY_MODE) ? SecurityMode.valueOf(config.get(
             ModelKeys.SECURITY_MODE).asString()) : SecurityMode.READ_WRITE;
 
-      // Obtain the setter for injecting the EmbbededCacheManager into the Rest server
-      try {
-         Class<?> cls = Class.forName("org.infinispan.rest.ServerBootstrap", true, getClass().getClassLoader());
-         cacheManagerSetter = cls.getMethod("setToServletContext", ServletContext.class, EmbeddedCacheManager.class);
-      } catch (Exception e) {
-         throw ROOT_LOGGER.cannotLocateServerBootstrap(e);
-      }
+      RestServerConfigurationBuilder builder = new RestServerConfigurationBuilder();
+      builder.extendedHeaders(config.hasDefined(ModelKeys.EXTENDED_HEADERS)
+            ? ExtendedHeaders.valueOf(config.get(ModelKeys.EXTENDED_HEADERS).asString())
+            : ExtendedHeaders.ON_DEMAND);
+      configuration = builder.build();
    }
 
    private static String cleanContextPath(String s) {
@@ -158,12 +155,10 @@ public class RestService implements Service<Context> {
 
          context.addServletMapping("/rest/*", "Resteasy");
 
-         // Inject cache manager
-         try {
-            cacheManagerSetter.invoke(null, context.getServletContext(), cacheManagerInjector.getValue());
-         } catch (Exception e) {
-            throw ROOT_LOGGER.restCacheManagerInjectionFailed(e);
-         }
+         // Inject cache manager and configuration
+         ServletContext servletContext = context.getServletContext();
+         ServerBootstrap.setCacheManager(servletContext, cacheManagerInjector.getValue());
+         ServerBootstrap.setConfiguration(servletContext, configuration);
 
          if (securityDomain != null) {
             configureContextSecurity();

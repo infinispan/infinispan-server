@@ -62,6 +62,7 @@
       <xs:attribute name="security-domain" type="xs:string" use="optional" />
       <xs:attribute name="auth-method" type="xs:string" use="optional" />
       <xs:attribute name="security-mode" type="tns:security-mode" use="optional" />
+      <xs:attribute name="extended-headers" type="tns:extended-headers" use="optional" />
    </xs:complexType>
 
    <xs:complexType name="topology-state-transfer">
@@ -89,6 +90,21 @@
          <xs:enumeration value="READ_WRITE">
             <xs:annotation>
                <xs:documentation>Specifies that authentication against the specified security domain should apply to all methods (PUT, POST, DELETE, GET, HEAD)</xs:documentation>
+            </xs:annotation>
+         </xs:enumeration>
+      </xs:restriction>
+   </xs:simpleType>
+   
+   <xs:simpleType name="extended-headers">
+      <xs:restriction base="xs:token">
+         <xs:enumeration value="NEVER">
+            <xs:annotation>
+               <xs:documentation>Never return extended headers</xs:documentation>
+            </xs:annotation>
+         </xs:enumeration>
+         <xs:enumeration value="ON_DEMAND">
+            <xs:annotation>
+               <xs:documentation>Return extended headers on demand (i.e. when the 'extendend' query parameter is present on the request)</xs:documentation>
             </xs:annotation>
          </xs:enumeration>
       </xs:restriction>

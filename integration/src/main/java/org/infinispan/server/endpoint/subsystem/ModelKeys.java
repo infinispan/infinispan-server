@@ -42,6 +42,7 @@ public class ModelKeys {
    public static final String SECURITY_REALM = "security-realm"; // string
    public static final String AUTH_METHOD = "auth-method"; // string
    public static final String SECURITY_MODE = "security-mode"; // string
+   public static final String EXTENDED_HEADERS = "extended-headers"; //enum
 
    public static final String TOPOLOGY_STATE_TRANSFER_NAME = "TOPOLOGY_STATE_TRANSFER";
    public static final String TOPOLOGY_STATE_TRANSFER = "topology-state-transfer";
@@ -55,4 +56,5 @@ public class ModelKeys {
    public static final String SECURITY_NAME = "SECURITY";
    public static final String SECURITY = "security";
    public static final String SSL = "ssl"; // boolean
+
 }

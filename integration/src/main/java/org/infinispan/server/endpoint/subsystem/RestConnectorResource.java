@@ -18,6 +18,8 @@
  */
 package org.infinispan.server.endpoint.subsystem;
 
+import org.infinispan.rest.configuration.ExtendedHeaders;
+import org.jboss.as.clustering.infinispan.subsystem.TransactionMode;
 import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathElement;
@@ -26,6 +28,7 @@ import org.jboss.as.controller.SimpleAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
 import org.jboss.as.controller.operations.validation.EnumValidator;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
+import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
 public class RestConnectorResource extends CommonConnectorResource {
@@ -46,6 +49,15 @@ public class RestConnectorResource extends CommonConnectorResource {
                  .setRestartAllServices()
                  .build();
 
+   static final SimpleAttributeDefinition EXTENDED_HEADERS =
+         new SimpleAttributeDefinitionBuilder(ModelKeys.EXTENDED_HEADERS, ModelType.STRING, true)
+                 .setAllowExpression(true)
+                 .setXmlName(ModelKeys.EXTENDED_HEADERS)
+                 .setValidator(new EnumValidator<ExtendedHeaders>(ExtendedHeaders.class, true, false))
+                 .setDefaultValue(new ModelNode().set(ExtendedHeaders.ON_DEMAND.name()))
+                 .setRestartAllServices()
+                 .build();
+
    static final SimpleAttributeDefinition SECURITY_DOMAIN =
          new SimpleAttributeDefinitionBuilder(ModelKeys.SECURITY_DOMAIN, ModelType.STRING, true)
                  .setAllowExpression(true)
@@ -58,6 +70,7 @@ public class RestConnectorResource extends CommonConnectorResource {
                  .setAllowExpression(true)
                  .setXmlName(ModelKeys.SECURITY_MODE)
                  .setValidator(new EnumValidator<SecurityMode>(SecurityMode.class, true, false))
+                 .setDefaultValue(new ModelNode().set(SecurityMode.READ_WRITE.name()))
                  .setRestartAllServices()
                  .build();
 
@@ -68,7 +81,7 @@ public class RestConnectorResource extends CommonConnectorResource {
                  .setRestartAllServices()
                  .build();
 
-   static final SimpleAttributeDefinition[] REST_ATTRIBUTES = { AUTH_METHOD, CONTEXT_PATH, SECURITY_DOMAIN, SECURITY_MODE, VIRTUAL_SERVER };
+   static final SimpleAttributeDefinition[] REST_ATTRIBUTES = { AUTH_METHOD, CONTEXT_PATH, EXTENDED_HEADERS, SECURITY_DOMAIN, SECURITY_MODE, VIRTUAL_SERVER };
 
    public RestConnectorResource(boolean isRuntimeRegistration) {
       super(REST_CONNECTOR_PATH, EndpointExtension.getResourceDescriptionResolver(ModelKeys.REST_CONNECTOR), RestSubsystemAdd.INSTANCE, RestSubsystemRemove.INSTANCE, isRuntimeRegistration);
