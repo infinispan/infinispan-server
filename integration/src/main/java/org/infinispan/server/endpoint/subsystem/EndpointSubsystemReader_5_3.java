@@ -206,6 +206,10 @@ class EndpointSubsystemReader_5_3 implements XMLStreamConstants, XMLElementReade
             RestConnectorResource.CONTEXT_PATH.parseAndSetParameter(value, connector, reader);
             break;
          }
+         case EXTENDED_HEADERS: {
+            RestConnectorResource.EXTENDED_HEADERS.parseAndSetParameter(value, connector, reader);
+            break;
+         }
          case NAME: {
             CommonConnectorResource.NAME.parseAndSetParameter(value, connector, reader);
             name = value;
