@@ -13,6 +13,7 @@
          </hotrod-connector>
          <memcached-connector socket-binding="memcached" cache-container="local" />
          <rest-connector virtual-server="default-host" cache-container="local" security-domain="other" auth-method="BASIC" />
+         <websocket-connector socket-binding="websocket" cache-container="local" />
       </replacement>
    </supplement>
    <supplement name="clustered">
@@ -23,8 +24,10 @@
          </hotrod-connector>
          <memcached-connector socket-binding="memcached" cache-container="clustered" />
          <rest-connector virtual-server="default-host" cache-container="clustered" security-domain="other" auth-method="BASIC" />
+         <websocket-connector socket-binding="websocket" cache-container="clustered" />
       </replacement>
    </supplement>
    <socket-binding name="hotrod" port="11222" />
    <socket-binding name="memcached" port="11211" />
+   <socket-binding name="websocket" port="8181" />
 </config>

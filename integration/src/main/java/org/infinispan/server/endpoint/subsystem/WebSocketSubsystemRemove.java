@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013 Red Hat Inc. and/or its affiliates and other contributors
+ * Copyright 2011-2013 Red Hat Inc. and/or its affiliates and other contributors
  * as indicated by the @author tags. All rights reserved.
  * See the copyright.txt in the distribution for a
  * full listing of individual contributors.
@@ -16,20 +16,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
  */
-package org.infinispan.server.endpoint;
+package org.infinispan.server.endpoint.subsystem;
 
-import java.io.IOException;
+import org.jboss.as.controller.AbstractRemoveStepHandler;
+import org.jboss.as.controller.OperationContext;
+import org.jboss.as.controller.OperationFailedException;
+import org.jboss.dmr.ModelNode;
 
-public class EndpointSubsystem53Test extends EndpointSubsystem52Test {
+/**
+ * @author Tristan Tarrant
+ */
+public class WebSocketSubsystemRemove extends AbstractRemoveStepHandler {
+
+   static final WebSocketSubsystemRemove INSTANCE = new WebSocketSubsystemRemove();
 
    @Override
-   protected int expectedOperationCount() {
-      return 9;
-   }
-
-   @Override
-   protected String getSubsystemXml() throws IOException {
-      return readResource("/endpoint-5.3.xml");
+   protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
+      context.removeService(EndpointUtils.getServiceName(operation, "websocket"));
    }
 
 }

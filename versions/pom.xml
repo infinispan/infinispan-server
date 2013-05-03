@@ -259,6 +259,12 @@
         <version>${version.org.infinispan}</version>
         <classifier>classes</classifier>
       </dependency>
+      
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-server-websocket</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.infinispan</groupId>

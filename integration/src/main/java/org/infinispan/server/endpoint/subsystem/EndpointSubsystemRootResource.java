@@ -28,9 +28,9 @@ import org.jboss.as.controller.operations.common.GenericSubsystemDescribeHandler
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 
 /**
- * The root resource of the Infinispan subsystem.
+ * The root resource of the Endpoint subsystem.
  *
- * @author Richard Achmatowicz (c) 2011 Red Hat Inc.
+ * @author Tristan Tarrant
  */
 public class EndpointSubsystemRootResource extends SimpleResourceDefinition {
 
@@ -60,6 +60,7 @@ public class EndpointSubsystemRootResource extends SimpleResourceDefinition {
         resourceRegistration.registerSubModel(new HotRodConnectorResource(isRuntimeRegistration()));
         resourceRegistration.registerSubModel(new MemcachedConnectorResource(isRuntimeRegistration()));
         resourceRegistration.registerSubModel(new RestConnectorResource(isRuntimeRegistration()));
+        resourceRegistration.registerSubModel(new WebSocketConnectorResource(isRuntimeRegistration()));
     }
 
     public boolean isRuntimeRegistration() {
