@@ -161,7 +161,11 @@
       <module-def name="org.infinispan.server.rest" src="${infinispan.server.modules.dir}">
          <maven-resource-with-classifier group="org.infinispan" artifact="infinispan-server-rest" classifier="classes" />
       </module-def>
-      
+
+      <module-def name="org.infinispan.server.websocket" src="${infinispan.server.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-server-websocket" />
+      </module-def>
+
       <module-def name="org.infinispan.upgrade-tools" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-upgrade-tools" />
       </module-def>

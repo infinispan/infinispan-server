@@ -13,10 +13,10 @@
    Franklin St, Fifth Floor, Boston, MA ~ 02110-1301 USA, or see the FSF site:
    http://www.fsf.org. -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-    targetNamespace="urn:infinispan:server:endpoint:5.2" 
-    xmlns:tns="urn:infinispan:server:endpoint:5.2" 
+    targetNamespace="urn:infinispan:server:endpoint:5.3" 
+    xmlns:tns="urn:infinispan:server:endpoint:5.3" 
     elementFormDefault="qualified"
-    attributeFormDefault="unqualified" version="5.2">
+    attributeFormDefault="unqualified" version="5.3">
 
    <xs:element name="subsystem" type="tns:subsystemType" />
 
@@ -25,6 +25,7 @@
          <xs:element name="hotrod-connector" type="tns:hotrod-connector" />
          <xs:element name="memcached-connector" type="tns:memcached-connector" />
          <xs:element name="rest-connector" type="tns:rest-connector" />
+         <xs:element name="websocket-connector" type="tns:websocket-connector" />
       </xs:choice>
    </xs:complexType>
 
@@ -63,6 +64,12 @@
       <xs:attribute name="auth-method" type="xs:string" use="optional" />
       <xs:attribute name="security-mode" type="tns:security-mode" use="optional" />
       <xs:attribute name="extended-headers" type="tns:extended-headers" use="optional" />
+   </xs:complexType>
+
+   <xs:complexType name="websocket-connector">
+      <xs:complexContent>
+         <xs:extension base="tns:protocol-connector" />
+      </xs:complexContent>
    </xs:complexType>
 
    <xs:complexType name="topology-state-transfer">
