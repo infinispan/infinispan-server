@@ -135,4 +135,8 @@ public interface EndpointLogger extends BasicLogger {
 
    @Message(id = 10018, value = "Endpoint '%s' requires SSL, but no SSL context is available in realm '%s'")
    StartException noSSLContext(String endpoint, String realm);
+
+   @LogMessage(level = WARN)
+   @Message(id = 10019, value = "The topology update timeout configuration is ignored")
+   void topologyUpdateTimeoutIgnored();
 }

@@ -38,6 +38,9 @@ public abstract class ProtocolServiceSubsystemAdd extends AbstractAddStepHandler
    }
 
    protected void configureProtocolServer(ProtocolServerConfigurationBuilder<?, ?> builder, ModelNode config) {
+      if (config.hasDefined(ModelKeys.NAME)) {
+         builder.name(config.get(ModelKeys.NAME).asString());
+      }
 
       builder.workerThreads(config.hasDefined(ModelKeys.WORKER_THREADS) ? config.get(ModelKeys.WORKER_THREADS).asInt() : DEFAULT_WORKER_THREADS);
 

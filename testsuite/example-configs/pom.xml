@@ -303,6 +303,21 @@
                   </configuration>
                </execution>
                <execution>
+                  <id>standalone-hotrod-multiple.surefire</id>
+                  <phase>test</phase>
+                  <goals>
+                     <goal>test</goal>
+                  </goals>
+                  <configuration>
+                     <includes>
+                        <include>org/infinispan/server/test/configs/MultiHotRodConfigExampleTest.java</include>
+                     </includes>
+                     <systemPropertyVariables>
+                        <arquillian.launch>standalone-hotrod-multiple</arquillian.launch>
+                     </systemPropertyVariables>
+                  </configuration>
+               </execution>
+               <execution>
                   <id>standalone-rcs-local.surefire</id>
                   <phase>test</phase>
                   <goals>

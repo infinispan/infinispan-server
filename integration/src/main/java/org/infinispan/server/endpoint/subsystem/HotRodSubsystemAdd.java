@@ -86,9 +86,6 @@ class HotRodSubsystemAdd extends ProtocolServiceSubsystemAdd {
          if (config.hasDefined(ModelKeys.REPLICATION_TIMEOUT)) {
             builder.topologyReplTimeout(config.get(ModelKeys.REPLICATION_TIMEOUT).asLong());
          }
-         if (config.hasDefined(ModelKeys.UPDATE_TIMEOUT)) {
-            builder.topologyUpdateTimeout(config.get(ModelKeys.UPDATE_TIMEOUT).asLong());
-         }
          if (config.hasDefined(ModelKeys.EXTERNAL_HOST)) {
             builder.proxyHost(config.get(ModelKeys.EXTERNAL_HOST).asString());
          }
