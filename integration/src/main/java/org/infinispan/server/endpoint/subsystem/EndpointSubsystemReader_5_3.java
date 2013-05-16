@@ -18,6 +18,7 @@
  */
 package org.infinispan.server.endpoint.subsystem;
 
+import static org.infinispan.server.endpoint.EndpointLogger.ROOT_LOGGER;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
@@ -302,7 +303,7 @@ class EndpointSubsystemReader_5_3 implements XMLStreamConstants, XMLElementReade
             break;
          }
          case UPDATE_TIMEOUT: {
-            TopologyStateTransferResource.UPDATE_TIMEOUT.parseAndSetParameter(value, topologyStateTransfer, reader);
+            ROOT_LOGGER.topologyUpdateTimeoutIgnored();
             break;
          }
          default: {

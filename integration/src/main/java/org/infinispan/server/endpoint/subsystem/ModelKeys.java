@@ -58,4 +58,5 @@ public class ModelKeys {
    public static final String SECURITY = "security";
    public static final String SSL = "ssl"; // boolean
 
+
 }

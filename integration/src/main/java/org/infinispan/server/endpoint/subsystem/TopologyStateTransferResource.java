@@ -69,14 +69,7 @@ public class TopologyStateTransferResource extends SimpleResourceDefinition {
                  .setRestartAllServices()
                  .build();
 
-   static final SimpleAttributeDefinition UPDATE_TIMEOUT =
-         new SimpleAttributeDefinitionBuilder(ModelKeys.UPDATE_TIMEOUT, ModelType.LONG, true)
-                 .setAllowExpression(true)
-                 .setXmlName(ModelKeys.UPDATE_TIMEOUT)
-                 .setRestartAllServices()
-                 .build();
-
-   static final SimpleAttributeDefinition[] TOPOLOGY_ATTRIBUTES = { EXTERNAL_HOST, EXTERNAL_PORT, LAZY_RETRIEVAL, LOCK_TIMEOUT, REPLICATION_TIMEOUT, UPDATE_TIMEOUT };
+   static final SimpleAttributeDefinition[] TOPOLOGY_ATTRIBUTES = { EXTERNAL_HOST, EXTERNAL_PORT, LAZY_RETRIEVAL, LOCK_TIMEOUT, REPLICATION_TIMEOUT };
 
    public TopologyStateTransferResource() {
       super(TOPOLOGY_PATH, EndpointExtension.getResourceDescriptionResolver(ModelKeys.TOPOLOGY_STATE_TRANSFER), TopologyStateTransferAdd.INSTANCE, ReloadRequiredRemoveStepHandler.INSTANCE);

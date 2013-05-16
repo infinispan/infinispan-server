@@ -30,13 +30,41 @@
    </xs:complexType>
 
    <xs:complexType name="protocol-connector" abstract="true">
-      <xs:attribute name="socket-binding" type="xs:string" use="required" />
-      <xs:attribute name="cache-container" type="xs:string" use="required" />
-      <xs:attribute name="worker-threads" type="xs:int" use="optional" />
-      <xs:attribute name="idle-timeout" type="xs:int" use="optional" />
-      <xs:attribute name="tcp-nodelay" type="xs:boolean" use="optional" />
-      <xs:attribute name="send-buffer-size" type="xs:int" use="optional" />
-      <xs:attribute name="receive-buffer-size" type="xs:int" use="optional" />
+      <xs:attribute name="socket-binding" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation>The socket on which this connector will bind itself</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="cache-container" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation>The name of the cache container which will be exposed by this connector</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="worker-threads" type="xs:int" use="optional">
+         <xs:annotation>
+            <xs:documentation>Sets the number of worker threads. Defaults two 2 * number of cores</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="idle-timeout" type="xs:int" use="optional">
+         <xs:annotation>
+            <xs:documentation>Specifies the maximum time in seconds that connections from clients will be kept open without activity. Defaults to 0 (no timeout) </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="tcp-nodelay" type="xs:boolean" use="optional">
+         <xs:annotation>
+            <xs:documentation>Affects TCP NODELAY on the TCP stack. Defaults to enabled</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="send-buffer-size" type="xs:int" use="optional">
+         <xs:annotation>
+            <xs:documentation>Sets the size of the send buffer.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="receive-buffer-size" type="xs:int" use="optional">
+         <xs:annotation>
+            <xs:documentation>Sets the size of the receive buffer.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
    </xs:complexType>
 
    <xs:complexType name="hotrod-connector">
@@ -57,13 +85,41 @@
    </xs:complexType>
 
    <xs:complexType name="rest-connector">
-      <xs:attribute name="cache-container" type="xs:string" use="required" />
-      <xs:attribute name="virtual-server" type="xs:string" use="optional" />
-      <xs:attribute name="context-path" type="xs:string" use="optional" />
-      <xs:attribute name="security-domain" type="xs:string" use="optional" />
-      <xs:attribute name="auth-method" type="xs:string" use="optional" />
-      <xs:attribute name="security-mode" type="tns:security-mode" use="optional" />
-      <xs:attribute name="extended-headers" type="tns:extended-headers" use="optional" />
+      <xs:attribute name="cache-container" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation>The name of the cache container which will be exposed by this connector</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="virtual-server" type="xs:string" use="optional">
+         <xs:annotation>
+            <xs:documentation>The name of the virtual server on which to register the REST connector. Defaults to 'default-host'</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="context-path" type="xs:string" use="optional">
+         <xs:annotation>
+            <xs:documentation>The context path on which to register the REST connector. Defaults to '' (the root context)</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="security-domain" type="xs:string" use="optional">
+         <xs:annotation>
+            <xs:documentation>The security domain to use for authentication/authorization purposes. Defaults to none (no authentication)</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="auth-method" type="xs:string" use="optional">
+         <xs:annotation>
+            <xs:documentation>The authentication method to require. Can be BASIC, DIGEST, CLIENT_CERT, SPNEGO. Defaults to BASIC</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="security-mode" type="tns:security-mode" use="optional">
+         <xs:annotation>
+            <xs:documentation>Determines whether authentication is required only for writing (WRITE) or for both reads and writes (READ_WRITE). Defaults to READ_WRITE</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="extended-headers" type="tns:extended-headers" use="optional">
+         <xs:annotation>
+            <xs:documentation>Whether to enable extended headers. Can be NEVER or ON_DEMAND. Defaults to ON_DEMAND</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
    </xs:complexType>
 
    <xs:complexType name="websocket-connector">
@@ -73,18 +129,59 @@
    </xs:complexType>
 
    <xs:complexType name="topology-state-transfer">
-      <xs:attribute name="lock-timeout" type="xs:int" use="optional" />
-      <xs:attribute name="replication-timeout" type="xs:int" use="optional" />
-      <xs:attribute name="update-timeout" type="xs:int" use="optional" />
-      <xs:attribute name="external-host" type="xs:string" use="optional" />
-      <xs:attribute name="external-port" type="xs:int" use="optional" />
-      <xs:attribute name="lazy-retrieval" type="xs:boolean" use="optional" />
+      <xs:attribute name="cache-suffix" type="xs:string" use="optional">
+         <xs:annotation>
+            <xs:documentation>Whether to enable extended headers. Can be NEVER or ON_DEMAND. Defaults to ON_DEMAND</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lock-timeout" type="xs:int" use="optional">
+         <xs:annotation>
+            <xs:documentation>Configures the lock acquisition timeout for the topology cache. Defaults to 10 seconds</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="replication-timeout" type="xs:int" use="optional">
+         <xs:annotation>
+            <xs:documentation>Configures the replication timeout for the topology cache. Defaults to 10 seconds</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="update-timeout" type="xs:int" use="optional">
+         <xs:annotation>
+            <xs:documentation>This setting has been deprecated and will be ignored.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="external-host" type="xs:string" use="optional">
+         <xs:annotation>
+            <xs:documentation>Sets the external address of this node, i.e. the address which clients will connect to. Defaults to the server's socket-binding address</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="external-port" type="xs:int" use="optional">
+         <xs:annotation>
+            <xs:documentation>Sets the external port of this node, i.e. the port which clients will connect to. Defaults to the server's socket-binding port</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lazy-retrieval" type="xs:boolean" use="optional">
+         <xs:annotation>
+            <xs:documentation>Configures whether to enable state transfer for the topology cache. If disabled, a ClusterCacheLoader will be used to lazily retrieve topology information from the other nodes. Defaults to true.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
    </xs:complexType>
    
    <xs:complexType name="security">
-      <xs:attribute name="require-ssl-client-auth" type="xs:boolean" use="optional" />
-      <xs:attribute name="security-realm" type="xs:string" use="optional" />
-      <xs:attribute name="ssl" type="xs:boolean" use="optional" />
+      <xs:attribute name="require-ssl-client-auth" type="xs:boolean" use="optional">
+         <xs:annotation>
+            <xs:documentation>Whether to require client certificate authentication. Defaults to false.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="security-realm" type="xs:string" use="optional">
+         <xs:annotation>
+            <xs:documentation>The name of the security realm to use for obtaining the SSL keystore</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ssl" type="xs:boolean" use="optional">
+         <xs:annotation>
+            <xs:documentation>Whether to enable SSL. Defaults to false</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
    </xs:complexType>
 
    <xs:simpleType name="security-mode">

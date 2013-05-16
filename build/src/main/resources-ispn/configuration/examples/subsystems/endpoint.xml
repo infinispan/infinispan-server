@@ -23,10 +23,22 @@
       <replacement placeholder="@@default-cache-container@@" attributeValue="local" />
       <replacement placeholder="CONNECTORS">
          <hotrod-connector socket-binding="hotrod" cache-container="local">
-            <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000" />
+            <topology-state-transfer lock-timeout="1000" replication-timeout="5000" />
             <security ssl="true" security-realm="ApplicationRealm" />
          </hotrod-connector>
       </replacement>
    </supplement>
+   <supplement name="hotrod-multiple">
+      <replacement placeholder="@@default-cache-container@@" attributeValue="local" />
+      <replacement placeholder="CONNECTORS">
+         <hotrod-connector name="external" socket-binding="hotrod" cache-container="local">
+            <topology-state-transfer lock-timeout="1000" replication-timeout="5000" />
+         </hotrod-connector>
+         <hotrod-connector name="internal" socket-binding="hotrod-internal" cache-container="local">
+            <topology-state-transfer cache-suffix="int" lock-timeout="1000" replication-timeout="5000" />
+         </hotrod-connector>
+      </replacement>
+   </supplement>
    <socket-binding name="hotrod" port="11222" />
+   <socket-binding name="hotrod-internal" port="11223" />
 </config>

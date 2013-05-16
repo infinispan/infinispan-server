@@ -19,7 +19,6 @@
 package org.infinispan.server.endpoint.subsystem;
 
 import org.infinispan.rest.configuration.ExtendedHeaders;
-import org.jboss.as.clustering.infinispan.subsystem.TransactionMode;
 import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathElement;
