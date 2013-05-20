@@ -40,6 +40,11 @@
             <xs:documentation>The name of the cache container which will be exposed by this connector</xs:documentation>
          </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="name" type="xs:string" use="optional">
+         <xs:annotation>
+            <xs:documentation>The logical name to give to this connector. This attribute is required when there are more connectors of the same type defined.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
       <xs:attribute name="worker-threads" type="xs:int" use="optional">
          <xs:annotation>
             <xs:documentation>Sets the number of worker threads. Defaults two 2 * number of cores</xs:documentation>
