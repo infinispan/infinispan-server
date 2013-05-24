@@ -89,6 +89,9 @@ class EndpointSubsystemWriter implements XMLStreamConstants, XMLElementWriter<Su
       writer.writeStartElement(Element.MEMCACHED_CONNECTOR.getLocalName());
       writeCommonConnector(writer, connector);
       writeProtocolServerConnector(writer, connector);
+      for(SimpleAttributeDefinition attribute : MemcachedConnectorResource.MEMCACHED_CONNECTOR_ATTRIBUTES) {
+         attribute.marshallAsAttribute(connector, false, writer);
+      }
       writer.writeEndElement();
    }
 

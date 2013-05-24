@@ -85,7 +85,13 @@
 
    <xs:complexType name="memcached-connector">
       <xs:complexContent>
-         <xs:extension base="tns:protocol-connector" />
+         <xs:extension base="tns:protocol-connector">
+            <xs:attribute name="cache" type="xs:string" use="optional">
+               <xs:annotation>
+                  <xs:documentation>The name of the cache to use for the Memcached connector. Defaults to memcachedCache</xs:documentation>
+               </xs:annotation>
+            </xs:attribute>
+         </xs:extension>
       </xs:complexContent>
    </xs:complexType>
 

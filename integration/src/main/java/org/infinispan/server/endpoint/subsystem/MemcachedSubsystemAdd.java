@@ -58,6 +58,11 @@ class MemcachedSubsystemAdd extends ProtocolServiceSubsystemAdd {
       // Create the builder
       MemcachedServerConfigurationBuilder configurationBuilder = new MemcachedServerConfigurationBuilder();
       this.configureProtocolServer(configurationBuilder, config);
+
+      if (config.hasDefined(ModelKeys.CACHE)) {
+         configurationBuilder.cache(config.get(ModelKeys.CACHE).asString());
+      }
+
       // Create the service
       final ProtocolServerService service = new ProtocolServerService(getServiceName(operation), MemcachedServer.class, configurationBuilder);
 

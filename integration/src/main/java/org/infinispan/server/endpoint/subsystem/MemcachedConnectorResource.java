@@ -18,9 +18,15 @@
  */
 package org.infinispan.server.endpoint.subsystem;
 
+import org.jboss.as.controller.AttributeDefinition;
+import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathElement;
+import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
 import org.jboss.as.controller.ResourceDefinition;
+import org.jboss.as.controller.SimpleAttributeDefinition;
+import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
+import org.jboss.dmr.ModelType;
 
 /**
  * MemcachedConnectorResource.
@@ -32,6 +38,15 @@ public class MemcachedConnectorResource extends ProtocolServerConnectorResource 
 
    public static final PathElement MEMCACHED_CONNECTOR_PATH = PathElement.pathElement(ModelKeys.MEMCACHED_CONNECTOR);
 
+   static final SimpleAttributeDefinition CACHE =
+         new SimpleAttributeDefinitionBuilder(ModelKeys.CACHE, ModelType.STRING, true)
+                 .setAllowExpression(true)
+                 .setXmlName(ModelKeys.CACHE)
+                 .setRestartAllServices()
+                 .build();
+
+   static final SimpleAttributeDefinition[] MEMCACHED_CONNECTOR_ATTRIBUTES = { CACHE };
+
    public MemcachedConnectorResource(boolean isRuntimeRegistration) {
       super(MEMCACHED_CONNECTOR_PATH, EndpointExtension.getResourceDescriptionResolver(ModelKeys.MEMCACHED_CONNECTOR), MemcachedSubsystemAdd.INSTANCE,
             MemcachedSubsystemRemove.INSTANCE, isRuntimeRegistration);
@@ -40,6 +55,12 @@ public class MemcachedConnectorResource extends ProtocolServerConnectorResource 
    @Override
    public void registerAttributes(ManagementResourceRegistration resourceRegistration) {
       super.registerAttributes(resourceRegistration);
+
+      final OperationStepHandler writeHandler = new ReloadRequiredWriteAttributeHandler(MEMCACHED_CONNECTOR_ATTRIBUTES);
+      for (AttributeDefinition attr : MEMCACHED_CONNECTOR_ATTRIBUTES) {
+         resourceRegistration.registerReadWriteAttribute(attr, null, writeHandler);
+      }
+
       if (isRuntimeRegistration()) {
          ProtocolServerMetricsHandler.registerMetrics(resourceRegistration, "memcached");
       }
