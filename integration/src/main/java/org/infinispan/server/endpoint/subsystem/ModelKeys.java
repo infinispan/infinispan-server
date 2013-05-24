@@ -30,6 +30,7 @@ public class ModelKeys {
 
    public static final String NAME = "name"; // string
    public static final String SOCKET_BINDING = "socket-binding"; // string
+   public static final String CACHE = "cache"; // string
    public static final String CACHE_CONTAINER = "cache-container"; // string
    public static final String WORKER_THREADS = "worker-threads"; // integer
    public static final String IDLE_TIMEOUT = "idle-timeout"; // integer

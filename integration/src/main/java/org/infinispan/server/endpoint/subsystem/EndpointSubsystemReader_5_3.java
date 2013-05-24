@@ -132,7 +132,14 @@ class EndpointSubsystemReader_5_3 implements XMLStreamConstants, XMLElementReade
          String value = reader.getAttributeValue(i);
          Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
          required.remove(attribute);
-         name = parseConnectorAttributes(reader, connector, name, i, value, attribute);
+         switch(attribute) {
+         case CACHE:
+            MemcachedConnectorResource.CACHE.parseAndSetParameter(value, connector, reader);
+            break;
+         default:
+            name = parseConnectorAttributes(reader, connector, name, i, value, attribute);
+            break;
+         }
       }
 
       if (!required.isEmpty()) {
