@@ -20,7 +20,7 @@
       <service name="Connector" discovery="org.rhq.modules.plugins.jbossas7.SubsystemDiscovery" class="org.infinispan.server.rhq.IspnServerConnector" createDeletePolicy="both" creationDataType="configuration">
 
          <plugin-configuration>
-            <c:simple-property name="path" readOnly="true" default="hotrod-connector|memcached-connector" />
+            <c:simple-property name="path" readOnly="true" default="hotrod-connector|memcached-connector|websocket-connector" />
          </plugin-configuration>
 
          <metric property="bytesRead" displayName="Bytes Read" displayType="detail" units="none" dataType="measurement" description="Bytes Read" />
