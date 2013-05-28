@@ -29,16 +29,4 @@
          </includes>
       </fileSet>
    </fileSets>
-
-   <dependencySets>
-      <dependencySet>
-         <useProjectArtifact>false</useProjectArtifact>
-         <directoryMode>0755</directoryMode>
-         <includes>
-            <include>org.infinispan:infinispan-client-hotrod:*:javadoc</include>
-         </includes>
-         <unpack>true</unpack>
-         <outputDirectory>docs/api</outputDirectory>
-      </dependencySet>
-   </dependencySets>
 </assembly>
