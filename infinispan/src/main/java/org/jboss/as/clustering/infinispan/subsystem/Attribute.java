@@ -49,7 +49,6 @@ public enum Attribute {
     CLASS(ModelKeys.CLASS),
     CLUSTER(ModelKeys.CLUSTER),
     CONCURRENCY_LEVEL(ModelKeys.CONCURRENCY_LEVEL),
-    CONCURRENT_UPDATES(ModelKeys.CONCURRENT_UPDATES),
     DATASOURCE(ModelKeys.DATASOURCE),
     DEFAULT_CACHE(ModelKeys.DEFAULT_CACHE),
     @Deprecated DEFAULT_CACHE_CONTAINER("default-cache-container"),
@@ -60,8 +59,8 @@ public enum Attribute {
     FETCH_SIZE(ModelKeys.FETCH_SIZE),
     FETCH_STATE(ModelKeys.FETCH_STATE),
     FLUSH_LOCK_TIMEOUT(ModelKeys.FLUSH_LOCK_TIMEOUT),
-    HOTROD_WRAPPING(ModelKeys.HOTROD_WRAPPING),
     @Deprecated FLUSH_TIMEOUT("flush-timeout"),
+    HOTROD_WRAPPING(ModelKeys.HOTROD_WRAPPING),
     INDEXING(ModelKeys.INDEXING),
     INDEX(ModelKeys.INDEX),
     INTERVAL(ModelKeys.INTERVAL),
@@ -112,7 +111,7 @@ public enum Attribute {
     THREAD_POOL_SIZE(ModelKeys.THREAD_POOL_SIZE),
     TIMEOUT(ModelKeys.TIMEOUT),
     TYPE(ModelKeys.TYPE),
-    @Deprecated VIRTUAL_NODES(ModelKeys.VIRTUAL_NODES),
+    @Deprecated VIRTUAL_NODES("virtual-nodes"),
     ;
 
     private final String name;

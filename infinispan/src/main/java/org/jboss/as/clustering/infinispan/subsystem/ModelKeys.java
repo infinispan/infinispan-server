@@ -50,7 +50,6 @@ public class ModelKeys {
     static final String CLUSTER_LOADER = "cluster-loader";
     static final String CLUSTER_LOADER_NAME = "CLUSTER_LOADER";
     static final String CONCURRENCY_LEVEL = "concurrency-level";
-    static final String CONCURRENT_UPDATES = "concurrent-updates";
     static final String DATA_COLUMN = "data-column";
     static final String DATASOURCE = "datasource";
     static final String DEFAULT_CACHE = "default-cache";
@@ -152,10 +151,9 @@ public class ModelKeys {
     static final String TRANSPORT = "transport";
     static final String TRANSPORT_NAME = "TRANSPORT";
     static final String TYPE = "type";
-    static final String VIRTUAL_NODES = "virtual-nodes";
+    static final String TX_INTERNAL_ID = "internal-id";
+    @Deprecated static final String VIRTUAL_NODES = "virtual-nodes";
     static final String WAIT = "wait";
     static final String WRITE_BEHIND = "write-behind";
     static final String WRITE_BEHIND_NAME = "WRITE_BEHIND";
-
-    static final String TX_INTERNAL_ID = "internal-id";
 }

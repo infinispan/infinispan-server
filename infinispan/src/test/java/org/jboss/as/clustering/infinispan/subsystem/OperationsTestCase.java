@@ -7,7 +7,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUC
 import org.jboss.as.subsystem.test.KernelServices;
 import org.jboss.dmr.ModelNode;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -18,7 +17,6 @@ import org.junit.Test;
  *
  * @author Richard Achmatowicz (c) 2011 Red Hat Inc.
 */
-@Ignore
 public class OperationsTestCase extends OperationTestCaseBase {
 
     // subsystem test operations
@@ -56,7 +54,7 @@ public class OperationsTestCase extends OperationTestCaseBase {
 
         // Parse and install the XML into the controller
         String subsystemXml = getSubsystemXml() ;
-        KernelServices servicesA = super.installInController(subsystemXml);
+        KernelServices servicesA = createKernelServicesBuilder(null).setSubsystemXml(subsystemXml).build();
 
         // read the cache container default cache attribute
         ModelNode result = servicesA.executeOperation(readCacheContainerDefaultCacheOp);
@@ -81,7 +79,7 @@ public class OperationsTestCase extends OperationTestCaseBase {
 
         // Parse and install the XML into the controller
         String subsystemXml = getSubsystemXml() ;
-        KernelServices servicesA = super.installInController(subsystemXml);
+        KernelServices servicesA = createKernelServicesBuilder(null).setSubsystemXml(subsystemXml).build();
 
         // read the cache container batching attribute
         ModelNode result = servicesA.executeOperation(readLocalCacheBatchingOp);
@@ -103,27 +101,11 @@ public class OperationsTestCase extends OperationTestCaseBase {
     @Test
     public void testDistributedCacheMixedJDBCStoreReadWriteOperation() throws Exception {
 
-        // create a string-keyed-table complex attribute
-        ModelNode stringKeyedTable = new ModelNode().setEmptyObject() ;
-        stringKeyedTable.get(ModelKeys.PREFIX).set("ispn_bucket");
-        stringKeyedTable.get(ModelKeys.BATCH_SIZE).set(100);
-        stringKeyedTable.get(ModelKeys.FETCH_SIZE).set(100);
-
-        ModelNode idColumn = stringKeyedTable.get(ModelKeys.ID_COLUMN).setEmptyObject();
-        idColumn.get(ModelKeys.NAME).set("id") ;
-        idColumn.get(ModelKeys.TYPE).set("VARCHAR") ;
-
-        ModelNode dataColumn = stringKeyedTable.get(ModelKeys.DATA_COLUMN).setEmptyObject();
-        dataColumn.get(ModelKeys.NAME).set("datum") ;
-        dataColumn.get(ModelKeys.TYPE).set("BINARY") ;
-
-        ModelNode timestampColumn = stringKeyedTable.get(ModelKeys.TIMESTAMP_COLUMN).setEmptyObject();
-        timestampColumn.get(ModelKeys.NAME).set("version") ;
-        timestampColumn.get(ModelKeys.TYPE).set("BIGINT") ;
+        ModelNode stringKeyedTable = createStringKeyedTable() ;
 
         // Parse and install the XML into the controller
         String subsystemXml = getSubsystemXml() ;
-        KernelServices servicesA = super.installInController(subsystemXml);
+        KernelServices servicesA = createKernelServicesBuilder(null).setSubsystemXml(subsystemXml).build();
 
         // read the distributed cache mixed-keyed-jdbc-store datasource attribute
         ModelNode result = servicesA.executeOperation(readDistCacheMixedJDBCStoreDatastoreOp);
@@ -143,6 +125,29 @@ public class OperationsTestCase extends OperationTestCaseBase {
         result = servicesA.executeOperation(readDistCacheMixedJDBCStoreStringKeyedTableOp);
         Assert.assertEquals(SUCCESS, result.get(OUTCOME).asString());
         Assert.assertEquals(stringKeyedTable.asString(), result.get(RESULT).asString());
+    }
+
+    private ModelNode createStringKeyedTable() {
+
+        // create a string-keyed-table complex attribute
+        ModelNode stringKeyedTable = new ModelNode().setEmptyObject() ;
+        stringKeyedTable.get(ModelKeys.PREFIX).set("ispn_bucket");
+        stringKeyedTable.get(ModelKeys.BATCH_SIZE).set(100);
+        stringKeyedTable.get(ModelKeys.FETCH_SIZE).set(100);
+
+        ModelNode idColumn = stringKeyedTable.get(ModelKeys.ID_COLUMN).setEmptyObject();
+        idColumn.get(ModelKeys.NAME).set("id") ;
+        idColumn.get(ModelKeys.TYPE).set("VARCHAR") ;
+
+        ModelNode dataColumn = stringKeyedTable.get(ModelKeys.DATA_COLUMN).setEmptyObject();
+        dataColumn.get(ModelKeys.NAME).set("datum") ;
+        dataColumn.get(ModelKeys.TYPE).set("BINARY") ;
+
+        ModelNode timestampColumn = stringKeyedTable.get(ModelKeys.TIMESTAMP_COLUMN).setEmptyObject();
+        timestampColumn.get(ModelKeys.NAME).set("version") ;
+        timestampColumn.get(ModelKeys.TYPE).set("BIGINT") ;
+
+        return stringKeyedTable ;
     }
 
 }

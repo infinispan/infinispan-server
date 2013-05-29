@@ -27,13 +27,15 @@ import static org.jboss.logging.Logger.Level.INFO;
 import static org.jboss.logging.Logger.Level.WARN;
 
 import org.jboss.logging.BasicLogger;
-import org.jboss.logging.LogMessage;
+import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.Logger;
-import org.jboss.logging.Message;
-import org.jboss.logging.MessageLogger;
+import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.MessageLogger;
 
 /**
- * Date: 29.08.2011
+ * InfinispanLogger
+ *
+ * logging id range: 10280 - 10289
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  * @author Tristan Tarrant
@@ -78,7 +80,6 @@ public interface InfinispanLogger extends BasicLogger {
     /**
      * Logs a warning message indicating that the eager attribute of the transactional element
      * is no longer valid
-     *
      */
     @LogMessage(level = WARN)
     @Message(id = 10283, value = "The 'eager' attribute specified on the 'transaction' element of a cache is no longer valid")
@@ -101,10 +102,10 @@ public interface InfinispanLogger extends BasicLogger {
     void cacheContainerInstalled(String containerName);
 
     /**
-     * Logs a warning message indicating that the specified topology attribute of the transport element
-     * is no longer valid
+     * Logs a warning message stating that the 'virtual-nodes' attribute is deprecated.
      */
     @LogMessage(level = WARN)
-    @Message(id = 10286, value = "The 'virtualNodes' attribute has been deprecated and has no effect. Please use the 'segments' attribute instead")
-    void virtualNodesDeprecated();
+    @Message(id = 10286, value = "Attribute 'virtual-nodes' has been deprecated and has no effect.")
+    void virtualNodesAttributeDeprecated();
+
 }

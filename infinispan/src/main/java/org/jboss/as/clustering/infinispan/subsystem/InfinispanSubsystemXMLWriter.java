@@ -177,7 +177,6 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
             this.writeOptional(writer, Attribute.STRIPING, locking, ModelKeys.STRIPING);
             this.writeOptional(writer, Attribute.ACQUIRE_TIMEOUT, locking, ModelKeys.ACQUIRE_TIMEOUT);
             this.writeOptional(writer, Attribute.CONCURRENCY_LEVEL, locking, ModelKeys.CONCURRENCY_LEVEL);
-            this.writeOptional(writer, Attribute.CONCURRENT_UPDATES, locking, ModelKeys.CONCURRENT_UPDATES);
             writer.writeEndElement();
         }
 
@@ -210,10 +209,28 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
         if (cache.get(ModelKeys.STATE_TRANSFER, ModelKeys.STATE_TRANSFER_NAME).isDefined()) {
             ModelNode stateTransfer = cache.get(ModelKeys.STATE_TRANSFER, ModelKeys.STATE_TRANSFER_NAME);
             writer.writeStartElement(Element.STATE_TRANSFER.getLocalName());
+            this.writeOptional(writer, Attribute.AWAIT_INITIAL_TRANSFER, stateTransfer, ModelKeys.AWAIT_INITIAL_TRANSFER);
             this.writeOptional(writer, Attribute.ENABLED, stateTransfer, ModelKeys.ENABLED);
             this.writeOptional(writer, Attribute.TIMEOUT, stateTransfer, ModelKeys.TIMEOUT);
             this.writeOptional(writer, Attribute.CHUNK_SIZE, stateTransfer, ModelKeys.CHUNK_SIZE);
-            this.writeOptional(writer, Attribute.AWAIT_INITIAL_TRANSFER, stateTransfer, ModelKeys.AWAIT_INITIAL_TRANSFER);
+            writer.writeEndElement();
+        }
+
+        if (cache.get(ModelKeys.LOADER, ModelKeys.LOADER_NAME).isDefined()) {
+            ModelNode loader = cache.get(ModelKeys.LOADER, ModelKeys.LOADER_NAME);
+            writer.writeStartElement(Element.LOADER.getLocalName());
+            this.writeRequired(writer, Attribute.CLASS, loader, ModelKeys.CLASS);
+            this.writeLoaderAttributes(writer, loader);
+            this.writeStoreProperties(writer, loader);
+            writer.writeEndElement();
+        }
+
+        if (cache.get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME).isDefined()) {
+            ModelNode loader = cache.get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME);
+            writer.writeStartElement(Element.CLUSTER_LOADER.getLocalName());
+            this.writeOptional(writer, Attribute.REMOTE_TIMEOUT, loader, ModelKeys.REMOTE_TIMEOUT);
+            this.writeLoaderAttributes(writer, loader);
+            this.writeStoreProperties(writer, loader);
             writer.writeEndElement();
         }
 
@@ -294,6 +311,7 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
         if (cache.get(ModelKeys.INDEXING).isDefined()|| cache.get(ModelKeys.INDEXING_PROPERTIES).isDefined()){
             writer.writeStartElement(Element.INDEXING.getLocalName());
             CacheResource.INDEXING.marshallAsAttribute(cache, writer);
+            CacheResource.INDEXING_PROPERTIES.marshallAsElement(cache,writer);
             writer.writeEndElement();
         }
 
@@ -361,14 +379,19 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
         }
     }
 
+    private void writeLoaderAttributes(XMLExtendedStreamWriter writer, ModelNode store) throws XMLStreamException {
+        this.writeOptional(writer, Attribute.SHARED, store, ModelKeys.SHARED);
+        this.writeOptional(writer, Attribute.PRELOAD, store, ModelKeys.PRELOAD);
+    }
+
     private void writeStoreAttributes(XMLExtendedStreamWriter writer, ModelNode store) throws XMLStreamException {
         this.writeOptional(writer, Attribute.SHARED, store, ModelKeys.SHARED);
         this.writeOptional(writer, Attribute.PRELOAD, store, ModelKeys.PRELOAD);
         this.writeOptional(writer, Attribute.PASSIVATION, store, ModelKeys.PASSIVATION);
         this.writeOptional(writer, Attribute.FETCH_STATE, store, ModelKeys.FETCH_STATE);
         this.writeOptional(writer, Attribute.PURGE, store, ModelKeys.PURGE);
-        this.writeOptional(writer, Attribute.SINGLETON, store, ModelKeys.SINGLETON);
         this.writeOptional(writer, Attribute.READ_ONLY, store, ModelKeys.READ_ONLY);
+        this.writeOptional(writer, Attribute.SINGLETON, store, ModelKeys.SINGLETON);
     }
 
     private void writeStoreWriteBehind(XMLExtendedStreamWriter writer, ModelNode store) throws XMLStreamException {

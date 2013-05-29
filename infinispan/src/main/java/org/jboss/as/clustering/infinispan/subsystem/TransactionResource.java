@@ -1,3 +1,25 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2012, Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 package org.jboss.as.clustering.infinispan.subsystem;
 
 import org.infinispan.transaction.LockingMode;
@@ -22,18 +44,17 @@ import org.jboss.dmr.ModelType;
  * Resource description for the addressable resource /subsystem=infinispan/cache-container=X/cache=Y/transaction=TRANSACTION
  *
  * @author Richard Achmatowicz (c) 2011 Red Hat Inc.
- * @author Tristan Tarrant
  */
 public class TransactionResource extends SimpleResourceDefinition {
 
-    private static final PathElement TRANSACTION_PATH = PathElement.pathElement(ModelKeys.TRANSACTION, ModelKeys.TRANSACTION_NAME);
+    public static final PathElement TRANSACTION_PATH = PathElement.pathElement(ModelKeys.TRANSACTION, ModelKeys.TRANSACTION_NAME);
 
     // attributes
     // cache mode required, txn mode not
     static final SimpleAttributeDefinition LOCKING =
             new SimpleAttributeDefinitionBuilder(ModelKeys.LOCKING, ModelType.STRING, true)
                     .setXmlName(Attribute.LOCKING.getLocalName())
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setValidator(new EnumValidator<LockingMode>(LockingMode.class, true, false))
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setDefaultValue(new ModelNode().set(LockingMode.OPTIMISTIC.name()))
@@ -50,14 +71,14 @@ public class TransactionResource extends SimpleResourceDefinition {
             new SimpleAttributeDefinitionBuilder(ModelKeys.STOP_TIMEOUT, ModelType.LONG, true)
                     .setXmlName(Attribute.STOP_TIMEOUT.getLocalName())
                     .setMeasurementUnit(MeasurementUnit.MILLISECONDS)
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setDefaultValue(new ModelNode().set(30000))
                     .build();
 
     static final AttributeDefinition[] TRANSACTION_ATTRIBUTES = {MODE, STOP_TIMEOUT, LOCKING};
 
-    // operation parameters
+ // operation parameters
     static final SimpleAttributeDefinition TX_INTERNAL_ID =
             new SimpleAttributeDefinitionBuilder(ModelKeys.TX_INTERNAL_ID, ModelType.LONG, true)
                 .setXmlName(ModelKeys.TX_INTERNAL_ID)
@@ -110,16 +131,12 @@ public class TransactionResource extends SimpleResourceDefinition {
     public void registerOperations(ManagementResourceRegistration resourceRegistration) {
         super.registerOperations(resourceRegistration);
         if (runtimeRegistration) {
-            resourceRegistration.registerOperationHandler(TransactionResource.RESET_TX_STATISTICS.getName(), CacheCommands.ResetTxStatisticsCommand.INSTANCE, TransactionResource.RESET_TX_STATISTICS.getDescriptionProvider());
-            resourceRegistration.registerOperationHandler(TransactionResource.LIST_IN_DOUBT_TRANSACTIONS.getName(), CacheCommands.TransactionListInDoubtCommand.INSTANCE, TransactionResource.LIST_IN_DOUBT_TRANSACTIONS.getDescriptionProvider());
-            resourceRegistration.registerOperationHandler(TransactionResource.TRANSACTION_FORCE_COMMIT.getName(), CacheCommands.TransactionForceCommitCommand.INSTANCE, TransactionResource.TRANSACTION_FORCE_COMMIT.getDescriptionProvider());
-            resourceRegistration.registerOperationHandler(TransactionResource.TRANSACTION_FORCE_ROLLBACK.getName(), CacheCommands.TransactionForceRollbackCommand.INSTANCE, TransactionResource.TRANSACTION_FORCE_ROLLBACK.getDescriptionProvider());
-            resourceRegistration.registerOperationHandler(TransactionResource.TRANSACTION_FORGET.getName(), CacheCommands.TransactionForgetCommand.INSTANCE, TransactionResource.TRANSACTION_FORGET.getDescriptionProvider());
-
+            resourceRegistration.registerOperationHandler(TransactionResource.RESET_TX_STATISTICS, CacheCommands.ResetTxStatisticsCommand.INSTANCE);
+            resourceRegistration.registerOperationHandler(TransactionResource.LIST_IN_DOUBT_TRANSACTIONS, CacheCommands.TransactionListInDoubtCommand.INSTANCE);
+            resourceRegistration.registerOperationHandler(TransactionResource.TRANSACTION_FORCE_COMMIT, CacheCommands.TransactionForceCommitCommand.INSTANCE);
+            resourceRegistration.registerOperationHandler(TransactionResource.TRANSACTION_FORCE_ROLLBACK, CacheCommands.TransactionForceRollbackCommand.INSTANCE);
+            resourceRegistration.registerOperationHandler(TransactionResource.TRANSACTION_FORGET, CacheCommands.TransactionForgetCommand.INSTANCE);
         }
-    }
 
-    public boolean isRuntimeRegistration() {
-        return runtimeRegistration;
     }
 }

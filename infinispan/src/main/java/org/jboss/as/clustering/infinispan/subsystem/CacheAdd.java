@@ -1,3 +1,25 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2012, Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 package org.jboss.as.clustering.infinispan.subsystem;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
@@ -19,15 +41,18 @@ import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 
 import org.infinispan.Cache;
+import org.infinispan.configuration.cache.BackupConfiguration.BackupStrategy;
+import org.infinispan.configuration.cache.BackupFailurePolicy;
+import org.infinispan.configuration.cache.CacheLoaderConfigurationBuilder;
 import org.infinispan.configuration.cache.CacheMode;
+import org.infinispan.configuration.cache.CacheStoreConfigurationBuilder;
 import org.infinispan.configuration.cache.ClusterCacheLoaderConfigurationBuilder;
 import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.cache.FileCacheStoreConfigurationBuilder;
 import org.infinispan.configuration.cache.FileCacheStoreConfigurationBuilder.FsyncMode;
-import org.infinispan.configuration.cache.CacheLoaderConfigurationBuilder;
 import org.infinispan.configuration.cache.LoadersConfigurationBuilder;
-import org.infinispan.configuration.cache.CacheStoreConfigurationBuilder;
+import org.infinispan.configuration.cache.SitesConfigurationBuilder;
 import org.infinispan.configuration.parsing.ConfigurationBuilderHolder;
 import org.infinispan.configuration.parsing.ParserRegistry;
 import org.infinispan.eviction.EvictionStrategy;
@@ -46,6 +71,7 @@ import org.infinispan.util.TypedProperties;
 import org.infinispan.util.concurrent.IsolationLevel;
 import org.jboss.as.clustering.infinispan.InfinispanMessages;
 import org.jboss.as.controller.AbstractAddStepHandler;
+import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.PathAddress;
@@ -147,6 +173,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
 
     @Override
     protected void populateModel(ModelNode operation, ModelNode model) throws OperationFailedException {
+
         this.populate(operation, model);
     }
 
@@ -340,6 +367,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         CacheResource.INDEXING.validateAndSet(fromModel, toModel);
         CacheResource.JNDI_NAME.validateAndSet(fromModel, toModel);
         CacheResource.CACHE_MODULE.validateAndSet(fromModel, toModel);
+        CacheResource.INDEXING_PROPERTIES.validateAndSet(fromModel, toModel);
     }
 
     /**
@@ -358,10 +386,19 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
 
         // set the cache mode (may be modified when setting up clustering attributes)
         builder.clustering().cacheMode(this.mode);
-
+        final ModelNode indexingPropertiesModel = CacheResource.INDEXING_PROPERTIES.resolveModelAttribute(context, cache);
+        Properties indexingProperties = new Properties();
+        if (indexing.isEnabled() && indexingPropertiesModel.isDefined()) {
+            for (Property p : indexingPropertiesModel.asPropertyList()) {
+                String value = p.getValue().asString();
+                indexingProperties.put(p.getName(), value);
+            }
+        }
         builder.indexing()
-            .enabled(indexing.isEnabled())
-            .indexLocalOnly(indexing.isLocalOnly());
+                .enabled(indexing.isEnabled())
+                .indexLocalOnly(indexing.isLocalOnly())
+                .withProperties(indexingProperties)
+        ;
 
         // locking is a child resource
         if (cache.hasDefined(ModelKeys.LOCKING) && cache.get(ModelKeys.LOCKING, ModelKeys.LOCKING_NAME).isDefined()) {
@@ -371,14 +408,12 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             final boolean striping = LockingResource.STRIPING.resolveModelAttribute(context, locking).asBoolean();
             final long acquireTimeout = LockingResource.ACQUIRE_TIMEOUT.resolveModelAttribute(context, locking).asLong();
             final int concurrencyLevel = LockingResource.CONCURRENCY_LEVEL.resolveModelAttribute(context, locking).asInt();
-            final boolean concurrentUpdates = LockingResource.CONCURRENT_UPDATES.resolveModelAttribute(context, locking).asBoolean();
 
             builder.locking()
                     .isolationLevel(isolationLevel)
                     .useLockStriping(striping)
                     .lockAcquisitionTimeout(acquireTimeout)
                     .concurrencyLevel(concurrencyLevel)
-                    .supportsConcurrentUpdates(concurrentUpdates)
             ;
         }
 
@@ -452,11 +487,9 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             final boolean shared = BaseStoreResource.SHARED.resolveModelAttribute(context, loader).asBoolean();
             final boolean preload = BaseStoreResource.PRELOAD.resolveModelAttribute(context, loader).asBoolean();
 
-            LoadersConfigurationBuilder loadersBuilder = builder.loaders()
-                    .shared(shared)
-                    .preload(preload)
-            ;
-            CacheLoaderConfigurationBuilder<?, ?> loaderBuilder = this.buildCacheLoader(context, loadersBuilder, containerName, loader, loaderKey, dependencies);
+            LoadersConfigurationBuilder loadersBuilder = builder.loaders().shared(shared).preload(preload);
+            CacheLoaderConfigurationBuilder<?, ?> loaderBuilder = this.buildCacheLoader(context, loadersBuilder, containerName,
+                    loader, loaderKey, dependencies);
 
             final Properties properties = new TypedProperties();
             if (loader.hasDefined(ModelKeys.PROPERTY)) {
@@ -511,13 +544,35 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             final Properties properties = new TypedProperties();
             if (store.hasDefined(ModelKeys.PROPERTY)) {
                 for (Property property : store.get(ModelKeys.PROPERTY).asPropertyList()) {
+                    // format of properties
+                    // "property" => {
+                    //   "property-name" => {"value => "property-value"}
+                    // }
                     String propertyName = property.getName();
-                    Property complexValue = property.getValue().asProperty();
-                    String propertyValue = complexValue.getValue().asString();
-                    properties.setProperty(propertyName, propertyValue);
+                    // get the value from ModelNode {"value" => "property-value"}
+                    ModelNode propertyValue = null ;
+                    propertyValue = StorePropertyResource.VALUE.resolveModelAttribute(context,property.getValue());
+                    properties.setProperty(propertyName, propertyValue.asString());
                 }
             }
             storeBuilder.withProperties(properties);
+        }
+
+        if (cache.hasDefined(ModelKeys.BACKUP)) {
+            SitesConfigurationBuilder sitesBuilder = builder.sites();
+            for (Property property : cache.get(ModelKeys.BACKUP).asPropertyList()) {
+                String siteName = property.getName();
+                ModelNode site = property.getValue();
+                sitesBuilder
+                        .addBackup()
+                        .site(siteName)
+                        .backupFailurePolicy(BackupFailurePolicy.valueOf(BackupSiteResource.FAILURE_POLICY.resolveModelAttribute(context, site).asString()))
+                        .strategy(BackupStrategy.valueOf(BackupSiteResource.STRATEGY.resolveModelAttribute(context, site).asString()))
+                        .replicationTimeout(BackupSiteResource.REPLICATION_TIMEOUT.resolveModelAttribute(context, site).asLong());
+                if (BackupSiteResource.ENABLED.resolveModelAttribute(context, site).asBoolean()) {
+                    sitesBuilder.addInUseBackupSite(siteName);
+                }
+            }
         }
     }
 
@@ -573,7 +628,9 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         return null;
     }
 
-    private CacheLoaderConfigurationBuilder<?, ?> buildCacheLoader(OperationContext context, LoadersConfigurationBuilder loadersBuilder, String containerName, ModelNode loader, String loaderKey, List<Dependency<?>> dependencies) throws OperationFailedException {
+    private CacheLoaderConfigurationBuilder<?, ?> buildCacheLoader(OperationContext context,
+            LoadersConfigurationBuilder loadersBuilder, String containerName, ModelNode loader, String loaderKey,
+            List<Dependency<?>> dependencies) throws OperationFailedException {
         if (loaderKey.equals(ModelKeys.CLUSTER_LOADER)) {
             final ClusterCacheLoaderConfigurationBuilder builder = loadersBuilder.addClusterCacheLoader();
 
@@ -645,12 +702,6 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             if (store.hasDefined(ModelKeys.CACHE)) {
                 builder.remoteCacheName(store.get(ModelKeys.CACHE).asString());
             }
-            if (store.hasDefined(ModelKeys.HOTROD_WRAPPING)) {
-                builder.hotRodWrapping(store.require(ModelKeys.HOTROD_WRAPPING).asBoolean());
-            }
-            if (store.hasDefined(ModelKeys.RAW_VALUES)) {
-                builder.rawValues(store.require(ModelKeys.RAW_VALUES).asBoolean());
-            }
             if (store.hasDefined(ModelKeys.SOCKET_TIMEOUT)) {
                 builder.socketTimeout(store.require(ModelKeys.SOCKET_TIMEOUT).asLong());
             }
@@ -701,19 +752,20 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         builder.batchSize(BaseJDBCStoreResource.BATCH_SIZE.resolveModelAttribute(context, table).asInt())
                 .fetchSize(BaseJDBCStoreResource.FETCH_SIZE.resolveModelAttribute(context, table).asInt())
                 .tableNamePrefix(tableNamePrefix.isDefined() ? tableNamePrefix.asString() : defaultTableNamePrefix)
-                .idColumnName(this.getColumnProperty(table, ModelKeys.ID_COLUMN, ModelKeys.NAME, "id"))
-                .idColumnType(this.getColumnProperty(table, ModelKeys.ID_COLUMN, ModelKeys.TYPE, "VARCHAR"))
-                .dataColumnName(this.getColumnProperty(table, ModelKeys.DATA_COLUMN, ModelKeys.NAME, "datum"))
-                .dataColumnType(this.getColumnProperty(table, ModelKeys.DATA_COLUMN, ModelKeys.TYPE, "BINARY"))
-                .timestampColumnName(this.getColumnProperty(table, ModelKeys.TIMESTAMP_COLUMN, ModelKeys.NAME, "version"))
-                .timestampColumnType(this.getColumnProperty(table, ModelKeys.TIMESTAMP_COLUMN, ModelKeys.TYPE, "BIGINT"))
-        ;
+                .idColumnName(this.getColumnProperty(context, table, ModelKeys.ID_COLUMN, BaseJDBCStoreResource.COLUMN_NAME, "id"))
+                .idColumnType(this.getColumnProperty(context, table, ModelKeys.ID_COLUMN, BaseJDBCStoreResource.COLUMN_TYPE, "VARCHAR"))
+                .dataColumnName(this.getColumnProperty(context, table, ModelKeys.DATA_COLUMN, BaseJDBCStoreResource.COLUMN_NAME, "datum"))
+                .dataColumnType(this.getColumnProperty(context, table, ModelKeys.DATA_COLUMN, BaseJDBCStoreResource.COLUMN_TYPE, "BINARY"))
+                .timestampColumnName(this.getColumnProperty(context, table, ModelKeys.TIMESTAMP_COLUMN, BaseJDBCStoreResource.COLUMN_NAME, "version"))
+                .timestampColumnType(this.getColumnProperty(context, table, ModelKeys.TIMESTAMP_COLUMN, BaseJDBCStoreResource.COLUMN_TYPE, "BIGINT"));
     }
 
-    private String getColumnProperty(ModelNode table, String columnKey, String key, String defaultValue) {
+    private String getColumnProperty(OperationContext context, ModelNode table, String columnKey, AttributeDefinition columnAttribute, String defaultValue) throws OperationFailedException
+    {
         if (!table.isDefined() || !table.hasDefined(columnKey)) return defaultValue;
         ModelNode column = table.get(columnKey);
-        return column.hasDefined(key) ? column.get(key).asString() : defaultValue;
+        ModelNode resolvedValue = null ;
+        return ((resolvedValue = columnAttribute.resolveModelAttribute(context, column)).isDefined()) ? resolvedValue.asString() : defaultValue;
     }
 
     /*

@@ -29,15 +29,17 @@ import org.infinispan.configuration.cache.CacheMode;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.persistence.ConfigurationPersistenceException;
 import org.jboss.as.network.OutboundSocketBinding;
-import org.jboss.logging.Cause;
-import org.jboss.logging.Message;
-import org.jboss.logging.MessageBundle;
+import org.jboss.logging.annotations.Cause;
+import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.MessageBundle;
 import org.jboss.logging.Messages;
 import org.jboss.msc.inject.InjectionException;
 import org.jboss.msc.service.StartException;
 
 /**
- * Date: 29.08.2011
+ * InfinispanMessages
+ *
+ * logging id range: 10290 - 10299,10380 - 10389, 11000 - 11099
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
@@ -78,7 +80,7 @@ public interface InfinispanMessages {
     /**
      * Creates an exception indicating an invalid cache store.
      *
-     * @param cacheStoreName     the name of the cache store.
+     * @param cacheName     the name of the cache store.
      * @param cacheContainerName the container name.
      *
      * @return an {@link IllegalArgumentException} for the error.
@@ -157,7 +159,7 @@ public interface InfinispanMessages {
      *
      * @return the String message.
      */
-    @Message(id = 10300, value = "Failed to locate %s")
+    @Message(id = 10380, value = "Failed to locate %s")
     String notFound(String resourceName);
 
     /**
@@ -167,7 +169,7 @@ public interface InfinispanMessages {
      *
      * @return IllegalStateException instance.
      */
-    @Message(id = 10301, value = "Failed to parse %s")
+    @Message(id = 10381, value = "Failed to parse %s")
     IllegalStateException failedToParse(@Cause Throwable cause, String resourceName);
 
     /**
@@ -177,7 +179,7 @@ public interface InfinispanMessages {
      *
      * @return an {@link OperationFailedException} for the error.
      */
-    @Message(id = 10302, value = "Add operation failed: singleton %s already exists.")
+    @Message(id = 10382, value = "Add operation failed: singleton %s already exists.")
     OperationFailedException singletonResourceAlreadyExists(String resourceName);
 
     /**
@@ -187,16 +189,26 @@ public interface InfinispanMessages {
      *
      * @return an {@link OperationFailedException} for the error.
      */
-    @Message(id = 10303, value = "cannot remove alias % from empty list.")
+    @Message(id = 10383, value = "cannot remove alias % from empty list.")
     OperationFailedException cannotRemoveAliasFromEmptyList(String aliasName);
 
+    /**
+     * Creates an exception indicating that an attribute has been deprecated.
+     *
+     * @param attributeName the name of the deprecated attribute
+     * @return an {@link OperationFailedException} for the error
+     */
+    @Message(id = 10384, value = "Attribute '%s' has been deprecated.")
+    OperationFailedException attributeDeprecated(String attributeName);
+
+    @Message(id = 10385, value = "Attribute 'segments' is an expression and therefore cannot be translated to legacy attribute 'virtual-nodes'. This resource will need to be ignored on that host.")
+    String virtualNodesDoesNotSupportExpressions();
 
     /**
      * Creates an exception indicating the a cache loader cannot be added as one already exists.
      *
-     * @param existingLoaderName the loader which already exists.
-     *
-     * @return an {@link OperationFailedException} for the error.
+     * @param existingStoreName the loader which already exists.
+     * @return an {@link OperationFailedException} for the error
      */
     @Message(id = 11000, value = "Cache loader cannot be created: cache loader %s is already defined")
     OperationFailedException cacheLoaderAlreadyDefined(String existingStoreName);
@@ -204,20 +216,20 @@ public interface InfinispanMessages {
     /**
      * Creates an exception indicating an invalid cache loader.
      *
-     * @param cause           the cause of the error.
+     * @param cause the cause of the error.
      * @param cacheLoaderName the name of the cache loader.
      *
      * @return an {@link IllegalArgumentException} for the error.
      */
-     @Message(id = 11001, value = "%s is not a valid cache loader")
-     IllegalArgumentException invalidCacheLoader(@Cause Throwable cause, String cacheLoaderName);
+    @Message(id = 11001, value = "%s is not a valid cache loader")
+    IllegalArgumentException invalidCacheLoader(@Cause Throwable cause, String cacheLoaderName);
 
-     /**
-      * Returns a message for failed operations
-      *
-      * @param message
-      * @return
-      */
-     @Message(id = 11002, value = "Failed to invoke operation: %s")
-     String failedToInvokeOperation(String message);
+    /**
+     * Returns a message for failed operations
+     *
+     * @param message
+     * @return
+     */
+    @Message(id = 11002, value = "Failed to invoke operation: %s")
+    String failedToInvokeOperation(String message);
 }

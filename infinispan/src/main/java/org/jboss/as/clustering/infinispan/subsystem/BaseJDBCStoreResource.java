@@ -1,3 +1,25 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2012, Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 package org.jboss.as.clustering.infinispan.subsystem;
 
 import org.jboss.as.controller.AttributeDefinition;
@@ -24,7 +46,7 @@ public class BaseJDBCStoreResource extends BaseStoreResource {
     static final SimpleAttributeDefinition DATA_SOURCE =
             new SimpleAttributeDefinitionBuilder(ModelKeys.DATASOURCE, ModelType.STRING, false)
                     .setXmlName(Attribute.DATASOURCE.getLocalName())
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .build();
 
@@ -33,29 +55,40 @@ public class BaseJDBCStoreResource extends BaseStoreResource {
     static final SimpleAttributeDefinition BATCH_SIZE =
             new SimpleAttributeDefinitionBuilder(ModelKeys.BATCH_SIZE, ModelType.INT, true)
                     .setXmlName(Attribute.BATCH_SIZE.getLocalName())
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setDefaultValue(new ModelNode().set(100))
                     .build();
     static final SimpleAttributeDefinition FETCH_SIZE =
             new SimpleAttributeDefinitionBuilder(ModelKeys.FETCH_SIZE, ModelType.INT, true)
                     .setXmlName(Attribute.FETCH_SIZE.getLocalName())
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setDefaultValue(new ModelNode().set(100))
                     .build();
     static final SimpleAttributeDefinition PREFIX =
             new SimpleAttributeDefinitionBuilder(ModelKeys.PREFIX, ModelType.STRING, true)
                     .setXmlName(Attribute.PREFIX.getLocalName())
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
 //                   .setDefaultValue(new ModelNode().set("ispn_bucket"))
 //                   .setDefaultValue(new ModelNode().set("ispn_entry"))
                     .build();
 
-    static final SimpleAttributeDefinition COLUMN_NAME = new SimpleAttributeDefinition("name", ModelType.STRING, true);
-
-    static final SimpleAttributeDefinition COLUMN_TYPE = new SimpleAttributeDefinition("type", ModelType.STRING, true);
+    static final SimpleAttributeDefinition COLUMN_NAME =
+            new SimpleAttributeDefinitionBuilder("name", ModelType.STRING, true)
+                    .setXmlName("name")
+                    .setAllowExpression(true)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set("name"))
+                    .build();
+    static final SimpleAttributeDefinition COLUMN_TYPE =
+            new SimpleAttributeDefinitionBuilder("type", ModelType.STRING, true)
+                    .setXmlName("type")
+                    .setAllowExpression(true)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set("type"))
+                    .build();
 
     static final ObjectTypeAttributeDefinition ID_COLUMN = ObjectTypeAttributeDefinition.
             Builder.of("id-column", COLUMN_NAME, COLUMN_TYPE).
@@ -99,6 +132,9 @@ public class BaseJDBCStoreResource extends BaseStoreResource {
             setSuffix("table").
             build();
 
+    static final AttributeDefinition[] COMMON_JDBC_STORE_TABLE_ATTRIBUTES = {PREFIX, BATCH_SIZE, FETCH_SIZE, ID_COLUMN, DATA_COLUMN, TIMESTAMP_COLUMN};
+    static final AttributeDefinition[] COMMON_BASE_JDBC_STORE_ATTRIBUTES = {DATA_SOURCE, BATCH_SIZE, FETCH_SIZE, PREFIX,
+    COLUMN_NAME, COLUMN_TYPE, ID_COLUMN, DATA_COLUMN, TIMESTAMP_COLUMN, ENTRY_TABLE, BUCKET_TABLE, STRING_KEYED_TABLE, BINARY_KEYED_TABLE};
 
     public BaseJDBCStoreResource(PathElement pathElement, ResourceDescriptionResolver descriptionResolver, OperationStepHandler addHandler, OperationStepHandler removeHandler) {
         super(pathElement, descriptionResolver, addHandler, removeHandler);

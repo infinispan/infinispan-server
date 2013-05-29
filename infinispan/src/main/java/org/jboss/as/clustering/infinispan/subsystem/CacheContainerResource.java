@@ -1,3 +1,24 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2012, Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.jboss.as.clustering.infinispan.subsystem;
 
 import org.jboss.as.controller.AttributeDefinition;
@@ -12,6 +33,7 @@ import org.jboss.as.controller.SimpleResourceDefinition;
 import org.jboss.as.controller.operations.validation.EnumValidator;
 import org.jboss.as.controller.registry.AttributeAccess;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
+import org.jboss.as.controller.services.path.ResolvePathHandler;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
@@ -25,7 +47,7 @@ public class CacheContainerResource extends SimpleResourceDefinition {
     public static final PathElement CONTAINER_PATH = PathElement.pathElement(ModelKeys.CACHE_CONTAINER);
 
     // attributes
-    static final SimpleAttributeDefinition ALIAS =
+    static final AttributeDefinition ALIAS =
             new SimpleAttributeDefinitionBuilder(ModelKeys.ALIAS, ModelType.STRING, true)
                     .setXmlName(Attribute.NAME.getLocalName())
                     .setAllowExpression(false)
@@ -39,7 +61,7 @@ public class CacheContainerResource extends SimpleResourceDefinition {
     static final SimpleAttributeDefinition CACHE_CONTAINER_MODULE =
             new SimpleAttributeDefinitionBuilder(ModelKeys.MODULE, ModelType.STRING, true)
                     .setXmlName(Attribute.MODULE.getLocalName())
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setValidator(new ModuleIdentifierValidator(true))
                     .setDefaultValue(new ModelNode().set("org.jboss.as.clustering.infinispan"))
@@ -63,7 +85,7 @@ public class CacheContainerResource extends SimpleResourceDefinition {
     static final SimpleAttributeDefinition JNDI_NAME =
             new SimpleAttributeDefinitionBuilder(ModelKeys.JNDI_NAME, ModelType.STRING, true)
                     .setXmlName(Attribute.JNDI_NAME.getLocalName())
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .build();
 
@@ -91,7 +113,7 @@ public class CacheContainerResource extends SimpleResourceDefinition {
     static final SimpleAttributeDefinition START =
             new SimpleAttributeDefinitionBuilder(ModelKeys.START, ModelType.STRING, true)
                     .setXmlName(Attribute.START.getLocalName())
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setValidator(new EnumValidator<StartMode>(StartMode.class, true, false))
                     .setDefaultValue(new ModelNode().set(StartMode.LAZY.name()))
@@ -108,14 +130,15 @@ public class CacheContainerResource extends SimpleResourceDefinition {
             .setParameters(NAME)
             .build();
 
+    private final ResolvePathHandler resolvePathHandler;
     private final boolean runtimeRegistration;
-
-    public CacheContainerResource(boolean runtimeRegistration) {
+    public CacheContainerResource(final ResolvePathHandler resolvePathHandler, boolean runtimeRegistration) {
         super(CONTAINER_PATH,
                 InfinispanExtension.getResourceDescriptionResolver(ModelKeys.CACHE_CONTAINER),
                 CacheContainerAdd.INSTANCE,
                 CacheContainerRemove.INSTANCE);
-        this.runtimeRegistration = runtimeRegistration ;
+        this.resolvePathHandler = resolvePathHandler;
+        this.runtimeRegistration = runtimeRegistration;
     }
 
     @Override
@@ -138,8 +161,8 @@ public class CacheContainerResource extends SimpleResourceDefinition {
     public void registerOperations(ManagementResourceRegistration resourceRegistration) {
         super.registerOperations(resourceRegistration);
         // register add-alias and remove-alias
-        resourceRegistration.registerOperationHandler(CacheContainerResource.ALIAS_ADD.getName(), AddAliasCommand.INSTANCE, CacheContainerResource.ALIAS_ADD.getDescriptionProvider());
-        resourceRegistration.registerOperationHandler(CacheContainerResource.ALIAS_REMOVE.getName(), RemoveAliasCommand.INSTANCE, CacheContainerResource.ALIAS_REMOVE.getDescriptionProvider());
+        resourceRegistration.registerOperationHandler(CacheContainerResource.ALIAS_ADD, AddAliasCommand.INSTANCE);
+        resourceRegistration.registerOperationHandler(CacheContainerResource.ALIAS_REMOVE, RemoveAliasCommand.INSTANCE);
     }
 
     @Override
@@ -148,13 +171,9 @@ public class CacheContainerResource extends SimpleResourceDefinition {
 
         // child resources
         resourceRegistration.registerSubModel(new TransportResource());
-        resourceRegistration.registerSubModel(new LocalCacheResource(isRuntimeRegistration()));
-        resourceRegistration.registerSubModel(new InvalidationCacheResource(isRuntimeRegistration()));
-        resourceRegistration.registerSubModel(new ReplicatedCacheResource(isRuntimeRegistration()));
-        resourceRegistration.registerSubModel(new DistributedCacheResource(isRuntimeRegistration()));
-    }
-
-    public boolean isRuntimeRegistration() {
-        return runtimeRegistration;
+        resourceRegistration.registerSubModel(new LocalCacheResource(resolvePathHandler, runtimeRegistration));
+        resourceRegistration.registerSubModel(new InvalidationCacheResource(resolvePathHandler, runtimeRegistration));
+        resourceRegistration.registerSubModel(new ReplicatedCacheResource(resolvePathHandler, runtimeRegistration));
+        resourceRegistration.registerSubModel(new DistributedCacheResource(resolvePathHandler, runtimeRegistration));
     }
 }
