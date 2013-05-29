@@ -1,21 +1,52 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2012, Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 package org.jboss.as.clustering.infinispan.atomic;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.infinispan.AbstractDelegatingAdvancedCache;
 import org.infinispan.AdvancedCache;
 import org.infinispan.atomic.AtomicMapLookup;
 import org.infinispan.util.concurrent.NotifyingFuture;
-import org.jboss.as.clustering.infinispan.AbstractAdvancedCache;
 
-public class AtomicMapCache<K, MK, MV> extends AbstractAdvancedCache<K, Map<MK, MV>> {
+/**
+ * A cache wrapper that simplifies atomic map semantics.
+ * @author Paul Ferraro
+ * @param <K> the cache key
+ * @param <MK> the atomic map key
+ * @param <MV> the atomic map value
+ */
+public class AtomicMapCache<K, MK, MV> extends AbstractDelegatingAdvancedCache<K, Map<MK, MV>> {
+
     public AtomicMapCache(AdvancedCache<K, Map<MK, MV>> cache) {
-        super(cache);
-    }
-
-    @Override
-    protected AdvancedCache<K, Map<MK, MV>> wrap(AdvancedCache<K, Map<MK, MV>> cache) {
-        return new AtomicMapCache<K, MK, MV>(cache);
+        super(cache, new AdvancedCacheWrapper<K, Map<MK, MV>>() {
+                @Override
+                public AdvancedCache<K, Map<MK, MV>> wrap(AdvancedCache<K, Map<MK, MV>> cache) {
+                    return new AtomicMapCache<K, MK, MV>(cache);
+                }
+            }
+        );
     }
 
     @SuppressWarnings("unchecked")

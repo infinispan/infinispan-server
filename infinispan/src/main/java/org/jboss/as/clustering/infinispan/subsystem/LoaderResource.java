@@ -29,7 +29,7 @@ public class LoaderResource extends BaseStoreResource {
     static final SimpleAttributeDefinition CLASS =
             new SimpleAttributeDefinitionBuilder(ModelKeys.CLASS, ModelType.STRING, false)
                     .setXmlName(Attribute.CLASS.getLocalName())
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .build();
 
@@ -68,6 +68,6 @@ public class LoaderResource extends BaseStoreResource {
     // override the add operation to provide a custom definition (for the optional PROPERTIES parameter to add())
     @Override
     protected void registerAddOperation(final ManagementResourceRegistration registration, final OperationStepHandler handler, OperationEntry.Flag... flags) {
-        registration.registerOperationHandler(LOADER_ADD_DEFINITION.getName(), handler, LOADER_ADD_DEFINITION.getDescriptionProvider());
+        registration.registerOperationHandler(LOADER_ADD_DEFINITION, handler);
     }
 }

@@ -126,9 +126,9 @@ public class BackupSiteResource extends SimpleResourceDefinition {
     public void registerOperations(ManagementResourceRegistration resourceRegistration) {
         super.registerOperations(resourceRegistration);
         if (runtimeRegistration) {
-            resourceRegistration.registerOperationHandler(BackupSiteResource.BACKUP_BRING_SITE_ONLINE.getName(), CacheCommands.BackupBringSiteOnlineCommand.INSTANCE, BackupSiteResource.BACKUP_BRING_SITE_ONLINE.getDescriptionProvider());
-            resourceRegistration.registerOperationHandler(BackupSiteResource.BACKUP_TAKE_SITE_OFFLINE.getName(), CacheCommands.BackupTakeSiteOfflineCommand.INSTANCE, BackupSiteResource.BACKUP_TAKE_SITE_OFFLINE.getDescriptionProvider());
-            resourceRegistration.registerOperationHandler(BackupSiteResource.BACKUP_SITE_STATUS.getName(), CacheCommands.BackupSiteStatusCommand.INSTANCE, BackupSiteResource.BACKUP_SITE_STATUS.getDescriptionProvider());
+            resourceRegistration.registerOperationHandler(BackupSiteResource.BACKUP_BRING_SITE_ONLINE, CacheCommands.BackupBringSiteOnlineCommand.INSTANCE);
+            resourceRegistration.registerOperationHandler(BackupSiteResource.BACKUP_TAKE_SITE_OFFLINE, CacheCommands.BackupTakeSiteOfflineCommand.INSTANCE);
+            resourceRegistration.registerOperationHandler(BackupSiteResource.BACKUP_SITE_STATUS, CacheCommands.BackupSiteStatusCommand.INSTANCE);
         }
     }
 

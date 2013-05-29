@@ -38,7 +38,6 @@ import org.jboss.as.subsystem.test.KernelServices;
 import org.jboss.as.subsystem.test.ModelDescriptionValidator.ValidationConfiguration;
 import org.jboss.dmr.ModelNode;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -49,7 +48,6 @@ import org.junit.runners.Parameterized.Parameters;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  */
 @RunWith(value = Parameterized.class)
-@Ignore
 public class InfinispanSubsystemTestCase extends ClusteringSubsystemTest {
 
     String xmlFile = null ;
@@ -63,10 +61,14 @@ public class InfinispanSubsystemTestCase extends ClusteringSubsystemTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-      Object[][] data = new Object[][] { { "subsystem-infinispan_1_0.xml", 31 },
-                                         { "subsystem-infinispan_1_1.xml", 31 },
-                                         { "subsystem-infinispan_1_2.xml", 35 },
-                                         { "subsystem-infinispan_1_3.xml", 35 },
+      Object[][] data = new Object[][] {
+                                         { "subsystem-infinispan_1_0.xml", 33 },
+                                         { "subsystem-infinispan_1_1.xml", 33 },
+                                         { "subsystem-infinispan_1_2.xml", 37 },
+                                         { "subsystem-infinispan_1_3.xml", 37 },
+                                         { "subsystem-infinispan_1_4.xml", 75 },
+                                         { "subsystem-infinispan_5_2.xml", 55 },
+                                         { "subsystem-infinispan_5_3.xml", 55 },
                                        };
       return Arrays.asList(data);
     }
@@ -85,13 +87,14 @@ public class InfinispanSubsystemTestCase extends ClusteringSubsystemTest {
        // Parse the subsystem xml into operations
        List<ModelNode> operations = super.parse(getSubsystemXml());
 
-       // print the operations
        /*
+       // print the operations
        System.out.println("List of operations");
        for (ModelNode op : operations) {
            System.out.println("operation = " + op.toString());
        }
        */
+
        // Check that we have the expected number of operations
        // one for each resource instance
        Assert.assertEquals(this.operations, operations.size());
@@ -112,12 +115,12 @@ public class InfinispanSubsystemTestCase extends ClusteringSubsystemTest {
     @Test
     public void testInstallIntoController() throws Exception {
        // Parse the subsystem xml and install into the controller
-       KernelServices services = super.installInController(getSubsystemXml());
+       KernelServices services = createKernelServicesBuilder(null).setSubsystemXml(getSubsystemXml()).build();
 
        // Read the whole model and make sure it looks as expected
        ModelNode model = services.readWholeModel();
 
-       // System.out.println("model = " + model.asString());
+       //System.out.println("model = " + model.asString());
 
        Assert.assertTrue(model.get(SUBSYSTEM).hasDefined(getMainSubsystemName()));
     }
@@ -130,14 +133,14 @@ public class InfinispanSubsystemTestCase extends ClusteringSubsystemTest {
     public void testParseAndMarshalModel() throws Exception {
        // Parse the subsystem xml and install into the first controller
 
-        KernelServices servicesA = super.installInController(getSubsystemXml());
+       KernelServices servicesA = createKernelServicesBuilder(null).setSubsystemXml(getSubsystemXml()).build();
 
        // Get the model and the persisted xml from the first controller
        ModelNode modelA = servicesA.readWholeModel();
        String marshalled = servicesA.getPersistedSubsystemXml();
 
        // Install the persisted xml from the first controller into a second controller
-       KernelServices servicesB = super.installInController(marshalled);
+       KernelServices servicesB = createKernelServicesBuilder(null).setSubsystemXml(marshalled).build();
        ModelNode modelB = servicesB.readWholeModel();
 
        // Make sure the models from the two controllers are identical
@@ -151,16 +154,16 @@ public class InfinispanSubsystemTestCase extends ClusteringSubsystemTest {
     @Test
     public void testDescribeHandler() throws Exception {
        // Parse the subsystem xml and install into the first controller
-       KernelServices servicesA = super.installInController(getSubsystemXml());
+       KernelServices servicesA = createKernelServicesBuilder(null).setSubsystemXml(getSubsystemXml()).build();
        // Get the model and the describe operations from the first controller
        ModelNode modelA = servicesA.readWholeModel();
        ModelNode describeOp = new ModelNode();
        describeOp.get(OP).set(DESCRIBE);
        describeOp.get(OP_ADDR).set(PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, getMainSubsystemName())).toModelNode());
-       List<ModelNode> operations = super.checkResultAndGetContents(servicesA.executeOperation(describeOp)).asList();
+       List<ModelNode> operations = checkResultAndGetContents(servicesA.executeOperation(describeOp)).asList();
 
        // Install the describe options from the first controller into a second controller
-       KernelServices servicesB = super.installInController(operations);
+       KernelServices servicesB = createKernelServicesBuilder(null).setBootOperations(operations).build();
        ModelNode modelB = servicesB.readWholeModel();
 
        // Make sure the models from the two controllers are identical

@@ -59,7 +59,7 @@ public abstract class CacheCommands implements OperationStepHandler {
         if (operationResult != null) {
             context.getResult().set(operationResult);
         }
-        context.completeStep();
+        context.stepCompleted();
     }
 
     protected abstract ModelNode invokeCommand(Cache<?, ?> cache, ModelNode operation) throws Exception;

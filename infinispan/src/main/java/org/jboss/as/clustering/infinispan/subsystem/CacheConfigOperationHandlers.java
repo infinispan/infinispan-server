@@ -1,12 +1,34 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2012, Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import static org.jboss.as.clustering.infinispan.subsystem.TransportResource.TRANSPORT_ATTRIBUTES;
 import static org.jboss.as.clustering.infinispan.subsystem.EvictionResource.EVICTION_ATTRIBUTES;
 import static org.jboss.as.clustering.infinispan.subsystem.ExpirationResource.EXPIRATION_ATTRIBUTES;
 import static org.jboss.as.clustering.infinispan.subsystem.LockingResource.LOCKING_ATTRIBUTES;
 import static org.jboss.as.clustering.infinispan.subsystem.StateTransferResource.STATE_TRANSFER_ATTRIBUTES;
 import static org.jboss.as.clustering.infinispan.subsystem.StoreWriteBehindResource.WRITE_BEHIND_ATTRIBUTES;
 import static org.jboss.as.clustering.infinispan.subsystem.TransactionResource.TRANSACTION_ATTRIBUTES;
+import static org.jboss.as.clustering.infinispan.subsystem.TransportResource.TRANSPORT_ATTRIBUTES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 import java.util.List;
@@ -20,7 +42,6 @@ import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.as.controller.ServiceVerificationHandler;
-import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.registry.Resource;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.Property;
@@ -128,7 +149,7 @@ public class CacheConfigOperationHandlers {
                         throw InfinispanMessages.MESSAGES.propertyValueNotDefined(property.getName());
                     }
                     // set the value of the property
-                    param.getModel().get(ModelDescriptionConstants.VALUE).set(value);
+                    LoaderPropertyResource.VALUE.validateAndSet(value, param.getModel());
                 }
             }
         }
@@ -227,7 +248,7 @@ public class CacheConfigOperationHandlers {
                         throw InfinispanMessages.MESSAGES.propertyValueNotDefined(property.getName());
                     }
                     // set the value of the property
-                    param.getModel().get(ModelDescriptionConstants.VALUE).set(value);
+                    StorePropertyResource.VALUE.validateAndSet(value, param.getModel());
                 }
             }
         }
@@ -396,23 +417,24 @@ public class CacheConfigOperationHandlers {
         return (hasCustomLoader(cache) || hasClusterLoader(cache)) ;
    }
 
-   private static String getDefinedCacheLoader(OperationContext context, ModelNode operation) {
-       ModelNode cache = getCache(context, getCacheAddress(operation)) ;
-       if (hasCustomLoader(cache))
-           return ModelKeys.LOADER;
-       else if (hasClusterLoader(cache))
-           return ModelKeys.CLUSTER_LOADER;
-       else
-           return null ;
-   }
+    private static String getDefinedCacheLoader(OperationContext context, ModelNode operation) {
+        ModelNode cache = getCache(context, getCacheAddress(operation));
+        if (hasCustomLoader(cache))
+            return ModelKeys.LOADER;
+        else if (hasClusterLoader(cache))
+            return ModelKeys.CLUSTER_LOADER;
+        else
+            return null;
+    }
 
-   private static boolean hasCustomLoader(ModelNode cache) {
-       return cache.hasDefined(ModelKeys.LOADER) && cache.get(ModelKeys.LOADER, ModelKeys.LOADER_NAME).isDefined() ;
-   }
+    private static boolean hasCustomLoader(ModelNode cache) {
+        return cache.hasDefined(ModelKeys.LOADER) && cache.get(ModelKeys.LOADER, ModelKeys.LOADER_NAME).isDefined();
+    }
 
-   private static boolean hasClusterLoader(ModelNode cache) {
-       return cache.hasDefined(ModelKeys.CLUSTER_LOADER) && cache.get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME).isDefined() ;
-   }
+    private static boolean hasClusterLoader(ModelNode cache) {
+        return cache.hasDefined(ModelKeys.CLUSTER_LOADER)
+                && cache.get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME).isDefined();
+    }
 
     private static boolean isCacheStoreDefined(OperationContext context, ModelNode operation) {
          ModelNode cache = getCache(context, getCacheAddress(operation)) ;
