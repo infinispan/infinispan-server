@@ -90,7 +90,7 @@ class EndpointSubsystemWriter implements XMLStreamConstants, XMLElementWriter<Su
       writeCommonConnector(writer, connector);
       writeProtocolServerConnector(writer, connector);
       for(SimpleAttributeDefinition attribute : MemcachedConnectorResource.MEMCACHED_CONNECTOR_ATTRIBUTES) {
-         attribute.marshallAsAttribute(connector, false, writer);
+         attribute.marshallAsAttribute(connector, true, writer);
       }
       writer.writeEndElement();
    }
@@ -99,7 +99,7 @@ class EndpointSubsystemWriter implements XMLStreamConstants, XMLElementWriter<Su
       writer.writeStartElement(Element.REST_CONNECTOR.getLocalName());
       writeCommonConnector(writer, connector);
       for(SimpleAttributeDefinition attribute : RestConnectorResource.REST_ATTRIBUTES) {
-         attribute.marshallAsAttribute(connector, false, writer);
+         attribute.marshallAsAttribute(connector, true, writer);
       }
       writer.writeEndElement();
    }
@@ -113,13 +113,13 @@ class EndpointSubsystemWriter implements XMLStreamConstants, XMLElementWriter<Su
 
    private void writeCommonConnector(final XMLExtendedStreamWriter writer, final ModelNode connector) throws XMLStreamException {
       for(SimpleAttributeDefinition attribute : CommonConnectorResource.COMMON_CONNECTOR_ATTRIBUTES) {
-         attribute.marshallAsAttribute(connector, false, writer);
+         attribute.marshallAsAttribute(connector, true, writer);
       }
    }
 
    private void writeProtocolServerConnector(final XMLExtendedStreamWriter writer, final ModelNode connector) throws XMLStreamException {
       for(SimpleAttributeDefinition attribute : ProtocolServerConnectorResource.PROTOCOL_SERVICE_ATTRIBUTES) {
-         attribute.marshallAsAttribute(connector, false, writer);
+         attribute.marshallAsAttribute(connector, true, writer);
       }
    }
 
@@ -128,7 +128,7 @@ class EndpointSubsystemWriter implements XMLStreamConstants, XMLElementWriter<Su
          ModelNode topologyStateTransfer = connector.get(ModelKeys.TOPOLOGY_STATE_TRANSFER, ModelKeys.TOPOLOGY_STATE_TRANSFER_NAME);
          writer.writeStartElement(Element.TOPOLOGY_STATE_TRANSFER.getLocalName());
          for(SimpleAttributeDefinition attribute : TopologyStateTransferResource.TOPOLOGY_ATTRIBUTES) {
-            attribute.marshallAsAttribute(topologyStateTransfer, false, writer);
+            attribute.marshallAsAttribute(topologyStateTransfer, true, writer);
          }
          writer.writeEndElement();
       }
@@ -139,7 +139,7 @@ class EndpointSubsystemWriter implements XMLStreamConstants, XMLElementWriter<Su
          ModelNode security = connector.get(ModelKeys.SECURITY, ModelKeys.SECURITY_NAME);
          writer.writeStartElement(Element.SECURITY.getLocalName());
          for(SimpleAttributeDefinition attribute : SecurityResource.SECURITY_ATTRIBUTES) {
-            attribute.marshallAsAttribute(security, false, writer);
+            attribute.marshallAsAttribute(security, true, writer);
          }
          writer.writeEndElement();
       }
