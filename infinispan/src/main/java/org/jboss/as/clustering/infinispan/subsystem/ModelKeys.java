@@ -49,6 +49,8 @@ public class ModelKeys {
     static final String CLUSTER = "cluster";
     static final String CLUSTER_LOADER = "cluster-loader";
     static final String CLUSTER_LOADER_NAME = "CLUSTER_LOADER";
+    static final String COMPATIBILITY = "compatibility";
+    static final String COMPATIBILITY_NAME = "COMPATIBILITY";
     static final String CONCURRENCY_LEVEL = "concurrency-level";
     static final String DATA_COLUMN = "data-column";
     static final String DATASOURCE = "datasource";
@@ -96,6 +98,7 @@ public class ModelKeys {
     static final String LOCKING = "locking";
     static final String LOCKING_NAME = "LOCKING";
     static final String MACHINE = "machine";
+    static final String MARSHALLER = "marshaller";
     static final String MAX_ENTRIES = "max-entries";
     static final String MAX_IDLE = "max-idle";
     static final String MODE = "mode";

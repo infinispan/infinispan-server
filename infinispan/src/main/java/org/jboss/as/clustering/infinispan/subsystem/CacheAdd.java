@@ -65,6 +65,7 @@ import org.infinispan.loaders.jdbc.configuration.JdbcStringBasedCacheStoreConfig
 import org.infinispan.loaders.jdbc.configuration.TableManipulationConfigurationBuilder;
 import org.infinispan.loaders.remote.configuration.RemoteCacheStoreConfigurationBuilder;
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.marshall.Marshaller;
 import org.infinispan.transaction.LockingMode;
 import org.infinispan.transaction.tm.BatchModeTransactionManager;
 import org.infinispan.util.TypedProperties;
@@ -476,6 +477,26 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
                 builder.expiration().enableReaper();
             } else {
                 builder.expiration().disableReaper();
+            }
+        }
+
+        // compatibility is a child resource
+        if (cache.hasDefined(ModelKeys.COMPATIBILITY) && cache.get(ModelKeys.COMPATIBILITY, ModelKeys.COMPATIBILITY_NAME).isDefined()) {
+
+            ModelNode compatibility = cache.get(ModelKeys.COMPATIBILITY, ModelKeys.COMPATIBILITY_NAME);
+
+            final boolean enabled = CompatibilityResource.ENABLED.resolveModelAttribute(context, compatibility).asBoolean();
+
+            builder.compatibility().enabled(enabled);
+
+            if (compatibility.hasDefined(ModelKeys.MARSHALLER)) {
+                String marshaller = CompatibilityResource.MARSHALLER.resolveModelAttribute(context, compatibility).asString();
+                try {
+                    Class<? extends Marshaller> marshallerClass = CacheLoader.class.getClassLoader().loadClass(marshaller).asSubclass(Marshaller.class);
+                    builder.compatibility().marshaller(marshallerClass.newInstance());
+                } catch (Exception e) {
+                    throw InfinispanMessages.MESSAGES.invalidCompatibilityMarshaller(e, marshaller);
+                }
             }
         }
 
