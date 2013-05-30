@@ -152,6 +152,13 @@
          <artifactId>jboss-as-subsystem-test</artifactId>
          <scope>test</scope>
       </dependency>
-      
+
+      <dependency>
+         <groupId>org.jboss.as</groupId>
+         <artifactId>jboss-as-clustering-common</artifactId>
+         <scope>test</scope>
+         <classifier>tests</classifier>
+      </dependency>
+
    </dependencies>
 </project>

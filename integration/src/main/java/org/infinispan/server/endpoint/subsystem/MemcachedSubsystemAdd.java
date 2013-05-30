@@ -48,6 +48,9 @@ class MemcachedSubsystemAdd extends ProtocolServiceSubsystemAdd {
       for (AttributeDefinition attr : ProtocolServerConnectorResource.PROTOCOL_SERVICE_ATTRIBUTES) {
          attr.validateAndSet(source, target);
       }
+      for(AttributeDefinition attr : MemcachedConnectorResource.MEMCACHED_CONNECTOR_ATTRIBUTES) {
+         attr.validateAndSet(source, target);
+      }
    }
 
    @Override
