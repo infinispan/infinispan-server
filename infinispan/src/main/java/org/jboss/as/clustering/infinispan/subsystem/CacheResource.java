@@ -188,6 +188,7 @@ public class CacheResource extends SimpleResourceDefinition {
         resourceRegistration.registerSubModel(new TransactionResource(runtimeRegistration));
         resourceRegistration.registerSubModel(new EvictionResource());
         resourceRegistration.registerSubModel(new ExpirationResource());
+        resourceRegistration.registerSubModel(new CompatibilityResource());
         resourceRegistration.registerSubModel(new LoaderResource());
         resourceRegistration.registerSubModel(new ClusterLoaderResource());
         resourceRegistration.registerSubModel(new BackupSiteResource(runtimeRegistration));

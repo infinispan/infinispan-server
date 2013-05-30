@@ -72,6 +72,7 @@ public enum Attribute {
     LOCK_TIMEOUT(ModelKeys.LOCK_TIMEOUT),
     LOCKING(ModelKeys.LOCKING),
     MACHINE(ModelKeys.MACHINE),
+    MARSHALLER(ModelKeys.MARSHALLER),
     MAX_ENTRIES(ModelKeys.MAX_ENTRIES),
     MAX_IDLE(ModelKeys.MAX_IDLE),
     MODE(ModelKeys.MODE),

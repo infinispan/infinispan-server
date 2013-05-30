@@ -462,6 +462,10 @@ public final class InfinispanSubsystemXMLReader_5_3 implements XMLElementReader<
                 this.parseClusterLoader(reader, cache, operations);
                 break;
             }
+            case COMPATIBILITY: {
+                this.parseCompatibility(reader, cache, operations);
+                break;
+            }
             case LOCKING: {
                 this.parseLocking(reader, cache, operations);
                 break;
@@ -1356,5 +1360,30 @@ public final class InfinispanSubsystemXMLReader_5_3 implements XMLElementReader<
             }
         }
         ParseUtils.requireNoContent(reader);
+    }
+
+    private void parseCompatibility(XMLExtendedStreamReader reader, ModelNode cache, List<ModelNode> operations) throws XMLStreamException {
+        PathAddress compatibilityAddress = PathAddress.pathAddress(cache.get(OP_ADDR)).append(ModelKeys.COMPATIBILITY, ModelKeys.COMPATIBILITY_NAME);
+        ModelNode compatibility = Util.createAddOperation(compatibilityAddress);
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String value = reader.getAttributeValue(i);
+            Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+            switch (attribute) {
+                case ENABLED: {
+                    CompatibilityResource.ENABLED.parseAndSetParameter(value, compatibility, reader);
+                    break;
+                }
+                case MARSHALLER: {
+                    CompatibilityResource.MARSHALLER.parseAndSetParameter(value, compatibility, reader);
+                    break;
+                }
+                default: {
+                    throw ParseUtils.unexpectedAttribute(reader, i);
+                }
+            }
+        }
+        ParseUtils.requireNoContent(reader);
+        operations.add(compatibility);
     }
 }

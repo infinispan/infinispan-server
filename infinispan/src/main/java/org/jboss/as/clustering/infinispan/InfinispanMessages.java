@@ -232,4 +232,15 @@ public interface InfinispanMessages {
      */
     @Message(id = 11002, value = "Failed to invoke operation: %s")
     String failedToInvokeOperation(String message);
+
+    /**
+     * Creates an exception indicating an invalid compatibility marshaller.
+     *
+     * @param cause the cause of the error.
+     * @param cacheLoaderName the name of the marshaller.
+     *
+     * @return an {@link IllegalArgumentException} for the error.
+     */
+    @Message(id = 11003, value = "%s is not a valid marshaller")
+    IllegalArgumentException invalidCompatibilityMarshaller(@Cause Throwable cause, String marshallerClassName);
 }

@@ -9,6 +9,7 @@
             <transaction mode="FULL_XA" stop-timeout="60000"  locking="OPTIMISTIC"/>
             <eviction max-entries="20000" strategy="LIRS"/>
             <expiration interval="10000" lifespan="10" max-idle="10"/>
+            <compatibility enabled="true" marshaller="org.infinispan.marshall.jboss.GenericJBossMarshaller" />
             <file-store fetch-state="false" passivation="false" path="path" preload="true" purge="false" relative-to="jboss.server.temp.dir" shared="true" singleton="true">
                 <write-behind flush-lock-timeout="2" modification-queue-size="2048" shutdown-timeout="20000" thread-pool-size="1" />
             </file-store>
@@ -32,7 +33,8 @@
             <transaction mode="NON_DURABLE_XA" stop-timeout="60000" locking="OPTIMISTIC"/>
             <eviction max-entries="20000" strategy="FIFO"/>
             <expiration interval="10000" lifespan="10" max-idle="10"/>
-            <state-transfer enabled="true" timeout="60000" chunk-size="10000" await-initial-transfer="true"/> 
+            <state-transfer enabled="true" timeout="60000" chunk-size="10000" await-initial-transfer="true"/>
+            <compatibility enabled="false"/> 
             <store class="org.infinispan.loaders.file.FileCacheStore" fetch-state="true" passivation="true" preload="false" purge="true" shared="false" singleton="false">
                 <write-behind flush-lock-timeout="2" modification-queue-size="2048" shutdown-timeout="20000" thread-pool-size="1" />
                 <property name="location">${java.io.tmpdir}</property>
