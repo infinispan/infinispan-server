@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>org.infinispan.server</groupId>
+      <artifactId>infinispan-server-testsuite</artifactId>
+      <version>5.3.0-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>
+   </parent>
+
+   <artifactId>configuration-tests</artifactId>
+   <packaging>jar</packaging>
+   <name>Infinispan Server - Test Suite - Configuration</name>
+
+   <dependencies>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.arquillian.junit</groupId>
+         <artifactId>arquillian-junit-container</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.as</groupId>
+         <artifactId>jboss-as-arquillian-container-managed</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan.arquillian.container</groupId>
+         <artifactId>infinispan-arquillian-impl</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-client-hotrod</artifactId>
+      </dependency>
+   </dependencies>
+
+   <properties>
+      <ispnserver.ts.dir>${basedir}/..</ispnserver.ts.dir>
+      <ispnserver.project.dir>${ispnserver.ts.dir}/..</ispnserver.project.dir>
+      <server1.dist>${ispnserver.project.dir}/build/target/infinispan-server-${project.version}</server1.dist>
+      <config.dir>${basedir}/src/test/resources</config.dir>
+   </properties>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>com.google.code.maven-replacer-plugin</groupId>
+            <artifactId>replacer</artifactId>
+            <version>1.5.2</version>
+            <executions>
+               <execution>
+                  <phase>process-resources</phase>
+                     <goals>
+                        <goal>replace</goal>
+                     </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <file>${server1.dist}/standalone/configuration/standalone.xml</file>
+               <outputFile>${server1.dist}/standalone/configuration/standalone-old.xml</outputFile>
+               <token>urn:infinispan:server:endpoint:[0-9\.]+</token>
+               <value>urn:jboss:domain:datagrid:1.0</value>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <forkMode>once</forkMode>
+               <skipTests>false</skipTests>
+               <systemPropertyVariables>
+                  <server1.dist>${server1.dist}</server1.dist>
+                  <server.jvm.args>${server.jvm.args}</server.jvm.args>
+                  <arquillian.launch>single</arquillian.launch>
+               </systemPropertyVariables>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>

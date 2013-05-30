@@ -17,9 +17,22 @@
 
    <properties>
       <ispnserver.project.dir>${basedir}/..</ispnserver.project.dir>
+      <jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m</jvm.memory.args>
+      <jvm.ip.stack>-Djava.net.preferIPv4Stack=true</jvm.ip.stack>
+      <server.jvm.args>${jvm.ip.stack} ${jvm.memory.args}</server.jvm.args>
    </properties>
 
    <profiles>
+      <profile>
+         <id>default</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <modules>
+            <module>configuration</module>
+         </modules>
+      </profile>
+
       <!-- the profile is activated by -Dts.example-configs -->
       <profile>
          <id>example-configs</id>
@@ -29,6 +42,7 @@
             </property>
          </activation>
          <modules>
+            <module>configuration</module>
             <module>example-configs</module>
          </modules>
       </profile>

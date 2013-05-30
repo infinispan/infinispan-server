@@ -44,9 +44,6 @@
       <server2.dist>${ispnserver.project.dir}/build/target/infinispan-server-${project.version}-2</server2.dist>
       <server3.dist>${ispnserver.project.dir}/build/target/infinispan-server-${project.version}-3</server3.dist>
       <config.dir>${basedir}/src/test/resources</config.dir>
-      <jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m</jvm.memory.args>
-      <jvm.ip.stack>-Djava.net.preferIPv4Stack=true</jvm.ip.stack>
-      <server.jvm.args>${jvm.ip.stack} ${jvm.memory.args}</server.jvm.args>
    </properties>
 
    <build>
