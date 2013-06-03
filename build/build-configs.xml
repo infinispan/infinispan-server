@@ -96,6 +96,10 @@
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-xsite.xml"
            paramOutputFile="${generated.configs.examples}/clustered-xsite.xml"/>
+       <generate-server-config
+           paramTemplateFile="configuration/standalone/template.xml"
+           paramSubsystemsFile="configuration/examples/subsystems-compatibility-mode.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-compatibility-mode.xml"/>
     </target>
 
 
