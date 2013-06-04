@@ -22,6 +22,7 @@ import org.infinispan.arquillian.core.InfinispanResource;
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jboss.arquillian.container.test.api.ContainerController;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -70,10 +71,14 @@ public class RemoteCacheStoreConfigExampleTest {
    @Before
    public void setUp() throws Exception {
       controller.start(CONTAINER1);
-      rcm1 = new RemoteCacheManager(server1.getHotrodEndpoint().getInetAddress().getHostName(),
-                                    server1.getHotrodEndpoint().getPort());
-      rcm2 = new RemoteCacheManager(server2.getHotrodEndpoint().getInetAddress().getHostName(),
-                                    server2.getHotrodEndpoint().getPort());
+      rcm1 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
+                                          .host(server1.getHotrodEndpoint().getInetAddress().getHostName())
+                                          .port(server1.getHotrodEndpoint().getPort())
+                                          .build());
+      rcm2 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
+                                          .host(server2.getHotrodEndpoint().getInetAddress().getHostName())
+                                          .port(server2.getHotrodEndpoint().getPort())
+                                          .build());
    }
 
    @After
@@ -86,7 +91,7 @@ public class RemoteCacheStoreConfigExampleTest {
 
    @Test
    public void testDefaultCache() throws Exception {
-      doPutGetRemoveAsync(rcm1, DEFAULT_CACHE_NAME);
+      doPutGetRemove(rcm1, DEFAULT_CACHE_NAME);
    }
 
    @Test
@@ -111,26 +116,6 @@ public class RemoteCacheStoreConfigExampleTest {
       assertEquals(1100, numEntries(server1, cacheName) + numEntries(server2, cacheName));
 
       for (int i = 0; i < 1100; i++) {
-         assertNotNull(cache.get("key" + i));
-         cache.remove("key" + i);
-         assertNull(cache.get("key" + i));
-      }
-      assertEquals(0, numEntries(server1, cacheName));
-      assertEquals(0, numEntries(server2, cacheName));
-   }
-
-   private void doPutGetRemoveAsync(RemoteCacheManager rm, String cacheName) {
-      RemoteCache<String, String> cache = rm.getCache(cacheName);
-      assertEquals(0, numEntries(server1, cacheName));
-      assertEquals(0, numEntries(server2, cacheName));
-
-      for (int i = 0; i < 2100; i++) {  //let's put more entries than what is the capacity+modification-queue-size
-         cache.put("key" + i, "value" + i);
-      }
-      assertTrue(numEntries(server1, cacheName) <= 1000);
-      assertEquals(2100, numEntries(server1, cacheName) + numEntries(server2, cacheName));
-
-      for (int i = 0; i < 2100; i++) {
          assertNotNull(cache.get("key" + i));
          cache.remove("key" + i);
          assertNull(cache.get("key" + i));

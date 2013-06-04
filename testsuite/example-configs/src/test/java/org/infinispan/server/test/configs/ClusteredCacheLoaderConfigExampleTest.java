@@ -23,6 +23,7 @@ import org.infinispan.arquillian.core.RemoteInfinispanServer;
 import org.infinispan.arquillian.model.RemoteInfinispanCache;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jboss.arquillian.container.test.api.ContainerController;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -33,8 +34,8 @@ import static org.junit.Assert.assertEquals;
 
 
 /**
- * Test for example-configuration clustered-ccl.xml. Create a 2 node cluster and check
- * that state transfer does not take place.
+ * Test for example-configuration clustered-ccl.xml. Create a 2 node cluster and check that state transfer does not take
+ * place.
  *
  * @author <a href="mailto:jmarkos@redhat.com">Jakub Markos</a>
  */
@@ -61,8 +62,10 @@ public class ClusteredCacheLoaderConfigExampleTest {
    @Test
    public void testClusterCacheLoaderConfigExample() throws Exception {
       controller.start(CONTAINER1);
-      rcm1 = new RemoteCacheManager(server1.getHotrodEndpoint().getInetAddress().getHostName(),
-                                    server1.getHotrodEndpoint().getPort());
+      rcm1 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
+                                          .host(server1.getHotrodEndpoint().getInetAddress().getHostName())
+                                          .port(server1.getHotrodEndpoint().getPort())
+                                          .build());
       RemoteInfinispanCache ric1 = server1.getCacheManager(CACHE_MANAGER_NAME).getCache(DEFAULT_CACHE_NAME);
       RemoteCache<String, String> rc1 = rcm1.getCache(DEFAULT_CACHE_NAME);
       rc1.put("key", "value");
@@ -70,8 +73,10 @@ public class ClusteredCacheLoaderConfigExampleTest {
       assertEquals(1, server1.getCacheManager(CACHE_MANAGER_NAME).getClusterSize());
 
       controller.start(CONTAINER2);
-      rcm2 = new RemoteCacheManager(server2.getHotrodEndpoint().getInetAddress().getHostName(),
-                                    server2.getHotrodEndpoint().getPort());
+      rcm2 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
+                                          .host(server2.getHotrodEndpoint().getInetAddress().getHostName())
+                                          .port(server2.getHotrodEndpoint().getPort())
+                                          .build());
       assertEquals(2, server2.getCacheManager(CACHE_MANAGER_NAME).getClusterSize());
       RemoteInfinispanCache ric2 = server2.getCacheManager(CACHE_MANAGER_NAME).getCache(DEFAULT_CACHE_NAME);
       RemoteCache<String, String> rc2 = rcm2.getCache(DEFAULT_CACHE_NAME);

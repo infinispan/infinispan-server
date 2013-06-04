@@ -19,19 +19,8 @@
       <ispnserver.project.dir>${basedir}/..</ispnserver.project.dir>
    </properties>
 
-   <profiles>
-      <!-- the profile is activated by -Dts.example-configs -->
-      <profile>
-         <id>example-configs</id>
-         <activation>
-            <property>
-               <name>ts.example-configs</name>
-            </property>
-         </activation>
-         <modules>
-            <module>example-configs</module>
-         </modules>
-      </profile>
-   </profiles>
+   <modules>
+      <module>example-configs</module>
+   </modules>
 
 </project>
