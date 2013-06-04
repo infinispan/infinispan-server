@@ -102,6 +102,10 @@
          <maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
       </module-def>
       
+      <module-def name="xmlpull" src="${infinispan.server.modules.dir}">
+         <maven-resource group="xmlpull" artifact="xmlpull" />
+      </module-def>
+      
       <module-def name="org.infinispan.server.endpoint" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan.server" artifact="infinispan-server-endpoints" />
       </module-def>
