@@ -35,6 +35,10 @@
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-client-hotrod</artifactId>
       </dependency>
+      <dependency>
+         <groupId>commons-httpclient</groupId>
+         <artifactId>commons-httpclient</artifactId>
+      </dependency>
    </dependencies>
 
    <properties>
@@ -171,6 +175,20 @@
                         <parameter>
                            <name>modifyRemoteDestination</name>
                            <value>file:///${basedir}/src/test/resources/rcs-remote-destination.xml</value>
+                        </parameter>
+                     </parameters>
+                  </transformationSet>
+                  <transformationSet>
+                     <dir>${server1.dist}/standalone/configuration/</dir>
+                     <includes>
+                        <include>standalone-compatibility-mode.xml</include>
+                     </includes>
+                     <outputDir>${server1.dist}/standalone/configuration</outputDir>
+                     <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
+                     <parameters>
+                        <parameter>
+                           <name>removeRestSecurity</name>
+                           <value>true</value>
                         </parameter>
                      </parameters>
                   </transformationSet>
@@ -359,6 +377,21 @@
                      </includes>
                      <systemPropertyVariables>
                         <arquillian.launch>standalone-hotrod-ssl</arquillian.launch>
+                     </systemPropertyVariables>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>standalone-compatibility-mode.surefire</id>
+                  <phase>test</phase>
+                  <goals>
+                     <goal>test</goal>
+                  </goals>
+                  <configuration>
+                     <includes>
+                        <include>org/infinispan/server/test/configs/CompatibilityModeConfigExampleTest.java</include>
+                     </includes>
+                     <systemPropertyVariables>
+                        <arquillian.launch>standalone-compatibility-mode</arquillian.launch>
                      </systemPropertyVariables>
                   </configuration>
                </execution>

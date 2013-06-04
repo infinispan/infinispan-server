@@ -2,7 +2,8 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:p="urn:jboss:domain:1.4"
                 xmlns:jgroups="urn:jboss:domain:jgroups:1.2"
-                xmlns:datagrid="urn:infinispan:server:core:5.2">
+                xmlns:core="urn:infinispan:server:core:5.3"
+                xmlns:endpoint="urn:infinispan:server:endpoint:6.0" >
    <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
 
    <!-- Parameter declarations with defaults set -->
@@ -10,9 +11,10 @@
    <xsl:param name="modifyRelay">false</xsl:param>
    <xsl:param name="modifyMulticastAddress">false</xsl:param>
    <xsl:param name="modifyRemoteDestination">false</xsl:param>
+   <xsl:param name="removeRestSecurity">false</xsl:param>
    <xsl:param name="infinispanFile">none</xsl:param>
 
-   <xsl:template match="datagrid:subsystem">
+   <xsl:template match="core:subsystem">
       <xsl:if test="$modifyInfinispan = 'false'">
          <xsl:copy>
             <!-- also copy all subsystem attributes -->
@@ -83,6 +85,21 @@
    <xsl:template match="p:infinispan">
       <xsl:if test="$infinispanFile != 'none'">
          <xsl:copy-of select="document($infinispanFile)"/>
+      </xsl:if>
+   </xsl:template>
+
+   <xsl:template match="endpoint:subsystem/endpoint:rest-connector">
+      <xsl:if test="$removeRestSecurity = 'false'">
+         <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates/>
+         </xsl:copy>
+      </xsl:if>
+      <xsl:if test="$removeRestSecurity != 'false'">
+         <xsl:copy>
+            <xsl:copy-of select="@*[not(name() = 'security-domain' or name() = 'auth-method')]"/>
+            <xsl:apply-templates/>
+         </xsl:copy>
       </xsl:if>
    </xsl:template>
 

@@ -25,6 +25,7 @@
       <!-- Version Info -->
       <version.com.github.relaxng.relaxngDatatype>2011.1</version.com.github.relaxng.relaxngDatatype>
       <version.commons.logging>1.1.1</version.commons.logging>
+      <version.commons.httpclient>3.1</version.commons.httpclient>
       <version.net.jcip.annotations>1.0</version.net.jcip.annotations>
       <version.org.jboss.as>7.2.0.Final</version.org.jboss.as>
       <version.org.jboss.jandex>1.0.3.Final</version.org.jboss.jandex>
@@ -262,6 +263,13 @@
             <groupId>org.infinispan.arquillian.container</groupId>
             <artifactId>infinispan-arquillian-impl</artifactId>
             <version>${version.org.infinispan.arquillian.container}</version>
+            <scope>test</scope>
+         </dependency>
+         
+         <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${version.commons.httpclient}</version>
             <scope>test</scope>
          </dependency>
 

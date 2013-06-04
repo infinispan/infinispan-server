@@ -225,4 +225,15 @@
       </container>
    </group>
 
+   <group qualifier="standalone-compatibility-mode">
+      <container qualifier="default" mode="suite">
+         <configuration>
+            <property name="jbossHome">${server1.dist}</property>
+            <property name="serverConfig">standalone-compatibility-mode.xml</property>
+            <property name="javaVmArguments">${server.jvm.args}</property>
+            <property name="waitForPorts">11222 8080 11211</property>
+         </configuration>
+      </container>
+   </group>
+   
 </arquillian>
