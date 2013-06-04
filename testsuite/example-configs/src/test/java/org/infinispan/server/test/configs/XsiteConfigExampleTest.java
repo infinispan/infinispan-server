@@ -23,6 +23,7 @@ import org.infinispan.arquillian.core.RemoteInfinispanServer;
 import org.infinispan.arquillian.model.RemoteInfinispanCache;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jboss.arquillian.container.test.api.ContainerController;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -66,12 +67,18 @@ public class XsiteConfigExampleTest {
 
    @Before
    public void setUp() {
-      rcm1 = new RemoteCacheManager(server1.getHotrodEndpoint().getInetAddress().getHostName(), server1.getHotrodEndpoint()
-            .getPort());
-      rcm2 = new RemoteCacheManager(server2.getHotrodEndpoint().getInetAddress().getHostName(), server2.getHotrodEndpoint()
-            .getPort());
-      rcm3 = new RemoteCacheManager(server3.getHotrodEndpoint().getInetAddress().getHostName(), server3.getHotrodEndpoint()
-            .getPort());
+      rcm1 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
+                                          .host(server1.getHotrodEndpoint().getInetAddress().getHostName())
+                                          .port(server1.getHotrodEndpoint().getPort())
+                                          .build());
+      rcm2 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
+                                          .host(server2.getHotrodEndpoint().getInetAddress().getHostName())
+                                          .port(server2.getHotrodEndpoint().getPort())
+                                          .build());
+      rcm3 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
+                                          .host(server3.getHotrodEndpoint().getInetAddress().getHostName())
+                                          .port(server3.getHotrodEndpoint().getPort())
+                                          .build());
    }
 
    @Test

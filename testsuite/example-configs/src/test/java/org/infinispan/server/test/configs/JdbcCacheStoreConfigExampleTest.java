@@ -22,10 +22,12 @@ import org.infinispan.arquillian.core.InfinispanResource;
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jboss.arquillian.container.test.api.ContainerController;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,10 +46,18 @@ public class JdbcCacheStoreConfigExampleTest {
    @InfinispanResource(CONTAINER1)
    RemoteInfinispanServer server;
 
+   RemoteCacheManager rcm;
+
+   @Before
+   public void setUp() throws Exception {
+      rcm = new RemoteCacheManager(new ConfigurationBuilder().addServer()
+                                     .host(server.getHotrodEndpoint().getInetAddress().getHostName())
+                                     .port(server.getHotrodEndpoint().getPort())
+                                     .build());
+   }
+
    @Test
    public void testNamedCache() throws Exception {
-      RemoteCacheManager rcm = new RemoteCacheManager(server.getHotrodEndpoint().getInetAddress().getHostName(),
-                                                      server.getHotrodEndpoint().getPort());
       RemoteCache<String, String> cache = rcm.getCache("namedCache");
       cache.put("key", "value");
       cache.put("key2", "value2");
@@ -57,8 +67,6 @@ public class JdbcCacheStoreConfigExampleTest {
 
    @Test
    public void testDefaultCache() throws Exception {
-      RemoteCacheManager rcm = new RemoteCacheManager(server.getHotrodEndpoint().getInetAddress().getHostName(),
-                                                      server.getHotrodEndpoint().getPort());
       RemoteCache<String, String> cache = rcm.getCache("default");
       // 1001, so we are 100% sure that at least 1 entry is evicted and thus stored (passivation = true)
       for (int i = 0; i < 1001; i++) {
