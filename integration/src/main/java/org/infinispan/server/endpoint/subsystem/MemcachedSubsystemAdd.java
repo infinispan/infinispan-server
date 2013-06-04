@@ -21,6 +21,7 @@ package org.infinispan.server.endpoint.subsystem;
 import java.util.List;
 
 import org.infinispan.server.memcached.MemcachedServer;
+import org.infinispan.server.memcached.configuration.MemcachedServerConfiguration;
 import org.infinispan.server.memcached.configuration.MemcachedServerConfigurationBuilder;
 import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.OperationContext;
@@ -62,8 +63,12 @@ class MemcachedSubsystemAdd extends ProtocolServiceSubsystemAdd {
       MemcachedServerConfigurationBuilder configurationBuilder = new MemcachedServerConfigurationBuilder();
       this.configureProtocolServer(configurationBuilder, config);
 
+      final String cacheName;
       if (config.hasDefined(ModelKeys.CACHE)) {
-         configurationBuilder.cache(config.get(ModelKeys.CACHE).asString());
+         cacheName = config.get(ModelKeys.CACHE).asString();
+         configurationBuilder.cache(cacheName);
+      } else {
+         cacheName = "memcachedCache";
       }
 
       // Create the service
@@ -72,7 +77,7 @@ class MemcachedSubsystemAdd extends ProtocolServiceSubsystemAdd {
       // Setup the various dependencies with injectors and install the service
       ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "memcached"), service);
       EndpointUtils.addCacheContainerDependency(builder, getCacheContainerName(operation), service.getCacheManager());
-      EndpointUtils.addCacheDependency(builder, getCacheContainerName(operation), "memcachedCache");
+      EndpointUtils.addCacheDependency(builder, getCacheContainerName(operation), cacheName);
       EndpointUtils.addSocketBindingDependency(builder, getSocketBindingName(operation), service.getSocketBinding());
       builder.install();
    }
