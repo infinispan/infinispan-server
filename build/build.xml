@@ -79,7 +79,6 @@
             <include name="**/*.sh" />
             <include name="**/*.py" />
             <include name="**/*.rb" />
-            <include name="**/*.bat" />
          </fileset>
       </chmod>
    </target>
