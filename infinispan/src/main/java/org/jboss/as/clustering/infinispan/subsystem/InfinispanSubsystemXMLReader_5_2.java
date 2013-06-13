@@ -688,6 +688,7 @@ public class InfinispanSubsystemXMLReader_5_2 implements XMLElementReader<List<M
             throw ParseUtils.missingRequired(reader, EnumSet.of(Attribute.CLASS));
         }
 
+        this.parseLoaderElements(reader, loader);
         operations.add(loader);
     }
 
@@ -1117,6 +1118,20 @@ public class InfinispanSubsystemXMLReader_5_2 implements XMLElementReader<List<M
         }
     }
 
+    private void parseLoaderElements(XMLExtendedStreamReader reader, ModelNode loader) throws XMLStreamException {
+        while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
+            Element element = Element.forName(reader.getLocalName());
+            switch (element) {
+                case PROPERTY: {
+                    parseLoaderProperty(reader, loader);
+                    break;
+                }
+                default:
+                    throw ParseUtils.unexpectedElement(reader);
+            }
+        }
+    }
+
     private void parseStoreElements(XMLExtendedStreamReader reader, ModelNode store, List<ModelNode> operations) throws XMLStreamException {
         while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
             Element element = Element.forName(reader.getLocalName());
@@ -1166,6 +1181,29 @@ public class InfinispanSubsystemXMLReader_5_2 implements XMLElementReader<List<M
         }
         ParseUtils.requireNoContent(reader);
         operations.add(writeBehind);
+    }
+
+    private void parseLoaderProperty(XMLExtendedStreamReader reader, ModelNode node) throws XMLStreamException {
+        int attributes = reader.getAttributeCount();
+        String property = null;
+        for (int i = 0; i < attributes; i++) {
+            String value = reader.getAttributeValue(i);
+            Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+            switch (attribute) {
+                case NAME: {
+                    property = value;
+                    break;
+                }
+                default: {
+                    throw ParseUtils.unexpectedAttribute(reader, i);
+                }
+            }
+        }
+        if (property == null) {
+            throw ParseUtils.missingRequired(reader, Collections.singleton(Attribute.NAME));
+        }
+        String value = reader.getElementText();
+        node.get(ModelKeys.PROPERTIES).add(property, value);
     }
 
     private void parseStoreProperty(XMLExtendedStreamReader reader, ModelNode node) throws XMLStreamException {
