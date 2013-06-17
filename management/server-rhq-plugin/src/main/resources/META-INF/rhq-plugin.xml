@@ -74,6 +74,7 @@
             <c:simple-property name="listener-executor" required="false" type="string" readOnly="true" description="The executor used for the replication queue" />
             <c:simple-property name="eviction-executor" required="false" type="string" readOnly="true" description="The scheduled executor used for eviction" />
             <c:simple-property name="module" required="false" type="string" readOnly="true" defaultValue="org.jboss.as.clustering.infinispan" description="The module whose class loader should be used when building this cache container&apos;s configuration. The default value is org.jboss.as.clustering.infinispan." />
+            <c:simple-property name="rebalancing" required="false" type="boolean" readOnly="false" description="Whether rebalancing is enabled or disabled for this cache container" />
             <c:simple-property name="replication-queue-executor" required="false" type="string" readOnly="true" description="The executor used for asynchronous cache operations" />
          </resource-configuration>
 
