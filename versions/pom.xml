@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
 
@@ -11,18 +11,18 @@
 
   <groupId>org.infinispan.server</groupId>
   <artifactId>infinispan-server-versions</artifactId>
-  <version>5.3.0-SNAPSHOT</version>
+  <version>5.3.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Infinispan Server - BOM</name>
   <description>Infinispan Server - BOM</description>
 
   <properties>
-    <!-- Release Info -->
+    
     <product.version>${project.version}</product.version>
     <product.name>infinispan-server</product.name>
 
-    <!-- Version Info -->
+    
     <version.org.jboss.aesh>0.33.1</version.org.jboss.aesh>
     <version.com.github.relaxng.relaxngDatatype>2011.1</version.com.github.relaxng.relaxngDatatype>
     <version.commons.logging>1.1.1</version.commons.logging>
@@ -42,7 +42,7 @@
     <version.org.scala-lang>2.10.0</version.org.scala-lang>
     <version.org.infinispan.arquillian.container>1.0.0.CR1</version.org.infinispan.arquillian.container>
     <version.xml.maven.plugin>1.0</version.xml.maven.plugin>
-    <relocations></relocations>
+    <relocations />
   </properties>
 
   <dependencyManagement>
@@ -392,4 +392,3 @@
   </build>
   
 </project>
-
