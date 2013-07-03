@@ -9,7 +9,7 @@
             <transaction mode="FULL_XA" stop-timeout="60000"  locking="OPTIMISTIC"/>
             <eviction max-entries="20000" strategy="LIRS"/>
             <expiration interval="10000" lifespan="10" max-idle="10"/>
-            <compatibility enabled="true" marshaller="org.infinispan.marshall.jboss.GenericJBossMarshaller" />
+            <compatibility enabled="true" marshaller="org.infinispan.commons.marshall.jboss.GenericJBossMarshaller" />
             <file-store fetch-state="false" passivation="false" path="path" preload="true" purge="false" relative-to="jboss.server.temp.dir" shared="true" singleton="true">
                 <write-behind flush-lock-timeout="2" modification-queue-size="2048" shutdown-timeout="20000" thread-pool-size="1" />
             </file-store>

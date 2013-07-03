@@ -65,10 +65,10 @@ import org.infinispan.loaders.jdbc.configuration.JdbcStringBasedCacheStoreConfig
 import org.infinispan.loaders.jdbc.configuration.TableManipulationConfigurationBuilder;
 import org.infinispan.loaders.remote.configuration.RemoteCacheStoreConfigurationBuilder;
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.marshall.Marshaller;
+import org.infinispan.commons.marshall.Marshaller;
 import org.infinispan.transaction.LockingMode;
 import org.infinispan.transaction.tm.BatchModeTransactionManager;
-import org.infinispan.util.TypedProperties;
+import org.infinispan.commons.util.TypedProperties;
 import org.infinispan.util.concurrent.IsolationLevel;
 import org.jboss.as.clustering.infinispan.InfinispanMessages;
 import org.jboss.as.controller.AbstractAddStepHandler;

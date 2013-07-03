@@ -29,7 +29,7 @@ import org.infinispan.server.core.ProtocolServer;
 import org.infinispan.server.core.configuration.ProtocolServerConfiguration;
 import org.infinispan.server.core.configuration.ProtocolServerConfigurationBuilder;
 import org.infinispan.server.core.transport.Transport;
-import org.infinispan.util.ReflectionUtil;
+import org.infinispan.commons.util.ReflectionUtil;
 import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.as.network.NetworkUtils;
 import org.jboss.as.network.SocketBinding;

@@ -20,7 +20,7 @@ package org.jboss.as.clustering.infinispan.equivalence;
 
 import java.util.Arrays;
 
-import org.infinispan.util.Equivalence;
+import org.infinispan.commons.equivalence.Equivalence;
 
 /**
  * AnyServerEquivalence. Works for both objects and byte[]
