@@ -23,7 +23,6 @@
     <product.name>infinispan-server</product.name>
 
     <!-- Version Info -->
-    <version.org.jboss.aesh>0.33.1</version.org.jboss.aesh>
     <version.com.github.relaxng.relaxngDatatype>2011.1</version.com.github.relaxng.relaxngDatatype>
     <version.commons.logging>1.1.1</version.commons.logging>
     <version.gnu.getopt>1.0.13</version.gnu.getopt>
@@ -47,6 +46,14 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      
       <dependency>
         <groupId>com.github.relaxng</groupId>
         <artifactId>relaxngDatatype</artifactId>
@@ -131,12 +138,6 @@
         <groupId>org.antlr</groupId>
         <artifactId>antlr-runtime</artifactId>
         <version>${version.org.antlr.antlr-runtime}</version>
-      </dependency>
-      
-      <dependency>
-        <groupId>org.jboss.aesh</groupId>
-        <artifactId>aesh</artifactId>
-        <version>${version.org.jboss.aesh}</version>
       </dependency>
 
       <dependency>

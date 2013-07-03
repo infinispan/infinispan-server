@@ -137,6 +137,10 @@
          <maven-resource group="io.netty" artifact="netty" />
       </module-def>
       
+      <module-def name="org.infinispan.commons" src="${infinispan.server.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-commons" />
+      </module-def>
+      
       <module-def name="org.infinispan" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-core" />
       </module-def>
