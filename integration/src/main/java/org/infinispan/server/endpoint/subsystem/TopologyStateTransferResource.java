@@ -55,6 +55,14 @@ public class TopologyStateTransferResource extends SimpleResourceDefinition {
                  .setDefaultValue(new ModelNode().set(false))
                  .build();
 
+   static final SimpleAttributeDefinition AWAIT_INITIAL_RETRIEVAL =
+         new SimpleAttributeDefinitionBuilder(ModelKeys.AWAIT_INITIAL_RETRIEVAL, ModelType.BOOLEAN, true)
+                 .setAllowExpression(true)
+                 .setXmlName(ModelKeys.AWAIT_INITIAL_RETRIEVAL)
+                 .setRestartAllServices()
+                 .setDefaultValue(new ModelNode().set(false))
+                 .build();
+
    static final SimpleAttributeDefinition LOCK_TIMEOUT =
          new SimpleAttributeDefinitionBuilder(ModelKeys.LOCK_TIMEOUT, ModelType.LONG, true)
                  .setAllowExpression(true)
@@ -69,7 +77,7 @@ public class TopologyStateTransferResource extends SimpleResourceDefinition {
                  .setRestartAllServices()
                  .build();
 
-   static final SimpleAttributeDefinition[] TOPOLOGY_ATTRIBUTES = { EXTERNAL_HOST, EXTERNAL_PORT, LAZY_RETRIEVAL, LOCK_TIMEOUT, REPLICATION_TIMEOUT };
+   static final SimpleAttributeDefinition[] TOPOLOGY_ATTRIBUTES = { EXTERNAL_HOST, EXTERNAL_PORT, LAZY_RETRIEVAL, AWAIT_INITIAL_RETRIEVAL, LOCK_TIMEOUT, REPLICATION_TIMEOUT };
 
    public TopologyStateTransferResource() {
       super(TOPOLOGY_PATH, EndpointExtension.getResourceDescriptionResolver(ModelKeys.TOPOLOGY_STATE_TRANSFER), TopologyStateTransferAdd.INSTANCE, ReloadRequiredRemoveStepHandler.INSTANCE);
