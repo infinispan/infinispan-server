@@ -33,6 +33,7 @@ public enum Attribute {
     // must be first
     UNKNOWN((String) null),
 
+    AWAIT_INITIAL_RETRIEVAL(ModelKeys.AWAIT_INITIAL_RETRIEVAL),
     AUTH_METHOD(ModelKeys.AUTH_METHOD),
     CONTEXT_PATH(ModelKeys.CONTEXT_PATH),
     CACHE(ModelKeys.CACHE),

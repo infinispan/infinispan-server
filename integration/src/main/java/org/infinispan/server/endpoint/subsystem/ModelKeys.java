@@ -54,6 +54,7 @@ public class ModelKeys {
    public static final String EXTERNAL_HOST = "external-host"; // string
    public static final String EXTERNAL_PORT = "external-port"; // integer
    public static final String LAZY_RETRIEVAL = "lazy-retrieval"; // boolean
+   public static final String AWAIT_INITIAL_RETRIEVAL = "await-initial-retrieval"; // boolean
 
    public static final String SECURITY_NAME = "SECURITY";
    public static final String SECURITY = "security";
