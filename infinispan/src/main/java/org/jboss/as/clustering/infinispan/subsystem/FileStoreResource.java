@@ -48,7 +48,7 @@ import org.jboss.dmr.ModelType;
  */
 public class FileStoreResource extends BaseStoreResource {
 
-    public static final PathElement FILE_STORE_PATH = PathElement.pathElement(ModelKeys.FILE_STORE, ModelKeys.FILE_STORE_NAME);
+    public static final PathElement FILE_STORE_PATH = PathElement.pathElement(ModelKeys.FILE_STORE);
 
     // attributes
     static final SimpleAttributeDefinition PATH =
@@ -67,6 +67,11 @@ public class FileStoreResource extends BaseStoreResource {
                     .build();
 
     static final AttributeDefinition[] FILE_STORE_ATTRIBUTES = {RELATIVE_TO, PATH};
+
+    static final SimpleAttributeDefinition NAME =
+            new SimpleAttributeDefinitionBuilder(BaseStoreResource.NAME)
+                    .setDefaultValue(new ModelNode().set(ModelKeys.FILE_STORE_NAME))
+                    .build();
 
     // operations
     private static final OperationDefinition FILE_STORE_ADD_DEFINITION = new SimpleOperationDefinitionBuilder(ADD, InfinispanExtension.getResourceDescriptionResolver(ModelKeys.FILE_STORE))

@@ -26,6 +26,7 @@ import org.jboss.as.controller.ResourceDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
+import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
 /**
@@ -43,6 +44,7 @@ public class MemcachedConnectorResource extends ProtocolServerConnectorResource 
                  .setAllowExpression(true)
                  .setXmlName(ModelKeys.CACHE)
                  .setRestartAllServices()
+                 .setDefaultValue(new ModelNode().set("memcachedCache"))
                  .build();
 
    static final SimpleAttributeDefinition[] MEMCACHED_CONNECTOR_ATTRIBUTES = { CACHE };

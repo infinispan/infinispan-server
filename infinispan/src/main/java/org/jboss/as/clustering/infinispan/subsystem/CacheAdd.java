@@ -114,6 +114,11 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
     private static final String DEFAULTS = "infinispan-defaults.xml";
     private static volatile Map<CacheMode, Configuration> defaults = null;
 
+    private static final String[] loaderKeys = new String[] { ModelKeys.LOADER, ModelKeys.CLUSTER_LOADER };
+    private static final String[] storeKeys = new String[] { ModelKeys.STORE, ModelKeys.FILE_STORE,
+            ModelKeys.STRING_KEYED_JDBC_STORE, ModelKeys.BINARY_KEYED_JDBC_STORE, ModelKeys.MIXED_KEYED_JDBC_STORE,
+            ModelKeys.REMOTE_STORE };
+
     public static synchronized Configuration getDefaultConfiguration(CacheMode cacheMode) {
         if (defaults == null) {
             ConfigurationBuilderHolder holder = load(DEFAULTS);
@@ -501,82 +506,13 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         }
 
         // loaders are a child resource
-        String loaderKey = this.findLoaderKey(cache);
-        if (loaderKey != null) {
-            ModelNode loader = this.getLoaderModelNode(cache);
-
-            final boolean shared = BaseStoreResource.SHARED.resolveModelAttribute(context, loader).asBoolean();
-            final boolean preload = BaseStoreResource.PRELOAD.resolveModelAttribute(context, loader).asBoolean();
-
-            LoadersConfigurationBuilder loadersBuilder = builder.loaders().shared(shared).preload(preload);
-            CacheLoaderConfigurationBuilder<?, ?> loaderBuilder = this.buildCacheLoader(context, loadersBuilder, containerName,
-                    loader, loaderKey, dependencies);
-
-            final Properties properties = new TypedProperties();
-            if (loader.hasDefined(ModelKeys.PROPERTY)) {
-                for (Property property : loader.get(ModelKeys.PROPERTY).asPropertyList()) {
-                    String propertyName = property.getName();
-                    Property complexValue = property.getValue().asProperty();
-                    String propertyValue = complexValue.getValue().asString();
-                    properties.setProperty(propertyName, propertyValue);
-                }
-            }
-            loaderBuilder.withProperties(properties);
+        for (String loaderKey : loaderKeys) {
+            handleLoaderProperties(context, cache, loaderKey, containerName, builder, dependencies);
         }
 
         // stores are a child resource
-        String storeKey = this.findStoreKey(cache);
-        if (storeKey != null) {
-            ModelNode store = this.getStoreModelNode(cache);
-
-            final boolean shared = BaseStoreResource.SHARED.resolveModelAttribute(context, store).asBoolean();
-            final boolean preload = BaseStoreResource.PRELOAD.resolveModelAttribute(context, store).asBoolean();
-            final boolean passivation = BaseStoreResource.PASSIVATION.resolveModelAttribute(context, store).asBoolean();
-            final boolean fetchState = BaseStoreResource.FETCH_STATE.resolveModelAttribute(context, store).asBoolean();
-            final boolean purge = BaseStoreResource.PURGE.resolveModelAttribute(context, store).asBoolean();
-            final boolean singleton = BaseStoreResource.SINGLETON.resolveModelAttribute(context, store).asBoolean();
-            final boolean readOnly = BaseStoreResource.READ_ONLY.resolveModelAttribute(context, store).asBoolean();
-            // TODO Fix me
-            final boolean async = store.hasDefined(ModelKeys.WRITE_BEHIND) && store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME).isDefined();
-
-            LoadersConfigurationBuilder loadersBuilder = builder.loaders()
-                    .shared(shared)
-                    .preload(preload)
-                    .passivation(passivation)
-            ;
-            CacheStoreConfigurationBuilder<?, ?> storeBuilder = this.buildCacheStore(context, loadersBuilder, containerName, store, storeKey, dependencies)
-                    .fetchPersistentState(fetchState)
-                    .purgeOnStartup(purge)
-                    .purgeSynchronously(true)
-                    .ignoreModifications(readOnly)
-            ;
-            storeBuilder.singletonStore().enabled(singleton);
-
-            if (async) {
-                ModelNode writeBehind = store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME);
-                storeBuilder.async().enable()
-                        .flushLockTimeout(StoreWriteBehindResource.FLUSH_LOCK_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
-                        .modificationQueueSize(StoreWriteBehindResource.MODIFICATION_QUEUE_SIZE.resolveModelAttribute(context, writeBehind).asInt())
-                        .shutdownTimeout(StoreWriteBehindResource.SHUTDOWN_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
-                        .threadPoolSize(StoreWriteBehindResource.THREAD_POOL_SIZE.resolveModelAttribute(context, writeBehind).asInt())
-                ;
-            }
-
-            final Properties properties = new TypedProperties();
-            if (store.hasDefined(ModelKeys.PROPERTY)) {
-                for (Property property : store.get(ModelKeys.PROPERTY).asPropertyList()) {
-                    // format of properties
-                    // "property" => {
-                    //   "property-name" => {"value => "property-value"}
-                    // }
-                    String propertyName = property.getName();
-                    // get the value from ModelNode {"value" => "property-value"}
-                    ModelNode propertyValue = null ;
-                    propertyValue = StorePropertyResource.VALUE.resolveModelAttribute(context,property.getValue());
-                    properties.setProperty(propertyName, propertyValue.asString());
-                }
-            }
-            storeBuilder.withProperties(properties);
+        for (String storeKey : storeKeys) {
+            handleStoreProperties(context, cache, storeKey, containerName, builder, dependencies);
         }
 
         if (cache.hasDefined(ModelKeys.BACKUP)) {
@@ -597,56 +533,91 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         }
     }
 
-    private String findLoaderKey(ModelNode cache) {
-        if (cache.hasDefined(ModelKeys.LOADER)) {
-            return ModelKeys.LOADER;
-        } else if (cache.hasDefined(ModelKeys.CLUSTER_LOADER)) {
-            return ModelKeys.CLUSTER_LOADER;
+    private void handleLoaderProperties(OperationContext context, ModelNode cache, String loaderKey, String containerName,
+                                        ConfigurationBuilder builder, List<Dependency<?>> dependencies)
+            throws OperationFailedException {
+        if (cache.hasDefined(loaderKey)) {
+            for (Property loaderEntry : cache.get(loaderKey).asPropertyList()) {
+                ModelNode loader = loaderEntry.getValue();
+                final boolean shared = BaseStoreResource.SHARED.resolveModelAttribute(context, loader).asBoolean();
+                final boolean preload = BaseStoreResource.PRELOAD.resolveModelAttribute(context, loader).asBoolean();
+
+                LoadersConfigurationBuilder loadersBuilder = builder.loaders().shared(shared).preload(preload);
+                CacheLoaderConfigurationBuilder<?, ?> loaderBuilder = this.buildCacheLoader(context, loadersBuilder, containerName,
+                        loader, loaderKey, dependencies);
+
+                final Properties properties = new TypedProperties();
+                if (loader.hasDefined(ModelKeys.PROPERTY)) {
+                    for (Property property : loader.get(ModelKeys.PROPERTY).asPropertyList()) {
+                        String propertyName = property.getName();
+                        Property complexValue = property.getValue().asProperty();
+                        String propertyValue = complexValue.getValue().asString();
+                        properties.setProperty(propertyName, propertyValue);
+                    }
+                }
+                loaderBuilder.withProperties(properties);
+            }
         }
-        return null;
     }
 
-    private ModelNode getLoaderModelNode(ModelNode cache) {
-        if (cache.hasDefined(ModelKeys.LOADER)) {
-            return cache.get(ModelKeys.LOADER, ModelKeys.LOADER_NAME);
-        } else if (cache.hasDefined(ModelKeys.CLUSTER_LOADER)) {
-            return cache.get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME);
-        }
-        return null;
-    }
+    private void handleStoreProperties(OperationContext context, ModelNode cache, String storeKey, String containerName,
+                                            ConfigurationBuilder builder, List<Dependency<?>> dependencies)
+            throws OperationFailedException {
 
-    private String findStoreKey(ModelNode cache) {
-        if (cache.hasDefined(ModelKeys.STORE)) {
-            return ModelKeys.STORE;
-        } else if (cache.hasDefined(ModelKeys.FILE_STORE)) {
-            return ModelKeys.FILE_STORE;
-        } else if (cache.hasDefined(ModelKeys.STRING_KEYED_JDBC_STORE)) {
-            return ModelKeys.STRING_KEYED_JDBC_STORE;
-        } else if (cache.hasDefined(ModelKeys.BINARY_KEYED_JDBC_STORE)) {
-            return ModelKeys.BINARY_KEYED_JDBC_STORE;
-        } else if (cache.hasDefined(ModelKeys.MIXED_KEYED_JDBC_STORE)) {
-            return ModelKeys.MIXED_KEYED_JDBC_STORE;
-        } else if (cache.hasDefined(ModelKeys.REMOTE_STORE)) {
-            return ModelKeys.REMOTE_STORE;
-        }
-        return null;
-    }
+        if (cache.hasDefined(storeKey)) {
+            for (Property storeEntry : cache.get(storeKey).asPropertyList()) {
+                ModelNode store = storeEntry.getValue();
 
-    private ModelNode getStoreModelNode(ModelNode cache) {
-        if (cache.hasDefined(ModelKeys.STORE)) {
-            return cache.get(ModelKeys.STORE, ModelKeys.STORE_NAME);
-        } else if (cache.hasDefined(ModelKeys.FILE_STORE)) {
-            return cache.get(ModelKeys.FILE_STORE, ModelKeys.FILE_STORE_NAME);
-        } else if (cache.hasDefined(ModelKeys.STRING_KEYED_JDBC_STORE)) {
-            return cache.get(ModelKeys.STRING_KEYED_JDBC_STORE, ModelKeys.STRING_KEYED_JDBC_STORE_NAME);
-        } else if (cache.hasDefined(ModelKeys.BINARY_KEYED_JDBC_STORE)) {
-            return cache.get(ModelKeys.BINARY_KEYED_JDBC_STORE, ModelKeys.BINARY_KEYED_JDBC_STORE_NAME);
-        } else if (cache.hasDefined(ModelKeys.MIXED_KEYED_JDBC_STORE)) {
-            return cache.get(ModelKeys.MIXED_KEYED_JDBC_STORE, ModelKeys.MIXED_KEYED_JDBC_STORE_NAME);
-        } else if (cache.hasDefined(ModelKeys.REMOTE_STORE)) {
-            return cache.get(ModelKeys.REMOTE_STORE, ModelKeys.REMOTE_STORE_NAME);
+                final boolean shared = BaseStoreResource.SHARED.resolveModelAttribute(context, store).asBoolean();
+                final boolean preload = BaseStoreResource.PRELOAD.resolveModelAttribute(context, store).asBoolean();
+                final boolean passivation = BaseStoreResource.PASSIVATION.resolveModelAttribute(context, store).asBoolean();
+                final boolean fetchState = BaseStoreResource.FETCH_STATE.resolveModelAttribute(context, store).asBoolean();
+                final boolean purge = BaseStoreResource.PURGE.resolveModelAttribute(context, store).asBoolean();
+                final boolean singleton = BaseStoreResource.SINGLETON.resolveModelAttribute(context, store).asBoolean();
+                final boolean readOnly = BaseStoreResource.READ_ONLY.resolveModelAttribute(context, store).asBoolean();
+                // TODO Fix me
+                final boolean async = store.hasDefined(ModelKeys.WRITE_BEHIND) && store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME).isDefined();
+
+                LoadersConfigurationBuilder loadersBuilder = builder.loaders()
+                        .shared(shared)
+                        .preload(preload)
+                        .passivation(passivation)
+                        ;
+                CacheStoreConfigurationBuilder<?, ?> storeBuilder = this.buildCacheStore(context, loadersBuilder, containerName, store, storeKey, dependencies)
+                        .fetchPersistentState(fetchState)
+                        .purgeOnStartup(purge)
+                        .purgeSynchronously(true)
+                        .ignoreModifications(readOnly)
+                        ;
+                storeBuilder.singletonStore().enabled(singleton);
+
+                if (async) {
+                    ModelNode writeBehind = store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME);
+                    storeBuilder.async().enable()
+                            .flushLockTimeout(StoreWriteBehindResource.FLUSH_LOCK_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
+                            .modificationQueueSize(StoreWriteBehindResource.MODIFICATION_QUEUE_SIZE.resolveModelAttribute(context, writeBehind).asInt())
+                            .shutdownTimeout(StoreWriteBehindResource.SHUTDOWN_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
+                            .threadPoolSize(StoreWriteBehindResource.THREAD_POOL_SIZE.resolveModelAttribute(context, writeBehind).asInt())
+                    ;
+                }
+
+                final Properties properties = new TypedProperties();
+                if (store.hasDefined(ModelKeys.PROPERTY)) {
+                    for (Property property : store.get(ModelKeys.PROPERTY).asPropertyList()) {
+                        // format of properties
+                        // "property" => {
+                        //   "property-name" => {"value => "property-value"}
+                        // }
+                        String propertyName = property.getName();
+                        // get the value from ModelNode {"value" => "property-value"}
+                        ModelNode propertyValue = null ;
+                        propertyValue = StorePropertyResource.VALUE.resolveModelAttribute(context,property.getValue());
+                        properties.setProperty(propertyName, propertyValue.asString());
+                    }
+                }
+                storeBuilder.withProperties(properties);
+            }
         }
-        return null;
     }
 
     private CacheLoaderConfigurationBuilder<?, ?> buildCacheLoader(OperationContext context,

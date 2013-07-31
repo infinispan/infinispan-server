@@ -88,6 +88,14 @@ public class DistributedCacheResource extends SharedCacheResource {
                     .setDefaultValue(new ModelNode().set(80)) // Recommended value is 10 * max_cluster_size.
                     .build();
 
+    static final SimpleAttributeDefinition REBALANCING =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.REBALANCING, ModelType.BOOLEAN, true)
+                    .setAllowExpression(true)
+                    .setFlags(AttributeAccess.Flag.RESTART_NONE)
+                    .setDefaultValue(new ModelNode().set(true))
+                    .setStorageRuntime()
+                    .build();
+
     static final AttributeDefinition[] DISTRIBUTED_CACHE_ATTRIBUTES = {OWNERS, SEGMENTS, L1_LIFESPAN};
 
     public DistributedCacheResource(final ResolvePathHandler resolvePathHandler, boolean runtimeRegistration) {
@@ -105,6 +113,11 @@ public class DistributedCacheResource extends SharedCacheResource {
         final OperationStepHandler writeHandler = new ReloadRequiredWriteAttributeHandler(DISTRIBUTED_CACHE_ATTRIBUTES);
         for (AttributeDefinition attr : DISTRIBUTED_CACHE_ATTRIBUTES) {
             resourceRegistration.registerReadWriteAttribute(attr, null, writeHandler);
+        }
+
+        if (runtimeRegistration) {
+            // register writable attributes available only at runtime
+            resourceRegistration.registerReadWriteAttribute(REBALANCING, RebalancingAttributeHandler.INSTANCE, RebalancingAttributeHandler.INSTANCE);
         }
 
         // Attribute virtual-nodes has been deprecated, so not to break management API, attempt to use it will fail.

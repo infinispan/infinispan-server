@@ -149,8 +149,8 @@ public class CacheResource extends SimpleResourceDefinition {
             ).build();
 
 
-    private final ResolvePathHandler resolvePathHandler;
-    private final boolean runtimeRegistration;
+    protected final ResolvePathHandler resolvePathHandler;
+    protected final boolean runtimeRegistration;
     public CacheResource(PathElement pathElement, ResourceDescriptionResolver descriptionResolver, AbstractAddStepHandler addHandler, OperationStepHandler removeHandler, ResolvePathHandler resolvePathHandler, boolean runtimeRegistration) {
         super(pathElement, descriptionResolver, addHandler, removeHandler);
         this.resolvePathHandler = resolvePathHandler;

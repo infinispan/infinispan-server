@@ -31,6 +31,7 @@ import static org.jboss.as.clustering.infinispan.subsystem.TransactionResource.T
 import static org.jboss.as.clustering.infinispan.subsystem.TransportResource.TRANSPORT_ATTRIBUTES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.jboss.as.clustering.infinispan.InfinispanMessages;
@@ -52,6 +53,7 @@ import org.jboss.msc.service.ServiceController;
  * {locking, transaction, eviction, expiration, state-transfer, rehashing, store, file-store, jdbc-store, remote-store}
  *
  * @author Richard Achmatowicz (c) 2011 Red Hat Inc.
+ * @author William Burns (c) 2013 Red Hat Inc.
  */
 public class CacheConfigOperationHandlers {
 
@@ -67,7 +69,6 @@ public class CacheConfigOperationHandlers {
     static final OperationStepHandler CLUSTER_LOADER_ADD = new ClusterCacheLoaderAdd();
     static final OperationStepHandler STORE_ADD = new CacheStoreAdd();
     static final OperationStepHandler STORE_WRITE_BEHIND_ADD = new CacheConfigAdd(WRITE_BEHIND_ATTRIBUTES);
-    static final OperationStepHandler STORE_PROPERTY_ADD = new CacheConfigAdd(new AttributeDefinition[]{StorePropertyResource.VALUE});
     static final OperationStepHandler FILE_STORE_ADD = new FileCacheStoreAdd();
     static final OperationStepHandler STRING_KEYED_JDBC_STORE_ADD = new StringKeyedJDBCCacheStoreAdd();
     static final OperationStepHandler BINARY_KEYED_JDBC_STORE_ADD = new BinaryKeyedJDBCCacheStoreAdd();
@@ -111,21 +112,32 @@ public class CacheConfigOperationHandlers {
      *
      */
     abstract static class AbstractCacheLoaderAdd extends AbstractAddStepHandler {
-        private final AttributeDefinition[] attributes;
+        protected final AttributeDefinition[] attributes;
 
         AbstractCacheLoaderAdd() {
-            this.attributes = BaseStoreResource.COMMON_LOADER_PARAMETERS;
+            this(BaseLoaderResource.COMMON_LOADER_PARAMETERS);
+        }
+
+        AbstractCacheLoaderAdd(AttributeDefinition[] attributes) {
+           this(attributes, false);
+        }
+
+        /**
+        * @param attributes The attributes or additional attributes to use
+        * @param includeCommonLoaderAttributes Loader implementations should provide false for this
+        */
+        AbstractCacheLoaderAdd(AttributeDefinition[] attributes, boolean includeCommonLoaderAttributes) {
+           if (includeCommonLoaderAttributes) {
+              this.attributes = concat(BaseLoaderResource.COMMON_LOADER_PARAMETERS, attributes);
+           }
+           else {
+              this.attributes = attributes;
+           }
         }
 
         @Override
         protected void populateModel(OperationContext context, ModelNode operation, Resource resource) throws OperationFailedException {
             final ModelNode model = resource.getModel();
-
-            // need to check that the parent does not contain some other cache loader ModelNode
-            if (isCacheLoaderDefined(context, operation)) {
-                String loaderName = getDefinedCacheLoader(context, operation);
-                throw InfinispanMessages.MESSAGES.cacheLoaderAlreadyDefined(loaderName);
-            }
 
             // Process attributes
             for(final AttributeDefinition attribute : attributes) {
@@ -141,20 +153,33 @@ public class CacheConfigOperationHandlers {
 
             // The cache config parameters  <property name=>value</property>
             if(operation.hasDefined(ModelKeys.PROPERTIES)) {
-                for(Property property : operation.get(ModelKeys.PROPERTIES).asPropertyList()) {
-                    // create a new property=name resource
-                    final Resource param = context.createResource(PathAddress.pathAddress(PathElement.pathElement(ModelKeys.PROPERTY, property.getName())));
-                    final ModelNode value = property.getValue();
-                    if(! value.isDefined()) {
-                        throw InfinispanMessages.MESSAGES.propertyValueNotDefined(property.getName());
+                // CLI will be a list where there is N elements each with a single map
+                // RHQ will be a list with 1 element where each element is a map with N elements
+                // Thus we have to iterate this way instead of just doing asPropertyList for example from the PROPERTIES
+                // ModelNode returned from the operation
+                for(ModelNode node : operation.get(ModelKeys.PROPERTIES).asList()) {
+                    for (Property property : node.asPropertyList()) {
+                        // create a new property=name resource
+                        final Resource param = context.createResource(PathAddress.pathAddress(PathElement.pathElement(ModelKeys.PROPERTY, property.getName())));
+                        final ModelNode value = property.getValue();
+                        if(! value.isDefined()) {
+                            throw InfinispanMessages.MESSAGES.propertyValueNotDefined(property.getName());
+                        }
+                        ModelNode holder = new ModelNode();
+                        holder.get(LoaderPropertyResource.VALUE.getName()).set(value);
+                        // set the value of the property
+                        LoaderPropertyResource.VALUE.validateAndSet(holder, param.getModel());
                     }
-                    // set the value of the property
-                    LoaderPropertyResource.VALUE.validateAndSet(value, param.getModel());
                 }
             }
         }
 
-        abstract void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException ;
+        void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
+            // this abstract method is called when populateModel() is called in the base class
+            for(final AttributeDefinition attribute : attributes) {
+                attribute.validateAndSet(operation, model);
+            }
+        }
 
         @Override
         protected void populateModel(ModelNode operation, ModelNode model) throws OperationFailedException {
@@ -166,18 +191,9 @@ public class CacheConfigOperationHandlers {
      * Add a basic cache loader to a cache.
      */
     private static class CacheLoaderAdd extends AbstractCacheLoaderAdd {
-        private final AttributeDefinition[] attributes;
 
         CacheLoaderAdd() {
-            this.attributes = LoaderResource.LOADER_ATTRIBUTES;
-        }
-
-        @Override
-        protected void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
-            // this abstract method is called when populateModel() is called in the base class
-            for(final AttributeDefinition attribute : attributes) {
-                attribute.validateAndSet(operation, model);
-            }
+            super(LoaderResource.LOADER_ATTRIBUTES, true);
         }
     }
 
@@ -185,18 +201,8 @@ public class CacheConfigOperationHandlers {
      * Add a cluster cache loader to a cache.
      */
     private static class ClusterCacheLoaderAdd extends AbstractCacheLoaderAdd {
-        private final AttributeDefinition[] attributes;
-
         ClusterCacheLoaderAdd() {
-            this.attributes = ClusterLoaderResource.CLUSTER_LOADER_ATTRIBUTES;
-        }
-
-        @Override
-        protected void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
-            // this abstract method is called when populateModel() is called in the base class
-            for(final AttributeDefinition attribute : attributes) {
-                attribute.validateAndSet(operation, model);
-            }
+            super(ClusterLoaderResource.CLUSTER_LOADER_ATTRIBUTES, true);
         }
     }
 
@@ -209,74 +215,36 @@ public class CacheConfigOperationHandlers {
      * - create any child resources required for the store resource, such as a set of properties
      *
      */
-    abstract static class AbstractCacheStoreAdd extends AbstractAddStepHandler {
-        private final AttributeDefinition[] attributes;
-
+    abstract static class AbstractCacheStoreAdd extends AbstractCacheLoaderAdd {
         AbstractCacheStoreAdd() {
-            this.attributes = BaseStoreResource.COMMON_STORE_PARAMETERS;
+            super(BaseStoreResource.COMMON_STORE_PARAMETERS);
         }
 
-        @Override
-        protected void populateModel(OperationContext context, ModelNode operation, Resource resource) throws OperationFailedException {
-            final ModelNode model = resource.getModel();
-
-            // need to check that the parent does not contain some other cache store ModelNode
-            if (isCacheStoreDefined(context, operation)) {
-                String storeName = getDefinedCacheStore(context, operation);
-                throw InfinispanMessages.MESSAGES.cacheStoreAlreadyDefined(storeName);
-            }
-
-            // Process attributes
-            for(final AttributeDefinition attribute : attributes) {
-                // we use PROPERTIES only to allow the user to pass in a list of properties on store add commands
-                // don't copy these into the model
-                if (attribute.getName().equals(BaseStoreResource.PROPERTIES.getName()))
-                    continue ;
-                attribute.validateAndSet(operation, model);
-            }
-
-            // Process type specific properties if required
-            populateSubclassModel(context, operation, model);
-
-            // The cache config parameters  <property name=>value</property>
-            if(operation.hasDefined(ModelKeys.PROPERTIES)) {
-                for(Property property : operation.get(ModelKeys.PROPERTIES).asPropertyList()) {
-                    // create a new property=name resource
-                    final Resource param = context.createResource(PathAddress.pathAddress(PathElement.pathElement(ModelKeys.PROPERTY, property.getName())));
-                    final ModelNode value = property.getValue();
-                    if(! value.isDefined()) {
-                        throw InfinispanMessages.MESSAGES.propertyValueNotDefined(property.getName());
-                    }
-                    // set the value of the property
-                    StorePropertyResource.VALUE.validateAndSet(value, param.getModel());
-                }
-            }
-        }
-
-        abstract void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException ;
-
-        @Override
-        protected void populateModel(ModelNode operation, ModelNode model) throws OperationFailedException {
-            // do nothing
+        AbstractCacheStoreAdd(AttributeDefinition[] attributes) {
+            super(concat(BaseStoreResource.COMMON_STORE_PARAMETERS, attributes));
         }
     }
+
+   private static AttributeDefinition[] concat(AttributeDefinition[] A, AttributeDefinition[] B) {
+      int aLen = A.length;
+      int bLen = B.length;
+      AttributeDefinition[] C;
+      if (bLen > 0) {
+         C = Arrays.copyOf(A, aLen + bLen);
+         System.arraycopy(B, 0, C, aLen, bLen);
+      }
+      else {
+         C = A;
+      }
+      return C;
+   }
 
     /**
      * Add a basic cache store to a cache.
      */
     private static class CacheStoreAdd extends AbstractCacheStoreAdd {
-        private final AttributeDefinition[] attributes;
-
         CacheStoreAdd() {
-            this.attributes = StoreResource.STORE_ATTRIBUTES;
-        }
-
-        @Override
-        protected void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
-            // this abstract method is called when populateModel() is called in the base class
-            for(final AttributeDefinition attribute : attributes) {
-                attribute.validateAndSet(operation, model);
-            }
+            super(StoreResource.STORE_ATTRIBUTES);
         }
     }
 
@@ -284,42 +252,23 @@ public class CacheConfigOperationHandlers {
      * Add a file cache store to a cache.
      */
     private static class FileCacheStoreAdd extends AbstractCacheStoreAdd {
-        private final AttributeDefinition[] attributes;
-
         FileCacheStoreAdd() {
-            this.attributes = FileStoreResource.FILE_STORE_ATTRIBUTES;
-        }
-
-        @Override
-        protected void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
-            // this abstract method is called when populateModel() is called in the base class
-            for(final AttributeDefinition attribute : attributes) {
-                attribute.validateAndSet(operation, model);
-            }
+            super(FileStoreResource.FILE_STORE_ATTRIBUTES);
         }
     }
 
     private static class JDBCCacheStoreAdd extends AbstractCacheStoreAdd {
-        private final AttributeDefinition[] attributes;
-
         JDBCCacheStoreAdd() {
-            this.attributes = BaseJDBCStoreResource.COMMON_JDBC_STORE_ATTRIBUTES;
+            super(BaseJDBCStoreResource.COMMON_JDBC_STORE_ATTRIBUTES);
         }
 
-        @Override
-        protected void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
-            // this abstract method is called when populateModel() is called in the base class
-            for(final AttributeDefinition attribute : attributes) {
-                attribute.validateAndSet(operation, model);
-            }
-        }
     }
 
     private static class StringKeyedJDBCCacheStoreAdd extends JDBCCacheStoreAdd {
-        private final AttributeDefinition[] attributes;
+        private final AttributeDefinition[] additionalAttributes;
 
         StringKeyedJDBCCacheStoreAdd() {
-            this.attributes = StringKeyedJDBCStoreResource.STRING_KEYED_JDBC_STORE_ATTRIBUTES;
+            this.additionalAttributes = StringKeyedJDBCStoreResource.STRING_KEYED_JDBC_STORE_ATTRIBUTES;
         }
 
         @Override
@@ -327,7 +276,7 @@ public class CacheConfigOperationHandlers {
             // this abstract method is called when populateModel() is called in the base class
             super.populateSubclassModel(context, operation, model);
 
-            for(final AttributeDefinition attribute : attributes) {
+            for(final AttributeDefinition attribute : additionalAttributes) {
                 attribute.validateAndSet(operation, model);
             }
             // now check for string-keyed-table passed as optional parameter, in order to create the resource
@@ -339,10 +288,10 @@ public class CacheConfigOperationHandlers {
     }
 
     private static class BinaryKeyedJDBCCacheStoreAdd extends JDBCCacheStoreAdd {
-        private final AttributeDefinition[] attributes;
+        private final AttributeDefinition[] additionalAttributes;
 
         BinaryKeyedJDBCCacheStoreAdd() {
-            this.attributes = BinaryKeyedJDBCStoreResource.BINARY_KEYED_JDBC_STORE_ATTRIBUTES;
+            this.additionalAttributes = BinaryKeyedJDBCStoreResource.BINARY_KEYED_JDBC_STORE_ATTRIBUTES;
         }
 
         @Override
@@ -350,7 +299,7 @@ public class CacheConfigOperationHandlers {
             // this abstract method is called when populateModel() is called in the base class
             super.populateSubclassModel(context, operation, model);
 
-            for(final AttributeDefinition attribute : attributes) {
+            for(final AttributeDefinition attribute : additionalAttributes) {
                 attribute.validateAndSet(operation, model);
             }
             // now check for binary-keyed-table passed as optional parameter in order to create the resource
@@ -382,107 +331,8 @@ public class CacheConfigOperationHandlers {
     }
 
     private static class RemoteCacheStoreAdd extends AbstractCacheStoreAdd {
-        private final AttributeDefinition[] attributes;
-
         RemoteCacheStoreAdd() {
-            this.attributes = RemoteStoreResource.REMOTE_STORE_ATTRIBUTES;
+            super(RemoteStoreResource.REMOTE_STORE_ATTRIBUTES);
         }
-
-        @Override
-        protected void populateSubclassModel(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
-            // this abstract method is called when populateModel() is called in the base class
-            for(final AttributeDefinition attribute : attributes) {
-                attribute.validateAndSet(operation, model);
-            }
-            // now check for outbound connections passed as optional parameter
-        }
-    }
-
-    private static PathAddress getCacheAddress(ModelNode operation) {
-        PathAddress cacheStoreAddress = PathAddress.pathAddress(operation.get(OP_ADDR));
-        PathAddress cacheAddress = cacheStoreAddress.subAddress(0, cacheStoreAddress.size()-1);
-        return cacheAddress;
-    }
-
-    private static ModelNode getCache(OperationContext context, PathAddress cacheAddress) {
-        //Resource rootResource = context.readResourceFromRoot(cacheAddress, true);
-        //ModelNode cache = rootResource.getModel();
-        ModelNode cache = Resource.Tools.readModel(context.readResourceFromRoot(cacheAddress));
-        return cache ;
-    }
-
-    private static boolean isCacheLoaderDefined(OperationContext context, ModelNode operation) {
-        ModelNode cache = getCache(context, getCacheAddress(operation)) ;
-
-        return (hasCustomLoader(cache) || hasClusterLoader(cache)) ;
-   }
-
-    private static String getDefinedCacheLoader(OperationContext context, ModelNode operation) {
-        ModelNode cache = getCache(context, getCacheAddress(operation));
-        if (hasCustomLoader(cache))
-            return ModelKeys.LOADER;
-        else if (hasClusterLoader(cache))
-            return ModelKeys.CLUSTER_LOADER;
-        else
-            return null;
-    }
-
-    private static boolean hasCustomLoader(ModelNode cache) {
-        return cache.hasDefined(ModelKeys.LOADER) && cache.get(ModelKeys.LOADER, ModelKeys.LOADER_NAME).isDefined();
-    }
-
-    private static boolean hasClusterLoader(ModelNode cache) {
-        return cache.hasDefined(ModelKeys.CLUSTER_LOADER)
-                && cache.get(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME).isDefined();
-    }
-
-    private static boolean isCacheStoreDefined(OperationContext context, ModelNode operation) {
-         ModelNode cache = getCache(context, getCacheAddress(operation)) ;
-
-         return (hasCustomStore(cache) || hasFileStore(cache) ||
-                 hasStringKeyedJdbcStore(cache) || hasBinaryKeyedJdbcStore(cache) || hasMixedKeyedJdbcStore(cache) ||
-                 hasRemoteStore(cache)) ;
-    }
-
-    private static String getDefinedCacheStore(OperationContext context, ModelNode operation) {
-        ModelNode cache = getCache(context, getCacheAddress(operation)) ;
-        if (hasCustomStore(cache))
-            return ModelKeys.STORE ;
-        else if (hasFileStore(cache))
-            return ModelKeys.FILE_STORE ;
-        else if (hasStringKeyedJdbcStore(cache))
-            return ModelKeys.STRING_KEYED_JDBC_STORE ;
-        else if (hasBinaryKeyedJdbcStore(cache))
-            return ModelKeys.BINARY_KEYED_JDBC_STORE ;
-        else if (hasMixedKeyedJdbcStore(cache))
-            return ModelKeys.MIXED_KEYED_JDBC_STORE ;
-        else if (hasRemoteStore(cache))
-            return ModelKeys.REMOTE_STORE ;
-        else
-            return null ;
-    }
-
-    private static boolean hasCustomStore(ModelNode cache) {
-        return cache.hasDefined(ModelKeys.STORE) && cache.get(ModelKeys.STORE, ModelKeys.STORE_NAME).isDefined() ;
-    }
-
-    private static boolean hasFileStore(ModelNode cache) {
-        return cache.hasDefined(ModelKeys.FILE_STORE) && cache.get(ModelKeys.FILE_STORE, ModelKeys.FILE_STORE_NAME).isDefined() ;
-    }
-
-    private static boolean hasStringKeyedJdbcStore(ModelNode cache) {
-        return cache.hasDefined(ModelKeys.STRING_KEYED_JDBC_STORE) && cache.get(ModelKeys.STRING_KEYED_JDBC_STORE, ModelKeys.STRING_KEYED_JDBC_STORE_NAME).isDefined() ;
-    }
-
-    private static boolean hasBinaryKeyedJdbcStore(ModelNode cache) {
-        return cache.hasDefined(ModelKeys.BINARY_KEYED_JDBC_STORE) && cache.get(ModelKeys.BINARY_KEYED_JDBC_STORE, ModelKeys.BINARY_KEYED_JDBC_STORE_NAME).isDefined() ;
-    }
-
-    private static boolean hasMixedKeyedJdbcStore(ModelNode cache) {
-        return cache.hasDefined(ModelKeys.MIXED_KEYED_JDBC_STORE) && cache.get(ModelKeys.MIXED_KEYED_JDBC_STORE, ModelKeys.MIXED_KEYED_JDBC_STORE_NAME).isDefined() ;
-    }
-
-    private static boolean hasRemoteStore(ModelNode cache) {
-        return cache.hasDefined(ModelKeys.REMOTE_STORE) && cache.get(ModelKeys.REMOTE_STORE, ModelKeys.REMOTE_STORE_NAME).isDefined() ;
     }
 }

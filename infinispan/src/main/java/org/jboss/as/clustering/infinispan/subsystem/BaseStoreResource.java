@@ -23,16 +23,7 @@ package org.jboss.as.clustering.infinispan.subsystem;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 
-import org.jboss.as.controller.AttributeDefinition;
-import org.jboss.as.controller.OperationDefinition;
-import org.jboss.as.controller.OperationStepHandler;
-import org.jboss.as.controller.PathElement;
-import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
-import org.jboss.as.controller.SimpleAttributeDefinition;
-import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
-import org.jboss.as.controller.SimpleListAttributeDefinition;
-import org.jboss.as.controller.SimpleOperationDefinitionBuilder;
-import org.jboss.as.controller.SimpleResourceDefinition;
+import org.jboss.as.controller.*;
 import org.jboss.as.controller.descriptions.ResourceDescriptionResolver;
 import org.jboss.as.controller.registry.AttributeAccess;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
@@ -45,7 +36,7 @@ import org.jboss.dmr.ModelType;
  *
  * @author Richard Achmatowicz (c) 2011 Red Hat Inc.
  */
-public class BaseStoreResource extends SimpleResourceDefinition {
+public class BaseStoreResource extends BaseLoaderResource {
 
     // attributes
     static final SimpleAttributeDefinition FETCH_STATE =
@@ -62,13 +53,6 @@ public class BaseStoreResource extends SimpleResourceDefinition {
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setDefaultValue(new ModelNode().set(true))
                     .build();
-    static final SimpleAttributeDefinition PRELOAD =
-            new SimpleAttributeDefinitionBuilder(ModelKeys.PRELOAD, ModelType.BOOLEAN, true)
-                    .setXmlName(Attribute.PRELOAD.getLocalName())
-                    .setAllowExpression(true)
-                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
-                    .setDefaultValue(new ModelNode().set(false))
-                    .build();
     static final SimpleAttributeDefinition PURGE =
             new SimpleAttributeDefinitionBuilder(ModelKeys.PURGE, ModelType.BOOLEAN, true)
                     .setXmlName(Attribute.PURGE.getLocalName())
@@ -83,13 +67,6 @@ public class BaseStoreResource extends SimpleResourceDefinition {
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setDefaultValue(new ModelNode().set(false))
                     .build();
-    static final SimpleAttributeDefinition SHARED =
-            new SimpleAttributeDefinitionBuilder(ModelKeys.SHARED, ModelType.BOOLEAN, true)
-                    .setXmlName(Attribute.SHARED.getLocalName())
-                    .setAllowExpression(true)
-                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
-                    .setDefaultValue(new ModelNode().set(false))
-                    .build();
     static final SimpleAttributeDefinition SINGLETON =
             new SimpleAttributeDefinitionBuilder(ModelKeys.SINGLETON, ModelType.BOOLEAN, true)
                     .setXmlName(Attribute.SINGLETON.getLocalName())
@@ -98,15 +75,8 @@ public class BaseStoreResource extends SimpleResourceDefinition {
                     .setDefaultValue(new ModelNode().set(false))
                     .build();
 
-    // used to pass in a list of properties to the store add command
-    static final AttributeDefinition PROPERTY = new SimpleAttributeDefinition(ModelKeys.PROPERTY, ModelType.PROPERTY, true);
-    static final SimpleListAttributeDefinition PROPERTIES = SimpleListAttributeDefinition.Builder.of(ModelKeys.PROPERTIES, PROPERTY).
-            setAllowNull(true).
-            build();
-
-    static final AttributeDefinition[] COMMON_LOADER_ATTRIBUTES = {SHARED, PRELOAD};
-    static final AttributeDefinition[] COMMON_LOADER_PARAMETERS = {SHARED, PRELOAD, PROPERTIES};
-    static final AttributeDefinition[] COMMON_STORE_ATTRIBUTES = {SHARED, PRELOAD, PASSIVATION, FETCH_STATE, PURGE, READ_ONLY, SINGLETON};
+    static final AttributeDefinition[] COMMON_STORE_ATTRIBUTES = {PASSIVATION, FETCH_STATE, PURGE, READ_ONLY, SINGLETON};
+    /* Note this has loader attributes as well */
     static final AttributeDefinition[] COMMON_STORE_PARAMETERS = {SHARED, PRELOAD, PASSIVATION, FETCH_STATE, PURGE, READ_ONLY, SINGLETON, PROPERTIES};
 
     // operations
@@ -130,21 +100,15 @@ public class BaseStoreResource extends SimpleResourceDefinition {
     }
 
     @Override
-    public void registerOperations(ManagementResourceRegistration resourceRegistration) {
-        super.registerOperations(resourceRegistration);
-    }
-
-    @Override
     public void registerChildren(ManagementResourceRegistration resourceRegistration) {
         super.registerChildren(resourceRegistration);
         // child resources
         resourceRegistration.registerSubModel(new StoreWriteBehindResource());
-        resourceRegistration.registerSubModel(new StorePropertyResource());
     }
 
     // override the add operation to provide a custom definition (for the optional PROPERTIES parameter to add())
     @Override
-    protected void registerAddOperation(final ManagementResourceRegistration registration, final OperationStepHandler handler, OperationEntry.Flag... flags) {
+    protected void registerAddOperation(final ManagementResourceRegistration registration, final AbstractAddStepHandler handler, OperationEntry.Flag... flags) {
         registration.registerOperationHandler(CACHE_STORE_ADD_DEFINITION, handler);
     }
 }
