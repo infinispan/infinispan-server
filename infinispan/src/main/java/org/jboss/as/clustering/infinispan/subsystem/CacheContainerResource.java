@@ -103,14 +103,6 @@ public class CacheContainerResource extends SimpleResourceDefinition {
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .build();
 
-    static final SimpleAttributeDefinition REBALANCING =
-            new SimpleAttributeDefinitionBuilder(ModelKeys.REBALANCING, ModelType.BOOLEAN, true)
-                    .setAllowExpression(true)
-                    .setFlags(AttributeAccess.Flag.RESTART_NONE)
-                    .setDefaultValue(new ModelNode().set(true))
-                    .setStorageRuntime()
-                    .build();
-
     static final SimpleAttributeDefinition REPLICATION_QUEUE_EXECUTOR =
             new SimpleAttributeDefinitionBuilder(ModelKeys.REPLICATION_QUEUE_EXECUTOR, ModelType.STRING, true)
                     .setXmlName(Attribute.REPLICATION_QUEUE_EXECUTOR.getLocalName())
@@ -160,8 +152,6 @@ public class CacheContainerResource extends SimpleResourceDefinition {
         }
 
         if(runtimeRegistration) {
-            // register writable attributes available only at runtime
-            resourceRegistration.registerReadWriteAttribute(REBALANCING, RebalancingAttributeHandler.INSTANCE, RebalancingAttributeHandler.INSTANCE);
             // register runtime cache container read-only metrics (attributes and handlers)
             CacheContainerMetricsHandler.INSTANCE.registerMetrics(resourceRegistration);
         }

@@ -8,9 +8,4 @@ import org.rhq.core.pluginapi.measurement.MeasurementFacet;
 
 public class IspnServerComponent extends MetricsRemappingComponent<IspnServerComponent> implements MeasurementFacet {
 
-   @Override
-   public void getValues(MeasurementReport report, Set<MeasurementScheduleRequest> reqs) throws Exception {
-      super.getValues(report, reqs);
-   }
-
 }

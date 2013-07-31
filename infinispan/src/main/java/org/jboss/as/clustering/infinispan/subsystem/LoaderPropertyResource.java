@@ -1,12 +1,6 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import org.jboss.as.controller.OperationStepHandler;
-import org.jboss.as.controller.PathElement;
-import org.jboss.as.controller.ReloadRequiredRemoveStepHandler;
-import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
-import org.jboss.as.controller.SimpleAttributeDefinition;
-import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
-import org.jboss.as.controller.SimpleResourceDefinition;
+import org.jboss.as.controller.*;
 import org.jboss.as.controller.registry.AttributeAccess;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelType;
@@ -16,13 +10,13 @@ import org.jboss.dmr.ModelType;
  */
 public class LoaderPropertyResource extends SimpleResourceDefinition {
 
-    private static final PathElement LOADER_PROPERTY_PATH = PathElement.pathElement(ModelKeys.PROPERTY);
+    static final PathElement LOADER_PROPERTY_PATH = PathElement.pathElement(ModelKeys.PROPERTY);
 
     // attributes
     static final SimpleAttributeDefinition VALUE =
             new SimpleAttributeDefinitionBuilder("value", ModelType.STRING, false)
                     .setXmlName("value")
-                    .setAllowExpression(false)
+                    .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .build();
 
@@ -32,6 +26,8 @@ public class LoaderPropertyResource extends SimpleResourceDefinition {
                 CacheConfigOperationHandlers.LOADER_PROPERTY_ADD,
                 ReloadRequiredRemoveStepHandler.INSTANCE);
     }
+
+    static final AttributeDefinition[] LOADER_PROPERTY_ATTRIBUTES = {VALUE};
 
     @Override
     public void registerAttributes(ManagementResourceRegistration resourceRegistration) {

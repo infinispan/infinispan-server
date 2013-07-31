@@ -36,6 +36,7 @@ import org.jboss.as.controller.SimpleOperationDefinitionBuilder;
 import org.jboss.as.controller.registry.AttributeAccess;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
+import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
 /**
@@ -45,7 +46,7 @@ import org.jboss.dmr.ModelType;
  */
 public class StoreResource extends BaseStoreResource {
 
-    public static final PathElement STORE_PATH = PathElement.pathElement(ModelKeys.STORE, ModelKeys.STORE_NAME);
+    public static final PathElement STORE_PATH = PathElement.pathElement(ModelKeys.STORE);
 
     // attributes
     static final SimpleAttributeDefinition CLASS =
@@ -56,6 +57,11 @@ public class StoreResource extends BaseStoreResource {
                     .build();
 
     static final AttributeDefinition[] STORE_ATTRIBUTES = {CLASS};
+
+    static final SimpleAttributeDefinition NAME =
+            new SimpleAttributeDefinitionBuilder(BaseStoreResource.NAME)
+                   .setDefaultValue(new ModelNode().set(ModelKeys.STORE_NAME))
+                   .build();
 
     // operations
     private static final OperationDefinition STORE_ADD_DEFINITION = new SimpleOperationDefinitionBuilder(ADD, InfinispanExtension.getResourceDescriptionResolver(ModelKeys.STORE))

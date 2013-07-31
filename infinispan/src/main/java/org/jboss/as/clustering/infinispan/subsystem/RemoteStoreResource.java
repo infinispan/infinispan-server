@@ -49,7 +49,7 @@ import org.jboss.dmr.ModelType;
  */
 public class RemoteStoreResource extends BaseStoreResource {
 
-    public static final PathElement REMOTE_STORE_PATH = PathElement.pathElement(ModelKeys.REMOTE_STORE, ModelKeys.REMOTE_STORE_NAME);
+    public static final PathElement REMOTE_STORE_PATH = PathElement.pathElement(ModelKeys.REMOTE_STORE);
 
     // attributes
     static final SimpleAttributeDefinition CACHE =
@@ -90,6 +90,11 @@ public class RemoteStoreResource extends BaseStoreResource {
 
     static final SimpleAttributeDefinition OUTBOUND_SOCKET_BINDING = new SimpleAttributeDefinition("outbound-socket-binding", ModelType.STRING, true);
 
+    static final SimpleAttributeDefinition NAME =
+            new SimpleAttributeDefinitionBuilder(BaseStoreResource.NAME)
+                   .setDefaultValue(new ModelNode().set(ModelKeys.REMOTE_STORE_NAME))
+                   .build();
+
     static final ObjectTypeAttributeDefinition REMOTE_SERVER = ObjectTypeAttributeDefinition.
             Builder.of(ModelKeys.REMOTE_SERVER, OUTBOUND_SOCKET_BINDING).
             setAllowNull(true).
@@ -97,7 +102,7 @@ public class RemoteStoreResource extends BaseStoreResource {
             build();
 
     static final ObjectListAttributeDefinition REMOTE_SERVERS = ObjectListAttributeDefinition.Builder.of(ModelKeys.REMOTE_SERVERS, REMOTE_SERVER).
-            setAllowNull(true).
+            setAllowNull(false).
             build();
 
     static final AttributeDefinition[] REMOTE_STORE_ATTRIBUTES = {CACHE, HOTROD_WRAPPING, TCP_NO_DELAY, RAW_VALUES, SOCKET_TIMEOUT, REMOTE_SERVERS};

@@ -3,21 +3,27 @@ package org.infinispan.server.rhq;
 import org.rhq.core.domain.configuration.Configuration;
 import org.rhq.core.domain.configuration.Property;
 import org.rhq.core.domain.configuration.PropertySimple;
+import org.rhq.core.domain.measurement.MeasurementDataTrait;
+import org.rhq.core.domain.measurement.MeasurementReport;
+import org.rhq.core.domain.measurement.MeasurementScheduleRequest;
 import org.rhq.core.domain.resource.CreateResourceStatus;
+import org.rhq.core.pluginapi.configuration.ConfigurationUpdateReport;
 import org.rhq.core.pluginapi.inventory.CreateChildResourceFacet;
 import org.rhq.core.pluginapi.inventory.CreateResourceReport;
 import org.rhq.modules.plugins.jbossas7.json.Address;
 import org.rhq.modules.plugins.jbossas7.json.Operation;
 import org.rhq.modules.plugins.jbossas7.json.Result;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * // TODO: Document this
  * @author Heiko W. Rupp
+ * @author William Burns
  */
 public class IspnCContainerComponent extends MetricsRemappingComponent<IspnCContainerComponent> implements CreateChildResourceFacet{
     static final String FLAVOR = "_flavor";
-
-//    private final Log log = LogFactory.getLog(IspnCContainerComponent.class);
 
     /**
      * Create embedded cache elements
@@ -31,7 +37,7 @@ public class IspnCContainerComponent extends MetricsRemappingComponent<IspnCCont
     public CreateResourceReport createResource(CreateResourceReport report) {
 
         Configuration config = report.getResourceConfiguration();
-        String flavor = config.getSimpleValue(FLAVOR,null);
+        String flavor = config.getSimpleValue(FLAVOR, null);
         if (flavor==null) {
             report.setStatus(CreateResourceStatus.INVALID_CONFIGURATION);
             report.setErrorMessage("No flavor given");

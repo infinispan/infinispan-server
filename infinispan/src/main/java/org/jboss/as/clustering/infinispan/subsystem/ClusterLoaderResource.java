@@ -14,14 +14,15 @@ import org.jboss.as.controller.SimpleOperationDefinitionBuilder;
 import org.jboss.as.controller.registry.AttributeAccess;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
+import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
 /**
  * @author Tristan Tarrant
  */
-public class ClusterLoaderResource extends BaseStoreResource {
+public class ClusterLoaderResource extends BaseLoaderResource {
 
-    private static final PathElement CLUSTER_LOADER_PATH = PathElement.pathElement(ModelKeys.CLUSTER_LOADER, ModelKeys.CLUSTER_LOADER_NAME);
+    private static final PathElement CLUSTER_LOADER_PATH = PathElement.pathElement(ModelKeys.CLUSTER_LOADER);
 
     // attributes
     static final SimpleAttributeDefinition REMOTE_TIMEOUT =
@@ -32,6 +33,11 @@ public class ClusterLoaderResource extends BaseStoreResource {
                     .build();
 
     static final AttributeDefinition[] CLUSTER_LOADER_ATTRIBUTES = {REMOTE_TIMEOUT};
+
+    static final SimpleAttributeDefinition NAME =
+            new SimpleAttributeDefinitionBuilder(BaseStoreResource.NAME)
+                   .setDefaultValue(new ModelNode().set(ModelKeys.CLUSTER_LOADER_NAME))
+                   .build();
 
     // operations
     private static final OperationDefinition CLUSTER_LOADER_ADD_DEFINITION = new SimpleOperationDefinitionBuilder(ADD, InfinispanExtension.getResourceDescriptionResolver(ModelKeys.CLUSTER_LOADER))
@@ -66,7 +72,7 @@ public class ClusterLoaderResource extends BaseStoreResource {
     // override the add operation to provide a custom definition (for the optional PROPERTIES parameter to add())
     @Override
     protected void registerAddOperation(final ManagementResourceRegistration registration, final OperationStepHandler handler, OperationEntry.Flag... flags) {
-        registration.registerOperationHandler(CLUSTER_LOADER_ADD_DEFINITION.getName(), handler, CLUSTER_LOADER_ADD_DEFINITION.getDescriptionProvider());
+        registration.registerOperationHandler(CLUSTER_LOADER_ADD_DEFINITION, handler);
     }
 
 }

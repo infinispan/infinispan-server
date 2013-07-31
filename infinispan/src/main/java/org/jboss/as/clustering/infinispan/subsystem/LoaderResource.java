@@ -2,18 +2,11 @@ package org.jboss.as.clustering.infinispan.subsystem;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 
-import org.jboss.as.controller.AttributeDefinition;
-import org.jboss.as.controller.OperationDefinition;
-import org.jboss.as.controller.OperationStepHandler;
-import org.jboss.as.controller.PathElement;
-import org.jboss.as.controller.ReloadRequiredRemoveStepHandler;
-import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
-import org.jboss.as.controller.SimpleAttributeDefinition;
-import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
-import org.jboss.as.controller.SimpleOperationDefinitionBuilder;
+import org.jboss.as.controller.*;
 import org.jboss.as.controller.registry.AttributeAccess;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
+import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
 /**
@@ -21,9 +14,9 @@ import org.jboss.dmr.ModelType;
  *
  * @author Tristan Tarrant
  */
-public class LoaderResource extends BaseStoreResource {
+public class LoaderResource extends BaseLoaderResource {
 
-    private static final PathElement LOADER_PATH = PathElement.pathElement(ModelKeys.LOADER, ModelKeys.LOADER_NAME);
+    private static final PathElement LOADER_PATH = PathElement.pathElement(ModelKeys.LOADER);
 
     // attributes
     static final SimpleAttributeDefinition CLASS =
@@ -34,6 +27,11 @@ public class LoaderResource extends BaseStoreResource {
                     .build();
 
     static final AttributeDefinition[] LOADER_ATTRIBUTES = {CLASS};
+
+    static final SimpleAttributeDefinition NAME =
+            new SimpleAttributeDefinitionBuilder(BaseStoreResource.NAME)
+                   .setDefaultValue(new ModelNode().set(ModelKeys.LOADER_NAME))
+                   .build();
 
     // operations
     private static final OperationDefinition LOADER_ADD_DEFINITION = new SimpleOperationDefinitionBuilder(ADD, InfinispanExtension.getResourceDescriptionResolver(ModelKeys.LOADER))

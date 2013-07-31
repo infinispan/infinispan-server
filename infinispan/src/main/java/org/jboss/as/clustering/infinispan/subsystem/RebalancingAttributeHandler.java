@@ -22,6 +22,7 @@ import static org.jboss.as.clustering.infinispan.InfinispanMessages.MESSAGES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VALUE;
 
+import org.infinispan.Cache;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.topology.LocalTopologyManager;
 import org.infinispan.topology.LocalTopologyManagerImpl;
@@ -45,11 +46,12 @@ public class RebalancingAttributeHandler implements OperationStepHandler {
     @Override
     public void execute(OperationContext context, ModelNode operation) throws OperationFailedException {
         final PathAddress address = PathAddress.pathAddress(operation.require(OP_ADDR));
-        final String cacheContainerName = address.getElement(address.size() - 1).getValue();
+        final String cacheContainerName = address.getElement(address.size() - 2).getValue();
+        final String cacheName = address.getElement(address.size() - 1).getValue();
         final ServiceController<?> controller = context.getServiceRegistry(false).getService(
-                EmbeddedCacheManagerService.getServiceName(cacheContainerName));
-        EmbeddedCacheManager cacheManager = (EmbeddedCacheManager) controller.getValue();
-        LocalTopologyManagerImpl localTopologyManager = (LocalTopologyManagerImpl) cacheManager.getCache().getAdvancedCache()
+                CacheService.getServiceName(cacheContainerName, cacheName));
+        Cache<?, ?> cache = (Cache<?, ?>) controller.getValue();
+        LocalTopologyManagerImpl localTopologyManager = (LocalTopologyManagerImpl) cache.getAdvancedCache()
                 .getComponentRegistry().getGlobalComponentRegistry().getComponent(LocalTopologyManager.class);
         if (localTopologyManager != null) {
             try {

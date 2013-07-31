@@ -30,9 +30,12 @@ import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathElement;
 import org.jboss.as.controller.ReloadRequiredRemoveStepHandler;
 import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
+import org.jboss.as.controller.SimpleAttributeDefinition;
+import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
 import org.jboss.as.controller.SimpleOperationDefinitionBuilder;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.OperationEntry;
+import org.jboss.dmr.ModelNode;
 
 /**
  * Resource description for the addressable resource
@@ -43,10 +46,15 @@ import org.jboss.as.controller.registry.OperationEntry;
  */
 public class StringKeyedJDBCStoreResource extends BaseJDBCStoreResource {
 
-    public static final PathElement STRING_KEYED_JDBC_STORE_PATH = PathElement.pathElement(ModelKeys.STRING_KEYED_JDBC_STORE, ModelKeys.STRING_KEYED_JDBC_STORE_NAME);
+    public static final PathElement STRING_KEYED_JDBC_STORE_PATH = PathElement.pathElement(ModelKeys.STRING_KEYED_JDBC_STORE);
 
     // attributes
     static final AttributeDefinition[] STRING_KEYED_JDBC_STORE_ATTRIBUTES = {STRING_KEYED_TABLE};
+
+   static final SimpleAttributeDefinition NAME =
+         new SimpleAttributeDefinitionBuilder(BaseStoreResource.NAME)
+               .setDefaultValue(new ModelNode().set(ModelKeys.STRING_KEYED_TABLE_NAME))
+               .build();
 
     // operations
     private static final OperationDefinition STRING_KEYED_JDBC_STORE_ADD_DEFINITION = new SimpleOperationDefinitionBuilder(ADD, InfinispanExtension.getResourceDescriptionResolver(ModelKeys.STRING_KEYED_JDBC_STORE))
