@@ -67,7 +67,7 @@
             <local-cache name="default" start="EAGER">
                <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
                <transaction mode="NONE" />
-               <remote-store cache="default" socket-timeout="60000" tcp-no-delay="true" hotrod-wrapping="true" purge="false" passivation="false">
+               <remote-store cache="default" socket-timeout="60000" tcp-no-delay="true" shared="true" hotrod-wrapping="true" purge="false" passivation="false">
                   <remote-server outbound-socket-binding="remote-store-hotrod-server" />
                </remote-store>
             </local-cache>
