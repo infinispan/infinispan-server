@@ -95,6 +95,9 @@ class HotRodSubsystemAdd extends ProtocolServiceSubsystemAdd {
          if (config.hasDefined(ModelKeys.LAZY_RETRIEVAL)) {
             builder.topologyStateTransfer(!config.get(ModelKeys.LAZY_RETRIEVAL).asBoolean(false));
          }
+         if (config.hasDefined(ModelKeys.AWAIT_INITIAL_RETRIEVAL)) {
+            builder.topologyAwaitInitialTransfer(config.get(ModelKeys.AWAIT_INITIAL_RETRIEVAL).asBoolean());
+         }
       }
    }
 
