@@ -30,6 +30,7 @@ import org.infinispan.AbstractDelegatingAdvancedCache;
 import org.infinispan.AdvancedCache;
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.Configuration;
+import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfiguration;
 import org.infinispan.manager.AbstractDelegatingEmbeddedCacheManager;
 import org.infinispan.manager.CacheContainer;
@@ -74,7 +75,15 @@ public class DefaultEmbeddedCacheManager extends AbstractDelegatingEmbeddedCache
     @Deprecated
     @Override
     public org.infinispan.config.Configuration defineConfiguration(String cacheName, String templateCacheName, org.infinispan.config.Configuration configurationOverride) {
-        return this.cm.defineConfiguration(this.getCacheName(cacheName), this.getCacheName(templateCacheName), configurationOverride);
+        // Hack to workaround broken security subsystem usage. We can safely ignore the configurationOverride and we can return
+        // an empty legacy configuration object
+        ConfigurationBuilder builder = new ConfigurationBuilder();
+        Configuration configuration = this.cm.getCacheConfiguration(templateCacheName);
+        if (configuration != null) {
+            builder.read(configuration);
+        }
+        this.cm.defineConfiguration(cacheName, builder.build());
+        return new org.infinispan.config.Configuration();
     }
 
     @Override
