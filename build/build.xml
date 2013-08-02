@@ -65,7 +65,7 @@
 
       <copy todir="${output.dir}/client/hotrod/java">
          <fileset file="${org.infinispan:infinispan-client-hotrod:jar}" />
-         <fileset file="${org.infinispan:infinispan-core:jar}" />
+         <fileset file="${org.infinispan:infinispan-commons:jar}" />
          <fileset file="${org.jboss.marshalling:jboss-marshalling:jar}" />
          <fileset file="${org.jboss.marshalling:jboss-marshalling-river:jar}" />
          <fileset file="${org.jboss.logging:jboss-logging:jar}" />
