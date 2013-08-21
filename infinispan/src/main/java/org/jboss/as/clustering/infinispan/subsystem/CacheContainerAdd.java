@@ -155,6 +155,8 @@ public class CacheContainerAdd extends AbstractAddStepHandler {
             final String cluster = (resolvedValue = TransportResource.CLUSTER.resolveModelAttribute(context, transport)).isDefined() ? resolvedValue.asString() : name ;
             long lockTimeout = TransportResource.LOCK_TIMEOUT.resolveModelAttribute(context, transport).asLong();
             transportExecutor = (resolvedValue = TransportResource.EXECUTOR.resolveModelAttribute(context, transport)).isDefined() ? resolvedValue.asString() : null ;
+            final boolean strictPeerToPeer = TransportResource.STRICT_PEER_TO_PEER.resolveModelAttribute(context, transport).asBoolean();
+            transportConfig.setStrictPeerToPeer(strictPeerToPeer);
 
             // initialise the Transport
             transportConfig.setLockTimeout(lockTimeout);
@@ -373,9 +375,14 @@ public class CacheContainerAdd extends AbstractAddStepHandler {
         private final InjectedValue<Executor> executor = new InjectedValue<Executor>();
 
         private Long lockTimeout;
+        private boolean strictPeerToPeer;
 
         void setLockTimeout(long lockTimeout) {
             this.lockTimeout = lockTimeout;
+        }
+
+        void setStrictPeerToPeer(boolean strictPeerToPeer) {
+            this.strictPeerToPeer = strictPeerToPeer;
         }
 
         Injector<ChannelFactory> getChannelFactoryInjector() {
@@ -394,6 +401,11 @@ public class CacheContainerAdd extends AbstractAddStepHandler {
         @Override
         public Executor getExecutor() {
             return this.executor.getOptionalValue();
+        }
+
+        @Override
+        public boolean isStrictPeerToPeer() {
+            return this.strictPeerToPeer;
         }
 
         @Override

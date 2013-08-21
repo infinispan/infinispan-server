@@ -23,6 +23,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
  * @author Tristan Tarrant
  * @author Radoslav Husar
  * @author William Burns
+ * @author Martin Gencur
  */
 public final class InfinispanSubsystemXMLReader_6_0 implements XMLElementReader<List<ModelNode>> {
 
@@ -172,6 +173,10 @@ public final class InfinispanSubsystemXMLReader_6_0 implements XMLElementReader<
                 }
                 case LOCK_TIMEOUT: {
                     TransportResource.LOCK_TIMEOUT.parseAndSetParameter(value, transport, reader);
+                    break;
+                }
+                case STRICT_PEER_TO_PEER: {
+                    TransportResource.STRICT_PEER_TO_PEER.parseAndSetParameter(value, transport, reader);
                     break;
                 }
                 default: {

@@ -77,7 +77,15 @@ public class TransportResource extends SimpleResourceDefinition {
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .build();
 
-    static final AttributeDefinition[] TRANSPORT_ATTRIBUTES = {STACK, CLUSTER, EXECUTOR, LOCK_TIMEOUT};
+    static final SimpleAttributeDefinition STRICT_PEER_TO_PEER =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.STRICT_PEER_TO_PEER, ModelType.BOOLEAN, true)
+                    .setXmlName(Attribute.STRICT_PEER_TO_PEER.getLocalName())
+                    .setAllowExpression(true)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set(false))
+                    .build();
+
+    static final AttributeDefinition[] TRANSPORT_ATTRIBUTES = {STACK, CLUSTER, EXECUTOR, LOCK_TIMEOUT, STRICT_PEER_TO_PEER};
 
     public TransportResource() {
         super(TRANSPORT_PATH,
