@@ -141,6 +141,7 @@ public class ModelKeys {
     static final String STOP_TIMEOUT = "stop-timeout";
     static final String STORE = "store";
     static final String STORE_NAME = "STORE";
+    static final String STRICT_PEER_TO_PEER = "strict-peer-to-peer";
     static final String STRATEGY = "strategy";
     static final String STRIPING = "striping";
     static final String TAKE_BACKUP_OFFLINE_AFTER_FAILURES = "after-failures";

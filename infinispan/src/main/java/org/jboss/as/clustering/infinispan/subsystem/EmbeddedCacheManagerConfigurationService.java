@@ -62,6 +62,7 @@ public class EmbeddedCacheManagerConfigurationService implements Service<Embedde
         Long getLockTimeout();
         ChannelFactory getChannelFactory();
         Executor getExecutor();
+        boolean isStrictPeerToPeer();
     }
 
     interface Dependencies {
@@ -138,6 +139,8 @@ public class EmbeddedCacheManagerConfigurationService implements Service<Embedde
             if (timeout != null) {
                 transportBuilder.distributedSyncTimeout(timeout.longValue());
             }
+            boolean strictPeerToPeer = transport.isStrictPeerToPeer();
+            transportBuilder.strictPeerToPeer(strictPeerToPeer);
             // Topology is retrieved from the channel
             org.jboss.as.clustering.jgroups.TransportConfiguration.Topology topology = transport.getChannelFactory().getProtocolStackConfiguration().getTransport().getTopology();
             if (topology != null) {
