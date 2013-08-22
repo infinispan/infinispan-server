@@ -47,6 +47,7 @@ import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.remoting.transport.Address;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -55,12 +56,12 @@ import org.junit.Test;
 public class DefaultEmbeddedCacheManagerTest {
     private final EmbeddedCacheManager manager = mock(EmbeddedCacheManager.class);
     private final EmbeddedCacheManager subject = new DefaultEmbeddedCacheManager(this.manager, "default");
-    
+
     @After
     public void cleanup() {
         reset(manager);
     }
-    
+
     @Test
     public void getDefaultCache() {
         @SuppressWarnings("unchecked")
@@ -68,7 +69,7 @@ public class DefaultEmbeddedCacheManagerTest {
 
         when(this.manager.<Object, Object>getCache("default", true)).thenReturn(cache);
         when(cache.getAdvancedCache()).thenReturn(cache);
-        
+
         Cache<Object, Object> result = this.subject.getCache();
 
         assertNotSame(cache, result);
@@ -82,14 +83,14 @@ public class DefaultEmbeddedCacheManagerTest {
         AdvancedCache<Object, Object> defaultCache = mock(AdvancedCache.class);
         @SuppressWarnings("unchecked")
         AdvancedCache<Object, Object> otherCache = mock(AdvancedCache.class);
-        
+
         when(this.manager.<Object, Object>getCache("default", true)).thenReturn(defaultCache);
         when(this.manager.<Object, Object>getCache("other", true)).thenReturn(otherCache);
         when(defaultCache.getAdvancedCache()).thenReturn(defaultCache);
         when(otherCache.getAdvancedCache()).thenReturn(otherCache);
-        
+
         Cache<Object, Object> result = this.subject.getCache("default");
-        
+
         assertNotSame(defaultCache, result);
         assertEquals(result, defaultCache);
         assertSame(this.subject, result.getCacheManager());
@@ -158,16 +159,16 @@ public class DefaultEmbeddedCacheManagerTest {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         Configuration defaultConfig = builder.build();
         Configuration otherConfig = builder.build();
-        
+
         when(this.manager.defineConfiguration("default", defaultConfig)).thenReturn(defaultConfig);
         when(this.manager.defineConfiguration("other", otherConfig)).thenReturn(otherConfig);
-        
+
         Configuration result = this.subject.defineConfiguration("default", defaultConfig);
-        
+
         assertSame(defaultConfig, result);
-        
+
         result = this.subject.defineConfiguration("other", otherConfig);
-        
+
         assertSame(otherConfig, result);
     }
 
@@ -200,6 +201,7 @@ public class DefaultEmbeddedCacheManagerTest {
     }
 
     @SuppressWarnings("deprecation")
+    @Ignore
     @Test
     public void defineConfigurationWithTemplate() {
         org.infinispan.config.Configuration defaultConfig = new org.infinispan.config.Configuration();
@@ -330,11 +332,11 @@ public class DefaultEmbeddedCacheManagerTest {
     @Test
     public void getCacheManagerConfiguration() {
         GlobalConfiguration global = new GlobalConfigurationBuilder().build();
-        
+
         when(this.manager.getCacheManagerConfiguration()).thenReturn(global);
-        
+
         GlobalConfiguration result = this.subject.getCacheManagerConfiguration();
-        
+
         assertSame(global, result);
     }
 
@@ -352,22 +354,22 @@ public class DefaultEmbeddedCacheManagerTest {
     @Test
     public void getDefaultCacheConfiguration() {
         Configuration config = new ConfigurationBuilder().build();
-        
+
         when(this.manager.getDefaultCacheConfiguration()).thenReturn(config);
-        
+
         Configuration result = this.subject.getDefaultCacheConfiguration();
-        
+
         assertSame(config, result);
     }
 
     @Test
     public void getCacheConfiguration() {
         Configuration config = new ConfigurationBuilder().build();
-        
+
         when(this.manager.getCacheConfiguration("cache")).thenReturn(config);
-        
+
         Configuration result = this.subject.getCacheConfiguration("cache");
-        
+
         assertSame(config, result);
     }
 
@@ -424,13 +426,13 @@ public class DefaultEmbeddedCacheManagerTest {
 
         assertTrue(result);
     }
-    
+
     @Test
     public void startCaches() {
         when(this.manager.startCaches("other", "default")).thenReturn(this.manager);
-        
+
         EmbeddedCacheManager result = this.subject.startCaches("other", CacheContainer.DEFAULT_CACHE_NAME);
-        
+
         assertSame(this.subject, result);
     }
 }
