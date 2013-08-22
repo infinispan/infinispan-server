@@ -118,7 +118,7 @@ public class JChannelFactory implements ChannelFactory, ChannelListener, Protoco
             final RELAY2 relay = new RELAY2().site(localSite);
             for (short i = 0; i < sites.size(); ++i) {
                 final String site = sites.get(i);
-                RelayConfig.SiteConfig siteConfig = new RelayConfig.SiteConfig(site, i);
+                RelayConfig.SiteConfig siteConfig = new RelayConfig.SiteConfig(site);
                 relay.addSite(site, siteConfig);
                 if (site.equals(localSite)) {
                     for (RelayConfig.BridgeConfig bridge: bridges.values()) {
