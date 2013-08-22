@@ -662,7 +662,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         } else {
             String className = loader.require(ModelKeys.CLASS).asString();
             try {
-                Class<? extends CacheLoader> loaderClass = CacheLoader.class.getClassLoader().loadClass(className).asSubclass(CacheLoader.class);
+                Class<? extends org.infinispan.loaders.CacheLoader> loaderClass = CacheLoader.class.getClassLoader().loadClass(className).asSubclass(org.infinispan.loaders.CacheLoader.class);
                 return loadersBuilder.loaders().addLoader().cacheLoader(loaderClass.newInstance());
             } catch (Exception e) {
                 throw InfinispanMessages.MESSAGES.invalidCacheLoader(e, className);
@@ -733,7 +733,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         } else {
             String className = store.require(ModelKeys.CLASS).asString();
             try {
-                Class<? extends CacheStore> storeClass = CacheStore.class.getClassLoader().loadClass(className).asSubclass(CacheStore.class);
+                Class<? extends org.infinispan.loaders.CacheStore> storeClass = CacheStore.class.getClassLoader().loadClass(className).asSubclass(org.infinispan.loaders.CacheStore.class);
                 return loadersBuilder.loaders().addStore().cacheStore(storeClass.newInstance());
             } catch (Exception e) {
                 throw InfinispanMessages.MESSAGES.invalidCacheStore(e, className);
