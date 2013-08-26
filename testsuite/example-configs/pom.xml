@@ -181,7 +181,6 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
                <forkMode>once</forkMode>
-               <skipTests>false</skipTests>
                <systemPropertyVariables>
                   <server1.dist>${server1.dist}</server1.dist>
                   <server2.dist>${server2.dist}</server2.dist>
