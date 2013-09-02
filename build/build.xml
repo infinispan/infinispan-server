@@ -177,10 +177,6 @@
          <maven-resource group="org.infinispan" artifact="infinispan-server-websocket" />
       </module-def>
 
-      <module-def name="org.infinispan.upgrade-tools" src="${infinispan.server.modules.dir}">
-         <maven-resource group="org.infinispan" artifact="infinispan-upgrade-tools" />
-      </module-def>
-
       <module-def name="org.scala-lang.library" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.scala-lang" artifact="scala-library" />
       </module-def>
