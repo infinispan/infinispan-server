@@ -33,6 +33,7 @@
       <version.org.infinispan>${project.version}</version.org.infinispan>
       <version.org.infinispan.arquillian.container>1.0.0.CR1</version.org.infinispan.arquillian.container>
       <version.xml.maven.plugin>1.0</version.xml.maven.plugin>
+      <version.org.rhq>4.4.0</version.org.rhq>
       <relocations></relocations>
    </properties>
 
@@ -222,6 +223,18 @@
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-upgrade-tools</artifactId>
             <version>${version.org.infinispan}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.rhq</groupId>
+            <artifactId>rhq-jboss-as-7-plugin</artifactId>
+            <version>${version.org.rhq}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.rhq</groupId>
+            <artifactId>rhq-core-native-system</artifactId>
+            <version>${version.org.rhq}</version>
          </dependency>
 
          <dependency>
