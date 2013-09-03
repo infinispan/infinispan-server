@@ -484,6 +484,10 @@ public final class InfinispanSubsystemXMLReader_6_0 implements XMLElementReader<
                 this.parseRemoteStore(reader, cache, operations);
                 break;
             }
+            case LEVELDB_STORE: {
+                this.parseLevelDBStore(reader, cache, operations);
+                break;
+            }
             case INDEXING: {
                 this.parseIndexing(reader, cache);
                 break;
@@ -843,6 +847,131 @@ public final class InfinispanSubsystemXMLReader_6_0 implements XMLElementReader<
 
         operations.add(store);
         operations.addAll(additionalConfigurationOperations);
+    }
+
+    private void parseLevelDBStore(XMLExtendedStreamReader reader, ModelNode cache, List<ModelNode> operations) throws XMLStreamException {
+        ModelNode store = Util.getEmptyOperation(ModelDescriptionConstants.ADD, null);
+        String name = ModelKeys.LEVELDB_STORE_NAME;
+
+        List<ModelNode> additionalConfigurationOperations = new ArrayList<ModelNode>();
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String value = reader.getAttributeValue(i);
+            Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+            switch (attribute) {
+                case PATH: {
+                    LevelDBStoreResource.PATH.parseAndSetParameter(value, store, reader);
+                    break;
+                }
+                case BLOCK_SIZE: {
+                    LevelDBStoreResource.BLOCK_SIZE.parseAndSetParameter(value, store, reader);
+                    break;
+                }
+                case CACHE_SIZE: {
+                    LevelDBStoreResource.CACHE_SIZE.parseAndSetParameter(value, store, reader);
+                    break;
+                }
+                case CLEAR_THRESHOLD: {
+                    LevelDBStoreResource.CLEAR_THRESHOLD.parseAndSetParameter(value, store, reader);
+                    break;
+                }
+                default: {
+                    name = this.parseStoreAttribute(name, reader, i, attribute, value, store);
+                }
+            }
+        }
+
+        store.get(ModelKeys.NAME).set(name);
+        addNameToAddress(store, PathAddress.pathAddress(cache.get(OP_ADDR)),
+                ModelKeys.LEVELDB_STORE);
+
+        while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
+            Element element = Element.forName(reader.getLocalName());
+            switch (element) {
+                case EXPIRATION: {
+                    this.parseStoreExpiry(reader, store, additionalConfigurationOperations);
+                    break;
+                }
+                case COMPRESSION: {
+                    this.parseStoreCompression(reader, store, additionalConfigurationOperations);
+                    break;
+                }
+                case IMPLEMENTATION: {
+                    this.parseStoreImplementation(reader, store, additionalConfigurationOperations);
+                    break;
+                }
+                default: {
+                    this.parseStoreProperty(reader, store, additionalConfigurationOperations);
+                }
+            }
+        }
+
+        operations.add(store);
+        operations.addAll(additionalConfigurationOperations);
+    }
+
+    private void parseStoreExpiry(XMLExtendedStreamReader reader, ModelNode store, List<ModelNode> operations) throws XMLStreamException {
+        PathAddress storeExpiryAddress = PathAddress.pathAddress(store.get(OP_ADDR)).append(ModelKeys.EXPIRATION, ModelKeys.EXPIRATION_NAME);
+        ModelNode storeExpiry = Util.createAddOperation(storeExpiryAddress);
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String value = reader.getAttributeValue(i);
+            Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+            switch (attribute) {
+                case PATH: {
+                    LevelDBExpirationResource.PATH.parseAndSetParameter(value, storeExpiry, reader);
+                    break;
+                }
+                case QUEUE_SIZE: {
+                    LevelDBExpirationResource.QUEUE_SIZE.parseAndSetParameter(value, storeExpiry, reader);
+                    break;
+                }
+                default:
+                    throw ParseUtils.unexpectedAttribute(reader, i);
+            }
+        }
+        ParseUtils.requireNoContent(reader);
+        operations.add(storeExpiry);
+    }
+
+    private void parseStoreCompression(XMLExtendedStreamReader reader, ModelNode store, List<ModelNode> operations) throws XMLStreamException {
+        PathAddress storeCompressionAddress = PathAddress.pathAddress(store.get(OP_ADDR)).append(ModelKeys.COMPRESSION, ModelKeys.COMPRESSION_NAME);
+        ModelNode storeCompression = Util.createAddOperation(storeCompressionAddress);
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String value = reader.getAttributeValue(i);
+            Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+            switch (attribute) {
+                case TYPE: {
+                    LevelDBCompressionResource.TYPE.parseAndSetParameter(value, storeCompression, reader);
+                    break;
+                }
+                default:
+                    throw ParseUtils.unexpectedAttribute(reader, i);
+            }
+        }
+        ParseUtils.requireNoContent(reader);
+        operations.add(storeCompression);
+    }
+
+    private void parseStoreImplementation(XMLExtendedStreamReader reader, ModelNode store, List<ModelNode> operations) throws XMLStreamException {
+        PathAddress storeImplementationAddress = PathAddress.pathAddress(store.get(OP_ADDR)).append(ModelKeys.IMPLEMENTATION, ModelKeys.IMPLEMENTATION_NAME);
+        ModelNode storeImplementation = Util.createAddOperation(storeImplementationAddress);
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String value = reader.getAttributeValue(i);
+            Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+            switch (attribute) {
+                case TYPE: {
+                    LevelDBImplementationResource.TYPE.parseAndSetParameter(value, storeImplementation, reader);
+                    break;
+                }
+                default:
+                    throw ParseUtils.unexpectedAttribute(reader, i);
+            }
+        }
+        ParseUtils.requireNoContent(reader);
+        operations.add(storeImplementation);
     }
 
     private void parseRemoteServer(XMLExtendedStreamReader reader, ModelNode server) throws XMLStreamException {

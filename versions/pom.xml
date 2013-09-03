@@ -164,6 +164,12 @@
 
          <dependency>
             <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-cachestore-leveldb</artifactId>
+            <version>${version.org.infinispan}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.infinispan</groupId>
             <artifactId>infinispan-client-hotrod</artifactId>
             <version>${version.org.infinispan}</version>
          </dependency>

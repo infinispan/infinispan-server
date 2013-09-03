@@ -2,7 +2,7 @@
 <!-- See src/resources/configuration/ReadMe.txt for how the configuration assembly works -->
 <config default-supplement="default">
    <extension-module>org.jboss.as.clustering.infinispan</extension-module>
-   <subsystem xmlns="urn:infinispan:server:core:5.3" default-cache-container="@@default-cache-container@@">
+   <subsystem xmlns="urn:infinispan:server:core:6.0" default-cache-container="@@default-cache-container@@">
       <?CACHE-CONTAINERS?>
    </subsystem>
    <supplement name="ccl-clustered">
@@ -54,6 +54,36 @@
                <file-store passivation="false" path="nc" purge="true" shared="false">
                   <write-behind flush-lock-timeout="1" modification-queue-size="1024" shutdown-timeout="25000" thread-pool-size="1" />
                </file-store>
+            </local-cache>
+         </cache-container>
+         <cache-container name="security">
+         </cache-container>
+      </replacement>
+   </supplement>
+   <supplement name="leveldb-cs-local">
+      <replacement placeholder="@@default-cache-container@@" attributeValue="local" />
+      <replacement placeholder="CACHE-CONTAINERS">
+         <cache-container name="local" default-cache="default">
+            <local-cache name="default" start="EAGER">
+               <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
+               <transaction mode="NONE" />
+               <eviction strategy="LRU" max-entries="1000" />
+               <leveldb-store passivation="true" path="level-dc" purge="true" shared="false" />
+            </local-cache>
+            <local-cache name="memcachedCache" start="EAGER">
+               <locking isolation="NONE" acquire-timeout="30000" concurrency-level="1000" striping="false" />
+               <transaction mode="NONE" />
+               <leveldb-store passivation="false" path="level-mc" purge="true" shared="false">
+                  <expiration path="leveldb-mc-expired"/>
+               </leveldb-store>
+            </local-cache>
+            <local-cache name="namedCache" start="EAGER">
+               <expiration lifespan="2000" max-idle="1000" />
+               <leveldb-store path="leveldb-nc" block-size="1024" cache-size="50000" clear-threshold="100000">
+                  <expiration path="leveldb-nc-expired" queue-size="2000"/>
+                  <compression type="SNAPPY"/>
+                  <implementation type="JAVA"/>
+               </leveldb-store>
             </local-cache>
          </cache-container>
          <cache-container name="security">

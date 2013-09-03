@@ -56,11 +56,15 @@
            paramTemplateFile="configuration/standalone/template.xml"
            paramSubsystemsFile="configuration/examples/subsystems-ccl-clustered.xml"
            paramOutputFile="${generated.configs.examples}/clustered-ccl.xml"/>
-       <generate-server-config 
-           paramTemplateFile="configuration/standalone/template.xml" 
-           paramSubsystemsFile="configuration/examples/subsystems-fcs-local.xml"
-           paramOutputFile="${generated.configs.examples}/standalone-fcs-local.xml"/>
-       <generate-server-config 
+       <generate-server-config
+             paramTemplateFile="configuration/standalone/template.xml"
+             paramSubsystemsFile="configuration/examples/subsystems-fcs-local.xml"
+             paramOutputFile="${generated.configs.examples}/standalone-fcs-local.xml"/>
+       <generate-server-config
+             paramTemplateFile="configuration/standalone/template.xml"
+             paramSubsystemsFile="configuration/examples/subsystems-leveldb-cs-local.xml"
+             paramOutputFile="${generated.configs.examples}/standalone-leveldb-cs-local.xml"/>
+       <generate-server-config
            paramTemplateFile="configuration/standalone/template.xml" 
            paramSubsystemsFile="configuration/examples/subsystems-jdbc-clustered.xml"
            paramOutputFile="${generated.configs.examples}/clustered-jdbc.xml"/>
