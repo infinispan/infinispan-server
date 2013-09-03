@@ -104,6 +104,10 @@
            paramTemplateFile="configuration/standalone/template.xml"
            paramSubsystemsFile="configuration/examples/subsystems-compatibility-mode.xml"
            paramOutputFile="${generated.configs.examples}/standalone-compatibility-mode.xml"/>
+       <generate-server-config 
+           paramTemplateFile="configuration/standalone/template.xml" 
+           paramSubsystemsFile="configuration/examples/subsystems-rest-rolling-upgrade.xml"
+           paramOutputFile="${generated.configs.examples}/standalone-rest-rolling-upgrade.xml"/>
     </target>
 
 

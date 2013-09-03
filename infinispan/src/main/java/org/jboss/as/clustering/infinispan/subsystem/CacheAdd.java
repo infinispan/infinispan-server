@@ -66,6 +66,8 @@ import org.infinispan.loaders.jdbc.configuration.JdbcMixedCacheStoreConfiguratio
 import org.infinispan.loaders.jdbc.configuration.JdbcStringBasedCacheStoreConfigurationBuilder;
 import org.infinispan.loaders.jdbc.configuration.TableManipulationConfigurationBuilder;
 import org.infinispan.loaders.remote.configuration.RemoteCacheStoreConfigurationBuilder;
+import org.infinispan.loaders.rest.configuration.RestCacheStoreConfigurationBuilder;
+import org.infinispan.loaders.rest.metadata.MimeMetadataHelper;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.commons.marshall.Marshaller;
 import org.infinispan.transaction.LockingMode;
@@ -120,7 +122,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
     private static final String[] loaderKeys = new String[] { ModelKeys.LOADER, ModelKeys.CLUSTER_LOADER };
     private static final String[] storeKeys = new String[] { ModelKeys.STORE, ModelKeys.FILE_STORE,
             ModelKeys.STRING_KEYED_JDBC_STORE, ModelKeys.BINARY_KEYED_JDBC_STORE, ModelKeys.MIXED_KEYED_JDBC_STORE,
-            ModelKeys.REMOTE_STORE, ModelKeys.LEVELDB_STORE };
+            ModelKeys.REMOTE_STORE, ModelKeys.LEVELDB_STORE, ModelKeys.REMOTE_STORE, ModelKeys.REST_STORE };
 
     public static synchronized Configuration getDefaultConfiguration(CacheMode cacheMode) {
         if (defaults == null) {
@@ -774,6 +776,56 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
                 builder.implementationType(implementationType);
             }
             return builder;
+        } else if (storeKey.equals(ModelKeys.REST_STORE)) {
+                final RestCacheStoreConfigurationBuilder builder = loadersBuilder.addStore(RestCacheStoreConfigurationBuilder.class);
+                builder.host("localhost"); // To pass builder validation, the builder will be configured properly when the outbound socket is ready to be injected
+                for (ModelNode server : store.require(ModelKeys.REMOTE_SERVERS).asList()) {
+                    String outboundSocketBinding = server.get(ModelKeys.OUTBOUND_SOCKET_BINDING).asString();
+                    Injector<OutboundSocketBinding> injector = new SimpleInjector<OutboundSocketBinding>() {
+                        @Override
+                        public void inject(OutboundSocketBinding value) {
+                            try {
+                                builder.host(value.getDestinationAddress().getHostAddress()).port(value.getDestinationPort()); // FIXME: add support for multiple hosts
+                            } catch (UnknownHostException e) {
+                                throw InfinispanMessages.MESSAGES.failedToInjectSocketBinding(e, value);
+                            }
+                        }
+                    };
+                    dependencies.add(new Dependency<OutboundSocketBinding>(OutboundSocketBinding.OUTBOUND_SOCKET_BINDING_BASE_SERVICE_NAME.append(outboundSocketBinding), OutboundSocketBinding.class, injector));
+                }
+                if (store.hasDefined(ModelKeys.APPEND_CACHE_NAME_TO_PATH)) {
+                    builder.appendCacheNameToPath(store.require(ModelKeys.APPEND_CACHE_NAME_TO_PATH).asBoolean());
+                }
+                if (store.hasDefined(ModelKeys.PATH)) {
+                    builder.path(store.get(ModelKeys.PATH).asString());
+                }
+                builder.metadataHelper(MimeMetadataHelper.class);
+
+                if (store.hasDefined(ModelKeys.CONNECTION_POOL)) {
+                    ModelNode pool = store.get(ModelKeys.CONNECTION_POOL);
+                    if (pool.hasDefined(ModelKeys.CONNECTION_TIMEOUT)) {
+                        builder.connectionPool().connectionTimeout(pool.require(ModelKeys.CONNECTION_TIMEOUT).asInt());
+                    }
+                    if (pool.hasDefined(ModelKeys.MAX_CONNECTIONS_PER_HOST)) {
+                        builder.connectionPool().maxConnectionsPerHost(pool.require(ModelKeys.MAX_CONNECTIONS_PER_HOST).asInt());
+                    }
+                    if (pool.hasDefined(ModelKeys.MAX_TOTAL_CONNECTIONS)) {
+                        builder.connectionPool().maxTotalConnections(pool.require(ModelKeys.MAX_TOTAL_CONNECTIONS).asInt());
+                    }
+                    if (pool.hasDefined(ModelKeys.RECEIVE_BUFFER_SIZE)) {
+                        builder.connectionPool().receiveBufferSize(pool.require(ModelKeys.RECEIVE_BUFFER_SIZE).asInt());
+                    }
+                    if (pool.hasDefined(ModelKeys.SEND_BUFFER_SIZE)) {
+                        builder.connectionPool().sendBufferSize(pool.require(ModelKeys.SEND_BUFFER_SIZE).asInt());
+                    }
+                    if (pool.hasDefined(ModelKeys.SOCKET_TIMEOUT)) {
+                        builder.connectionPool().socketTimeout(pool.require(ModelKeys.SOCKET_TIMEOUT).asInt());
+                    }
+                    if (pool.hasDefined(ModelKeys.TCP_NO_DELAY)) {
+                        builder.connectionPool().tcpNoDelay(pool.require(ModelKeys.TCP_NO_DELAY).asBoolean());
+                    }
+                }
+                return builder;
         } else {
             String className = store.require(ModelKeys.CLASS).asString();
             try {

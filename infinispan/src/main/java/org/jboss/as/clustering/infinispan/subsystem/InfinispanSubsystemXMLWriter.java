@@ -365,6 +365,44 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
             }
         }
 
+        if (cache.get(ModelKeys.REST_STORE).isDefined()) {
+            for (Property restStoreEntry : cache.get(ModelKeys.REST_STORE).asPropertyList()) {
+                ModelNode store = restStoreEntry.getValue();
+                writer.writeStartElement(Element.REST_STORE.getLocalName());
+                // write identifier before other attributes
+                ModelNode name = new ModelNode();
+                name.get(ModelKeys.NAME).set(restStoreEntry.getName());
+                RestStoreResource.NAME.marshallAsAttribute(name, false, writer);
+                this.writeOptional(writer, Attribute.APPEND_CACHE_NAME_TO_PATH, store, ModelKeys.APPEND_CACHE_NAME_TO_PATH);
+                this.writeOptional(writer, Attribute.PATH, store, ModelKeys.PATH);
+
+                this.writeStoreAttributes(writer, store);
+                this.writeStoreWriteBehind(writer, store);
+                this.writeStoreProperties(writer, store);
+
+                if (store.hasDefined(ModelKeys.CONNECTION_POOL)) {
+                    ModelNode pool = store.get(ModelKeys.CONNECTION_POOL);
+                    writer.writeStartElement(Element.CONNECTION_POOL.getLocalName());
+                    this.writeOptional(writer, Attribute.CONNECTION_TIMEOUT, pool, ModelKeys.CONNECTION_TIMEOUT);
+                    this.writeOptional(writer, Attribute.MAX_CONNECTIONS_PER_HOST, pool, ModelKeys.MAX_CONNECTIONS_PER_HOST);
+                    this.writeOptional(writer, Attribute.MAX_TOTAL_CONNECTIONS, pool, ModelKeys.MAX_TOTAL_CONNECTIONS);
+                    this.writeOptional(writer, Attribute.RECEIVE_BUFFER_SIZE, pool, ModelKeys.RECEIVE_BUFFER_SIZE);
+                    this.writeOptional(writer, Attribute.SEND_BUFFER_SIZE, pool, ModelKeys.SEND_BUFFER_SIZE);
+                    this.writeOptional(writer, Attribute.SOCKET_TIMEOUT, pool, ModelKeys.SOCKET_TIMEOUT);
+                    this.writeOptional(writer, Attribute.TCP_NO_DELAY, pool, ModelKeys.TCP_NO_DELAY);
+                    writer.writeEndElement();
+                }
+
+                for (ModelNode remoteServer: store.require(ModelKeys.REMOTE_SERVERS).asList()) {
+                    writer.writeStartElement(Element.REMOTE_SERVER.getLocalName());
+                    writer.writeAttribute(Attribute.OUTBOUND_SOCKET_BINDING.getLocalName(), remoteServer.get(ModelKeys.OUTBOUND_SOCKET_BINDING).asString());
+                    writer.writeEndElement();
+                }
+
+                writer.writeEndElement();
+            }
+        }
+
         if (cache.get(ModelKeys.INDEXING).isDefined()|| cache.get(ModelKeys.INDEXING_PROPERTIES).isDefined()){
             writer.writeStartElement(Element.INDEXING.getLocalName());
             CacheResource.INDEXING.marshallAsAttribute(cache, writer);

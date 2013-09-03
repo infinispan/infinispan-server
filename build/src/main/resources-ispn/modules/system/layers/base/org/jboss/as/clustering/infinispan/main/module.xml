@@ -37,8 +37,10 @@
       <module name="net.jcip"/>
       <module name="org.infinispan" services="import"/>
       <module name="org.infinispan.cachestore.jdbc"/>
-      <module name="org.infinispan.cachestore.remote"/>
       <module name="org.infinispan.cachestore.leveldb"/>
+      <module name="org.infinispan.cachestore.remote"/>
+      <module name="org.infinispan.cachestore.rest" />
+      <module name="org.infinispan.cachestore.leveldb"/>     
       <module name="org.infinispan.hotrod.client" optional="true"/>
       <module name="org.infinispan.cli.server" services="import"/>
       <module name="org.infinispan.server" services="import"/>

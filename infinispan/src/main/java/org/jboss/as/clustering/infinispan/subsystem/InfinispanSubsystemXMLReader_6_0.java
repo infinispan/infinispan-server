@@ -493,6 +493,10 @@ public final class InfinispanSubsystemXMLReader_6_0 implements XMLElementReader<
                 this.parseLevelDBStore(reader, cache, operations);
                 break;
             }
+            case REST_STORE: {
+                this.parseRestStore(reader, cache, operations);
+                break;
+            }
             case INDEXING: {
                 this.parseIndexing(reader, cache);
                 break;
@@ -986,6 +990,106 @@ public final class InfinispanSubsystemXMLReader_6_0 implements XMLElementReader<
             switch (attribute) {
                 case OUTBOUND_SOCKET_BINDING: {
                     RemoteStoreResource.OUTBOUND_SOCKET_BINDING.parseAndSetParameter(value, server, reader);
+                    break;
+                }
+                default: {
+                    throw ParseUtils.unexpectedAttribute(reader, i);
+                }
+            }
+        }
+        ParseUtils.requireNoContent(reader);
+    }
+
+    private void parseRestStore(XMLExtendedStreamReader reader, ModelNode cache, List<ModelNode> operations) throws XMLStreamException {
+
+        ModelNode store = Util.getEmptyOperation(ModelDescriptionConstants.ADD, null);
+        String name = ModelKeys.REST_STORE_NAME;
+
+         List<ModelNode> additionalConfigurationOperations = new ArrayList<ModelNode>();
+
+         for (int i = 0; i < reader.getAttributeCount(); i++) {
+             String value = reader.getAttributeValue(i);
+             Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+             switch (attribute) {
+                 case APPEND_CACHE_NAME_TO_PATH: {
+                     RestStoreResource.APPEND_CACHE_NAME_TO_PATH.parseAndSetParameter(value, store, reader);
+                     break;
+                 }
+                 case PATH: {
+                     RestStoreResource.PATH.parseAndSetParameter(value, store, reader);
+                     break;
+                 }
+
+                 default: {
+                     name = this.parseStoreAttribute(name, reader, i, attribute, value, store);
+                 }
+             }
+         }
+
+         store.get(ModelKeys.NAME).set(name);
+         addNameToAddress(store, PathAddress.pathAddress(cache.get(OP_ADDR)),
+                          ModelKeys.REST_STORE);
+
+         while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
+             Element element = Element.forName(reader.getLocalName());
+             switch (element) {
+                 case CONNECTION_POOL: {
+                     this.parseRestConnectionPool(reader, store.get(ModelKeys.CONNECTION_POOL).setEmptyObject());
+                     break;
+                 }
+                 case REMOTE_SERVER: {
+                     this.parseRemoteServer(reader, store.get(ModelKeys.REMOTE_SERVERS).add());
+                     break;
+                 }
+                 case WRITE_BEHIND: {
+                     parseStoreWriteBehind(reader, store, additionalConfigurationOperations);
+                     break;
+                 }
+                 default: {
+                     this.parseStoreProperty(reader, store, additionalConfigurationOperations);
+                 }
+             }
+         }
+
+         if (!store.hasDefined(ModelKeys.REMOTE_SERVERS)) {
+             throw ParseUtils.missingRequired(reader, Collections.singleton(Element.REMOTE_SERVER));
+         }
+
+         operations.add(store);
+         operations.addAll(additionalConfigurationOperations);
+     }
+
+    private void parseRestConnectionPool(XMLExtendedStreamReader reader, ModelNode table) throws XMLStreamException {
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String value = reader.getAttributeValue(i);
+            Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+            switch (attribute) {
+                case CONNECTION_TIMEOUT: {
+                    RestStoreResource.CONNECTION_TIMEOUT.parseAndSetParameter(value, table, reader);
+                    break;
+                }
+                case MAX_CONNECTIONS_PER_HOST: {
+                    RestStoreResource.MAX_CONNECTIONS_PER_HOST.parseAndSetParameter(value, table, reader);
+                    break;
+                }
+                case MAX_TOTAL_CONNECTIONS: {
+                    RestStoreResource.MAX_TOTAL_CONNECTIONS.parseAndSetParameter(value, table, reader);
+                    break;
+                }
+                case RECEIVE_BUFFER_SIZE: {
+                    RestStoreResource.RECEIVE_BUFFER_SIZE.parseAndSetParameter(value, table, reader);
+                    break;
+                }
+                case SEND_BUFFER_SIZE: {
+                    RestStoreResource.SEND_BUFFER_SIZE.parseAndSetParameter(value, table, reader);
+                    break;
+                }
+                case SOCKET_TIMEOUT: {
+                    RestStoreResource.SOCKET_TIMEOUT.parseAndSetParameter(value, table, reader);
+                    break;
+                }
+                case TCP_NO_DELAY: {
+                    RestStoreResource.TCP_NO_DELAY.parseAndSetParameter(value, table, reader);
                     break;
                 }
                 default: {

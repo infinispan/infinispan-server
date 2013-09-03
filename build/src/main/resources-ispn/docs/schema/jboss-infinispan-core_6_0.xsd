@@ -230,7 +230,13 @@
                     <xs:annotation>
                         <xs:documentation>
                             Defines a remote cache store accessed via HotRod.
-                            Nested properties will be treated as HotRod client properties.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="rest-store" type="tns:rest-store">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Defines a remote cache store accessed via REST.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:element>
@@ -689,6 +695,66 @@
                 <xs:documentation>An outbound socket binding for a remote server.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
+    </xs:complexType>
+    
+    <xs:complexType name="rest-store">
+        <xs:complexContent>
+            <xs:extension base="tns:store">
+                <xs:sequence>
+                    <xs:element name="remote-server" type="tns:remote-server" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="connection-pool" type="tns:rest-connection-pool" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+                
+                <xs:attribute name="append-cache-name-to-path" type="xs:boolean" default="false">
+                    <xs:annotation>
+                        <xs:documentation>Whether to append the name of the cache to the path.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="path" type="xs:string" default="/rest/___defaultcache">
+                    <xs:annotation>
+                        <xs:documentation>The path portion of the URI of the remote REST endpoint.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="rest-connection-pool">
+        <xs:attribute name="connection-timeout" type="xs:int" default="60000">
+           <xs:annotation>
+               <xs:documentation>A connection timeout for remote cache communication.</xs:documentation>
+           </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="max-connections-per-host" type="xs:int" default="4">
+           <xs:annotation>
+               <xs:documentation>The maximum number of connections per host.</xs:documentation>
+           </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="max-total-connections" type="xs:int" default="20">
+           <xs:annotation>
+               <xs:documentation>The maximum number of total connections.</xs:documentation>
+           </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="receive-buffer-size" type="xs:int" default="20000">
+           <xs:annotation>
+               <xs:documentation>The size of the receive buffer.</xs:documentation>
+           </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="send-buffer-size" type="xs:int" default="20000">
+           <xs:annotation>
+               <xs:documentation>The size of the send buffer.</xs:documentation>
+           </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="socket-timeout" type="xs:int" default="60000">
+           <xs:annotation>
+               <xs:documentation>A socket timeout for remote cache communication.</xs:documentation>
+           </xs:annotation>
+       </xs:attribute>
+       <xs:attribute name="tcp-no-delay" type="xs:boolean" default="true">
+           <xs:annotation>
+               <xs:documentation>Enable/disable TCP_NODELAY on socket connections to remote Hot Rod servers.</xs:documentation>
+           </xs:annotation>
+       </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="string-keyed-jdbc-store">

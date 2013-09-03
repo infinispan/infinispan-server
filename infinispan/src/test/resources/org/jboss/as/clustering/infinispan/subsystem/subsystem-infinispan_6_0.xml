@@ -24,6 +24,19 @@
                 <implementation/>
             </leveldb-store>
         </local-cache>
+        <local-cache name="reststore-local" batching="true" start="EAGER" module="org.infinispan">
+            <locking acquire-timeout="30000" concurrency-level="2000" isolation="NONE" striping="true"/>
+            <transaction mode="FULL_XA" stop-timeout="60000"  locking="OPTIMISTIC"/>
+            <eviction max-entries="20000" strategy="LIRS"/>
+            <expiration interval="10000" lifespan="10" max-idle="10"/>
+            <compatibility enabled="true" marshaller="org.infinispan.commons.marshall.jboss.GenericJBossMarshaller" />
+            <rest-store fetch-state="false" passivation="false" path="path" preload="true" purge="false" shared="true" singleton="true" append-cache-name-to-path="false">
+                <write-behind flush-lock-timeout="2" modification-queue-size="2048" shutdown-timeout="20000" thread-pool-size="1" />
+                <connection-pool connection-timeout="10000" max-connections-per-host="6" max-total-connections="10" receive-buffer-size="30000" send-buffer-size="30000" socket-timeout="10000" tcp-no-delay="true" />
+                <remote-server outbound-socket-binding="rest-server-1" />
+            </rest-store>
+            <indexing index="LOCAL" />
+        </local-cache>
         <invalidation-cache name="invalid" mode="ASYNC" batching="true" queue-flush-interval="10" queue-size="1000" start="LAZY" async-marshalling="true">
             <locking acquire-timeout="30000" concurrency-level="2000" isolation="READ_UNCOMMITTED" striping="true"/>
             <transaction mode="NON_XA" stop-timeout="60000"  locking="OPTIMISTIC"/>

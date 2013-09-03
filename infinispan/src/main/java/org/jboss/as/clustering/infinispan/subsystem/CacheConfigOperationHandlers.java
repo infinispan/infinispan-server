@@ -80,6 +80,7 @@ public class CacheConfigOperationHandlers {
     static final OperationStepHandler LEVELDB_EXPIRATION_ADD = new CacheConfigAdd(LEVELDB_EXPIRATION_ATTRIBUTES);
     static final OperationStepHandler LEVELDB_COMPRESSION_ADD = new CacheConfigAdd(LEVELDB_COMPRESSION_ATTRIBUTES);
     static final OperationStepHandler LEVELDB_IMPLEMENTATION_ADD = new CacheConfigAdd(LEVELDB_IMPLEMENTATION_ATTRIBUTES);
+    static final OperationStepHandler REST_STORE_ADD = new RestCacheStoreAdd();
 
     /**
      * Helper class to process adding basic nested cache configuration elements to the cache parent resource.
@@ -345,6 +346,12 @@ public class CacheConfigOperationHandlers {
     private static class LevelDBCacheStoreAdd extends AbstractCacheStoreAdd {
         LevelDBCacheStoreAdd() {
             super(LevelDBStoreResource.LEVELDB_STORE_ATTRIBUTES);
+        }
+    }
+
+    private static class RestCacheStoreAdd extends AbstractCacheStoreAdd {
+        RestCacheStoreAdd() {
+            super(RestStoreResource.REST_STORE_ATTRIBUTES);
         }
     }
 }
