@@ -19,6 +19,12 @@
          <rest-connector virtual-server="default-host" cache-container="local" security-domain="other" auth-method="BASIC" />
       </replacement>
    </supplement>
+   <supplement name="rest-rolling-upgrade">
+      <replacement placeholder="@@default-cache-container@@" attributeValue="local"/>
+      <replacement placeholder="CONNECTORS">
+         <rest-connector virtual-server="default-host" cache-container="local"/>
+      </replacement>
+   </supplement>
    <supplement name="hotrod-ssl">
       <replacement placeholder="@@default-cache-container@@" attributeValue="local" />
       <replacement placeholder="CONNECTORS">

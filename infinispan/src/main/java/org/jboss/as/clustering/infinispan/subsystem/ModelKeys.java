@@ -30,6 +30,7 @@ public class ModelKeys {
     static final String ACQUIRE_TIMEOUT = "acquire-timeout";
     static final String ALIAS = "alias";
     static final String ALIASES = "aliases";
+    static final String APPEND_CACHE_NAME_TO_PATH = "append-cache-name-to-path";
     static final String ASYNC_MARSHALLING = "async-marshalling";
     static final String AWAIT_INITIAL_TRANSFER = "await-initial-transfer";
     static final String BACKUP = "backup";
@@ -57,6 +58,8 @@ public class ModelKeys {
     static final String COMPRESSION = "compression";
     static final String COMPRESSION_NAME = "COMPRESSION";
     static final String CONCURRENCY_LEVEL = "concurrency-level";
+    static final String CONNECTION_POOL = "connection-pool";
+    static final String CONNECTION_TIMEOUT = "connection-timeout";
     static final String DATA_COLUMN = "data-column";
     static final String DATASOURCE = "datasource";
     static final String DEFAULT_CACHE = "default-cache";
@@ -108,8 +111,10 @@ public class ModelKeys {
     static final String LOCKING_NAME = "LOCKING";
     static final String MACHINE = "machine";
     static final String MARSHALLER = "marshaller";
+    static final String MAX_CONNECTIONS_PER_HOST = "max-connections-per-host";
     static final String MAX_ENTRIES = "max-entries";
     static final String MAX_IDLE = "max-idle";
+    static final String MAX_TOTAL_CONNECTIONS = "max-total-connections";
     static final String MODE = "mode";
     static final String MODIFICATION_QUEUE_SIZE = "modification-queue-size";
     static final String MODULE = "module";
@@ -129,6 +134,7 @@ public class ModelKeys {
     static final String RAW_VALUES = "raw-values";
     static final String READ_ONLY = "read-only";
     static final String REBALANCING = "rebalancing";
+    static final String RECEIVE_BUFFER_SIZE = "receive-buffer-size";
     static final String RELATIVE_TO = "relative-to";
     static final String REMOTE_SERVER = "remote-server";
     static final String REMOTE_SERVERS = "remote-servers";
@@ -137,7 +143,10 @@ public class ModelKeys {
     static final String REMOTE_TIMEOUT = "remote-timeout";
     static final String REPLICATED_CACHE = "replicated-cache";
     static final String REPLICATION_QUEUE_EXECUTOR = "replication-queue-executor";
+    static final String REST_STORE = "rest-store";
+    static final String REST_STORE_NAME = "REST_STORE";
     static final String SEGMENTS = "segments";
+    static final String SEND_BUFFER_SIZE = "send-buffer-size";
     static final String SHARED = "shared";
     static final String SHUTDOWN_TIMEOUT = "shutdown-timeout";
     static final String SINGLETON = "singleton";
