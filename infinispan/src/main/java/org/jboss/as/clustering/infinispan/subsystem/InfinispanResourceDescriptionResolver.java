@@ -148,5 +148,9 @@ public class InfinispanResourceDescriptionResolver extends StandardResourceDescr
         sharedAttributeResolver.put(ModelKeys.MIXED_KEYED_JDBC_STORE, null);
         sharedAttributeResolver.put(ModelKeys.WRITE_BEHIND, null);
         sharedAttributeResolver.put(ModelKeys.PROPERTY, null);
+        sharedAttributeResolver.put(ModelKeys.IMPLEMENTATION, null);
+        sharedAttributeResolver.put(ModelKeys.COMPRESSION, null);
+        sharedAttributeResolver.put(ModelKeys.EXPIRATION, null);
+        sharedAttributeResolver.put(ModelKeys.LEVELDB_STORE, null);
     }
 }

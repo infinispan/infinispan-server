@@ -392,6 +392,24 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
             }
             writer.writeEndElement();
         }
+
+        if (cache.get(ModelKeys.LEVELDB_STORE).isDefined()) {
+            for (Property levelDbStoreEntry : cache.get(ModelKeys.LEVELDB_STORE).asPropertyList()) {
+                ModelNode store = levelDbStoreEntry.getValue();
+                writer.writeStartElement(Element.LEVELDB_STORE.getLocalName());
+                this.writeOptional(writer, Attribute.RELATIVE_TO, store, ModelKeys.RELATIVE_TO);
+                this.writeOptional(writer, Attribute.PATH, store, ModelKeys.PATH);
+                this.writeOptional(writer, Attribute.BLOCK_SIZE, store, ModelKeys.BLOCK_SIZE);
+                this.writeOptional(writer, Attribute.CACHE_SIZE, store, ModelKeys.CACHE_SIZE);
+                this.writeOptional(writer, Attribute.CLEAR_THRESHOLD, store, ModelKeys.CLEAR_THRESHOLD);
+                this.writeStoreAttributes(writer, store);
+                this.writeStoreExpiration(writer, store);
+                this.writeStoreCompression(writer, store);
+                this.writeStoreImplementation(writer, store);
+                writer.writeEndElement();
+            }
+        }
+
     }
 
     private void writeAliases(XMLExtendedStreamWriter writer, Attribute attribute, ModelNode container, String key) throws XMLStreamException {
@@ -475,6 +493,35 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
                 writer.writeCharacters(complexValue.getValue().asString());
                 writer.writeEndElement();
             }
+        }
+    }
+
+    private void writeStoreExpiration(XMLExtendedStreamWriter writer, ModelNode store) throws XMLStreamException {
+        if (store.get(ModelKeys.EXPIRATION, ModelKeys.EXPIRATION_NAME).isDefined()) {
+            ModelNode expiration = store.get(ModelKeys.EXPIRATION, ModelKeys.EXPIRATION_NAME);
+            writer.writeStartElement(Element.EXPIRATION.getLocalName());
+            this.writeOptional(writer, Attribute.PATH, expiration, ModelKeys.PATH);
+            this.writeOptional(writer, Attribute.RELATIVE_TO, expiration, ModelKeys.RELATIVE_TO);
+            this.writeOptional(writer, Attribute.QUEUE_SIZE, expiration, ModelKeys.QUEUE_SIZE);
+            writer.writeEndElement();
+        }
+    }
+
+    private void writeStoreCompression(XMLExtendedStreamWriter writer, ModelNode store) throws XMLStreamException {
+        if (store.get(ModelKeys.COMPRESSION, ModelKeys.COMPRESSION_NAME).isDefined()) {
+            ModelNode compression = store.get(ModelKeys.COMPRESSION, ModelKeys.COMPRESSION_NAME);
+            writer.writeStartElement(Element.COMPRESSION.getLocalName());
+            this.writeOptional(writer, Attribute.TYPE, compression, ModelKeys.TYPE);
+            writer.writeEndElement();
+        }
+    }
+
+    private void writeStoreImplementation(XMLExtendedStreamWriter writer, ModelNode store) throws XMLStreamException {
+        if (store.get(ModelKeys.IMPLEMENTATION, ModelKeys.IMPLEMENTATION_NAME).isDefined()) {
+            ModelNode implementation = store.get(ModelKeys.IMPLEMENTATION, ModelKeys.IMPLEMENTATION_NAME);
+            writer.writeStartElement(Element.IMPLEMENTATION.getLocalName());
+            this.writeOptional(writer, Attribute.TYPE, implementation, ModelKeys.TYPE);
+            writer.writeEndElement();
         }
     }
 

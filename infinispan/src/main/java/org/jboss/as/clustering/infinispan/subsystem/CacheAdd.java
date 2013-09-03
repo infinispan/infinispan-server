@@ -56,6 +56,8 @@ import org.infinispan.configuration.cache.SitesConfigurationBuilder;
 import org.infinispan.configuration.parsing.ConfigurationBuilderHolder;
 import org.infinispan.configuration.parsing.ParserRegistry;
 import org.infinispan.eviction.EvictionStrategy;
+import org.infinispan.loaders.leveldb.configuration.LevelDBCacheStoreConfiguration;
+import org.infinispan.loaders.leveldb.configuration.LevelDBCacheStoreConfigurationBuilder;
 import org.infinispan.loaders.spi.CacheLoader;
 import org.infinispan.loaders.spi.CacheStore;
 import org.infinispan.loaders.jdbc.configuration.AbstractJdbcCacheStoreConfigurationBuilder;
@@ -70,6 +72,7 @@ import org.infinispan.transaction.LockingMode;
 import org.infinispan.transaction.tm.BatchModeTransactionManager;
 import org.infinispan.commons.util.TypedProperties;
 import org.infinispan.util.concurrent.IsolationLevel;
+import org.iq80.leveldb.CompressionType;
 import org.jboss.as.clustering.infinispan.InfinispanMessages;
 import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.AttributeDefinition;
@@ -117,7 +120,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
     private static final String[] loaderKeys = new String[] { ModelKeys.LOADER, ModelKeys.CLUSTER_LOADER };
     private static final String[] storeKeys = new String[] { ModelKeys.STORE, ModelKeys.FILE_STORE,
             ModelKeys.STRING_KEYED_JDBC_STORE, ModelKeys.BINARY_KEYED_JDBC_STORE, ModelKeys.MIXED_KEYED_JDBC_STORE,
-            ModelKeys.REMOTE_STORE };
+            ModelKeys.REMOTE_STORE, ModelKeys.LEVELDB_STORE };
 
     public static synchronized Configuration getDefaultConfiguration(CacheMode cacheMode) {
         if (defaults == null) {
@@ -699,6 +702,76 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             }
             if (store.hasDefined(ModelKeys.TCP_NO_DELAY)) {
                 builder.tcpNoDelay(store.require(ModelKeys.TCP_NO_DELAY).asBoolean());
+            }
+            return builder;
+        } else if (storeKey.equals(ModelKeys.LEVELDB_STORE)) {
+            final LevelDBCacheStoreConfigurationBuilder builder = loadersBuilder.addStore(LevelDBCacheStoreConfigurationBuilder.class);
+            final String path = ((resolvedValue = LevelDBStoreResource.PATH.resolveModelAttribute(context, store)).isDefined()) ? resolvedValue.asString() : InfinispanExtension.SUBSYSTEM_NAME + File.separatorChar + containerName + File.separatorChar + "data";
+            final String relativeTo = ((resolvedValue = LevelDBStoreResource.RELATIVE_TO.resolveModelAttribute(context, store)).isDefined()) ? resolvedValue.asString() : ServerEnvironment.SERVER_DATA_DIR;
+            Injector<PathManager> injector = new SimpleInjector<PathManager>() {
+                volatile PathManager.Callback.Handle callbackHandle;
+                @Override
+                public void inject(PathManager value) {
+                    callbackHandle = value.registerCallback(relativeTo, PathManager.ReloadServerCallback.create(), PathManager.Event.UPDATED, PathManager.Event.REMOVED);
+                    builder.location(value.resolveRelativePathEntry(path, relativeTo));
+                }
+
+                @Override
+                public void uninject() {
+                    super.uninject();
+                    if (callbackHandle != null) {
+                        callbackHandle.remove();
+                    }
+                }
+            };
+            dependencies.add(new Dependency<PathManager>(PathManagerService.SERVICE_NAME, PathManager.class, injector));
+
+            final boolean expirationDefined = store.hasDefined(ModelKeys.EXPIRATION) && store.get(ModelKeys.EXPIRATION, ModelKeys.EXPIRATION_NAME).isDefined();
+            final String expirationPath;
+            if (expirationDefined) {
+                ModelNode expiration = store.get(ModelKeys.EXPIRATION, ModelKeys.EXPIRATION_NAME);
+                expirationPath = LevelDBExpirationResource.PATH.resolveModelAttribute(context, expiration).asString();
+            } else {
+                expirationPath = InfinispanExtension.SUBSYSTEM_NAME + File.separatorChar + containerName + File.separatorChar + "expiration";
+            }
+
+            injector = new SimpleInjector<PathManager>() {
+                volatile PathManager.Callback.Handle callbackHandle;
+                @Override
+                public void inject(PathManager value) {
+                    callbackHandle = value.registerCallback(relativeTo, PathManager.ReloadServerCallback.create(), PathManager.Event.UPDATED, PathManager.Event.REMOVED);
+                    builder.expiredLocation(value.resolveRelativePathEntry(expirationPath, relativeTo));
+                }
+
+                @Override
+                public void uninject() {
+                    super.uninject();
+                    if (callbackHandle != null) {
+                        callbackHandle.remove();
+                    }
+                }
+            };
+            dependencies.add(new Dependency<PathManager>(PathManagerService.SERVICE_NAME, PathManager.class, injector));
+
+            if (store.hasDefined(ModelKeys.BLOCK_SIZE))
+                builder.blockSize(store.get(ModelKeys.BLOCK_SIZE).asInt());
+            if (store.hasDefined(ModelKeys.CACHE_SIZE))
+                builder.cacheSize(store.get(ModelKeys.CACHE_SIZE).asLong());
+            if (store.hasDefined(ModelKeys.CLEAR_THRESHOLD))
+                builder.clearThreshold(store.get(ModelKeys.CLEAR_THRESHOLD).asInt());
+            if (store.hasDefined(ModelKeys.QUEUE_SIZE))
+                builder.expiryQueueSize(store.get(ModelKeys.QUEUE_SIZE).asInt());
+
+            if (store.hasDefined(ModelKeys.COMPRESSION)) {
+                ModelNode node = store.get(ModelKeys.COMPRESSION, ModelKeys.COMPRESSION_NAME);
+                final CompressionType compressionType = CompressionType.valueOf(LevelDBCompressionResource.TYPE.resolveModelAttribute(context, node).asString());
+                builder.compressionType(compressionType);
+            }
+
+            if (store.hasDefined(ModelKeys.IMPLEMENTATION)) {
+                ModelNode node = store.get(ModelKeys.IMPLEMENTATION, ModelKeys.IMPLEMENTATION_NAME);
+                final LevelDBCacheStoreConfiguration.ImplementationType implementationType = LevelDBCacheStoreConfiguration.ImplementationType.valueOf(LevelDBImplementationResource.TYPE.resolveModelAttribute(context, node).asString());
+                builder.implementationType(implementationType);
             }
             return builder;
         } else {

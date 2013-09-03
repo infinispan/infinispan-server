@@ -198,5 +198,6 @@ public class CacheResource extends SimpleResourceDefinition {
         resourceRegistration.registerSubModel(new BinaryKeyedJDBCStoreResource());
         resourceRegistration.registerSubModel(new MixedKeyedJDBCStoreResource());
         resourceRegistration.registerSubModel(new RemoteStoreResource());
+        resourceRegistration.registerSubModel(new LevelDBStoreResource(resolvePathHandler));
     }
 }

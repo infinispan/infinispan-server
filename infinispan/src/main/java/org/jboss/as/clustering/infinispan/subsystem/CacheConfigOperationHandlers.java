@@ -29,7 +29,9 @@ import static org.jboss.as.clustering.infinispan.subsystem.StateTransferResource
 import static org.jboss.as.clustering.infinispan.subsystem.StoreWriteBehindResource.WRITE_BEHIND_ATTRIBUTES;
 import static org.jboss.as.clustering.infinispan.subsystem.TransactionResource.TRANSACTION_ATTRIBUTES;
 import static org.jboss.as.clustering.infinispan.subsystem.TransportResource.TRANSPORT_ATTRIBUTES;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import static org.jboss.as.clustering.infinispan.subsystem.LevelDBExpirationResource.LEVELDB_EXPIRATION_ATTRIBUTES;
+import static org.jboss.as.clustering.infinispan.subsystem.LevelDBCompressionResource.LEVELDB_COMPRESSION_ATTRIBUTES;
+import static org.jboss.as.clustering.infinispan.subsystem.LevelDBImplementationResource.LEVELDB_IMPLEMENTATION_ATTRIBUTES;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,6 +76,10 @@ public class CacheConfigOperationHandlers {
     static final OperationStepHandler BINARY_KEYED_JDBC_STORE_ADD = new BinaryKeyedJDBCCacheStoreAdd();
     static final OperationStepHandler MIXED_KEYED_JDBC_STORE_ADD = new MixedKeyedJDBCCacheStoreAdd();
     static final OperationStepHandler REMOTE_STORE_ADD = new RemoteCacheStoreAdd();
+    static final OperationStepHandler LEVELDB_STORE_ADD = new LevelDBCacheStoreAdd();
+    static final OperationStepHandler LEVELDB_EXPIRATION_ADD = new CacheConfigAdd(LEVELDB_EXPIRATION_ATTRIBUTES);
+    static final OperationStepHandler LEVELDB_COMPRESSION_ADD = new CacheConfigAdd(LEVELDB_COMPRESSION_ATTRIBUTES);
+    static final OperationStepHandler LEVELDB_IMPLEMENTATION_ADD = new CacheConfigAdd(LEVELDB_IMPLEMENTATION_ATTRIBUTES);
 
     /**
      * Helper class to process adding basic nested cache configuration elements to the cache parent resource.
@@ -333,6 +339,12 @@ public class CacheConfigOperationHandlers {
     private static class RemoteCacheStoreAdd extends AbstractCacheStoreAdd {
         RemoteCacheStoreAdd() {
             super(RemoteStoreResource.REMOTE_STORE_ATTRIBUTES);
+        }
+    }
+
+    private static class LevelDBCacheStoreAdd extends AbstractCacheStoreAdd {
+        LevelDBCacheStoreAdd() {
+            super(LevelDBStoreResource.LEVELDB_STORE_ATTRIBUTES);
         }
     }
 }

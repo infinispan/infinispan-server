@@ -100,7 +100,7 @@
       <module-def name="com.thoughtworks.xstream" src="${infinispan.server.modules.dir}">
          <maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
       </module-def>
-      
+
       <module-def name="xmlpull" src="${infinispan.server.modules.dir}">
          <maven-resource group="xmlpull" artifact="xmlpull" />
       </module-def>
@@ -136,7 +136,11 @@
       <module-def name="org.jboss.netty">
          <maven-resource group="io.netty" artifact="netty" />
       </module-def>
-      
+
+      <module-def name="org.fusesource.leveldbjni-all" src="${infinispan.server.modules.dir}">
+         <maven-resource group="org.fusesource.leveldbjni" artifact="leveldbjni-all" />
+      </module-def>
+
       <module-def name="org.infinispan.commons" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-commons" />
       </module-def>
@@ -155,6 +159,10 @@
 
       <module-def name="org.infinispan.cachestore.remote" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
+      </module-def>
+
+      <module-def name="org.infinispan.cachestore.leveldb" src="${infinispan.server.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-leveldb" />
       </module-def>
 
       <module-def name="org.infinispan.server" src="${infinispan.server.modules.dir}">
@@ -179,6 +187,10 @@
 
       <module-def name="org.infinispan.upgrade-tools" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-upgrade-tools" />
+      </module-def>
+
+      <module-def name="org.iq80.leveldb" src="${infinispan.server.modules.dir}">
+         <maven-resource group="org.iq80.leveldb" artifact="leveldb" />
       </module-def>
 
       <module-def name="org.scala-lang.library" src="${infinispan.server.modules.dir}">

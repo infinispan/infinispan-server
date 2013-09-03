@@ -40,17 +40,22 @@ public class ModelKeys {
     static final String BATCHING = "batching";
     static final String BINARY_KEYED_TABLE = "binary-keyed-table";
     static final String BINARY_KEYED_TABLE_NAME = "BINARY_KEYED_TABLE";
+    static final String BLOCK_SIZE = "block-size";
     static final String BUCKET_TABLE = "bucket-table";
     static final String CACHE = "cache";
+    static final String CACHE_SIZE = "cache-size";
     // static final String CACHE_MODE = "cache-mode";
     static final String CACHE_CONTAINER = "cache-container";
     static final String CHUNK_SIZE = "chunk-size";
     static final String CLASS = "class";
+    static final String CLEAR_THRESHOLD = "clear-threshold";
     static final String CLUSTER = "cluster";
     static final String CLUSTER_LOADER = "cluster-loader";
     static final String CLUSTER_LOADER_NAME = "CLUSTER_LOADER";
     static final String COMPATIBILITY = "compatibility";
     static final String COMPATIBILITY_NAME = "COMPATIBILITY";
+    static final String COMPRESSION = "compression";
+    static final String COMPRESSION_NAME = "COMPRESSION";
     static final String CONCURRENCY_LEVEL = "concurrency-level";
     static final String DATA_COLUMN = "data-column";
     static final String DATASOURCE = "datasource";
@@ -71,6 +76,8 @@ public class ModelKeys {
     static final String FLUSH_LOCK_TIMEOUT = "flush-lock-timeout";
     static final String HOTROD_WRAPPING = "hotrod-wrapping";
     static final String ID_COLUMN = "id-column";
+    static final String IMPLEMENTATION = "implementation";
+    static final String IMPLEMENTATION_NAME = "IMPLEMENTATION";
     static final String INDEX = "index";
     static final String INDEXING = "indexing";
     static final String INDEXING_PROPERTIES = "indexing-properties";
@@ -79,6 +86,7 @@ public class ModelKeys {
     static final String ISOLATION = "isolation";
     static final String JDBC_STORE = "jdbc-store";
     static final String JDBC_STORE_NAME = "JDBC_STORE";
+    static final String LEVELDB_STORE = "leveldb-store";
     static final String LOADER = "loader";
     static final String LOADER_NAME = "LOADER";
     static final String STRING_KEYED_JDBC_STORE = "string-keyed-jdbc-store";
@@ -91,6 +99,7 @@ public class ModelKeys {
     static final String MIXED_KEYED_JDBC_STORE_NAME = "MIXED_KEYED_JDBC_STORE";
     static final String JNDI_NAME = "jndi-name";
     static final String L1_LIFESPAN = "l1-lifespan";
+    static final String LEVELDB_STORE_NAME = "LEVELDB_STORE";
     static final String LIFESPAN = "lifespan";
     static final String LISTENER_EXECUTOR = "listener-executor";
     static final String LOCAL_CACHE = "local-cache";
