@@ -24,10 +24,7 @@ import org.infinispan.arquillian.model.RemoteInfinispanCache;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
-import org.jboss.arquillian.container.test.api.ContainerController;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,55 +42,55 @@ import static org.junit.Assert.assertEquals;
 @RunWith(Arquillian.class)
 public class TwoNodesConfigExampleTest {
 
-   final String CONTAINER1 = "container1";
-   final String CONTAINER2 = "container2";
+    final String CONTAINER1 = "container1";
+    final String CONTAINER2 = "container2";
 
-   final String DEFAULT_CACHE_NAME = "default";
-   final String CACHE_MANAGER_NAME = "clustered";
+    final String DEFAULT_CACHE_NAME = "default";
+    final String CACHE_MANAGER_NAME = "clustered";
 
-   @InfinispanResource(CONTAINER1)
-   RemoteInfinispanServer server1;
+    @InfinispanResource(CONTAINER1)
+    RemoteInfinispanServer server1;
 
-   @InfinispanResource(CONTAINER2)
-   RemoteInfinispanServer server2;
+    @InfinispanResource(CONTAINER2)
+    RemoteInfinispanServer server2;
 
-   RemoteCacheManager rcm1;
-   RemoteCacheManager rcm2;
+    RemoteCacheManager rcm1;
+    RemoteCacheManager rcm2;
 
-   @Before
-   public void setUp() {
-      rcm1 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
-                                          .host(server1.getHotrodEndpoint().getInetAddress().getHostName())
-                                          .port(server1.getHotrodEndpoint().getPort())
-                                          .build());
-      rcm2 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
-                                          .host(server2.getHotrodEndpoint().getInetAddress().getHostName())
-                                          .port(server2.getHotrodEndpoint().getPort())
-                                          .build());
-   }
+    @Before
+    public void setUp() {
+        rcm1 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
+                .host(server1.getHotrodEndpoint().getInetAddress().getHostName())
+                .port(server1.getHotrodEndpoint().getPort())
+                .build());
+        rcm2 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
+                .host(server2.getHotrodEndpoint().getInetAddress().getHostName())
+                .port(server2.getHotrodEndpoint().getPort())
+                .build());
+    }
 
-   @Test
-   public void tesTwoNodesConfigExample() throws Exception {
-      RemoteInfinispanCache ric = server1.getCacheManager(CACHE_MANAGER_NAME).getCache(DEFAULT_CACHE_NAME);
-      RemoteInfinispanCache ric2 = server2.getCacheManager(CACHE_MANAGER_NAME).getCache(DEFAULT_CACHE_NAME);
-      RemoteCache<String, String> rc1 = rcm1.getCache(DEFAULT_CACHE_NAME);
-      RemoteCache<String, String> rc2 = rcm2.getCache(DEFAULT_CACHE_NAME);
-      assertEquals(0, ric.getNumberOfEntries());
-      assertEquals(0, ric2.getNumberOfEntries());
-      Assert.assertEquals(2, server1.getCacheManager(CACHE_MANAGER_NAME).getClusterSize());
-      Assert.assertEquals(2, server2.getCacheManager(CACHE_MANAGER_NAME).getClusterSize());
-      rc1.put("k", "v");
-      rc1.put("k2", "v2");
-      assertTrue(rc1.get("k").equals("v"));
-      assertTrue(rc1.get("k2").equals("v2"));
-      assertEquals(2, ric.getNumberOfEntries());
-      rc2.put("k3", "v3");
-      assertEquals(3, ric2.getNumberOfEntries());
-      assertEquals("v", rc1.get("k"));
-      assertEquals("v", rc2.get("k"));
-      assertEquals("v2", rc1.get("k2"));
-      assertEquals("v2", rc2.get("k2"));
-      assertEquals("v3", rc1.get("k3"));
-      assertEquals("v3", rc2.get("k3"));
-   }
+    @Test
+    public void tesTwoNodesConfigExample() throws Exception {
+        RemoteInfinispanCache ric = server1.getCacheManager(CACHE_MANAGER_NAME).getCache(DEFAULT_CACHE_NAME);
+        RemoteInfinispanCache ric2 = server2.getCacheManager(CACHE_MANAGER_NAME).getCache(DEFAULT_CACHE_NAME);
+        RemoteCache<String, String> rc1 = rcm1.getCache(DEFAULT_CACHE_NAME);
+        RemoteCache<String, String> rc2 = rcm2.getCache(DEFAULT_CACHE_NAME);
+        assertEquals(0, ric.getNumberOfEntries());
+        assertEquals(0, ric2.getNumberOfEntries());
+        Assert.assertEquals(2, server1.getCacheManager(CACHE_MANAGER_NAME).getClusterSize());
+        Assert.assertEquals(2, server2.getCacheManager(CACHE_MANAGER_NAME).getClusterSize());
+        rc1.put("k", "v");
+        rc1.put("k2", "v2");
+        assertTrue(rc1.get("k").equals("v"));
+        assertTrue(rc1.get("k2").equals("v2"));
+        assertEquals(2, ric.getNumberOfEntries());
+        rc2.put("k3", "v3");
+        assertEquals(3, ric2.getNumberOfEntries());
+        assertEquals("v", rc1.get("k"));
+        assertEquals("v", rc2.get("k"));
+        assertEquals("v2", rc1.get("k2"));
+        assertEquals("v2", rc2.get("k2"));
+        assertEquals("v3", rc1.get("k3"));
+        assertEquals("v3", rc2.get("k3"));
+    }
 }
