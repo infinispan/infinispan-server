@@ -273,13 +273,6 @@
             <scope>test</scope>
          </dependency>
          
-         <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>${version.commons.httpclient}</version>
-            <scope>test</scope>
-         </dependency>
-
       </dependencies>
 
    </dependencyManagement>

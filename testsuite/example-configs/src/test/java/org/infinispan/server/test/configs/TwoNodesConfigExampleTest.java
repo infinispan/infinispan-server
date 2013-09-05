@@ -19,17 +19,23 @@
 package org.infinispan.server.test.configs;
 
 import org.infinispan.arquillian.core.InfinispanResource;
+import org.infinispan.arquillian.core.RESTEndpoint;
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
 import org.infinispan.arquillian.model.RemoteInfinispanCache;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.infinispan.server.test.rest.RESTHelper;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.servlet.http.HttpServletResponse;
+import java.net.Inet6Address;
+
+import static org.infinispan.server.test.rest.RESTHelper.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -42,11 +48,12 @@ import static org.junit.Assert.assertEquals;
 @RunWith(Arquillian.class)
 public class TwoNodesConfigExampleTest {
 
-    final String CONTAINER1 = "container1";
-    final String CONTAINER2 = "container2";
+    static final String CONTAINER1 = "container1";
+    static final String CONTAINER2 = "container2";
 
-    final String DEFAULT_CACHE_NAME = "default";
-    final String CACHE_MANAGER_NAME = "clustered";
+    static final String DEFAULT_CACHE_NAME = "default";
+    static final String CACHE_MANAGER_NAME = "clustered";
+    static final String DEFAULT_NAMED_CACHE = "namedCache";
 
     @InfinispanResource(CONTAINER1)
     RemoteInfinispanServer server1;
@@ -58,7 +65,7 @@ public class TwoNodesConfigExampleTest {
     RemoteCacheManager rcm2;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         rcm1 = new RemoteCacheManager(new ConfigurationBuilder().addServer()
                 .host(server1.getHotrodEndpoint().getInetAddress().getHostName())
                 .port(server1.getHotrodEndpoint().getPort())
@@ -67,6 +74,29 @@ public class TwoNodesConfigExampleTest {
                 .host(server2.getHotrodEndpoint().getInetAddress().getHostName())
                 .port(server2.getHotrodEndpoint().getPort())
                 .build());
+
+        addServer(server1);
+        addServer(server2);
+
+        delete(fullPathKey(KEY_A));
+        delete(fullPathKey(KEY_B));
+        delete(fullPathKey(KEY_C));
+        delete(fullPathKey(DEFAULT_NAMED_CACHE, KEY_A));
+
+        head(fullPathKey(KEY_A), HttpServletResponse.SC_NOT_FOUND);
+        head(fullPathKey(KEY_B), HttpServletResponse.SC_NOT_FOUND);
+        head(fullPathKey(KEY_C), HttpServletResponse.SC_NOT_FOUND);
+        head(fullPathKey(DEFAULT_NAMED_CACHE, KEY_A), HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    private void addServer(RemoteInfinispanServer server) {
+        RESTEndpoint endpoint = server.getRESTEndpoint();
+        // IPv6 addresses should be in square brackets, otherwise http client does not understand it
+        // otherwise should be IPv4
+        String inetHostName = endpoint.getInetAddress().getHostName();
+        String realHostName = endpoint.getInetAddress() instanceof Inet6Address
+                ? "[" + inetHostName + "]" : inetHostName;
+        RESTHelper.addServer(realHostName, endpoint.getContextPath());
     }
 
     @Test
@@ -93,4 +123,47 @@ public class TwoNodesConfigExampleTest {
         assertEquals("v3", rc1.get("k3"));
         assertEquals("v3", rc2.get("k3"));
     }
+
+    @Test
+    public void testReplicationPut() throws Exception {
+        put(fullPathKey(0, KEY_A), "data", "text/plain");
+        get(fullPathKey(1, KEY_A), "data");
+    }
+
+    @Test
+    public void testReplicationPost() throws Exception {
+        post(fullPathKey(0, KEY_A), "data", "text/plain");
+        get(fullPathKey(1, KEY_A),  "data");
+    }
+
+    @Test
+    public void testReplicationDelete() throws Exception {
+        post(fullPathKey(0, KEY_A), "data", "text/plain");
+        get(fullPathKey(1, KEY_A), "data");
+        delete(fullPathKey(0, KEY_A));
+        head(fullPathKey(1, KEY_A), HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    @Test
+    public void testReplicationWipeCache() throws Exception {
+        post(fullPathKey(0, KEY_A), "data", "text/plain");
+        post(fullPathKey(0, KEY_B), "data", "text/plain");
+        head(fullPathKey(0, KEY_A));
+        head(fullPathKey(0, KEY_B));
+        delete(fullPathKey(0, null));
+        head(fullPathKey(1, KEY_A), HttpServletResponse.SC_NOT_FOUND);
+        head(fullPathKey(1, KEY_B), HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    @Test
+    public void testReplicationTTL() throws Exception {
+        post(fullPathKey(0, KEY_A), "data", "application/text", HttpServletResponse.SC_OK,
+                // headers
+                "Content-Type", "application/text", "timeToLiveSeconds", "2");
+        head(fullPathKey(1, KEY_A));
+        Thread.sleep(2100);
+        // should be evicted
+        head(fullPathKey(1, KEY_A), HttpServletResponse.SC_NOT_FOUND);
+    }
+
 }
