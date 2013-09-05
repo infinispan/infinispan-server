@@ -122,7 +122,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
     private static final String[] loaderKeys = new String[] { ModelKeys.LOADER, ModelKeys.CLUSTER_LOADER };
     private static final String[] storeKeys = new String[] { ModelKeys.STORE, ModelKeys.FILE_STORE,
             ModelKeys.STRING_KEYED_JDBC_STORE, ModelKeys.BINARY_KEYED_JDBC_STORE, ModelKeys.MIXED_KEYED_JDBC_STORE,
-            ModelKeys.REMOTE_STORE, ModelKeys.LEVELDB_STORE, ModelKeys.REMOTE_STORE, ModelKeys.REST_STORE };
+            ModelKeys.REMOTE_STORE, ModelKeys.LEVELDB_STORE, ModelKeys.REST_STORE };
 
     public static synchronized Configuration getDefaultConfiguration(CacheMode cacheMode) {
         if (defaults == null) {

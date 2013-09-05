@@ -95,6 +95,26 @@
 
       <dependency>
          <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-lucene-directory</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-lucene-v3</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-remote-query-client</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-remote-query-server</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
          <artifactId>infinispan-server-core</artifactId>
       </dependency>
 
@@ -142,6 +162,11 @@
       <dependency>
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-cachestore-rest</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.infinispan.protostream</groupId>
+         <artifactId>protostream</artifactId>
       </dependency>
 
       <dependency>
