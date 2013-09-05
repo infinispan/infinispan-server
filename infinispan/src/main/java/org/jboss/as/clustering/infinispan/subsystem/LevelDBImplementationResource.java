@@ -1,7 +1,14 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import org.infinispan.loaders.leveldb.configuration.LevelDBCacheStoreConfiguration;
-import org.jboss.as.controller.*;
+import org.infinispan.loaders.leveldb.configuration.LevelDBStoreConfiguration;
+import org.jboss.as.controller.AttributeDefinition;
+import org.jboss.as.controller.OperationStepHandler;
+import org.jboss.as.controller.PathElement;
+import org.jboss.as.controller.ReloadRequiredRemoveStepHandler;
+import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
+import org.jboss.as.controller.SimpleAttributeDefinition;
+import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
+import org.jboss.as.controller.SimpleResourceDefinition;
 import org.jboss.as.controller.operations.validation.EnumValidator;
 import org.jboss.as.controller.registry.AttributeAccess;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
@@ -24,8 +31,8 @@ public class LevelDBImplementationResource extends SimpleResourceDefinition {
                     .setXmlName(Attribute.TYPE.getLocalName())
                     .setAllowExpression(true)
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
-                    .setValidator(new EnumValidator<LevelDBCacheStoreConfiguration.ImplementationType>(LevelDBCacheStoreConfiguration.ImplementationType.class, true, false))
-                    .setDefaultValue(new ModelNode().set(LevelDBCacheStoreConfiguration.ImplementationType.AUTO.name()))
+                    .setValidator(new EnumValidator<LevelDBStoreConfiguration.ImplementationType>(LevelDBStoreConfiguration.ImplementationType.class, true, false))
+                    .setDefaultValue(new ModelNode().set(LevelDBStoreConfiguration.ImplementationType.AUTO.name()))
                     .build();
 
     static final AttributeDefinition[] LEVELDB_IMPLEMENTATION_ATTRIBUTES = {TYPE};

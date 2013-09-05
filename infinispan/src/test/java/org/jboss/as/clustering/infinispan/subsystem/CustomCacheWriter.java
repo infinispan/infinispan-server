@@ -1,20 +1,19 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import org.infinispan.persistence.spi.AdvancedCacheLoader;
+import org.infinispan.persistence.spi.AdvancedCacheWriter;
 import org.infinispan.persistence.spi.InitializationContext;
 import org.infinispan.persistence.spi.MarshalledEntry;
 
 import java.util.concurrent.Executor;
 
-public class CustomCacheLoader implements AdvancedCacheLoader {
+public class CustomCacheWriter implements AdvancedCacheWriter {
 
    @Override
-   public void process(KeyFilter filter, CacheLoaderTask cacheLoaderTask, Executor executor, boolean b, boolean b2) {
+   public void clear() {
    }
 
    @Override
-   public int size() {
-      return 0;
+   public void purge(Executor executor, PurgeListener purgeListener) {
    }
 
    @Override
@@ -22,12 +21,11 @@ public class CustomCacheLoader implements AdvancedCacheLoader {
    }
 
    @Override
-   public MarshalledEntry load(Object o) {
-      return null;
+   public void write(MarshalledEntry entry) {
    }
 
    @Override
-   public boolean contains(Object o) {
+   public boolean delete(Object o) {
       return false;
    }
 

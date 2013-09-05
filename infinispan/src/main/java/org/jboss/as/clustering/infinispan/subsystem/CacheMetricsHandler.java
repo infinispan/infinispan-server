@@ -1,18 +1,10 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.infinispan.Cache;
 import org.infinispan.eviction.ActivationManager;
 import org.infinispan.interceptors.ActivationInterceptor;
 import org.infinispan.interceptors.CacheMgmtInterceptor;
-import org.infinispan.interceptors.CacheStoreInterceptor;
+import org.infinispan.interceptors.CacheWriterInterceptor;
 import org.infinispan.interceptors.InvalidationInterceptor;
 import org.infinispan.interceptors.PassivationInterceptor;
 import org.infinispan.interceptors.TxInterceptor;
@@ -29,6 +21,14 @@ import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 import org.jboss.msc.service.ServiceController;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 /**
  * Handler which manages read-only access to cache runtime information (metrics)
@@ -278,8 +278,8 @@ public class CacheMetricsHandler extends AbstractRuntimeOnlyHandler {
                     break;
                 }
                 case CACHE_LOADER_STORES: {
-                    CacheStoreInterceptor interceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache()
-                            .getInterceptorChain(), CacheStoreInterceptor.class);
+                    CacheWriterInterceptor interceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache()
+                            .getInterceptorChain(), CacheWriterInterceptor.class);
                     result.set(interceptor != null ? interceptor.getCacheLoaderStores() : 0);
                     break;
                 }
