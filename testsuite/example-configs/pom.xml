@@ -36,8 +36,8 @@
          <artifactId>infinispan-client-hotrod</artifactId>
       </dependency>
       <dependency>
-         <groupId>commons-httpclient</groupId>
-         <artifactId>commons-httpclient</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
       </dependency>
    </dependencies>
 
@@ -182,6 +182,34 @@
                      <dir>${server1.dist}/standalone/configuration/</dir>
                      <includes>
                         <include>standalone-compatibility-mode.xml</include>
+                     </includes>
+                     <outputDir>${server1.dist}/standalone/configuration</outputDir>
+                     <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
+                     <parameters>
+                        <parameter>
+                           <name>removeRestSecurity</name>
+                           <value>true</value>
+                        </parameter>
+                     </parameters>
+                  </transformationSet>
+                  <transformationSet>
+                     <dir>${server1.dist}/standalone/configuration/</dir>
+                     <includes>
+                        <include>clustered-two-nodes.xml</include>
+                     </includes>
+                     <outputDir>${server1.dist}/standalone/configuration</outputDir>
+                     <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
+                     <parameters>
+                        <parameter>
+                           <name>removeRestSecurity</name>
+                           <value>true</value>
+                        </parameter>
+                     </parameters>
+                  </transformationSet>
+                  <transformationSet>
+                     <dir>${server2.dist}/standalone/configuration/</dir>
+                     <includes>
+                        <include>clustered-two-nodes.xml</include>
                      </includes>
                      <outputDir>${server1.dist}/standalone/configuration</outputDir>
                      <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
