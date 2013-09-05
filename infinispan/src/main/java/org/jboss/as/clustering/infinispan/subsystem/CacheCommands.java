@@ -1,11 +1,9 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-
 import org.infinispan.Cache;
 import org.infinispan.interceptors.ActivationInterceptor;
 import org.infinispan.interceptors.CacheMgmtInterceptor;
-import org.infinispan.interceptors.CacheStoreInterceptor;
+import org.infinispan.interceptors.CacheWriterInterceptor;
 import org.infinispan.interceptors.InvalidationInterceptor;
 import org.infinispan.interceptors.PassivationInterceptor;
 import org.infinispan.interceptors.TxInterceptor;
@@ -19,8 +17,9 @@ import org.jboss.as.controller.PathAddress;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceController;
 
-import static org.jboss.as.clustering.infinispan.subsystem.CacheMetricsHandler.getFirstInterceptorWhichExtends;
 import static org.jboss.as.clustering.infinispan.InfinispanMessages.MESSAGES;
+import static org.jboss.as.clustering.infinispan.subsystem.CacheMetricsHandler.getFirstInterceptorWhichExtends;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 /**
  * Custom commands related to a cache
@@ -194,8 +193,8 @@ public abstract class CacheCommands implements OperationStepHandler {
 
         @Override
         protected ModelNode invokeCommand(Cache<?, ?> cache, ModelNode operation) throws Exception {
-            CacheStoreInterceptor interceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache()
-                    .getInterceptorChain(), CacheStoreInterceptor.class);
+            CacheWriterInterceptor interceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache()
+                    .getInterceptorChain(), CacheWriterInterceptor.class);
             if (interceptor != null) {
                 interceptor.resetStatistics();
             }

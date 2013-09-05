@@ -62,14 +62,14 @@ public class InfinispanSubsystemTestCase extends ClusteringSubsystemTest {
     @Parameters
     public static Collection<Object[]> data() {
       Object[][] data = new Object[][] {
-                                         { "subsystem-infinispan_1_0.xml", 33 },
-                                         { "subsystem-infinispan_1_1.xml", 33 },
-                                         { "subsystem-infinispan_1_2.xml", 37 },
-                                         { "subsystem-infinispan_1_3.xml", 37 },
-                                         { "subsystem-infinispan_1_4.xml", 75 },
-                                         { "subsystem-infinispan_5_2.xml", 54 },
-                                         { "subsystem-infinispan_5_3.xml", 57 },
-                                         { "subsystem-infinispan_6_0.xml", 78 },
+                                         { "subsystem-infinispan_1_0.xml", 32 },
+                                         { "subsystem-infinispan_1_1.xml", 32 },
+                                         { "subsystem-infinispan_1_2.xml", 36 },
+                                         { "subsystem-infinispan_1_3.xml", 36 },
+                                         { "subsystem-infinispan_1_4.xml", 74 },
+                                         { "subsystem-infinispan_5_2.xml", 53 },
+                                         { "subsystem-infinispan_5_3.xml", 56 },
+                                         { "subsystem-infinispan_6_0.xml", 75 },
                                        };
       return Arrays.asList(data);
     }
