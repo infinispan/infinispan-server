@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
       <groupId>org.infinispan.server</groupId>
       <artifactId>infinispan-server-testsuite</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0.Alpha4</version>
       <relativePath>../pom.xml</relativePath>
    </parent>
 
@@ -49,7 +48,7 @@
       <server3.dist>${ispnserver.project.dir}/build/target/infinispan-server-${project.version}-3</server3.dist>
       <config.dir>${basedir}/src/test/resources</config.dir>
       <jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m</jvm.memory.args>
-      <!--<jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</jvm.memory.args>-->
+      
       <jvm.ip.stack>-Djava.net.preferIPv4Stack=true</jvm.ip.stack>
       <server.jvm.args>${jvm.ip.stack} ${jvm.memory.args}</server.jvm.args>
    </properties>
@@ -163,7 +162,7 @@
                         </parameter>
                      </parameters>
                   </transformationSet>
-                  <!-- Replace host="remote-host" of <remote-destination> with real address-->
+                  
                   <transformationSet>
                      <dir>${server1.dist}/standalone/configuration/</dir>
                      <includes>
