@@ -24,7 +24,6 @@
 
       <!-- Version Info -->
       <version.com.github.relaxng.relaxngDatatype>2011.1</version.com.github.relaxng.relaxngDatatype>
-      <version.commons-httpclient>3.1</version.commons-httpclient>
       <version.commons.logging>1.1.1</version.commons.logging>
       <version.commons.httpclient>3.1</version.commons.httpclient>
       <version.net.jcip.annotations>1.0</version.net.jcip.annotations>
@@ -111,12 +110,6 @@
             <scope>import</scope>
          </dependency>
          
-         <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>${version.commons-httpclient}</version>
-         </dependency>
-
          <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-clustering-common</artifactId>
