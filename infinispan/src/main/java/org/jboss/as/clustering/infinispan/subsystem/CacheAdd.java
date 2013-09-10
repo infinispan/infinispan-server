@@ -61,7 +61,6 @@ import org.infinispan.loaders.jdbc.configuration.JdbcStringBasedStoreConfigurati
 import org.infinispan.loaders.jdbc.configuration.TableManipulationConfigurationBuilder;
 import org.infinispan.loaders.remote.configuration.RemoteCacheStoreConfigurationBuilder;
 import org.infinispan.loaders.rest.configuration.RestStoreConfigurationBuilder;
-import org.iq80.leveldb.CompressionType;
 import org.infinispan.loaders.leveldb.configuration.*;
 import org.infinispan.loaders.rest.metadata.MimeMetadataHelper;
 import org.infinispan.manager.EmbeddedCacheManager;

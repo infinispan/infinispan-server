@@ -35,7 +35,7 @@
         <module name="org.infinispan"/>
         <module name="org.jboss.logging"/>
         <!-- LevelDB store specific dependencies -->
-        <module name="org.iq80.leveldb" />
-        <module name="org.fusesource.leveldbjni-all" export="true"/>
+        <module name="org.iq80.leveldb" optional="true"/>
+        <module name="org.fusesource.leveldbjni-all" export="true" optional="true"/>
     </dependencies>
 </module>
