@@ -2,238 +2,261 @@
 <arquillian xmlns="http://www.jboss.org/arquillian-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.jboss.org/arquillian-1.0 http://jboss.org/schema/arquillian/arquillian-1.0.xsd">
 
-   <group qualifier="clustered-ccl">
-      <container qualifier="container1" mode="manual">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="serverConfig">clustered-ccl.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
-            <property name="managementPort">9999</property>
-            <property name="waitForPorts">11211 11222 8080</property>
-         </configuration>
-      </container>
-      <container qualifier="container2" mode="manual">
-         <configuration>
-            <property name="jbossHome">${server2.dist}</property>
-            <property name="serverConfig">clustered-ccl.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
-               -Djboss.socket.binding.port-offset=100
-            </property>
-            <property name="managementPort">10099</property>
-            <property name="waitForPorts">11311 11322 8180</property>
-         </configuration>
-      </container>
-   </group>
+    <group qualifier="clustered-ccl">
+        <container qualifier="container1" mode="manual">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">clustered-ccl.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
+                <property name="managementPort">9999</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
+        <container qualifier="container2" mode="manual">
+            <configuration>
+                <property name="jbossHome">${server2.dist}</property>
+                <property name="serverConfig">clustered-ccl.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
+                    -Djboss.socket.binding.port-offset=100
+                </property>
+                <property name="managementPort">10099</property>
+                <property name="waitForPorts">11311 11322 8180</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="clustered-jdbc">
-      <container qualifier="container1" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="serverConfig">clustered-jdbc.xml</property>
-            <property name="javaVmArguments">${server.jvm.args}</property>
-         </configuration>
-      </container>
-   </group>
+    <group qualifier="clustered-jdbc">
+        <container qualifier="container1" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">clustered-jdbc.xml</property>
+                <property name="javaVmArguments">${server.jvm.args}</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="clustered-storage-only">
-      <container qualifier="container1" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="serverConfig">clustered.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
-            <property name="managementPort">9999</property>
-            <property name="waitForPorts">11211 11222 8080</property>
-         </configuration>
-      </container>
-      <container qualifier="container2" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server2.dist}</property>
-            <property name="serverConfig">clustered-storage-only.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
-               -Djboss.socket.binding.port-offset=100
-            </property>
-            <property name="managementPort">10099</property>
-            <property name="waitForPorts">11311 11322 8180</property>
-         </configuration>
-      </container>
-   </group>
+    <group qualifier="clustered-storage-only">
+        <container qualifier="container1" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">clustered.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
+                <property name="managementPort">9999</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
+        <container qualifier="container2" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server2.dist}</property>
+                <property name="serverConfig">clustered-storage-only.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
+                    -Djboss.socket.binding.port-offset=100
+                </property>
+                <property name="managementPort">10099</property>
+                <property name="waitForPorts">11311 11322 8180</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="clustered-topology">
-      <container qualifier="container1" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="managementPort">9999</property>
-            <property name="serverConfig">clustered-topology.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
-            <property name="waitForPorts">11211 11222 8080</property>
-         </configuration>
-      </container>
-      <container qualifier="container2" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server2.dist}</property>
-            <property name="managementPort">10099</property>
-            <property name="serverConfig">clustered-topology.xml</property>
-            <property name="javaVmArguments">${server.jvm.args}
-               -Djboss.node.name=node1
-               -Djboss.socket.binding.port-offset=100
-               -Djboss.jgroups.topology.site=s1
-               -Djboss.jgroups.topology.rack=r1
-               -Djboss.jgroups.topology.machine=m2
-            </property>
-            <property name="waitForPorts">11311 11322 8180</property>
-         </configuration>
-      </container>
-      <container qualifier="container3" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server3.dist}</property>
-            <property name="managementPort">10199</property>
-            <property name="serverConfig">clustered-topology.xml</property>
-            <property name="javaVmArguments">${server.jvm.args}
-               -Djboss.node.name=node2
-               -Djboss.socket.binding.port-offset=200
-               -Djboss.jgroups.topology.site=s2
-               -Djboss.jgroups.topology.rack=r2
-               -Djboss.jgroups.topology.machine=m2
-            </property>
-            <property name="waitForPorts">11411 11422 8280</property>
-         </configuration>
-      </container>
-   </group>
+    <group qualifier="clustered-topology">
+        <container qualifier="container1" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="managementPort">9999</property>
+                <property name="serverConfig">clustered-topology.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
+        <container qualifier="container2" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server2.dist}</property>
+                <property name="managementPort">10099</property>
+                <property name="serverConfig">clustered-topology.xml</property>
+                <property name="javaVmArguments">${server.jvm.args}
+                    -Djboss.node.name=node1
+                    -Djboss.socket.binding.port-offset=100
+                    -Djboss.jgroups.topology.site=s1
+                    -Djboss.jgroups.topology.rack=r1
+                    -Djboss.jgroups.topology.machine=m2
+                </property>
+                <property name="waitForPorts">11311 11322 8180</property>
+            </configuration>
+        </container>
+        <container qualifier="container3" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server3.dist}</property>
+                <property name="managementPort">10199</property>
+                <property name="serverConfig">clustered-topology.xml</property>
+                <property name="javaVmArguments">${server.jvm.args}
+                    -Djboss.node.name=node2
+                    -Djboss.socket.binding.port-offset=200
+                    -Djboss.jgroups.topology.site=s2
+                    -Djboss.jgroups.topology.rack=r2
+                    -Djboss.jgroups.topology.machine=m2
+                </property>
+                <property name="waitForPorts">11411 11422 8280</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="clustered-two-nodes">
-      <container qualifier="container1" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="serverConfig">clustered-two-nodes.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
-            <property name="managementPort">9999</property>
-            <property name="waitForPorts">11211 11222 8080</property>
-         </configuration>
-      </container>
-      <container qualifier="container2" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server2.dist}</property>
-            <property name="serverConfig">clustered-two-nodes.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
-               -Djboss.socket.binding.port-offset=100
-            </property>
-            <property name="managementPort">10099</property>
-            <property name="waitForPorts">11311 11322 8180</property>
-         </configuration>
-      </container>
-   </group>
+    <group qualifier="clustered-two-nodes">
+        <container qualifier="container1" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">clustered-two-nodes.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
+                <property name="managementPort">9999</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
+        <container qualifier="container2" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server2.dist}</property>
+                <property name="serverConfig">clustered-two-nodes.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
+                    -Djboss.socket.binding.port-offset=100
+                </property>
+                <property name="managementPort">10099</property>
+                <property name="waitForPorts">11311 11322 8180</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="clustered-xsite">
-      <container qualifier="container1" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="serverConfig">clustered-xsite.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
-            <property name="managementPort">9999</property>
-            <property name="waitForPorts">11211 11222 8080</property>
-         </configuration>
-      </container>
-      <container qualifier="container2" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server2.dist}</property>
-            <property name="serverConfig">clustered-xsite.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
-               -Djboss.socket.binding.port-offset=100
-            </property>
-            <property name="managementPort">10099</property>
-            <property name="waitForPorts">11311 11322 8180</property>
-         </configuration>
-      </container>
-      <container qualifier="container3" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server3.dist}</property>
-            <property name="serverConfig">clustered-xsite.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node2
-               -Djboss.socket.binding.port-offset=200
-            </property>
-            <property name="managementPort">10199</property>
-            <property name="waitForPorts">11411 11422 8280</property>
-         </configuration>
-      </container>
-   </group>
+    <group qualifier="clustered-xsite">
+        <container qualifier="container1" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">clustered-xsite.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
+                <property name="managementPort">9999</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
+        <container qualifier="container2" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server2.dist}</property>
+                <property name="serverConfig">clustered-xsite.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
+                    -Djboss.socket.binding.port-offset=100
+                </property>
+                <property name="managementPort">10099</property>
+                <property name="waitForPorts">11311 11322 8180</property>
+            </configuration>
+        </container>
+        <container qualifier="container3" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server3.dist}</property>
+                <property name="serverConfig">clustered-xsite.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node2
+                    -Djboss.socket.binding.port-offset=200
+                </property>
+                <property name="managementPort">10199</property>
+                <property name="waitForPorts">11411 11422 8280</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="standalone-fcs-local">
-      <container qualifier="default" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="serverConfig">standalone-fcs-local.xml</property>
-            <property name="javaVmArguments">${server.jvm.args}</property>
-            <property name="waitForPorts">11211 11222 8080</property>
-         </configuration>
-      </container>
-   </group>
+    <group qualifier="standalone-fcs-local">
+        <container qualifier="default" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">standalone-fcs-local.xml</property>
+                <property name="javaVmArguments">${server.jvm.args}</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="standalone-hotrod-multiple">
-      <container qualifier="default" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="serverConfig">standalone-hotrod-multiple.xml</property>
-            <property name="javaVmArguments">${server.jvm.args}</property>
-            <property name="waitForPorts">11222 11223 8080</property>
-         </configuration>
-      </container>
-   </group>
+    <group qualifier="standalone-hotrod-multiple">
+        <container qualifier="default" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">standalone-hotrod-multiple.xml</property>
+                <property name="javaVmArguments">${server.jvm.args}</property>
+                <property name="waitForPorts">11222 11223 8080</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="standalone-rcs-local">
-      <container qualifier="container1" mode="manual">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="managementPort">9999</property>
-            <property name="serverConfig">standalone-rcs-local.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
-            <property name="waitForPorts">11211 11222 8080</property>
-         </configuration>
-      </container>
+    <group qualifier="standalone-rcs-local">
+        <container qualifier="container1" mode="manual">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="managementPort">9999</property>
+                <property name="serverConfig">standalone-rcs-local.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
 
-      <container qualifier="container2" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server2.dist}</property>
-            <property name="managementPort">10099</property>
-            <property name="serverConfig">standalone.xml</property>
-            <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
-               -Djboss.socket.binding.port-offset=100
-            </property>
-            <property name="waitForPorts">11311 11322 8180</property>
-         </configuration>
-      </container>
-   </group>
+        <container qualifier="container2" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server2.dist}</property>
+                <property name="managementPort">10099</property>
+                <property name="serverConfig">standalone.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
+                    -Djboss.socket.binding.port-offset=100
+                </property>
+                <property name="waitForPorts">11311 11322 8180</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="standalone-hotrod-ssl">
-      <container qualifier="default" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="serverConfig">standalone-hotrod-ssl.xml</property>
-            <property name="javaVmArguments">${server.jvm.args}</property>
-            <property name="waitForPorts">11222 8080</property>
-         </configuration>
-      </container>
-   </group>
+    <group qualifier="standalone-hotrod-ssl">
+        <container qualifier="default" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">standalone-hotrod-ssl.xml</property>
+                <property name="javaVmArguments">${server.jvm.args}</property>
+                <property name="waitForPorts">11222 8080</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="standalone-leveldb-cs-local">
-      <container qualifier="default" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="serverConfig">standalone-leveldb-cs-local.xml</property>
-            <property name="javaVmArguments">${server.jvm.args}</property>
-            <property name="waitForPorts">11211 11222 8080</property>
-         </configuration>
-      </container>
-   </group>
+    <group qualifier="standalone-leveldb-cs-local">
+        <container qualifier="default" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">standalone-leveldb-cs-local.xml</property>
+                <property name="javaVmArguments">${server.jvm.args}</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
+    </group>
 
-   <group qualifier="standalone-compatibility-mode">
-      <container qualifier="default" mode="suite">
-         <configuration>
-            <property name="jbossHome">${server1.dist}</property>
-            <property name="serverConfig">standalone-compatibility-mode.xml</property>
-            <property name="javaVmArguments">${server.jvm.args}</property>
-            <property name="waitForPorts">11222 8080 11211</property>
-         </configuration>
-      </container>
-   </group>
-   
+    <group qualifier="standalone-compatibility-mode">
+        <container qualifier="default" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">standalone-compatibility-mode.xml</property>
+                <property name="javaVmArguments">${server.jvm.args}</property>
+                <property name="waitForPorts">11222 8080 11211</property>
+            </configuration>
+        </container>
+    </group>
+
+    <group qualifier="jmx-management">
+        <container qualifier="container1" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">jmx/clustered.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
+                <property name="managementPort">9999</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
+        <container qualifier="container2" mode="suite">
+            <configuration>
+                <property name="jbossHome">${server2.dist}</property>
+                <property name="serverConfig">jmx/clustered.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
+                    -Djboss.socket.binding.port-offset=100
+                </property>
+                <property name="managementPort">10099</property>
+                <property name="waitForPorts">11311 11322 8180</property>
+            </configuration>
+        </container>
+    </group>
+
 </arquillian>
