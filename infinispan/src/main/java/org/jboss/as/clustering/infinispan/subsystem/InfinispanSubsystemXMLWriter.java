@@ -386,8 +386,7 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
                     this.writeOptional(writer, Attribute.CONNECTION_TIMEOUT, pool, ModelKeys.CONNECTION_TIMEOUT);
                     this.writeOptional(writer, Attribute.MAX_CONNECTIONS_PER_HOST, pool, ModelKeys.MAX_CONNECTIONS_PER_HOST);
                     this.writeOptional(writer, Attribute.MAX_TOTAL_CONNECTIONS, pool, ModelKeys.MAX_TOTAL_CONNECTIONS);
-                    this.writeOptional(writer, Attribute.RECEIVE_BUFFER_SIZE, pool, ModelKeys.RECEIVE_BUFFER_SIZE);
-                    this.writeOptional(writer, Attribute.SEND_BUFFER_SIZE, pool, ModelKeys.SEND_BUFFER_SIZE);
+                    this.writeOptional(writer, Attribute.BUFFER_SIZE, pool, ModelKeys.BUFFER_SIZE);
                     this.writeOptional(writer, Attribute.SOCKET_TIMEOUT, pool, ModelKeys.SOCKET_TIMEOUT);
                     this.writeOptional(writer, Attribute.TCP_NO_DELAY, pool, ModelKeys.TCP_NO_DELAY);
                     writer.writeEndElement();

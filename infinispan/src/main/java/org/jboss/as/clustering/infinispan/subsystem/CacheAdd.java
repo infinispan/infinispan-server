@@ -810,11 +810,8 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
                     if (pool.hasDefined(ModelKeys.MAX_TOTAL_CONNECTIONS)) {
                         builder.connectionPool().maxTotalConnections(pool.require(ModelKeys.MAX_TOTAL_CONNECTIONS).asInt());
                     }
-                    if (pool.hasDefined(ModelKeys.RECEIVE_BUFFER_SIZE)) {
-                        builder.connectionPool().receiveBufferSize(pool.require(ModelKeys.RECEIVE_BUFFER_SIZE).asInt());
-                    }
-                    if (pool.hasDefined(ModelKeys.SEND_BUFFER_SIZE)) {
-                        builder.connectionPool().sendBufferSize(pool.require(ModelKeys.SEND_BUFFER_SIZE).asInt());
+                    if (pool.hasDefined(ModelKeys.BUFFER_SIZE)) {
+                        builder.connectionPool().bufferSize(pool.require(ModelKeys.BUFFER_SIZE).asInt());
                     }
                     if (pool.hasDefined(ModelKeys.SOCKET_TIMEOUT)) {
                         builder.connectionPool().socketTimeout(pool.require(ModelKeys.SOCKET_TIMEOUT).asInt());

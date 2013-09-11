@@ -67,6 +67,14 @@ public class RestStoreResource extends BaseStoreResource {
                     .setDefaultValue(new ModelNode().set(false))
                     .build();
     // connection pool attributes
+    static final SimpleAttributeDefinition BUFFER_SIZE =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.BUFFER_SIZE, ModelType.INT, true)
+                    .setXmlName(Attribute.BUFFER_SIZE.getLocalName())
+                    .setMeasurementUnit(MeasurementUnit.BYTES)
+                    .setAllowExpression(true)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set(8192))
+                    .build();
     static final SimpleAttributeDefinition CONNECTION_TIMEOUT =
             new SimpleAttributeDefinitionBuilder(ModelKeys.CONNECTION_TIMEOUT, ModelType.INT, true)
                     .setXmlName(Attribute.CONNECTION_TIMEOUT.getLocalName())
@@ -89,22 +97,6 @@ public class RestStoreResource extends BaseStoreResource {
                     .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
                     .setDefaultValue(new ModelNode().set(20))
                     .build();
-    static final SimpleAttributeDefinition RECEIVE_BUFFER_SIZE =
-            new SimpleAttributeDefinitionBuilder(ModelKeys.RECEIVE_BUFFER_SIZE, ModelType.INT, true)
-                    .setXmlName(Attribute.RECEIVE_BUFFER_SIZE.getLocalName())
-                    .setMeasurementUnit(MeasurementUnit.BYTES)
-                    .setAllowExpression(true)
-                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
-                    .setDefaultValue(new ModelNode().set(20000))
-                    .build();
-    static final SimpleAttributeDefinition SEND_BUFFER_SIZE =
-            new SimpleAttributeDefinitionBuilder(ModelKeys.SEND_BUFFER_SIZE, ModelType.INT, true)
-                    .setXmlName(Attribute.SEND_BUFFER_SIZE.getLocalName())
-                    .setMeasurementUnit(MeasurementUnit.BYTES)
-                    .setAllowExpression(true)
-                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
-                    .setDefaultValue(new ModelNode().set(20000))
-                    .build();
     static final SimpleAttributeDefinition SOCKET_TIMEOUT =
             new SimpleAttributeDefinitionBuilder(ModelKeys.SOCKET_TIMEOUT, ModelType.INT, true)
                     .setXmlName(Attribute.SOCKET_TIMEOUT.getLocalName())
@@ -121,7 +113,7 @@ public class RestStoreResource extends BaseStoreResource {
                     .setDefaultValue(new ModelNode().set(true))
                     .build();
     static final ObjectTypeAttributeDefinition CONNECTION_POOL = ObjectTypeAttributeDefinition.
-            Builder.of(ModelKeys.CONNECTION_POOL, CONNECTION_TIMEOUT, MAX_CONNECTIONS_PER_HOST, MAX_TOTAL_CONNECTIONS, SOCKET_TIMEOUT, RECEIVE_BUFFER_SIZE, SEND_BUFFER_SIZE, TCP_NO_DELAY).
+            Builder.of(ModelKeys.CONNECTION_POOL, BUFFER_SIZE, CONNECTION_TIMEOUT, MAX_CONNECTIONS_PER_HOST, MAX_TOTAL_CONNECTIONS, SOCKET_TIMEOUT, TCP_NO_DELAY).
             setAllowNull(true).
             build();
 
