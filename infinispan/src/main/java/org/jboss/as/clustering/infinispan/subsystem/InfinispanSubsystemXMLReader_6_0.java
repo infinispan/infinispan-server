@@ -1064,6 +1064,10 @@ public final class InfinispanSubsystemXMLReader_6_0 implements XMLElementReader<
             String value = reader.getAttributeValue(i);
             Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
             switch (attribute) {
+                case BUFFER_SIZE: {
+                    RestStoreResource.BUFFER_SIZE.parseAndSetParameter(value, table, reader);
+                    break;
+                }
                 case CONNECTION_TIMEOUT: {
                     RestStoreResource.CONNECTION_TIMEOUT.parseAndSetParameter(value, table, reader);
                     break;
@@ -1074,14 +1078,6 @@ public final class InfinispanSubsystemXMLReader_6_0 implements XMLElementReader<
                 }
                 case MAX_TOTAL_CONNECTIONS: {
                     RestStoreResource.MAX_TOTAL_CONNECTIONS.parseAndSetParameter(value, table, reader);
-                    break;
-                }
-                case RECEIVE_BUFFER_SIZE: {
-                    RestStoreResource.RECEIVE_BUFFER_SIZE.parseAndSetParameter(value, table, reader);
-                    break;
-                }
-                case SEND_BUFFER_SIZE: {
-                    RestStoreResource.SEND_BUFFER_SIZE.parseAndSetParameter(value, table, reader);
                     break;
                 }
                 case SOCKET_TIMEOUT: {

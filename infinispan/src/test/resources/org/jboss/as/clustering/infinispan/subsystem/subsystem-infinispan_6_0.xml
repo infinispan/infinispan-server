@@ -32,7 +32,7 @@
             <compatibility enabled="true" marshaller="org.infinispan.commons.marshall.jboss.GenericJBossMarshaller" />
             <rest-store fetch-state="false" passivation="false" path="path" preload="true" purge="false" shared="true" singleton="false" append-cache-name-to-path="false">
                 <write-behind flush-lock-timeout="2" modification-queue-size="2048" shutdown-timeout="20000" thread-pool-size="1" />
-                <connection-pool connection-timeout="10000" max-connections-per-host="6" max-total-connections="10" receive-buffer-size="30000" send-buffer-size="30000" socket-timeout="10000" tcp-no-delay="true" />
+                <connection-pool connection-timeout="10000" max-connections-per-host="6" max-total-connections="10" buffer-size="30000" socket-timeout="10000" tcp-no-delay="true" />
                 <remote-server outbound-socket-binding="rest-server-1" />
             </rest-store>
             <indexing index="LOCAL" />

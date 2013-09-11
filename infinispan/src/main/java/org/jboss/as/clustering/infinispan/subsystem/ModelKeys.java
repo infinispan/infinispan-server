@@ -43,6 +43,7 @@ public class ModelKeys {
     static final String BINARY_KEYED_TABLE_NAME = "BINARY_KEYED_TABLE";
     static final String BLOCK_SIZE = "block-size";
     static final String BUCKET_TABLE = "bucket-table";
+    static final String BUFFER_SIZE = "buffer-size";
     static final String CACHE = "cache";
     static final String CACHE_SIZE = "cache-size";
     // static final String CACHE_MODE = "cache-mode";
@@ -134,7 +135,6 @@ public class ModelKeys {
     static final String RAW_VALUES = "raw-values";
     static final String READ_ONLY = "read-only";
     static final String REBALANCING = "rebalancing";
-    static final String RECEIVE_BUFFER_SIZE = "receive-buffer-size";
     static final String RELATIVE_TO = "relative-to";
     static final String REMOTE_SERVER = "remote-server";
     static final String REMOTE_SERVERS = "remote-servers";
@@ -146,7 +146,6 @@ public class ModelKeys {
     static final String REST_STORE = "rest-store";
     static final String REST_STORE_NAME = "REST_STORE";
     static final String SEGMENTS = "segments";
-    static final String SEND_BUFFER_SIZE = "send-buffer-size";
     static final String SHARED = "shared";
     static final String SHUTDOWN_TIMEOUT = "shutdown-timeout";
     static final String SINGLETON = "singleton";
