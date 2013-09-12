@@ -280,7 +280,7 @@ public class CacheMetricsHandler extends AbstractRuntimeOnlyHandler {
                 case CACHE_LOADER_STORES: {
                     CacheWriterInterceptor interceptor = getFirstInterceptorWhichExtends(cache.getAdvancedCache()
                             .getInterceptorChain(), CacheWriterInterceptor.class);
-                    result.set(interceptor != null ? interceptor.getCacheLoaderStores() : 0);
+                    result.set(interceptor != null ? interceptor.getWritesToTheStores() : 0);
                     break;
                 }
             }
