@@ -1,6 +1,6 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import org.infinispan.loaders.leveldb.configuration.LevelDBStoreConfiguration;
+import org.infinispan.persistence.leveldb.configuration.LevelDBStoreConfiguration;
 import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathElement;

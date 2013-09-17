@@ -1,6 +1,6 @@
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import org.infinispan.loaders.leveldb.configuration.CompressionType;
+import org.infinispan.persistence.leveldb.configuration.CompressionType;
 import org.jboss.as.controller.*;
 import org.jboss.as.controller.operations.validation.EnumValidator;
 import org.jboss.as.controller.registry.AttributeAccess;

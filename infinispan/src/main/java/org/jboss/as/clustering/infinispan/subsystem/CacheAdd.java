@@ -22,25 +22,9 @@
 
 package org.jboss.as.clustering.infinispan.subsystem;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.transaction.TransactionManager;
-import javax.transaction.TransactionSynchronizationRegistry;
-
 import org.infinispan.Cache;
+import org.infinispan.commons.marshall.Marshaller;
+import org.infinispan.commons.util.TypedProperties;
 import org.infinispan.configuration.cache.BackupConfiguration.BackupStrategy;
 import org.infinispan.configuration.cache.BackupFailurePolicy;
 import org.infinispan.configuration.cache.CacheMode;
@@ -54,21 +38,21 @@ import org.infinispan.configuration.cache.StoreConfigurationBuilder;
 import org.infinispan.configuration.parsing.ConfigurationBuilderHolder;
 import org.infinispan.configuration.parsing.ParserRegistry;
 import org.infinispan.eviction.EvictionStrategy;
-import org.infinispan.loaders.rest.configuration.RestStoreConfigurationBuilder;
-import org.infinispan.loaders.leveldb.configuration.*;
-import org.infinispan.loaders.rest.metadata.MimeMetadataHelper;
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.commons.marshall.Marshaller;
 import org.infinispan.persistence.jdbc.configuration.AbstractJdbcStoreConfigurationBuilder;
 import org.infinispan.persistence.jdbc.configuration.JdbcBinaryStoreConfigurationBuilder;
 import org.infinispan.persistence.jdbc.configuration.JdbcMixedStoreConfigurationBuilder;
 import org.infinispan.persistence.jdbc.configuration.JdbcStringBasedStoreConfigurationBuilder;
 import org.infinispan.persistence.jdbc.configuration.TableManipulationConfigurationBuilder;
+import org.infinispan.persistence.leveldb.configuration.CompressionType;
+import org.infinispan.persistence.leveldb.configuration.LevelDBStoreConfiguration;
+import org.infinispan.persistence.leveldb.configuration.LevelDBStoreConfigurationBuilder;
 import org.infinispan.persistence.remote.configuration.RemoteStoreConfigurationBuilder;
+import org.infinispan.persistence.rest.configuration.RestStoreConfigurationBuilder;
+import org.infinispan.persistence.rest.metadata.MimeMetadataHelper;
 import org.infinispan.persistence.spi.CacheLoader;
 import org.infinispan.transaction.LockingMode;
 import org.infinispan.transaction.tm.BatchModeTransactionManager;
-import org.infinispan.commons.util.TypedProperties;
 import org.infinispan.util.concurrent.IsolationLevel;
 import org.jboss.as.clustering.infinispan.InfinispanMessages;
 import org.jboss.as.controller.AbstractAddStepHandler;
@@ -102,6 +86,23 @@ import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.value.InjectedValue;
 import org.jboss.msc.value.Value;
 import org.jboss.tm.XAResourceRecoveryRegistry;
+
+import javax.transaction.TransactionManager;
+import javax.transaction.TransactionSynchronizationRegistry;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 /**
  * Base class for cache add handlers
