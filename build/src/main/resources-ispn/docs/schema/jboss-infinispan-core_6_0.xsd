@@ -189,11 +189,6 @@
                 </xs:annotation>
             </xs:element>
             <xs:choice minOccurs="0">
-                <xs:element name="loader" type="tns:custom-loader">
-                    <xs:annotation>
-                        <xs:documentation>Defines a custom cache loader.</xs:documentation>
-                    </xs:annotation>
-                </xs:element>
                 <xs:element name="cluster-loader" type="tns:cluster-loader">
                     <xs:annotation>
                         <xs:documentation>Defines a cluster cache loader.</xs:documentation>
@@ -508,18 +503,6 @@
         </xs:attribute>
     </xs:complexType>
 
-    <xs:complexType name="custom-loader">
-        <xs:complexContent>
-            <xs:extension base="tns:loader">
-                <xs:attribute name="class" type="xs:string" use="required">
-                    <xs:annotation>
-                        <xs:documentation>The class name of the cache loader implementation.</xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-    
     <xs:complexType name="cluster-loader">
         <xs:complexContent>
             <xs:extension base="tns:loader">
