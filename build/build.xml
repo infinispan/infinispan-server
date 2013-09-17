@@ -151,16 +151,20 @@
          <maven-resource group="org.infinispan" artifact="infinispan-client-hotrod" />
       </module-def>
 
-      <module-def name="org.infinispan.cachestore.remote" src="${infinispan.server.modules.dir}">
+      <module-def name="org.infinispan.persistence.remote" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
       </module-def>
 
-      <module-def name="org.infinispan.cachestore.rest" src="${infinispan.server.modules.dir}">
+      <module-def name="org.infinispan.persistence.rest" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-cachestore-rest" />
       </module-def>
 
-      <module-def name="org.infinispan.cachestore.leveldb" src="${infinispan.server.modules.dir}">
+      <module-def name="org.infinispan.persistence.leveldb" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-cachestore-leveldb" />
+      </module-def>
+
+      <module-def name="org.infinispan.adaptor52x" src="${infinispan.server.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-adaptor52x"/>
       </module-def>
 
       <module-def name="org.infinispan.lucene" src="${infinispan.server.modules.dir}">
