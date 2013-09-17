@@ -25,6 +25,7 @@ package org.jboss.as.clustering.infinispan.subsystem;
 import org.infinispan.Cache;
 import org.infinispan.commons.marshall.Marshaller;
 import org.infinispan.commons.util.TypedProperties;
+import org.infinispan.compatibility.adaptor52x.Adaptor52xStoreConfigurationBuilder;
 import org.infinispan.configuration.cache.BackupConfiguration.BackupStrategy;
 import org.infinispan.configuration.cache.BackupFailurePolicy;
 import org.infinispan.configuration.cache.CacheMode;
@@ -540,15 +541,9 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         if (cache.hasDefined(loaderKey)) {
             for (Property loaderEntry : cache.get(loaderKey).asPropertyList()) {
                 ModelNode loader = loaderEntry.getValue();
-                final boolean shared = BaseStoreResource.SHARED.resolveModelAttribute(context, loader).asBoolean();
-                final boolean preload = BaseStoreResource.PRELOAD.resolveModelAttribute(context, loader).asBoolean();
-
                 PersistenceConfigurationBuilder loadersBuilder = builder.persistence();
-                StoreConfigurationBuilder<?, ?> loaderBuilder = this.buildCacheLoader(context, loadersBuilder, containerName,
-                        loader, loaderKey, dependencies);
-                if (loaderBuilder == null) return; // FIXME: workaround for non functioning custom cache loaders
-                loaderBuilder.shared(shared).preload(preload);
-
+                StoreConfigurationBuilder<?, ?> loaderBuilder = buildCacheLoader(context, loadersBuilder, containerName,
+                                                                                 loader, loaderKey, dependencies);
                final Properties properties = getProperties(loader);
                 loaderBuilder.withProperties(properties);
             }
@@ -576,58 +571,10 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             for (Property storeEntry : cache.get(storeKey).asPropertyList()) {
                 ModelNode store = storeEntry.getValue();
 
-                final boolean shared = BaseStoreResource.SHARED.resolveModelAttribute(context, store).asBoolean();
-                final boolean preload = BaseStoreResource.PRELOAD.resolveModelAttribute(context, store).asBoolean();
                 final boolean passivation = BaseStoreResource.PASSIVATION.resolveModelAttribute(context, store).asBoolean();
-                final boolean fetchState = BaseStoreResource.FETCH_STATE.resolveModelAttribute(context, store).asBoolean();
-                final boolean purge = BaseStoreResource.PURGE.resolveModelAttribute(context, store).asBoolean();
-                final boolean singleton = BaseStoreResource.SINGLETON.resolveModelAttribute(context, store).asBoolean();
-                final boolean readOnly = BaseStoreResource.READ_ONLY.resolveModelAttribute(context, store).asBoolean();
-                // TODO Fix me
-                final boolean async = store.hasDefined(ModelKeys.WRITE_BEHIND) && store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME).isDefined();
+                PersistenceConfigurationBuilder loadersBuilder = builder.persistence().passivation(passivation);
+                buildCacheStore(context, loadersBuilder, containerName, store, storeKey, dependencies);
 
-                PersistenceConfigurationBuilder loadersBuilder = builder.persistence()
-                        .passivation(passivation)
-                        ;
-                StoreConfigurationBuilder<?, ?> storeBuilder = this.buildCacheStore(context, loadersBuilder, containerName, store, storeKey, dependencies);
-
-                if (storeBuilder == null) return; // FIXME: workaround for non functioning custom cache stores
-
-                storeBuilder
-                        .fetchPersistentState(fetchState)
-                        .purgeOnStartup(purge)
-                        .ignoreModifications(readOnly)
-                        .shared(shared)
-                        .preload(preload)
-                      ;
-
-                storeBuilder.singleton().enabled(singleton);
-
-                if (async) {
-                    ModelNode writeBehind = store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME);
-                    storeBuilder.async().enable()
-                            .flushLockTimeout(StoreWriteBehindResource.FLUSH_LOCK_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
-                            .modificationQueueSize(StoreWriteBehindResource.MODIFICATION_QUEUE_SIZE.resolveModelAttribute(context, writeBehind).asInt())
-                            .shutdownTimeout(StoreWriteBehindResource.SHUTDOWN_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
-                            .threadPoolSize(StoreWriteBehindResource.THREAD_POOL_SIZE.resolveModelAttribute(context, writeBehind).asInt())
-                    ;
-                }
-
-                final Properties properties = new TypedProperties();
-                if (store.hasDefined(ModelKeys.PROPERTY)) {
-                    for (Property property : store.get(ModelKeys.PROPERTY).asPropertyList()) {
-                        // format of properties
-                        // "property" => {
-                        //   "property-name" => {"value => "property-value"}
-                        // }
-                        String propertyName = property.getName();
-                        // get the value from ModelNode {"value" => "property-value"}
-                        ModelNode propertyValue = null ;
-                        propertyValue = StorePropertyResource.VALUE.resolveModelAttribute(context,property.getValue());
-                        properties.setProperty(propertyName, propertyValue.asString());
-                    }
-                }
-                storeBuilder.withProperties(properties);
             }
         }
     }
@@ -643,8 +590,16 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             }
             return builder;
         } else if (loaderKey.equals(ModelKeys.LOADER)) {
-           //todo: add backward compatibility loader parsing
-           return null;
+           String className = loader.require(ModelKeys.CLASS).asString();
+           try {
+              org.infinispan.loaders.CacheLoader loaderInstance = (org.infinispan.loaders.CacheLoader) newInstance(className);
+              Adaptor52xStoreConfigurationBuilder scb = persistenceBuilder.addStore(Adaptor52xStoreConfigurationBuilder.class);
+              scb.loader(loaderInstance);
+              parseCommonAttributes(context, persistenceBuilder, loader, scb);
+              return scb;
+           } catch (Exception e) {
+              throw InfinispanMessages.MESSAGES.invalidCacheLoader(e, className);
+           }
         } else {
            throw new IllegalStateException();
         }
@@ -831,44 +786,18 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         } else if (storeKey.equals(ModelKeys.STORE)) {
            String className = store.require(ModelKeys.CLASS).asString();
            try {
-              Class<?> storeImplClass = CacheLoader.class.getClassLoader().loadClass(className);
-              Class<? extends StoreConfigurationBuilder> builderClass = StoreConfigurationBuilder.class.getClassLoader().loadClass(storeImplClass.getName() + "ConfigurationBuilder").asSubclass(StoreConfigurationBuilder.class);
-              StoreConfigurationBuilder storeConfigurationBuilder = persistenceBuilder.addStore(builderClass);
-              ModelNode shared = store.get(ModelKeys.SHARED);
-              if (shared != null) {
-                 storeConfigurationBuilder.shared(shared.asBoolean());
+              Object instance = newInstance(className);
+              StoreConfigurationBuilder storeConfigurationBuilder;
+              if (instance instanceof org.infinispan.loaders.CacheLoader) { //5.2.x configuration
+                 Adaptor52xStoreConfigurationBuilder scb = persistenceBuilder.addStore(Adaptor52xStoreConfigurationBuilder.class);
+                 scb.loader((org.infinispan.loaders.CacheLoader) instance);
+                 storeConfigurationBuilder = scb;
+              } else {
+                 Class<?> storeImplClass = CacheLoader.class.getClassLoader().loadClass(className);
+                 Class<? extends StoreConfigurationBuilder> builderClass = StoreConfigurationBuilder.class.getClassLoader().loadClass(storeImplClass.getName() + "ConfigurationBuilder").asSubclass(StoreConfigurationBuilder.class);
+                 storeConfigurationBuilder = persistenceBuilder.addStore(builderClass);
               }
-              ModelNode preload = store.get(ModelKeys.PRELOAD);
-              if (preload != null) {
-                 storeConfigurationBuilder.shared(preload.asBoolean());
-              }
-              ModelNode fetchState = store.get(ModelKeys.FETCH_STATE);
-              if (fetchState != null) {
-                 storeConfigurationBuilder.fetchPersistentState(fetchState.asBoolean());
-              }
-              ModelNode passivation = store.get(ModelKeys.PASSIVATION);
-              if (passivation != null) {
-                 persistenceBuilder.passivation(passivation.asBoolean());
-              }
-              ModelNode purge = store.get(ModelKeys.PURGE);
-              if (purge != null) {
-                 storeConfigurationBuilder.purgeOnStartup(purge.asBoolean());
-              }
-              ModelNode singleton = store.get(ModelKeys.SINGLETON);
-              if (singleton != null) {
-                 if (singleton.asBoolean())
-                    storeConfigurationBuilder.singleton().enable();
-              }
-              ModelNode readOnly = store.get(ModelKeys.READ_ONLY);
-              if (readOnly != null) {
-                 storeConfigurationBuilder.ignoreModifications(singleton.asBoolean());
-              }
-              ModelNode writeBehind = store.get(ModelKeys.WRITE_BEHIND);
-              if (writeBehind != null) {
-                 if (writeBehind.asBoolean())
-                    storeConfigurationBuilder.async();
-              }
-              storeConfigurationBuilder.withProperties(getProperties(store));
+              parseCommonAttributes(context, persistenceBuilder, store, storeConfigurationBuilder);
               return storeConfigurationBuilder;
            } catch (Exception e) {
               throw InfinispanMessages.MESSAGES.invalidCacheStore(e, className);
@@ -878,7 +807,75 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         }
     }
 
-    private AbstractJdbcStoreConfigurationBuilder<?, ?> buildJdbcStore(PersistenceConfigurationBuilder loadersBuilder, OperationContext context, ModelNode store) throws OperationFailedException {
+   private Object newInstance(String className) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+      return CacheLoader.class.getClassLoader().loadClass(className).newInstance();
+   }
+
+   private void parseCommonAttributes(OperationContext context, PersistenceConfigurationBuilder persistenceBuilder, ModelNode store, StoreConfigurationBuilder storeConfigurationBuilder) throws OperationFailedException {
+      ModelNode shared = store.get(ModelKeys.SHARED);
+      if (shared != null && shared.isDefined()) {
+         storeConfigurationBuilder.shared(shared.asBoolean());
+      }
+      ModelNode preload = store.get(ModelKeys.PRELOAD);
+      if (preload != null && preload.isDefined()) {
+         storeConfigurationBuilder.shared(preload.asBoolean());
+      }
+      ModelNode fetchState = store.get(ModelKeys.FETCH_STATE);
+      if (fetchState != null && fetchState.isDefined()) {
+         storeConfigurationBuilder.fetchPersistentState(fetchState.asBoolean());
+      }
+      ModelNode passivation = store.get(ModelKeys.PASSIVATION);
+      if (passivation != null && passivation.isDefined()) {
+         persistenceBuilder.passivation(passivation.asBoolean());
+      }
+      ModelNode purge = store.get(ModelKeys.PURGE);
+      if (purge != null && purge.isDefined()) {
+         storeConfigurationBuilder.purgeOnStartup(purge.asBoolean());
+      }
+      ModelNode singleton = store.get(ModelKeys.SINGLETON);
+      if (singleton != null && singleton.isDefined()) {
+         if (singleton.asBoolean())
+            storeConfigurationBuilder.singleton().enable();
+      }
+      ModelNode readOnly = store.get(ModelKeys.READ_ONLY);
+      if (readOnly != null && readOnly.isDefined()) {
+         storeConfigurationBuilder.ignoreModifications(singleton.asBoolean());
+      }
+      final boolean async = store.hasDefined(ModelKeys.WRITE_BEHIND) && store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME).isDefined();
+      if (async) {
+         ModelNode writeBehind = store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME);
+         storeConfigurationBuilder.async().enable()
+               .flushLockTimeout(StoreWriteBehindResource.FLUSH_LOCK_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
+               .modificationQueueSize(StoreWriteBehindResource.MODIFICATION_QUEUE_SIZE.resolveModelAttribute(context, writeBehind).asInt())
+               .shutdownTimeout(StoreWriteBehindResource.SHUTDOWN_TIMEOUT.resolveModelAttribute(context, writeBehind).asLong())
+               .threadPoolSize(StoreWriteBehindResource.THREAD_POOL_SIZE.resolveModelAttribute(context, writeBehind).asInt())
+         ;
+      }
+
+      final Properties properties = new TypedProperties();
+      if (store.hasDefined(ModelKeys.PROPERTY)) {
+         for (Property property : store.get(ModelKeys.PROPERTY).asPropertyList()) {
+            // format of properties
+            // "property" => {
+            //   "property-name" => {"value => "property-value"}
+            // }
+            String propertyName = property.getName();
+            // get the value from ModelNode {"value" => "property-value"}
+            ModelNode propertyValue = null ;
+            propertyValue = StorePropertyResource.VALUE.resolveModelAttribute(context,property.getValue());
+            properties.setProperty(propertyName, propertyValue.asString());
+         }
+      }
+      storeConfigurationBuilder.withProperties(properties);
+
+      ModelNode writeBehind = store.get(ModelKeys.WRITE_BEHIND);
+      if (writeBehind != null && writeBehind.isDefined()) {
+         if (writeBehind.asBoolean())
+            storeConfigurationBuilder.async();
+      }
+   }
+
+   private AbstractJdbcStoreConfigurationBuilder<?, ?> buildJdbcStore(PersistenceConfigurationBuilder loadersBuilder, OperationContext context, ModelNode store) throws OperationFailedException {
         boolean useStringKeyedTable = store.hasDefined(ModelKeys.STRING_KEYED_TABLE);
         boolean useBinaryKeyedTable = store.hasDefined(ModelKeys.BINARY_KEYED_TABLE);
         if (useStringKeyedTable && !useBinaryKeyedTable) {

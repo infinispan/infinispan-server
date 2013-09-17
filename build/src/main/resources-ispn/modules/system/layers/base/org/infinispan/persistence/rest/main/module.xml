@@ -20,7 +20,7 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-<module xmlns="urn:jboss:module:1.1" name="org.infinispan.cachestore.remote">
+<module xmlns="urn:jboss:module:1.1" name="org.infinispan.persistence.rest">
     <properties>
         <property name="jboss.api" value="private"/>
     </properties>
@@ -33,7 +33,7 @@
         <module name="javax.api"/>
         <module name="javax.transaction.api"/>
         <module name="org.infinispan"/>
-        <module name="org.infinispan.client.hotrod" export="true"/>
+        <module name="org.apache.httpcomponents" />
         <module name="org.infinispan.server"/>
         <module name="org.jboss.logging"/>
     </dependencies>
