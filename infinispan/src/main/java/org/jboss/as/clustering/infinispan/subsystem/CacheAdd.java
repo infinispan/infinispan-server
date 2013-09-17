@@ -549,21 +549,26 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
                 if (loaderBuilder == null) return; // FIXME: workaround for non functioning custom cache loaders
                 loaderBuilder.shared(shared).preload(preload);
 
-                final Properties properties = new TypedProperties();
-                if (loader.hasDefined(ModelKeys.PROPERTY)) {
-                    for (Property property : loader.get(ModelKeys.PROPERTY).asPropertyList()) {
-                        String propertyName = property.getName();
-                        Property complexValue = property.getValue().asProperty();
-                        String propertyValue = complexValue.getValue().asString();
-                        properties.setProperty(propertyName, propertyValue);
-                    }
-                }
+               final Properties properties = getProperties(loader);
                 loaderBuilder.withProperties(properties);
             }
         }
     }
 
-    private void handleStoreProperties(OperationContext context, ModelNode cache, String storeKey, String containerName,
+   private Properties getProperties(ModelNode loader) {
+      final Properties properties = new TypedProperties();
+      if (loader.hasDefined(ModelKeys.PROPERTY)) {
+          for (Property property : loader.get(ModelKeys.PROPERTY).asPropertyList()) {
+              String propertyName = property.getName();
+              Property complexValue = property.getValue().asProperty();
+              String propertyValue = complexValue.getValue().asString();
+              properties.setProperty(propertyName, propertyValue);
+          }
+      }
+      return properties;
+   }
+
+   private void handleStoreProperties(OperationContext context, ModelNode cache, String storeKey, String containerName,
                                             ConfigurationBuilder builder, List<Dependency<?>> dependencies)
             throws OperationFailedException {
 
@@ -638,17 +643,19 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             }
             return builder;
         } else if (loaderKey.equals(ModelKeys.LOADER)) {
-            return null; // FIXME: handle custom loaders
+           //todo: add backward compatibility loader parsing
+           return null;
         } else {
            throw new IllegalStateException();
         }
+
     }
 
-    private StoreConfigurationBuilder<?, ?> buildCacheStore(OperationContext context, PersistenceConfigurationBuilder loadersBuilder, String containerName, ModelNode store, String storeKey, List<Dependency<?>> dependencies) throws OperationFailedException {
+   private StoreConfigurationBuilder<?, ?> buildCacheStore(OperationContext context, PersistenceConfigurationBuilder persistenceBuilder, String containerName, ModelNode store, String storeKey, List<Dependency<?>> dependencies) throws OperationFailedException {
 
         ModelNode resolvedValue = null;
         if (storeKey.equals(ModelKeys.FILE_STORE)) {
-            final SingleFileStoreConfigurationBuilder builder = loadersBuilder.addStore(SingleFileStoreConfigurationBuilder.class);
+            final SingleFileStoreConfigurationBuilder builder = persistenceBuilder.addStore(SingleFileStoreConfigurationBuilder.class);
 
             final String path = ((resolvedValue = FileStoreResource.PATH.resolveModelAttribute(context, store)).isDefined()) ? resolvedValue.asString() : InfinispanExtension.SUBSYSTEM_NAME + File.separatorChar + containerName;
             final String relativeTo = ((resolvedValue = FileStoreResource.RELATIVE_TO.resolveModelAttribute(context, store)).isDefined()) ? resolvedValue.asString() : ServerEnvironment.SERVER_DATA_DIR;
@@ -671,7 +678,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             dependencies.add(new Dependency<PathManager>(PathManagerService.SERVICE_NAME, PathManager.class, injector));
             return builder;
         } else if (storeKey.equals(ModelKeys.STRING_KEYED_JDBC_STORE) || storeKey.equals(ModelKeys.BINARY_KEYED_JDBC_STORE) || storeKey.equals(ModelKeys.MIXED_KEYED_JDBC_STORE)) {
-            final AbstractJdbcStoreConfigurationBuilder<?, ?> builder = this.buildJdbcStore(loadersBuilder, context, store);
+            final AbstractJdbcStoreConfigurationBuilder<?, ?> builder = this.buildJdbcStore(persistenceBuilder, context, store);
 
             final String datasource = BaseJDBCStoreResource.DATA_SOURCE.resolveModelAttribute(context, store).asString();
 
@@ -679,7 +686,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             builder.dataSource().jndiUrl(datasource);
             return builder;
         } else if (storeKey.equals(ModelKeys.REMOTE_STORE)) {
-            final RemoteStoreConfigurationBuilder builder = loadersBuilder.addStore(RemoteStoreConfigurationBuilder.class);
+            final RemoteStoreConfigurationBuilder builder = persistenceBuilder.addStore(RemoteStoreConfigurationBuilder.class);
             for (ModelNode server : store.require(ModelKeys.REMOTE_SERVERS).asList()) {
                 String outboundSocketBinding = server.get(ModelKeys.OUTBOUND_SOCKET_BINDING).asString();
                 Injector<OutboundSocketBinding> injector = new SimpleInjector<OutboundSocketBinding>() {
@@ -705,7 +712,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             }
             return builder;
         } else if (storeKey.equals(ModelKeys.LEVELDB_STORE)) {
-            final LevelDBStoreConfigurationBuilder builder = loadersBuilder.addStore(LevelDBStoreConfigurationBuilder.class);
+            final LevelDBStoreConfigurationBuilder builder = persistenceBuilder.addStore(LevelDBStoreConfigurationBuilder.class);
             final String path = ((resolvedValue = LevelDBStoreResource.PATH.resolveModelAttribute(context, store)).isDefined()) ? resolvedValue.asString() : InfinispanExtension.SUBSYSTEM_NAME + File.separatorChar + containerName + File.separatorChar + "data";
             final String relativeTo = ((resolvedValue = LevelDBStoreResource.RELATIVE_TO.resolveModelAttribute(context, store)).isDefined()) ? resolvedValue.asString() : ServerEnvironment.SERVER_DATA_DIR;
             Injector<PathManager> injector = new SimpleInjector<PathManager>() {
@@ -775,7 +782,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             }
             return builder;
         } else if (storeKey.equals(ModelKeys.REST_STORE)) {
-                final RestStoreConfigurationBuilder builder = loadersBuilder.addStore(RestStoreConfigurationBuilder.class);
+                final RestStoreConfigurationBuilder builder = persistenceBuilder.addStore(RestStoreConfigurationBuilder.class);
                 builder.host("localhost"); // To pass builder validation, the builder will be configured properly when the outbound socket is ready to be injected
                 for (ModelNode server : store.require(ModelKeys.REMOTE_SERVERS).asList()) {
                     String outboundSocketBinding = server.get(ModelKeys.OUTBOUND_SOCKET_BINDING).asString();
@@ -822,7 +829,50 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
                 }
                 return builder;
         } else if (storeKey.equals(ModelKeys.STORE)) {
-            return null; // FIXME: handle custom stores
+           String className = store.require(ModelKeys.CLASS).asString();
+           try {
+              Class<?> storeImplClass = CacheLoader.class.getClassLoader().loadClass(className);
+              Class<? extends StoreConfigurationBuilder> builderClass = StoreConfigurationBuilder.class.getClassLoader().loadClass(storeImplClass.getName() + "ConfigurationBuilder").asSubclass(StoreConfigurationBuilder.class);
+              StoreConfigurationBuilder storeConfigurationBuilder = persistenceBuilder.addStore(builderClass);
+              ModelNode shared = store.get(ModelKeys.SHARED);
+              if (shared != null) {
+                 storeConfigurationBuilder.shared(shared.asBoolean());
+              }
+              ModelNode preload = store.get(ModelKeys.PRELOAD);
+              if (preload != null) {
+                 storeConfigurationBuilder.shared(preload.asBoolean());
+              }
+              ModelNode fetchState = store.get(ModelKeys.FETCH_STATE);
+              if (fetchState != null) {
+                 storeConfigurationBuilder.fetchPersistentState(fetchState.asBoolean());
+              }
+              ModelNode passivation = store.get(ModelKeys.PASSIVATION);
+              if (passivation != null) {
+                 persistenceBuilder.passivation(passivation.asBoolean());
+              }
+              ModelNode purge = store.get(ModelKeys.PURGE);
+              if (purge != null) {
+                 storeConfigurationBuilder.purgeOnStartup(purge.asBoolean());
+              }
+              ModelNode singleton = store.get(ModelKeys.SINGLETON);
+              if (singleton != null) {
+                 if (singleton.asBoolean())
+                    storeConfigurationBuilder.singleton().enable();
+              }
+              ModelNode readOnly = store.get(ModelKeys.READ_ONLY);
+              if (readOnly != null) {
+                 storeConfigurationBuilder.ignoreModifications(singleton.asBoolean());
+              }
+              ModelNode writeBehind = store.get(ModelKeys.WRITE_BEHIND);
+              if (writeBehind != null) {
+                 if (writeBehind.asBoolean())
+                    storeConfigurationBuilder.async();
+              }
+              storeConfigurationBuilder.withProperties(getProperties(store));
+              return storeConfigurationBuilder;
+           } catch (Exception e) {
+              throw InfinispanMessages.MESSAGES.invalidCacheStore(e, className);
+           }
         } else {
            throw new IllegalStateException();
         }
