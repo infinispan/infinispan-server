@@ -300,6 +300,10 @@ public final class InfinispanSubsystemXMLReader_6_0 implements XMLElementReader<
                     DistributedCacheResource.SEGMENTS.parseAndSetParameter(value, cache, reader);
                     break;
                 }
+               case CAPACITY_FACTOR: {
+                  DistributedCacheResource.CAPACITY_FACTOR.parseAndSetParameter(value, cache, reader);
+                  break;
+               }
                 case L1_LIFESPAN: {
                     DistributedCacheResource.L1_LIFESPAN.parseAndSetParameter(value, cache, reader);
                     break;

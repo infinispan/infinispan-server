@@ -49,6 +49,7 @@ public enum Attribute {
     BUFFER_SIZE(ModelKeys.BUFFER_SIZE),
     CACHE(ModelKeys.CACHE),
     CACHE_SIZE(ModelKeys.CACHE_SIZE),
+    CAPACITY_FACTOR(ModelKeys.CAPACITY_FACTOR),
     CHUNK_SIZE(ModelKeys.CHUNK_SIZE),
     CLASS(ModelKeys.CLASS),
     CLEAR_THRESHOLD(ModelKeys.CLEAR_THRESHOLD),

@@ -93,6 +93,7 @@ public class InfinispanSubsystemTransformerTestCase extends OperationTestCaseBas
         Assert.assertFalse(distCache.has(ModelKeys.INDEXING_PROPERTIES));
         Assert.assertFalse(distCache.has(ModelKeys.SEGMENTS));
         Assert.assertTrue(distCache.get(ModelKeys.VIRTUAL_NODES).isDefined());
+        Assert.assertEquals(1.0, distCache.get(ModelKeys.CAPACITY_FACTOR).asDouble(), 0.0);
     }
 
     @Test

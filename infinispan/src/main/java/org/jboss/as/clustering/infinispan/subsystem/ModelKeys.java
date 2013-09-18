@@ -146,6 +146,7 @@ public class ModelKeys {
     static final String REST_STORE = "rest-store";
     static final String REST_STORE_NAME = "REST_STORE";
     static final String SEGMENTS = "segments";
+    static final String CAPACITY_FACTOR = "capacity-factor";
     static final String SHARED = "shared";
     static final String SHUTDOWN_TIMEOUT = "shutdown-timeout";
     static final String SINGLETON = "singleton";
