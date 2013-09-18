@@ -34,6 +34,7 @@ import javax.security.auth.callback.CallbackHandler;
 
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.Configuration;
+import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.jboss.as.security.SecurityLogger;
 import org.jboss.as.security.SecurityMessages;
@@ -292,8 +293,7 @@ public class JNDIBasedSecurityManagement implements ISecurityManagement {
             Cache cache = null;
             if (cacheManager != null) {
                 // TODO override global settings with security domain specific
-                Configuration configuration = cacheManager.getCacheConfiguration("auth-cache");
-                cacheManager.defineConfiguration(securityDomain, configuration);
+                cacheManager.defineConfiguration(securityDomain, "auth-cache", new ConfigurationBuilder().build());
                 cache = cacheManager.getCache(securityDomain);
             }
             if (cache != null && am instanceof CacheableManager) {
