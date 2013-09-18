@@ -224,6 +224,47 @@
                         </parameter>
                      </parameters>
                   </transformationSet>
+
+
+
+                   <transformationSet>
+                       <dir>${server1.dist}/standalone/configuration/</dir>
+                       <includes>
+                           <include>clustered.xml</include>
+                       </includes>
+                       <outputDir>${server1.dist}/standalone/configuration/jmx</outputDir>
+                       <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
+                       <parameters>
+                           <parameter>
+                               <name>modifyInfinispan</name>
+                               <value>file:///${basedir}/src/test/resources/jmx-infinispan.xml</value>
+                           </parameter>
+                           <parameter>
+                               <name>removeRestSecurity</name>
+                               <value>true</value>
+                           </parameter>
+                       </parameters>
+                   </transformationSet>
+                   <transformationSet>
+                       <dir>${server2.dist}/standalone/configuration/</dir>
+                       <includes>
+                           <include>clustered.xml</include>
+                       </includes>
+                       <outputDir>${server1.dist}/standalone/configuration/jmx</outputDir>
+                       <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
+                       <parameters>
+                           <parameter>
+                               <name>modifyInfinispan</name>
+                               <value>file:///${basedir}/src/test/resources/jmx-infinispan.xml</value>
+                           </parameter>
+                           <parameter>
+                               <name>removeRestSecurity</name>
+                               <value>true</value>
+                           </parameter>
+                       </parameters>
+                   </transformationSet>
+
+
                </transformationSets>
             </configuration>
          </plugin>
@@ -427,6 +468,23 @@
                      </systemPropertyVariables>
                   </configuration>
                </execution>
+
+                <execution>
+                    <id>jmx-management.surefire</id>
+                    <phase>test</phase>
+                    <goals>
+                        <goal>test</goal>
+                    </goals>
+                    <configuration>
+                        <includes>
+                            <include>org/infinispan/server/test/jmxmanagement/JmxManagementTest.java</include>
+                        </includes>
+                        <systemPropertyVariables>
+                            <arquillian.launch>jmx-management</arquillian.launch>
+                        </systemPropertyVariables>
+                    </configuration>
+                </execution>
+
             </executions>
          </plugin>
       </plugins>
