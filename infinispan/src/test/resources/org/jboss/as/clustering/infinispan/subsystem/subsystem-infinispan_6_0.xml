@@ -55,7 +55,7 @@
             <eviction max-entries="20000" strategy="FIFO"/>
             <expiration interval="10000" lifespan="10" max-idle="10"/>
             <state-transfer enabled="true" timeout="60000" chunk-size="10000" await-initial-transfer="true"/>
-            <compatibility enabled="false"/> 
+            <compatibility enabled="false"/>
             <store class="org.jboss.as.clustering.infinispan.subsystem.CustomCacheWriter" fetch-state="true" passivation="true" preload="false" purge="true" shared="false" singleton="false">
                 <write-behind flush-lock-timeout="2" modification-queue-size="2048" shutdown-timeout="20000" thread-pool-size="1" />
                 <property name="location">${java.io.tmpdir}</property>
@@ -67,7 +67,7 @@
             <transaction mode="NON_DURABLE_XA" stop-timeout="60000" locking="OPTIMISTIC"/>
             <eviction max-entries="20000" strategy="FIFO"/>
             <expiration interval="10000" lifespan="10" max-idle="10"/>
-            <state-transfer enabled="false" timeout="60000" chunk-size="10000" /> 
+            <state-transfer enabled="false" timeout="60000" chunk-size="10000" />
             <loader class="org.jboss.as.clustering.infinispan.subsystem.CustomCacheLoader" shared="false" preload="false"/>
             <loader name="duplicate-loader" class="org.jboss.as.clustering.infinispan.subsystem.CustomCacheLoader" shared="false" preload="false"/>
             <indexing index="LOCAL" />
@@ -113,12 +113,14 @@
                 <backup site="SFO" strategy="ASYNC"/>
             </backups>
         </distributed-cache>
-        <distributed-cache name="dist2" mode="SYNC" batching="true" l1-lifespan="1200000" owners="4" remote-timeout="35000" start="EAGER" segments="20"  async-marshalling="true">
+        <distributed-cache name="dist2" mode="SYNC" batching="true" l1-lifespan="1200000" owners="4"
+                           remote-timeout="35000" start="EAGER" segments="20" capacity-factor="2.0"
+                           async-marshalling="true">
             <locking acquire-timeout="30000" concurrency-level="2000" isolation="READ_COMMITTED" striping="true"/>
             <transaction mode="FULL_XA" stop-timeout="60000"  locking="OPTIMISTIC"/>
             <eviction max-entries="20000" strategy="UNORDERED"/>
             <expiration interval="10000" lifespan="10" max-idle="10"/>
-            <state-transfer enabled="false" timeout="60000" chunk-size="10000" /> 
+            <state-transfer enabled="false" timeout="60000" chunk-size="10000" />
             <cluster-loader remote-timeout="60000"/>
             <indexing index="LOCAL" />
             <backups>

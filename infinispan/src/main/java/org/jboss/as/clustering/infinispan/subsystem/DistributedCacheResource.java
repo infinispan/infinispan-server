@@ -88,6 +88,14 @@ public class DistributedCacheResource extends SharedCacheResource {
                     .setDefaultValue(new ModelNode().set(80)) // Recommended value is 10 * max_cluster_size.
                     .build();
 
+    static final SimpleAttributeDefinition CAPACITY_FACTOR =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.CAPACITY_FACTOR, ModelType.DOUBLE, true)
+                    .setXmlName(Attribute.CAPACITY_FACTOR.getLocalName())
+                    .setAllowExpression(true)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .setDefaultValue(new ModelNode().set(1.0))
+                    .build();
+
     static final SimpleAttributeDefinition REBALANCING =
             new SimpleAttributeDefinitionBuilder(ModelKeys.REBALANCING, ModelType.BOOLEAN, true)
                     .setAllowExpression(true)
@@ -96,7 +104,7 @@ public class DistributedCacheResource extends SharedCacheResource {
                     .setStorageRuntime()
                     .build();
 
-    static final AttributeDefinition[] DISTRIBUTED_CACHE_ATTRIBUTES = {OWNERS, SEGMENTS, L1_LIFESPAN};
+    static final AttributeDefinition[] DISTRIBUTED_CACHE_ATTRIBUTES = {OWNERS, SEGMENTS, CAPACITY_FACTOR, L1_LIFESPAN};
 
     public DistributedCacheResource(final ResolvePathHandler resolvePathHandler, boolean runtimeRegistration) {
         super(DISTRIBUTED_CACHE_PATH,
