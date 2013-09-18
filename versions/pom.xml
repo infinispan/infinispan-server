@@ -70,6 +70,12 @@
             <artifactId>infinispan-server-infinispan</artifactId>
             <version>${project.version}</version>
          </dependency>
+         
+         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>infinispan-server-security</artifactId>
+            <version>${project.version}</version>
+         </dependency>
 
          <dependency>
             <groupId>org.jboss.jbossts</groupId>
