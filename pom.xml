@@ -49,6 +49,7 @@
             <module>versions</module>
             <module>jgroups</module>
             <module>infinispan</module>
+            <module>security</module>
             <module>integration</module>
             <module>build</module>
             <module>management/server-rhq-plugin</module>

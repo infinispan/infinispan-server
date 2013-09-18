@@ -64,6 +64,11 @@
       </dependency>
 
       <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>infinispan-server-security</artifactId>
+      </dependency>
+
+      <dependency>
          <groupId>org.jboss.aesh</groupId>
          <artifactId>aesh</artifactId>
       </dependency>

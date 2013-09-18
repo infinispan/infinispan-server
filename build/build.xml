@@ -86,19 +86,23 @@
       <module-def name="xmlpull" src="${infinispan.server.modules.dir}">
          <maven-resource group="xmlpull" artifact="xmlpull" />
       </module-def>
-      
+
       <module-def name="org.infinispan.server.endpoint" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan.server" artifact="infinispan-server-endpoints" />
       </module-def>
-      
+
       <module-def name="com.google.protobuf" src="${infinispan.server.modules.dir}">
          <maven-resource group="com.google.protobuf" artifact="protobuf-java" />
       </module-def>
-      
+
       <module-def name="com.jboss.datagrid" src="${infinispan.server.modules.dir}" />
 
       <module-def name="javax.activation.api" src="${infinispan.server.modules.dir}">
          <maven-resource group="javax.activation" artifact="activation" />
+      </module-def>
+
+      <module-def name="org.jboss.as.security" src="${infinispan.server.modules.dir}">
+         <maven-resource group="org.infinispan.server" artifact="infinispan-server-security" />
       </module-def>
 
       <module-def name="org.jboss.as.clustering.infinispan" src="${infinispan.server.modules.dir}">
