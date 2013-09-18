@@ -29,7 +29,7 @@
       <version.org.jboss.as>7.2.0.Final</version.org.jboss.as>
       <version.org.jboss.jandex>1.0.3.Final</version.org.jboss.jandex>
       <version.org.jboss.jbossts.jbossjts>4.16.2.Final</version.org.jboss.jbossts.jbossjts>
-      <version.junit>4.10</version.junit>
+      <version.junit>4.11</version.junit>
       <version.org.infinispan>${project.version}</version.org.infinispan>
       <version.org.infinispan.arquillian.container>1.0.0.CR1</version.org.infinispan.arquillian.container>
       <version.xml.maven.plugin>1.0</version.xml.maven.plugin>
