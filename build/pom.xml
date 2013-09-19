@@ -183,6 +183,11 @@
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-cli-server</artifactId>
       </dependency>
+ 
+      <dependency>
+         <groupId>org.xerial.snappy</groupId>
+         <artifactId>snappy-java</artifactId>
+      </dependency>
       
    </dependencies>
 
