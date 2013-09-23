@@ -36,11 +36,10 @@
       <module name="javax.transaction.api"/>
       <module name="net.jcip"/>
       <module name="org.infinispan" services="import"/>
-      <module name="org.infinispan.cachestore.jdbc"/>
+      <module name="org.infinispan.persistence.jdbc"/>
       <module name="org.infinispan.persistence.leveldb"/>
-      <module name="org.infinispan.cachestore.remote"/>
-      <module name="org.infinispan.persistence.rest" />
-      <module name="org.infinispan.persistence.leveldb"/>
+      <module name="org.infinispan.persistence.remote" services="import"/>
+      <module name="org.infinispan.persistence.rest" services="import"/>
       <module name="org.infinispan.adaptor52x"/>
       <module name="org.infinispan.hotrod.client" optional="true"/>
       <module name="org.infinispan.cli.server" services="import"/>
