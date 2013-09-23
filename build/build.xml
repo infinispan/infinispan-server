@@ -150,6 +150,14 @@
       <module-def name="org.infinispan.client.hotrod" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-client-hotrod" />
       </module-def>
+      
+      <module-def name="org.infinispan.cachestore.jdbc" src="${infinispan.server.modules.dir}" />
+      
+      <module-def name="org.infinispan.cachestore.remote" src="${infinispan.server.modules.dir}" />
+      
+      <module-def name="org.infinispan.persistence.jdbc" src="${infinispan.server.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-jdbc" />
+      </module-def>
 
       <module-def name="org.infinispan.persistence.remote" src="${infinispan.server.modules.dir}">
          <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />

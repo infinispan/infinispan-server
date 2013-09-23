@@ -659,6 +659,12 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
             if (store.hasDefined(ModelKeys.CACHE)) {
                 builder.remoteCacheName(store.get(ModelKeys.CACHE).asString());
             }
+            if (store.hasDefined(ModelKeys.HOTROD_WRAPPING)) {
+                builder.hotRodWrapping(store.require(ModelKeys.HOTROD_WRAPPING).asBoolean());
+            }
+            if (store.hasDefined(ModelKeys.RAW_VALUES)) {
+                builder.rawValues(store.require(ModelKeys.RAW_VALUES).asBoolean());
+            }
             if (store.hasDefined(ModelKeys.SOCKET_TIMEOUT)) {
                 builder.socketTimeout(store.require(ModelKeys.SOCKET_TIMEOUT).asLong());
             }
