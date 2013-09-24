@@ -857,6 +857,7 @@ public abstract class AbstractSingleNodeMemcachedTest {
         assertEquals("valB", mc.get(KEY_B));
         assertEquals("valC", mc.get(KEY_C));
         long t = mc.getServerTime();
+        assertTrue(t > 0);
         mc.writeln("flush_all " + (t + 2));
         mc.flush();
         assertEquals("OK", mc.readln());
@@ -1043,6 +1044,10 @@ public abstract class AbstractSingleNodeMemcachedTest {
         mc.flush();
         assertEquals("OK", mc.readln());
         assertEquals("END", mc.readln());
+        mc.set(KEY_A, "thisWillBeFlushed");
+        assertEquals("thisWillBeFlushed", mc.get(KEY_A));
+        Thread.sleep(1100);
+        assertNull(mc.get(KEY_A));
     }
 
     @Test
@@ -1156,6 +1161,10 @@ public abstract class AbstractSingleNodeMemcachedTest {
         mc.writeln("get " + KEY_B);
         mc.flush();
         assertEquals("END", mc.readln());
+        mc.set(KEY_A, "thisWillBeFlushed");
+        assertEquals("thisWillBeFlushed", mc.get(KEY_A));
+        Thread.sleep(1100);
+        assertNull(mc.get(KEY_A));
     }
 
     private void assertStartsWith(String str, String prefix) {

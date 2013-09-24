@@ -6,10 +6,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.infinispan.arquillian.core.InfinispanResource;
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
+import org.infinispan.server.test.category.RESTClustered;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import static org.infinispan.server.test.client.rest.RESTHelper.KEY_A;
@@ -30,6 +32,7 @@ import static org.infinispan.server.test.client.rest.RESTHelper.put;
  * @version August 2011
  */
 @RunWith(Arquillian.class)
+@Category({ RESTClustered.class })
 public class RESTReplicationTest {
 
     @InfinispanResource("container1")
