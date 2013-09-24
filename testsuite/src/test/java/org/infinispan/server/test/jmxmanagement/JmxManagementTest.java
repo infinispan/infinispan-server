@@ -7,6 +7,7 @@ import javax.management.ObjectName;
 
 import org.infinispan.arquillian.core.InfinispanResource;
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
+import org.infinispan.arquillian.core.WithRunningServer;
 import org.infinispan.arquillian.utils.MBeanServerConnectionProvider;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
@@ -34,6 +35,7 @@ import static org.junit.Assert.assertTrue;
  * @author <a href="mailto:mgencur@redhat.com">Martin Gencur</a>
  */
 @RunWith(Arquillian.class)
+@WithRunningServer({ "jmx-management-1", "jmx-management-2" })
 public class JmxManagementTest {
 
     final int managementPort = 9999;
@@ -58,10 +60,10 @@ public class JmxManagementTest {
     final String memCachedServerMBean = "jboss.infinispan:type=Server,name=Memcached,component=Transport";
     final String protocolMBeanPrefix = "jgroups:type=protocol,cluster=\"default\",protocol=";
 
-    @InfinispanResource("container1")
+    @InfinispanResource("jmx-management-1")
     RemoteInfinispanServer server1;
 
-    @InfinispanResource("container2")
+    @InfinispanResource("jmx-management-2")
     RemoteInfinispanServer server2;
 
     MBeanServerConnectionProvider provider;
@@ -193,7 +195,6 @@ public class JmxManagementTest {
         assertEquals("RUNNING", getAttribute(provider, distCacheMBean, "CacheStatus"));
     }
 
-    @Ignore("Not supported - https://bugzilla.redhat.com/show_bug.cgi?id=816989")
     @Test
     public void testDefaultCacheOperations() throws Exception {
         assertEquals("RUNNING", getAttribute(provider, distCacheMBean, "CacheStatus"));
@@ -251,7 +252,9 @@ public class JmxManagementTest {
 
     @Test
     public void testCacheStatisticsOperations() throws Exception {
-        assertNotEquals(0, Integer.parseInt(getAttribute(provider, memcachedCacheStatisticsMBean, "Stores")));
+        invokeOperation(provider, memcachedCacheStatisticsMBean, "resetStatistics", null, null);
+        mc.set("key1", "value1");
+        assertEquals(1, Integer.parseInt(getAttribute(provider, memcachedCacheStatisticsMBean, "Stores")));
         invokeOperation(provider, memcachedCacheStatisticsMBean, "resetStatistics", null, null);
         assertEquals(0, Integer.parseInt(getAttribute(provider, memcachedCacheStatisticsMBean, "Stores")));
     }

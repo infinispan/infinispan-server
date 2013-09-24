@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.infinispan.arquillian.core.InfinispanResource;
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
+import org.infinispan.server.test.category.MemcachedClustered;
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
@@ -15,6 +17,7 @@ import org.junit.runner.RunWith;
  * @author Martin Gencur
  */
 @RunWith(Arquillian.class)
+@Category({ MemcachedClustered.class })
 public class MemcachedClusteredTest extends AbstractClusteredMemcachedTest {
 
     @InfinispanResource("container1")

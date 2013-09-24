@@ -120,12 +120,6 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="p:infinispan">
-        <xsl:if test="$infinispanFile != 'none'">
-            <xsl:copy-of select="document($infinispanFile)"/>
-        </xsl:if>
-    </xsl:template>
-
     <xsl:template match="endpoint:subsystem/endpoint:rest-connector">
         <xsl:if test="$removeRestSecurity != 'true'">
             <xsl:copy>

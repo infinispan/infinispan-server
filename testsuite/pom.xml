@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -26,329 +26,111 @@
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-arquillian-container-managed</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.logmanager</groupId>
+                    <artifactId>jboss-logmanager</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.logmanager</groupId>
+                    <artifactId>log4j-jboss-logmanager</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.infinispan.arquillian.container</groupId>
             <artifactId>infinispan-arquillian-impl</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.logmanager</groupId>
+                    <artifactId>jboss-logmanager</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-client-hotrod</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.logmanager</groupId>
+                    <artifactId>jboss-logmanager</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
         </dependency>
         <!--- @ThreadSafe annotation -->
         <dependency>
             <groupId>net.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <properties>
-        <!--<ispnserver.ts.dir>${basedir}/..</ispnserver.ts.dir>-->
+		<!--<ispnserver.ts.dir>${basedir}/..</ispnserver.ts.dir> -->
         <ispnserver.project.dir>${basedir}/..</ispnserver.project.dir>
         <server.build.dist>${ispnserver.project.dir}/build/target/infinispan-server-${project.version}
         </server.build.dist>
-        <server1.dist>${basedir}/target/infinispan-server-${project.version}-1</server1.dist>
-        <server2.dist>${basedir}/target/infinispan-server-${project.version}-2</server2.dist>
-        <server3.dist>${basedir}/target/infinispan-server-${project.version}-3</server3.dist>
-        <config.dir>${basedir}/src/test/resources</config.dir>
+        <server1.dist>${basedir}/target/server/node1</server1.dist>
+        <server2.dist>${basedir}/target/server/node2</server2.dist>
+        <server3.dist>${basedir}/target/server/node3</server3.dist>
+        <resources.dir>${basedir}/src/test/resources</resources.dir>
         <jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m</jvm.memory.args>
-        <!--<jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</jvm.memory.args>-->
+		<!--<jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</jvm.memory.args> -->
         <jvm.ip.stack>-Djava.net.preferIPv4Stack=true</jvm.ip.stack>
         <server.jvm.args>${jvm.ip.stack} ${jvm.memory.args}</server.jvm.args>
+        <log4j.configuration>log4j.xml</log4j.configuration>
+        <suite.manual.phase>test</suite.manual.phase>
+        <suite.client.local.phase>test</suite.client.local.phase>
+        <suite.client.dist.phase>test</suite.client.dist.phase>
+        <suite.client.repl.phase>test</suite.client.repl.phase>
+        <suite.manual.include>**/*.java</suite.manual.include>
+        <groups.client.local>org.infinispan.server.test.category.ClientLocal</groups.client.local>
+        <groups.client.clustered>org.infinispan.server.test.category.ClientClustered</groups.client.clustered>
     </properties>
 
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
+                <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-server-dist-1</id>
-                        <phase>validate</phase>
+                        <id>generate-distros-and-configs</id>
                         <goals>
-                            <goal>copy-resources</goal>
+                            <goal>run</goal>
                         </goals>
+                        <phase>generate-resources</phase>
                         <configuration>
-                            <outputDirectory>${server1.dist}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${server.build.dist}</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>configs</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${server1.dist}/standalone/configuration/</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${server1.dist}/docs/examples/configs</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                                <resource>
-                                    <directory>${config.dir}</directory>
-                                    <includes>
-                                        <include>*.jks</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-server-dist-2</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${server2.dist}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${server1.dist}</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-server-dist-3</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${server3.dist}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${server1.dist}</directory>
-                                </resource>
-                            </resources>
+                            <target>
+                                <ant antfile="build-testsuite.xml" inheritRefs="true">
+                                    <target name="create-all-distros" />
+                                </ant>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>xml-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>changeConfiguration</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>transform</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <transformationSets>
-                        <!-- NOTE: All transformations are implicitly removing REST security. For not removing it add: -->
-                        <!--<parameter>-->
-                            <!--<name>removeRestSecurity</name>-->
-                            <!--<value>false</value>-->
-                        <!--</parameter>-->
-                        <transformationSet>
-                            <dir>${server2.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>clustered-xsite.xml</include>
-                            </includes>
-                            <outputDir>${server2.dist}/standalone/configuration</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                            <parameters>
-                                <parameter>
-                                    <name>modifyInfinispan</name>
-                                    <value>file:///${basedir}/src/test/resources/xsite-server2.xml</value>
-                                </parameter>
-                            </parameters>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${server3.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>clustered-xsite.xml</include>
-                            </includes>
-                            <outputDir>${server3.dist}/standalone/configuration/</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                            <parameters>
-                                <parameter>
-                                    <name>modifyInfinispan</name>
-                                    <value>file:///${basedir}/src/test/resources/xsite-server3.xml</value>
-                                </parameter>
-                                <parameter>
-                                    <name>modifyRelay</name>
-                                    <value>file:///${basedir}/src/test/resources/xsite-relay-server3.xml</value>
-                                </parameter>
-                                <parameter>
-                                    <name>modifyMulticastAddress</name>
-                                    <value>file:///${basedir}/src/test/resources/xsite-multicast-address-server3.xml
-                                    </value>
-                                </parameter>
-                            </parameters>
-                        </transformationSet>
-                        <!-- Replace host="remote-host" of <remote-destination> with real address-->
-                        <transformationSet>
-                            <dir>${server1.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>standalone-rcs-local.xml</include>
-                            </includes>
-                            <outputDir>${server1.dist}/standalone/configuration</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                            <parameters>
-                                <parameter>
-                                    <name>modifyRemoteDestination</name>
-                                    <value>file:///${basedir}/src/test/resources/rcs-remote-destination.xml</value>
-                                </parameter>
-                            </parameters>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${server1.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>standalone-compatibility-mode.xml</include>
-                            </includes>
-                            <outputDir>${server1.dist}/standalone/configuration</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${server1.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>clustered-two-nodes.xml</include>
-                            </includes>
-                            <outputDir>${server1.dist}/standalone/configuration</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${server2.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>clustered-two-nodes.xml</include>
-                            </includes>
-                            <outputDir>${server2.dist}/standalone/configuration</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${server1.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>clustered.xml</include>
-                            </includes>
-                            <outputDir>${server1.dist}/standalone/configuration/jmx</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                            <parameters>
-                                <parameter>
-                                    <name>modifyInfinispan</name>
-                                    <value>
-                                        file:///${basedir}/src/test/resources/infinispanModifiers/jmx-infinispan.xml
-                                    </value>
-                                </parameter>
-                            </parameters>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${server2.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>clustered.xml</include>
-                            </includes>
-                            <outputDir>${server2.dist}/standalone/configuration/jmx</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                            <parameters>
-                                <parameter>
-                                    <name>modifyInfinispan</name>
-                                    <value>
-                                        file:///${basedir}/src/test/resources/infinispanModifiers/jmx-infinispan.xml
-                                    </value>
-                                </parameter>
-                            </parameters>
-                        </transformationSet>
-                        <!-- CLIENT TESTS - local, distribution and replication transformations -->
-                        <transformationSet>
-                            <dir>${server1.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>standalone.xml</include>
-                            </includes>
-                            <outputDir>${server1.dist}/standalone/configuration/client-local</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                            <parameters>
-                                <parameter>
-                                    <name>modifyInfinispan</name>
-                                    <value>
-                                        file:///${basedir}/src/test/resources/infinispanModifiers/infinispan-local-client.xml
-                                    </value>
-                                </parameter>
-                            </parameters>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${server1.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>clustered.xml</include>
-                            </includes>
-                            <outputDir>${server1.dist}/standalone/configuration/client-dist</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                            <parameters>
-                                <parameter>
-                                    <name>modifyInfinispan</name>
-                                    <value>
-                                        file:///${basedir}/src/test/resources/infinispanModifiers/infinispan-dist-client.xml
-                                    </value>
-                                </parameter>
-                            </parameters>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${server2.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>clustered.xml</include>
-                            </includes>
-                            <outputDir>${server2.dist}/standalone/configuration/client-dist</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                            <parameters>
-                                <parameter>
-                                    <name>modifyInfinispan</name>
-                                    <value>
-                                        file:///${basedir}/src/test/resources/infinispanModifiers/infinispan-dist-client.xml
-                                    </value>
-                                </parameter>
-                            </parameters>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${server1.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>clustered.xml</include>
-                            </includes>
-                            <outputDir>${server1.dist}/standalone/configuration/client-repl</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                            <parameters>
-                                <parameter>
-                                    <name>modifyInfinispan</name>
-                                    <value>
-                                        file:///${basedir}/src/test/resources/infinispanModifiers/infinispan-repl-client.xml
-                                    </value>
-                                </parameter>
-                            </parameters>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${server2.dist}/standalone/configuration/</dir>
-                            <includes>
-                                <include>clustered.xml</include>
-                            </includes>
-                            <outputDir>${server2.dist}/standalone/configuration/client-repl</outputDir>
-                            <stylesheet>${config.dir}/config-modifier.xsl</stylesheet>
-                            <parameters>
-                                <parameter>
-                                    <name>modifyInfinispan</name>
-                                    <value>
-                                        file:///${basedir}/src/test/resources/infinispanModifiers/infinispan-repl-client.xml
-                                    </value>
-                                </parameter>
-                            </parameters>
-                        </transformationSet>
-                    </transformationSets>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -360,7 +142,16 @@
                         <server2.dist>${server2.dist}</server2.dist>
                         <server3.dist>${server3.dist}</server3.dist>
                         <server.jvm.args>${server.jvm.args}</server.jvm.args>
+                        <log4j.configuration>${log4j.configuration}</log4j.configuration>
+                        <java.util.logging.config.file>${resources.dir}/jul.properties</java.util.logging.config.file>
                     </systemPropertyVariables>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>org.infinispan.server.test.util.TestsuiteListener</value>
+                        </property>
+                    </properties>
+                    <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
                 <executions>
                     <execution>
@@ -371,386 +162,65 @@
                         <phase>none</phase>
                     </execution>
                     <execution>
-                        <id>clustered-ccl.surefire</id>
-                        <phase>test</phase>
+						<!-- this suite can include all test cases that start the containers 
+							on method or class level -->
+                        <id>suite-manual</id>
+                        <phase>${suite.manual.phase}</phase>
                         <goals>
                             <goal>test</goal>
                         </goals>
                         <configuration>
                             <includes>
-                                <include>org/infinispan/server/test/configs/ClusteredCacheLoaderConfigExampleTest.java
-                                </include>
+                                <include>${suite.manual.include}</include>
                             </includes>
+                            <excludedGroups>org.infinispan.server.test.category.ClientLocal,org.infinispan.server.test.category.ClientClustered</excludedGroups>
                             <systemPropertyVariables>
-                                <arquillian.launch>clustered-ccl</arquillian.launch>
+                                <arquillian.launch>suite-manual</arquillian.launch>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>clustered-jdbc.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/JdbcCacheStoreConfigExampleTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>clustered-jdbc</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>clustered-storage-only.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/StorageOnlyConfigExampleTest.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>clustered-storage-only</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>clustered-topology.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/TopologyConfigExampleTest.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>clustered-topology</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>clustered-two-nodes.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/TwoNodesConfigExampleTest.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>clustered-two-nodes</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>clustered-xsite.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/XsiteConfigExampleTest.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>clustered-xsite</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>standalone-fcs-local.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/FileCacheStoreConfigExampleTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>standalone-fcs-local</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>standalone-leveldb-cs-local.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/LevelDBCacheStoreConfigExampleTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>standalone-leveldb-cs-local</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>standalone-hotrod-multiple.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/MultiHotRodConfigExampleTest.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>standalone-hotrod-multiple</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>standalone-rcs-local.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/RemoteCacheStoreConfigExampleTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>standalone-rcs-local</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>standalone-hotrod-ssl.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/SslHotRodConfigExampleTest.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>standalone-hotrod-ssl</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>standalone-compatibility-mode.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/CompatibilityModeConfigExampleTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>standalone-compatibility-mode</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>rest-rolling-upgrades-example.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/configs/RESTRollingUpgradesExampleTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>rest-rolling-upgrades</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>jmx-management.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/infinispan/server/test/jmxmanagement/JmxManagementTest.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <arquillian.launch>jmx-management</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <!-- REST CLIENT TESTS -->
-                    <execution>
-                        <id>rest-client-local.surefire</id>
-                        <phase>test</phase>
+                        <id>suite-client-local</id>
+                        <phase>${suite.client.local.phase}</phase>
                         <goals>
                             <goal>test</goal>
                         </goals>
                         <configuration>
                             <reportNameSuffix>localmode</reportNameSuffix>
-                            <includes>
-                                <include>org/infinispan/server/test/client/rest/RESTClientTest.java</include>
-                            </includes>
+                            <groups>${groups.client.local}</groups>
                             <systemPropertyVariables>
                                 <clustering.mode>local</clustering.mode>
-                                <arquillian.launch>client-local</arquillian.launch>
+                                <arquillian.launch>suite-client-local</arquillian.launch>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>rest-client-multinode-dist.surefire</id>
-                        <phase>test</phase>
+                        <id>suite-client-dist</id>
+                        <phase>${suite.client.dist.phase}</phase>
                         <goals>
                             <goal>test</goal>
                         </goals>
                         <configuration>
                             <reportNameSuffix>distmode</reportNameSuffix>
-                            <includes>
-                                <include>org/infinispan/server/test/client/rest/RESTReplicationTest.java</include>
-                                <include>org/infinispan/server/test/client/rest/RESTAsyncTest.java</include>
-                            </includes>
+                            <groups>${groups.client.clustered}</groups>
                             <systemPropertyVariables>
                                 <clustering.mode>dist</clustering.mode>
-                                <arquillian.launch>client-multinode-dist</arquillian.launch>
+                                <arquillian.launch>suite-client-dist</arquillian.launch>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>rest-client-multinode-repl.surefire</id>
-                        <phase>test</phase>
+                        <id>suite-client-repl</id>
+                        <phase>${suite.client.repl.phase}</phase>
                         <goals>
                             <goal>test</goal>
                         </goals>
                         <configuration>
                             <reportNameSuffix>replmode</reportNameSuffix>
-                            <includes>
-                                <include>org/infinispan/server/test/client/rest/RESTReplicationTest.java</include>
-                                <include>org/infinispan/server/test/client/rest/RESTAsyncTest.java</include>
-                            </includes>
+                            <groups>org.infinispan.server.test.category.ClientClustered</groups>
                             <systemPropertyVariables>
                                 <clustering.mode>repl</clustering.mode>
-                                <arquillian.launch>client-multinode-repl</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <!-- MEMCACHED CLIENT TESTS -->
-                    <execution>
-                        <id>memcached-client-local.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <reportNameSuffix>localmode</reportNameSuffix>
-                            <includes>
-                                <include>org/infinispan/server/test/client/memcached/MemcachedSingleNodeTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <clustering.mode>local</clustering.mode>
-                                <arquillian.launch>client-local</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>memcached-client-multinode-dist.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <reportNameSuffix>distmode</reportNameSuffix>
-                            <includes>
-                                <include>org/infinispan/server/test/client/memcached/MemcachedClusteredTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <clustering.mode>dist</clustering.mode>
-                                <arquillian.launch>client-multinode-dist</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>memcached-client-multinode-repl.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <reportNameSuffix>replmode</reportNameSuffix>
-                            <includes>
-                                <include>org/infinispan/server/test/client/memcached/MemcachedClusteredTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <clustering.mode>repl</clustering.mode>
-                                <arquillian.launch>client-multinode-repl</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <!-- HOTROD CLIENT TESTS -->
-                    <execution>
-                        <id>hotrod-client-local.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <reportNameSuffix>localmode</reportNameSuffix>
-                            <includes>
-                                <include>org/infinispan/server/test/client/hotrod/HotRodRemoteCacheTest.java</include>
-                                <include>org/infinispan/server/test/client/hotrod/HotRodRemoteCacheManagerTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <clustering.mode>local</clustering.mode>
-                                <arquillian.launch>client-local</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>hotrod-client-multinode-dist.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <reportNameSuffix>distmode</reportNameSuffix>
-                            <includes>
-                                <include>org/infinispan/server/test/client/hotrod/HotRodRemoteCacheTest.java</include>
-                                <include>org/infinispan/server/test/client/hotrod/HotRodRemoteCacheManagerTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <clustering.mode>dist</clustering.mode>
-                                <arquillian.launch>client-multinode-dist</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>hotrod-client-multinode-repl.surefire</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <reportNameSuffix>replmode</reportNameSuffix>
-                            <includes>
-                                <include>org/infinispan/server/test/client/hotrod/HotRodRemoteCacheTest.java</include>
-                                <include>org/infinispan/server/test/client/hotrod/HotRodRemoteCacheManagerTest.java
-                                </include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <clustering.mode>repl</clustering.mode>
-                                <arquillian.launch>client-multinode-repl</arquillian.launch>
+                                <arquillian.launch>suite-client-repl</arquillian.launch>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
@@ -758,5 +228,85 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>suite.client</id>
+            <properties>
+                <suite.manual.phase>none</suite.manual.phase>
+                <suite.client.local.phase>test</suite.client.local.phase>
+                <suite.client.dist.phase>test</suite.client.dist.phase>
+                <suite.client.repl.phase>test</suite.client.repl.phase>
+            </properties>
+        </profile>
+        <profile>
+            <id>suite.client.local</id>
+            <properties>
+                <suite.manual.phase>none</suite.manual.phase>
+                <suite.client.local.phase>test</suite.client.local.phase>
+                <suite.client.dist.phase>none</suite.client.dist.phase>
+                <suite.client.repl.phase>none</suite.client.repl.phase>
+            </properties>
+        </profile>
+        <profile>
+            <id>suite.client.dist</id>
+            <properties>
+                <suite.manual.phase>none</suite.manual.phase>
+                <suite.client.local.phase>none</suite.client.local.phase>
+                <suite.client.dist.phase>test</suite.client.dist.phase>
+                <suite.client.repl.phase>none</suite.client.repl.phase>
+            </properties>
+        </profile>
+        <profile>
+            <id>suite.client.repl</id>
+            <properties>
+                <suite.manual.phase>none</suite.manual.phase>
+                <suite.client.local.phase>none</suite.client.local.phase>
+                <suite.client.dist.phase>none</suite.client.dist.phase>
+                <suite.client.repl.phase>test</suite.client.repl.phase>
+            </properties>
+        </profile>
+        <profile>
+            <id>suite.examples</id>
+            <properties>
+                <suite.manual.phase>test</suite.manual.phase>
+                <suite.client.local.phase>none</suite.client.local.phase>
+                <suite.client.dist.phase>none</suite.client.dist.phase>
+                <suite.client.repl.phase>none</suite.client.repl.phase>
+                <suite.manual.include>org/infinispan/server/test/configs/ExampleConfigsTest.java</suite.manual.include>
+            </properties>
+        </profile>
+        <profile>
+            <id>suite.jmx</id>
+            <properties>
+                <suite.manual.phase>test</suite.manual.phase>
+                <suite.client.local.phase>none</suite.client.local.phase>
+                <suite.client.dist.phase>none</suite.client.dist.phase>
+                <suite.client.repl.phase>none</suite.client.repl.phase>
+                <suite.manual.include>org/infinispan/server/test/jmxmanagement/JmxManagementTest.java</suite.manual.include>
+            </properties>
+        </profile>
+        <profile>
+            <id>client.rest</id>
+            <properties>
+                <groups.client.local>org.infinispan.server.test.category.RESTLocal</groups.client.local>
+                <groups.client.clustered>org.infinispan.server.test.category.RESTClustered</groups.client.clustered>
+            </properties>
+        </profile>
+        <profile>
+            <id>client.hotrod</id>
+            <properties>
+                <groups.client.local>org.infinispan.server.test.category.HotRodLocal</groups.client.local>
+                <groups.client.clustered>org.infinispan.server.test.category.HotRodClustered</groups.client.clustered>
+            </properties>
+        </profile>
+        <profile>
+            <id>client.memcached</id>
+            <properties>
+                <groups.client.local>org.infinispan.server.test.category.MemcachedLocal</groups.client.local>
+                <groups.client.clustered>org.infinispan.server.test.category.MemcachedClustered</groups.client.clustered>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
