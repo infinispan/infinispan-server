@@ -16,10 +16,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.infinispan.arquillian.core.InfinispanResource;
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
+import org.infinispan.server.test.category.RESTLocal;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import static org.infinispan.server.test.client.rest.RESTHelper.KEY_A;
@@ -50,6 +52,7 @@ import static org.junit.Assert.assertTrue;
  *          TODO test for https://issues.jboss.org/browse/ISPN-1193
  */
 @RunWith(Arquillian.class)
+@Category({ RESTLocal.class })
 public class RESTClientTest {
 
     @InfinispanResource("container1")

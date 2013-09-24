@@ -1,4 +1,4 @@
-        <subsystem xmlns="urn:infinispan:server:core:5.3" default-cache-container="local">
+        <subsystem xmlns="urn:infinispan:server:core:6.0" default-cache-container="local">
             <cache-container 
                 name="local"
                 default-cache="testcache">

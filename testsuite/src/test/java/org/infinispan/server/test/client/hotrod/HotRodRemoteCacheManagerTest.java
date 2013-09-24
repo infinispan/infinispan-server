@@ -6,7 +6,10 @@ import java.util.List;
 
 import org.infinispan.arquillian.core.InfinispanResource;
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
+import org.infinispan.server.test.category.HotRodClustered;
+import org.infinispan.server.test.category.HotRodLocal;
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
@@ -16,6 +19,7 @@ import org.junit.runner.RunWith;
  * @author Vitalii Chepeliuk
  */
 @RunWith(Arquillian.class)
+@Category({ HotRodLocal.class, HotRodClustered.class })
 public class HotRodRemoteCacheManagerTest extends AbstractRemoteCacheManagerTest {
 
     @InfinispanResource("container1")
