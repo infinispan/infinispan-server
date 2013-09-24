@@ -101,8 +101,8 @@
         view_bundling="true"
         view_ack_collection_timeout="5000"
         resume_task_timeout="7500"/>
-    <UFC max_credits="200000" min_threshold="0.20" ignore_synchronous_response="true"/>
-    <MFC max_credits="200000" min_threshold="0.20" ignore_synchronous_response="true"/>
+    <UFC max_credits="200000" min_threshold="0.20"/>
+    <MFC max_credits="200000" min_threshold="0.20"/>
     <FRAG2 frag_size="8000"/>
     <RSVP timeout="60000" resend_interval="500" ack_on_delivery="false"/>
     <pbcast.STATE_TRANSFER/>
