@@ -541,11 +541,12 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
         if (cache.hasDefined(loaderKey)) {
             for (Property loaderEntry : cache.get(loaderKey).asPropertyList()) {
                 ModelNode loader = loaderEntry.getValue();
-                PersistenceConfigurationBuilder loadersBuilder = builder.persistence();
-                StoreConfigurationBuilder<?, ?> loaderBuilder = buildCacheLoader(context, loadersBuilder, containerName,
-                                                                                 loader, loaderKey, dependencies);
-               final Properties properties = getProperties(loader);
-                loaderBuilder.withProperties(properties);
+                PersistenceConfigurationBuilder persistence = builder.persistence();
+                StoreConfigurationBuilder<?, ?> scb = buildCacheLoader(persistence,
+                                                                       loader, loaderKey);
+                parseCommonAttributes(context, persistence, loader, scb);
+                final Properties properties = getProperties(loader);
+                scb.withProperties(properties);
             }
         }
     }
@@ -573,15 +574,13 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
 
                 final boolean passivation = BaseStoreResource.PASSIVATION.resolveModelAttribute(context, store).asBoolean();
                 PersistenceConfigurationBuilder loadersBuilder = builder.persistence().passivation(passivation);
-                buildCacheStore(context, loadersBuilder, containerName, store, storeKey, dependencies);
-
+                StoreConfigurationBuilder<?, ?> scb = buildCacheStore(context, loadersBuilder, containerName, store, storeKey, dependencies);
+                parseCommonAttributes(context, loadersBuilder, store, scb);
             }
         }
     }
 
-    private StoreConfigurationBuilder<?, ?> buildCacheLoader(OperationContext context,
-            PersistenceConfigurationBuilder persistenceBuilder, String containerName, ModelNode loader, String loaderKey,
-            List<Dependency<?>> dependencies) throws OperationFailedException {
+    private StoreConfigurationBuilder<?, ?> buildCacheLoader(PersistenceConfigurationBuilder persistenceBuilder, ModelNode loader, String loaderKey) throws OperationFailedException {
         if (loaderKey.equals(ModelKeys.CLUSTER_LOADER)) {
             final ClusterLoaderConfigurationBuilder builder = persistenceBuilder.addClusterLoader();
 
@@ -595,7 +594,6 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
               org.infinispan.loaders.CacheLoader loaderInstance = (org.infinispan.loaders.CacheLoader) newInstance(className);
               Adaptor52xStoreConfigurationBuilder scb = persistenceBuilder.addStore(Adaptor52xStoreConfigurationBuilder.class);
               scb.loader(loaderInstance);
-              parseCommonAttributes(context, persistenceBuilder, loader, scb);
               return scb;
            } catch (Exception e) {
               throw InfinispanMessages.MESSAGES.invalidCacheLoader(e, className);
@@ -803,7 +801,6 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
                  Class<? extends StoreConfigurationBuilder> builderClass = StoreConfigurationBuilder.class.getClassLoader().loadClass(storeImplClass.getName() + "ConfigurationBuilder").asSubclass(StoreConfigurationBuilder.class);
                  storeConfigurationBuilder = persistenceBuilder.addStore(builderClass);
               }
-              parseCommonAttributes(context, persistenceBuilder, store, storeConfigurationBuilder);
               return storeConfigurationBuilder;
            } catch (Exception e) {
               throw InfinispanMessages.MESSAGES.invalidCacheStore(e, className);

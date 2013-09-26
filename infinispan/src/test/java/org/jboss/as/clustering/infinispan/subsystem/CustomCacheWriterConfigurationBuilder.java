@@ -12,6 +12,7 @@ public class CustomCacheWriterConfigurationBuilder extends AbstractStoreConfigur
 
 
    private String someProperty;
+   private String location;
 
    public CustomCacheWriterConfigurationBuilder(PersistenceConfigurationBuilder builder) {
       super(builder);
@@ -46,6 +47,11 @@ public class CustomCacheWriterConfigurationBuilder extends AbstractStoreConfigur
 
    public CustomCacheWriterConfigurationBuilder someProperty(String some) {
       this.someProperty = some;
+      return this;
+   }
+
+   public CustomCacheWriterConfigurationBuilder location(String some) {
+      this.location = some;
       return this;
    }
 
