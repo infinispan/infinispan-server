@@ -280,6 +280,7 @@ public class InfinispanSubsystemXMLWriter implements XMLElementWriter<SubsystemM
                 ModelNode name = new ModelNode();
                 name.get(ModelKeys.NAME).set(fileStoreEntry.getName());
                 FileStoreResource.NAME.marshallAsAttribute(name, false, writer);
+                this.writeOptional(writer, Attribute.MAX_ENTRIES, store, ModelKeys.MAX_ENTRIES);
                 this.writeOptional(writer, Attribute.RELATIVE_TO, store, ModelKeys.RELATIVE_TO);
                 this.writeOptional(writer, Attribute.PATH, store, ModelKeys.PATH);
                 this.writeStoreAttributes(writer, store);

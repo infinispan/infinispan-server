@@ -771,6 +771,10 @@ public final class InfinispanSubsystemXMLReader_6_0 implements XMLElementReader<
             String value = reader.getAttributeValue(i);
             Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
             switch (attribute) {
+                case MAX_ENTRIES: {
+                    FileStoreResource.MAX_ENTRIES.parseAndSetParameter(value, store, reader);
+                    break;
+                }
                 case RELATIVE_TO: {
                     FileStoreResource.RELATIVE_TO.parseAndSetParameter(value, store, reader);
                     break;
