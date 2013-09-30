@@ -51,6 +51,14 @@ public class FileStoreResource extends BaseStoreResource {
     public static final PathElement FILE_STORE_PATH = PathElement.pathElement(ModelKeys.FILE_STORE);
 
     // attributes
+
+    static final SimpleAttributeDefinition MAX_ENTRIES =
+            new SimpleAttributeDefinitionBuilder(ModelKeys.MAX_ENTRIES, ModelType.INT, true)
+                    .setXmlName(Attribute.MAX_ENTRIES.getLocalName())
+                    .setAllowExpression(true)
+                    .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
+                    .build();
+
     static final SimpleAttributeDefinition PATH =
             new SimpleAttributeDefinitionBuilder(ModelKeys.PATH, ModelType.STRING, true)
                     .setXmlName(Attribute.PATH.getLocalName())
@@ -66,7 +74,7 @@ public class FileStoreResource extends BaseStoreResource {
                     .setDefaultValue(new ModelNode().set(ServerEnvironment.SERVER_DATA_DIR))
                     .build();
 
-    static final AttributeDefinition[] FILE_STORE_ATTRIBUTES = {RELATIVE_TO, PATH};
+    static final AttributeDefinition[] FILE_STORE_ATTRIBUTES = {MAX_ENTRIES, RELATIVE_TO, PATH};
 
     static final SimpleAttributeDefinition NAME =
             new SimpleAttributeDefinitionBuilder(BaseStoreResource.NAME)
@@ -76,6 +84,7 @@ public class FileStoreResource extends BaseStoreResource {
     // operations
     private static final OperationDefinition FILE_STORE_ADD_DEFINITION = new SimpleOperationDefinitionBuilder(ADD, InfinispanExtension.getResourceDescriptionResolver(ModelKeys.FILE_STORE))
         .setParameters(COMMON_STORE_PARAMETERS)
+        .addParameter(MAX_ENTRIES)
         .addParameter(RELATIVE_TO)
         .addParameter(PATH)
         .setAttributeResolver(InfinispanExtension.getResourceDescriptionResolver(ModelKeys.FILE_STORE))

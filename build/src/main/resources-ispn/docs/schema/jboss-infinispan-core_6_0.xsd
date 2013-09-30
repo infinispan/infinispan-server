@@ -617,6 +617,17 @@
     <xs:complexType name="file-store">
         <xs:complexContent>
             <xs:extension base="tns:store">
+                <xs:attribute name="max-entries" type="xs:int">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Sets the maximum number of in-memory mappings between keys and their position in the store.
+                            Normally this is unlimited, but to avoid excess memory usage, an upper bound can be configured.
+                            If this limit is exceeded, entries are removed permanently using the LRU algorithm both from 
+                            the in-memory index and the underlying file based cache store. Warning: setting this value
+                            may cause data loss.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="relative-to" type="xs:string" default="jboss.server.data.dir">
                     <xs:annotation>
                         <xs:documentation>The base directory in which to store the cache state.</xs:documentation>
