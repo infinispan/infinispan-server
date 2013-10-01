@@ -1,5 +1,7 @@
 package org.infinispan.server.test.client.memcached;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -10,9 +12,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
-import static junit.framework.Assert.assertEquals;
+import org.apache.log4j.Logger;
+import org.junit.Assert;
 
 /**
  * A Really simple Memcached client/helper.
@@ -22,6 +23,7 @@ import static junit.framework.Assert.assertEquals;
  */
 public class MemcachedClient {
 
+    private static final Logger log = Logger.getLogger(MemcachedClient.class);
     public static final int DEFAULT_MEMCACHED_PORT = 11211;
     public static final int DEFAULT_TIMEOUT = 10000;
 
@@ -80,7 +82,11 @@ public class MemcachedClient {
                 read--;
             }
             buf = Arrays.copyOf(buf, read);
-            return new String(buf, encoding);
+            String ret = new String(buf, encoding);
+            if (log.isTraceEnabled()) {
+                log.trace("<< \"" + ret + "\"");
+            }
+            return ret;
         }
     }
 
@@ -107,9 +113,15 @@ public class MemcachedClient {
 
     public void writeln(String str) {
         out.print(str + "\r\n");
+        if (log.isTraceEnabled()) {
+            log.trace(">> \"" + str + "\"");
+        }
     }
 
     public void write(byte[] data) throws IOException {
+        if (log.isTraceEnabled()) {
+            log.trace(">> " + data.length + " bytes");
+        }
         socket.getOutputStream().write(data);
     }
 
