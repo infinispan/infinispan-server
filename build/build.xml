@@ -257,6 +257,14 @@
          <maven-resource group="org.hibernate" artifact="hibernate-search-analyzers" />
          <maven-resource group="org.xerial.snappy" artifact="snappy-java" />
       </module-def>
+
+      <module-def name="org.hibernate.hql.parser" src="${infinispan.server.modules.dir}">
+         <maven-resource group="org.hibernate.hql" artifact="hibernate-hql-parser" />
+      </module-def>
+
+      <module-def name="org.hibernate.hql.lucene" src="${infinispan.server.modules.dir}">
+         <maven-resource group="org.hibernate.hql" artifact="hibernate-hql-lucene" />
+      </module-def>
    </target>
 
    <target name="trim-modules">

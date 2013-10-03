@@ -5,7 +5,8 @@
                 <local-cache
                     name="testcache"
                     start="EAGER"
-                    batching="false">
+                    batching="false"
+                    module="org.infinispan.remote-query.server">
                     <transaction mode="NONE" />
                     <indexing index="ALL">
                         <property name="default.directory_provider">ram</property>

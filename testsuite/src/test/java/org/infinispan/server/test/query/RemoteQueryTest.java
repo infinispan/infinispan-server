@@ -79,7 +79,7 @@ public class RemoteQueryTest {
     @After
     public void tearDown() {
         if (remoteCache != null) {
-           remoteCache.clear();
+            remoteCache.clear();
         }
         if (rcmFactory != null) {
             rcmFactory.stopManagers();
