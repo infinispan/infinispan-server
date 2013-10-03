@@ -130,6 +130,15 @@ public class CacheContainerResource extends SimpleResourceDefinition {
             .setParameters(NAME)
             .build();
 
+   static final SimpleAttributeDefinition PROTO_URL =
+         new SimpleAttributeDefinitionBuilder("proto-url", ModelType.STRING, true)
+               .setAllowExpression(false)
+               .build();
+
+    static final OperationDefinition UPLOAD_PROTO = new SimpleOperationDefinitionBuilder("upload-proto-file", InfinispanExtension.getResourceDescriptionResolver("cache-container"))
+          .setParameters(PROTO_URL)
+          .build();
+
     private final ResolvePathHandler resolvePathHandler;
     private final boolean runtimeRegistration;
     public CacheContainerResource(final ResolvePathHandler resolvePathHandler, boolean runtimeRegistration) {
@@ -163,6 +172,7 @@ public class CacheContainerResource extends SimpleResourceDefinition {
         // register add-alias and remove-alias
         resourceRegistration.registerOperationHandler(CacheContainerResource.ALIAS_ADD, AddAliasCommand.INSTANCE);
         resourceRegistration.registerOperationHandler(CacheContainerResource.ALIAS_REMOVE, RemoveAliasCommand.INSTANCE);
+        resourceRegistration.registerOperationHandler(CacheContainerResource.UPLOAD_PROTO, UploadProtoFileOperationHandler.INSTANCE);
     }
 
     @Override

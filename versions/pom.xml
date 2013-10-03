@@ -330,7 +330,6 @@
              <groupId>org.infinispan</groupId>
              <artifactId>infinispan-remote-query-client</artifactId>
              <version>${version.org.infinispan}</version>
-             <scope>test</scope>
          </dependency>
 
          <dependency>

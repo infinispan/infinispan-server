@@ -197,6 +197,12 @@
                 <c:simple-property name="path" readOnly="true" default="cache-container"/>
             </plugin-configuration>
 
+            <operation name="upload-proto-file" description="Uploads a proto file given a specific URL - note this is relative to the Infinispan server">
+                <parameters>
+                    <c:simple-property name="proto-url" type="longString"/>
+                </parameters>
+            </operation>
+
             <metric property="cacheManagerStatus" displayName="Cache Container Status" displayType="summary"
                     units="none" dataType="trait" description="The current runtime status of a cache container"/>
             <metric property="clusterName" displayName="Cluster Name" displayType="summary" units="none"
