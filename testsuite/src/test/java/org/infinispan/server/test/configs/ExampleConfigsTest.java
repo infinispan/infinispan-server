@@ -246,8 +246,12 @@ public class ExampleConfigsTest {
     @WithRunningServer("standalone-hotrod-multiple")
     public void testHotrodMultipleConfig() throws Exception {
         RemoteInfinispanMBeans s = createRemotes("standalone-hotrod-multiple", "local", DEFAULT_CACHE_NAME);
-        RemoteCache<Object, Object> c1 = createCache(s, TestUtil.createConfigBuilder("127.0.0.1", 11222));
-        RemoteCache<Object, Object> c2 = createCache(s, TestUtil.createConfigBuilder("127.0.0.1", 11223));
+        RemoteCache<Object, Object> c1 = createCache(s,TestUtil.createConfigBuilder(
+                                             s.server.getHotrodEndpoint("external").getInetAddress().getHostName(),
+                                             s.server.getHotrodEndpoint("external").getPort()));
+        RemoteCache<Object, Object> c2 = createCache(s,TestUtil.createConfigBuilder(
+                                             s.server.getHotrodEndpoint("internal").getInetAddress().getHostName(),
+                                             s.server.getHotrodEndpoint("internal").getPort()));
         assertEquals(0, s.cache.getNumberOfEntries());
         for (int i = 0; i < 10; i++) {
             c1.put("k" + i, "v" + i);
