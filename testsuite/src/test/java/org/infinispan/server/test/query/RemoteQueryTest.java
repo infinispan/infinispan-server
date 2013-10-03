@@ -41,16 +41,16 @@ import static org.junit.Assert.assertNotNull;
 @WithRunningServer("remote-query")
 public class RemoteQueryTest {
 
-    private static final String DEFAULT_CACHE = "testcache";
+   protected static final String DEFAULT_CACHE = "testcache";
 
     @InfinispanResource("remote-query")
-    private RemoteInfinispanServer server;
+    protected RemoteInfinispanServer server;
 
-    private RemoteCacheManager remoteCacheManager;
-    private RemoteCache<Integer, User> remoteCache;
-    private MBeanServerConnectionProvider provider;
+    protected RemoteCacheManager remoteCacheManager;
+    protected RemoteCache<Integer, User> remoteCache;
+    protected MBeanServerConnectionProvider provider;
 
-    private RemoteCacheManagerFactory rcmFactory;
+    protected RemoteCacheManagerFactory rcmFactory;
 
     @Before
     public void setUp() throws Exception {
