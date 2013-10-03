@@ -58,6 +58,8 @@
                    modifyInfinispan="${infinispan.parts}/default-dist.xml"/>
         <transform in="clustered.xml" out="testsuite/clustered-default-repl.xml"
                    modifyInfinispan="${infinispan.parts}/default-repl.xml"/>
+        <transform in="standalone.xml" out="testsuite/standalone-with-indexing.xml"
+                   modifyInfinispan="${infinispan.parts}/indexing.xml"/>
     </target>
 
     <macrodef name="transform">
