@@ -50,7 +50,7 @@ public abstract class AbstractRemoteCacheTest {
 
     protected RemoteCache remoteCache;
     protected static RemoteCacheManager remoteCacheManager = null;
-    protected final int ASYNC_OPS_ENTRY_LOAD = 3000;
+    protected final int ASYNC_OPS_ENTRY_LOAD = 100;
 
     protected abstract List<RemoteInfinispanServer> getServers();
 
@@ -116,13 +116,8 @@ public abstract class AbstractRemoteCacheTest {
     }
 
     private void clearServer(int serverIndex) {
-        while (numEntriesOnServer(serverIndex) != 0) {
-            try {
-                remoteCache.clear();
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        while (remoteCache.size() != 0) {
+            remoteCache.clear();
         }
     }
 
@@ -311,60 +306,34 @@ public abstract class AbstractRemoteCacheTest {
     }
 
     @Test
-    public void testRemoveAsync() throws InterruptedException {
-        long start, syncDuration, asyncDuration, maxAsyncDuration;
-
-        for (int i = 0; i <= 1000; i++) {
+    public void testRemoveAsync() throws Exception {
+        for (int i = 0; i <= ASYNC_OPS_ENTRY_LOAD; i++) {
             remoteCache.put("key" + i, "value" + i);
         }
-        start = getStart();
-        for (int i = 0; i <= 1000; i++) {
-            remoteCache.remove("key" + i);
+        Set<Future<?>> futures = new HashSet<Future<?>>();
+        for (int i = 0; i <= ASYNC_OPS_ENTRY_LOAD; i++) {
+            futures.add(remoteCache.removeAsync("key" + i));
         }
-        syncDuration = getDuration(start);
-        maxAsyncDuration = syncDuration / 3;
-
-        for (int i = 0; i <= 1000; i++) {
-            remoteCache.put("key" + i, "value" + i);
+        for (Future<?> f : futures) {
+            f.get();
         }
-        start = getStart();
-        for (int i = 0; i <= 1000; i++) {
-            remoteCache.removeAsync("key" + i);
-        }
-        asyncDuration = getDuration(start);
-        assertTrue("Async remove was not significantly faster than sync remove!", asyncDuration < maxAsyncDuration);
-        // verify that the cache is indeed empty after some time
-        Thread.sleep(3000);
         assertEquals(0, numEntriesOnServer(0));
     }
 
     @Test
-    public void testReplaceAsync() throws InterruptedException {
-        long start, syncDuration, asyncDuration, maxAsyncDuration;
-
-        for (int i = 0; i <= 1000; i++) {
-            remoteCache.put("key" + i, "value" + i);
-        }
-        start = getStart();
-        for (int i = 0; i <= 1000; i++) {
-            remoteCache.replace("key" + i, "newValue" + i, -1, TimeUnit.SECONDS, -1, TimeUnit.SECONDS);
-        }
-        syncDuration = getDuration(start);
-        maxAsyncDuration = syncDuration / 3;
+    public void testReplaceAsync() throws Exception {
         remoteCache.clear();
-
-        for (int i = 0; i <= 1000; i++) {
+        for (int i = 0; i <= ASYNC_OPS_ENTRY_LOAD; i++) {
             remoteCache.put("key" + i, "value" + i);
         }
-        start = getStart();
-        for (int i = 0; i <= 1000; i++) {
-            remoteCache.replaceAsync("key" + i, "newValue" + i, -1, TimeUnit.SECONDS, -1, TimeUnit.SECONDS);
+        Set<Future<?>> futures = new HashSet<Future<?>>();
+        for (int i = 0; i <= ASYNC_OPS_ENTRY_LOAD; i++) {
+            futures.add(remoteCache.replaceAsync("key" + i, "newValue" + i, -1, TimeUnit.SECONDS, -1, TimeUnit.SECONDS));
         }
-        asyncDuration = getDuration(start);
-        assertTrue("Async replace was not significantly faster than sync replace!", asyncDuration < maxAsyncDuration);
-        // verify that the new values are present after some time
-        Thread.sleep(3000);
-        for (int i = 0; i <= 1000; i++) {
+        for (Future<?> f : futures) {
+            f.get();
+        }
+        for (int i = 0; i <= ASYNC_OPS_ENTRY_LOAD; i++) {
             assertEquals("newValue" + i, remoteCache.get("key" + i));
         }
     }
@@ -380,7 +349,6 @@ public abstract class AbstractRemoteCacheTest {
         VersionedValue valueBinary = remoteCache.getVersioned("aKey");
         assertNotNull(valueBinary);
         assertEquals(valueBinary.getValue(), "aValue");
-        // log.info("Version is: " + valueBinary.getVersion());
 
         // now put the same value
         remoteCache.put("aKey", "aValue");
@@ -594,58 +562,28 @@ public abstract class AbstractRemoteCacheTest {
 
     @Test
     public void testPutAsync() throws Exception {
-        long start = getStart();
-        for (int i = 0; i != ASYNC_OPS_ENTRY_LOAD; i++) {
-            remoteCache.put("key" + i, "value" + i);
-        }
-        long syncDuration = getDuration(start);
-        //async operations should be several times faster
-        long maxPutTime = syncDuration / 3;
-        remoteCache.clear();
-        assertEquals(0, numEntriesOnServer(0));
-
         Set<Future<?>> futures = new HashSet<Future<?>>();
-        start = getStart();
         for (int i = 0; i != ASYNC_OPS_ENTRY_LOAD; i++) {
             futures.add(remoteCache.putAsync("key" + i, "value" + i));
         }
-        long duration = getDuration(start);
-        assertTrue("Max timeout: " + maxPutTime + " ms, actual timeout: " + duration, duration < maxPutTime);
-
         for (Future<?> f : futures) {
             f.get();
         }
         assertEquals(ASYNC_OPS_ENTRY_LOAD, numEntriesOnServer(0));
-        // assert the last entry was really stored in the cache
         assertEquals("value" + (ASYNC_OPS_ENTRY_LOAD - 1), remoteCache.get("key" + (ASYNC_OPS_ENTRY_LOAD - 1)));
     }
 
     @Test
     public void testPutWithLifespanAsync() throws Exception {
         long lifespanInSecs = 10;
-        long start = getStart();
-        for (int i = 0; i != ASYNC_OPS_ENTRY_LOAD; i++) {
-            remoteCache.put("key" + i, "value" + i, lifespanInSecs, TimeUnit.SECONDS);
-        }
-        long syncDuration = getDuration(start);
-        //async operations should be several times faster
-        long maxPutWithLifespanTime = syncDuration / 3;
-        remoteCache.clear();
-        assertEquals(0, numEntriesOnServer(0));
-
         Set<Future<?>> futures = new HashSet<Future<?>>();
-        start = getStart();
         for (int i = 0; i != ASYNC_OPS_ENTRY_LOAD; i++) {
             futures.add(remoteCache.putAsync("key" + i, "value" + i, lifespanInSecs, TimeUnit.SECONDS, -1, TimeUnit.SECONDS));
         }
-        long duration = getDuration(start);
-        assertTrue("Max timeout: " + maxPutWithLifespanTime + " ms, actual timeout: " + duration, duration < maxPutWithLifespanTime);
-
         for (Future<?> f : futures) {
             f.get();
         }
         assertEquals(ASYNC_OPS_ENTRY_LOAD, numEntriesOnServer(0));
-
         sleepForSecs(lifespanInSecs + 1);
         for (int i = 0; i != ASYNC_OPS_ENTRY_LOAD; i++) {
             assertEquals(null, remoteCache.get("key" + i));
@@ -654,38 +592,19 @@ public abstract class AbstractRemoteCacheTest {
 
     @Test
     public void testPutIfAbsentAsync() throws Exception {
-        long start = getStart();
-        for (int i = 0; i != ASYNC_OPS_ENTRY_LOAD; i++) {
-            remoteCache.putIfAbsent("key" + i, "value" + i);
-        }
-        long syncDuration = getDuration(start);
-        //async operations should be several times faster
-        long maxPutIfAbsentTime = syncDuration / 2;
-        remoteCache.clear();
-        assertEquals(0, numEntriesOnServer(0));
-
         Set<Future<?>> futures = new HashSet<Future<?>>();
-        start = getStart();
         for (int i = 0; i != ASYNC_OPS_ENTRY_LOAD; i++) {
             futures.add(remoteCache.putIfAbsentAsync("key" + i, "value" + i));
         }
-        long duration = getDuration(start);
-        assertTrue("Max timeout: " + maxPutIfAbsentTime + " ms, actual timeout: " + duration, duration < maxPutIfAbsentTime);
-
         // check that the puts completed successfully
         for (Future<?> f : futures) {
             f.get();
         }
         assertEquals(ASYNC_OPS_ENTRY_LOAD, numEntriesOnServer(0));
         assertEquals("value" + (ASYNC_OPS_ENTRY_LOAD - 1), remoteCache.get("key" + (ASYNC_OPS_ENTRY_LOAD - 1)));
-
-        start = getStart();
         for (int i = 0; i != ASYNC_OPS_ENTRY_LOAD; i++) {
             futures.add(remoteCache.putIfAbsentAsync("key" + i, "newValue" + i));
         }
-        duration = getDuration(start);
-        assertTrue("Max timeout: " + maxPutIfAbsentTime + " ms, actual timeout: " + duration, duration < maxPutIfAbsentTime);
-
         for (Future<?> f : futures) {
             f.get();
         }
@@ -697,19 +616,17 @@ public abstract class AbstractRemoteCacheTest {
     @Test
     public void testPutIfAbsentWithLifespanAsync() throws Exception {
         long lifespanInSecs = 2;
-        int numEntriesLoc = 300;
         Set<Future<?>> futures = new HashSet<Future<?>>();
-        for (int i = 0; i != numEntriesLoc; i++) {
+        for (int i = 0; i != ASYNC_OPS_ENTRY_LOAD; i++) {
             futures.add(remoteCache.putIfAbsentAsync("key" + i, "value" + i, lifespanInSecs, TimeUnit.SECONDS));
         }
         for (Future<?> f : futures) {
             f.get();
         }
-        assertEquals(numEntriesLoc, numEntriesOnServer(0));
-        assertEquals("value" + (numEntriesLoc - 1), remoteCache.get("key" + (numEntriesLoc - 1)));
-
+        assertEquals(ASYNC_OPS_ENTRY_LOAD, numEntriesOnServer(0));
+        assertEquals("value" + (ASYNC_OPS_ENTRY_LOAD - 1), remoteCache.get("key" + (ASYNC_OPS_ENTRY_LOAD - 1)));
         sleepForSecs(lifespanInSecs + 1);
-        for (int i = 0; i != numEntriesLoc; i++) {
+        for (int i = 0; i != ASYNC_OPS_ENTRY_LOAD; i++) {
             assertEquals(null, remoteCache.get("key" + i));
         }
     }
@@ -830,14 +747,6 @@ public abstract class AbstractRemoteCacheTest {
     @Test
     public void testGetProtocolVersion() throws Exception {
         assertEquals("HotRod client, protocol version :1.2", remoteCache.getProtocolVersion());
-    }
-
-    protected long getStart() {
-        return System.currentTimeMillis();
-    }
-
-    protected long getDuration(long start) {
-        return System.currentTimeMillis() - start;
     }
 
     protected <T extends Map<String, String>> void fill(T map, int entryCount) {
