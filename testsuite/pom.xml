@@ -86,10 +86,26 @@
             <artifactId>log4j</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.infinispan.protostream</groupId>
+            <artifactId>sample-domain-definition</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan.protostream</groupId>
+            <artifactId>sample-domain-implementation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-query-dsl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-remote-query-client</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>
-		<!--<ispnserver.ts.dir>${basedir}/..</ispnserver.ts.dir> -->
+        <!--<ispnserver.ts.dir>${basedir}/..</ispnserver.ts.dir> -->
         <ispnserver.project.dir>${basedir}/..</ispnserver.project.dir>
         <server.build.dist>${ispnserver.project.dir}/build/target/infinispan-server-${project.version}
         </server.build.dist>
@@ -98,7 +114,7 @@
         <server3.dist>${basedir}/target/server/node3</server3.dist>
         <resources.dir>${basedir}/src/test/resources</resources.dir>
         <jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m</jvm.memory.args>
-		<!--<jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</jvm.memory.args> -->
+        <!--<jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</jvm.memory.args> -->
         <jvm.ip.stack>-Djava.net.preferIPv4Stack=true</jvm.ip.stack>
         <server.jvm.args>${jvm.ip.stack} ${jvm.memory.args}</server.jvm.args>
         <log4j.configuration>log4j.xml</log4j.configuration>

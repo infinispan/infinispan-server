@@ -35,6 +35,7 @@
       <version.org.slf4j>1.7.2</version.org.slf4j>
       <version.org.xerial.snappy>1.0.5</version.org.xerial.snappy>
       <version.xml.maven.plugin>1.0</version.xml.maven.plugin>
+      <version.org.infinispan.protostream>1.0.0.Alpha7</version.org.infinispan.protostream>
       <relocations></relocations>
    </properties>
 
@@ -304,6 +305,34 @@
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
             <version>${version.org.xerial.snappy}</version>
+         </dependency>
+
+         <dependency>
+             <groupId>org.infinispan.protostream</groupId>
+             <artifactId>sample-domain-definition</artifactId>
+             <version>${version.org.infinispan.protostream}</version>
+             <scope>test</scope>
+         </dependency>
+
+         <dependency>
+             <groupId>org.infinispan.protostream</groupId>
+             <artifactId>sample-domain-implementation</artifactId>
+             <version>${version.org.infinispan.protostream}</version>
+             <scope>test</scope>
+         </dependency>
+
+         <dependency>
+             <groupId>org.infinispan</groupId>
+             <artifactId>infinispan-query-dsl</artifactId>
+             <version>${version.org.infinispan}</version>
+             <scope>test</scope>
+         </dependency>
+
+         <dependency>
+             <groupId>org.infinispan</groupId>
+             <artifactId>infinispan-remote-query-client</artifactId>
+             <version>${version.org.infinispan}</version>
+             <scope>test</scope>
          </dependency>
          
       </dependencies>
