@@ -171,22 +171,11 @@ public class ExampleConfigsTest {
             final RemoteCache<Object, Object> c2 = createCache(s2);
 
             c2.put("key1", "value1");
-            c2.put("key2", "value2");
-            c2.put("key3", "value3");
             assertEquals("value1", c2.get("key1"));
-            assertEquals("value2", c2.get("key2"));
-            assertEquals("value3", c2.get("key3"));
 
-            Thread loadThread = new Thread() {
-                public void run() {
-                    int i = 0;
-                    while (i < 50) {
-                        c2.put("keyLoad" + i, "valueLoad" + i);
-                        i++;
-                    }
-                }
-            };
-            loadThread.start();
+            for (int i=0; i<50; i++) {
+                c2.put("keyLoad" + i, "valueLoad" + i);
+            }
 
             controller.start("hotrod-rolling-upgrade-1");
 
@@ -195,10 +184,6 @@ public class ExampleConfigsTest {
 
             assertEquals("Can't access etries stored in source node (target's RemoteCacheStore).",
                     "value1", c1.get("key1"));
-            assertEquals("Can't access etries stored in source node (target's RemoteCacheStore).",
-                    "value2", c1.get("key2"));
-            assertEquals("Can't access etries stored in source node (target's RemoteCacheStore).",
-                    "value3", c1.get("key3"));
 
             provider1 = new MBeanServerConnectionProvider(s1.server.getHotrodEndpoint().getInetAddress().getHostName(), managementPortServer1);
             provider2 = new MBeanServerConnectionProvider(s2.server.getHotrodEndpoint().getInetAddress().getHostName(), managementPortServer2);
@@ -226,12 +211,8 @@ public class ExampleConfigsTest {
 
             // all entries migrated?
             assertEquals("Entry was not successfully migrated.", "value1", c1.get("key1"));
-            assertEquals("Entry was not successfully migrated.", "value2", c1.get("key2"));
-            assertEquals("Entry was not successfully migrated.", "value3", c1.get("key3"));
-            int i = 0;
-            while (i < 50) {
+            for (int i=0; i<50; i++) {
                 assertEquals("Entry was not successfully migrated.", "valueLoad" + i, c1.get("keyLoad" + i));
-                i++;
             }
         } finally {
             if (controller.isStarted("hotrod-rolling-upgrade-1")) {
