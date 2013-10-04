@@ -97,6 +97,8 @@
             <relay site="LON">
                <remote-site name="NYC" stack="tcp" cluster="global" />
                <remote-site name="SFO" stack="tcp" cluster="global" />
+               <!-- property name="can_become_site_master">true</property>
+               <property name="max_site_masters">2</property -->
             </relay>
          </stack>
          <stack name="tcp">

@@ -119,6 +119,7 @@ public class JGroupsSubsystemXMLWriter implements XMLElementWriter<SubsystemMars
             RemoteSiteResource.CLUSTER.marshallAsAttribute(remoteSite, writer);
             writer.writeEndElement();
         }
+        this.writeProtocolProperties(writer, relay);
         writer.writeEndElement();
     }
 
