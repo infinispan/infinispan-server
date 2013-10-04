@@ -11,7 +11,9 @@ Currently these subsets are predefined:
   -P suite.client                    (Client tests, all local/dist/repl cachemode)
   -P suite.client.{local|dist|repl}  (Client tests, only {local|dist|repl} cachemode)
   -P suite.examples                  (Example config tests)
-  -P suite.jmx                       (JMX Management tests)
+
+  -P suite.others                    (Tests that do not belong to any of the suites above. Useful when running a single test that's outside
+                                      of any pre-defined group)
 
 Running specific test 
 ---------------------

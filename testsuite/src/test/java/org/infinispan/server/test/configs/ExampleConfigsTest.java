@@ -18,22 +18,6 @@
  */
 package org.infinispan.server.test.configs;
 
-import static org.infinispan.server.test.client.rest.RESTHelper.KEY_A;
-import static org.infinispan.server.test.client.rest.RESTHelper.KEY_B;
-import static org.infinispan.server.test.client.rest.RESTHelper.KEY_C;
-import static org.infinispan.server.test.client.rest.RESTHelper.delete;
-import static org.infinispan.server.test.client.rest.RESTHelper.fullPathKey;
-import static org.infinispan.server.test.client.rest.RESTHelper.get;
-import static org.infinispan.server.test.client.rest.RESTHelper.head;
-import static org.infinispan.server.test.client.rest.RESTHelper.post;
-import static org.infinispan.server.test.client.rest.RESTHelper.put;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.ObjectInputStream;
@@ -43,12 +27,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
-import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.infinispan.arquillian.core.InfinispanResource;
 import org.infinispan.arquillian.core.RESTEndpoint;
@@ -73,6 +59,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.infinispan.server.test.client.rest.RESTHelper.KEY_A;
+import static org.infinispan.server.test.client.rest.RESTHelper.KEY_B;
+import static org.infinispan.server.test.client.rest.RESTHelper.KEY_C;
+import static org.infinispan.server.test.client.rest.RESTHelper.delete;
+import static org.infinispan.server.test.client.rest.RESTHelper.fullPathKey;
+import static org.infinispan.server.test.client.rest.RESTHelper.get;
+import static org.infinispan.server.test.client.rest.RESTHelper.head;
+import static org.infinispan.server.test.client.rest.RESTHelper.post;
+import static org.infinispan.server.test.client.rest.RESTHelper.put;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for example configurations.
@@ -160,7 +162,7 @@ public class ExampleConfigsTest {
         try {
             RemoteInfinispanMBeans s1 = createRemotes("standalone-compatibility-mode", "local", DEFAULT_CACHE_NAME);
             RemoteCache<Object, Object> s1Cache = createCache(s1);
-            restClient = new HttpClient();
+            restClient = new DefaultHttpClient();
             String restUrl = "http://" + s1.server.getHotrodEndpoint().getInetAddress().getHostName() + ":8080"
                 + s1.server.getRESTEndpoint().getContextPath() + "/" + DEFAULT_CACHE_NAME;
             memcachedClient = new MemcachedClient(s1.server.getMemcachedEndpoint().getInetAddress().getHostName(), s1.server
@@ -172,10 +174,11 @@ public class ExampleConfigsTest {
             assertArrayEquals("v1".getBytes(), (byte[]) s1Cache.get(key));
 
             // 2. Get with REST
-            HttpMethod get = new GetMethod(restUrl + "/" + key);
-            restClient.executeMethod(get);
-            assertEquals(HttpServletResponse.SC_OK, get.getStatusCode());
-            assertArrayEquals("v1".getBytes(), get.getResponseBody());
+            HttpGet get = new HttpGet(restUrl + "/" + key);
+            HttpResponse getResponse = restClient.execute(get);
+            assertEquals(HttpServletResponse.SC_OK, getResponse.getStatusLine().getStatusCode());
+            assertArrayEquals("v1".getBytes(), EntityUtils.toByteArray(getResponse.getEntity()));
+
 
             // 3. Get with Memcached
             assertArrayEquals("v1".getBytes(), readWithMemcachedAndDeserialize(key, memcachedClient));
@@ -183,10 +186,10 @@ public class ExampleConfigsTest {
             key = "2";
 
             // 1. Put with REST
-            EntityEnclosingMethod put = new PutMethod(restUrl + "/" + key);
-            put.setRequestEntity(new ByteArrayRequestEntity("<hey>ho</hey>".getBytes(), "application/octet-stream"));
-            restClient.executeMethod(put);
-            assertEquals(HttpServletResponse.SC_OK, put.getStatusCode());
+            HttpPut put = new HttpPut(restUrl + "/" + key);
+            put.setEntity(new ByteArrayEntity("<hey>ho</hey>".getBytes(), ContentType.APPLICATION_OCTET_STREAM));
+            HttpResponse putResponse = restClient.execute(put);
+            assertEquals(HttpServletResponse.SC_OK, putResponse.getStatusLine().getStatusCode());
 
             // 2. Get with Hot Rod
             assertArrayEquals("<hey>ho</hey>".getBytes(), (byte[]) s1Cache.get(key));
@@ -195,7 +198,7 @@ public class ExampleConfigsTest {
             assertArrayEquals("<hey>ho</hey>".getBytes(), readWithMemcachedAndDeserialize(key, memcachedClient));
         } finally {
             if (restClient != null) {
-                restClient.getHttpConnectionManager().closeIdleConnections(0);
+                restClient.getConnectionManager().shutdown();
             }
             if (memcachedClient != null) {
                 memcachedClient.close();

@@ -217,7 +217,7 @@
                         </goals>
                         <configuration>
                             <reportNameSuffix>replmode</reportNameSuffix>
-                            <groups>org.infinispan.server.test.category.ClientClustered</groups>
+                            <groups>${groups.client.clustered}</groups>
                             <systemPropertyVariables>
                                 <clustering.mode>repl</clustering.mode>
                                 <arquillian.launch>suite-client-repl</arquillian.launch>
@@ -277,18 +277,21 @@
             </properties>
         </profile>
         <profile>
-            <id>suite.jmx</id>
+            <id>suite.others</id>
             <properties>
                 <suite.manual.phase>test</suite.manual.phase>
                 <suite.client.local.phase>none</suite.client.local.phase>
                 <suite.client.dist.phase>none</suite.client.dist.phase>
                 <suite.client.repl.phase>none</suite.client.repl.phase>
-                <suite.manual.include>org/infinispan/server/test/jmxmanagement/JmxManagementTest.java</suite.manual.include>
             </properties>
         </profile>
         <profile>
             <id>client.rest</id>
             <properties>
+                <suite.manual.phase>none</suite.manual.phase>
+                <suite.client.local.phase>test</suite.client.local.phase>
+                <suite.client.dist.phase>test</suite.client.dist.phase>
+                <suite.client.repl.phase>test</suite.client.repl.phase>
                 <groups.client.local>org.infinispan.server.test.category.RESTLocal</groups.client.local>
                 <groups.client.clustered>org.infinispan.server.test.category.RESTClustered</groups.client.clustered>
             </properties>
@@ -296,6 +299,10 @@
         <profile>
             <id>client.hotrod</id>
             <properties>
+                <suite.manual.phase>none</suite.manual.phase>
+                <suite.client.local.phase>test</suite.client.local.phase>
+                <suite.client.dist.phase>test</suite.client.dist.phase>
+                <suite.client.repl.phase>test</suite.client.repl.phase>
                 <groups.client.local>org.infinispan.server.test.category.HotRodLocal</groups.client.local>
                 <groups.client.clustered>org.infinispan.server.test.category.HotRodClustered</groups.client.clustered>
             </properties>
@@ -303,6 +310,10 @@
         <profile>
             <id>client.memcached</id>
             <properties>
+                <suite.manual.phase>none</suite.manual.phase>
+                <suite.client.local.phase>test</suite.client.local.phase>
+                <suite.client.dist.phase>test</suite.client.dist.phase>
+                <suite.client.repl.phase>test</suite.client.repl.phase>
                 <groups.client.local>org.infinispan.server.test.category.MemcachedLocal</groups.client.local>
                 <groups.client.clustered>org.infinispan.server.test.category.MemcachedClustered</groups.client.clustered>
             </properties>
