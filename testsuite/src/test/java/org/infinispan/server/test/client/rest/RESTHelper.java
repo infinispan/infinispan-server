@@ -140,13 +140,7 @@ public class RESTHelper {
         try {
             assertEquals(expectedCode, resp.getStatusLine().getStatusCode());
             if (expectedResponseBody != null) {
-                StringBuilder responseBuilder = new StringBuilder();
-                BufferedReader responseReader = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-                String line = null;
-                while ((line = responseReader.readLine()) != null) {
-                    responseBuilder.append(line);
-                }
-                assertEquals(expectedResponseBody, responseBuilder.toString());
+                assertEquals(expectedResponseBody, EntityUtils.toString(resp.getEntity()));
             }
         } finally {
             if (closeConnection) {
@@ -168,7 +162,7 @@ public class RESTHelper {
             throws Exception {
         HttpPut put = new HttpPut(uri);
         if (data instanceof String) {
-            put.setEntity(new StringEntity((String) data, contentType, "UTF-8"));
+            put.setEntity(new StringEntity((String) data, "UTF-8"));
         } else if (data instanceof byte[]) {
             byte[] byteData = (byte[]) data;
             ByteArrayInputStream bs = new ByteArrayInputStream(byteData);
@@ -210,7 +204,7 @@ public class RESTHelper {
             throws Exception {
         HttpPost post = new HttpPost(uri);
         if (data instanceof String) {
-            post.setEntity(new StringEntity((String) data, contentType, "UTF-8"));
+            post.setEntity(new StringEntity((String) data, "UTF-8"));
         } else if (data instanceof byte[]) {
             byte[] byteData = (byte[]) data;
             ByteArrayInputStream bs = new ByteArrayInputStream(byteData);
