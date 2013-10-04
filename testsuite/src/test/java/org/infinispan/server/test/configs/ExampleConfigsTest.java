@@ -25,6 +25,7 @@ import java.net.Inet6Address;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.ObjectName;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpResponse;
@@ -41,6 +42,7 @@ import org.infinispan.arquillian.core.RESTEndpoint;
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
 import org.infinispan.arquillian.core.RemoteInfinispanServers;
 import org.infinispan.arquillian.core.WithRunningServer;
+import org.infinispan.arquillian.utils.MBeanServerConnectionProvider;
 import org.infinispan.client.hotrod.Flag;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
@@ -78,7 +80,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for example configurations.
- * 
+ *
  * @author Jakub Markos (jmarkos@redhat.com)
  * @author Galder Zamarreño (galderz@redhat.com)
  * @author Michal Linhard (mlinhard@redhat.com)
@@ -119,7 +121,7 @@ public class ExampleConfigsTest {
 
     /**
      * Create a 2 node cluster and check that state transfer does not take place.
-     * 
+     *
      */
     @Test
     public void testClusterCacheLoaderConfigExample() throws Exception {
@@ -150,6 +152,74 @@ public class ExampleConfigsTest {
             }
             if (controller.isStarted("clustered-ccl-2")) {
                 controller.stop("clustered-ccl-2");
+            }
+        }
+    }
+
+    @Test
+    public void testHotRodRollingUpgrades() throws Exception {
+        // target node
+        final int managementPortServer1 = 9999;
+        MBeanServerConnectionProvider provider1;
+        // Source node
+        final int managementPortServer2 = 10099;
+        MBeanServerConnectionProvider provider2;
+
+        controller.start("hotrod-rolling-upgrade-2");
+        try {
+            RemoteInfinispanMBeans s2 = createRemotes("hotrod-rolling-upgrade-2", "default", DEFAULT_CACHE_NAME);
+            final RemoteCache<Object, Object> c2 = createCache(s2);
+
+            c2.put("key1", "value1");
+            assertEquals("value1", c2.get("key1"));
+
+            for (int i=0; i<50; i++) {
+                c2.put("keyLoad" + i, "valueLoad" + i);
+            }
+
+            controller.start("hotrod-rolling-upgrade-1");
+
+            RemoteInfinispanMBeans s1 = createRemotes("hotrod-rolling-upgrade-1", "local", DEFAULT_CACHE_NAME);
+            final RemoteCache<Object, Object> c1 = createCache(s1);
+
+            assertEquals("Can't access etries stored in source node (target's RemoteCacheStore).",
+                    "value1", c1.get("key1"));
+
+            provider1 = new MBeanServerConnectionProvider(s1.server.getHotrodEndpoint().getInetAddress().getHostName(), managementPortServer1);
+            provider2 = new MBeanServerConnectionProvider(s2.server.getHotrodEndpoint().getInetAddress().getHostName(), managementPortServer2);
+
+            final ObjectName rollMan = new ObjectName("jboss.infinispan:type=Cache," +
+                    "name=\"default(local)\"," +
+                    "manager=\"local\"," +
+                    "component=RollingUpgradeManager");
+
+            invokeOperation(provider2, rollMan.toString(), "recordKnownGlobalKeyset", new Object[]{}, new String[]{});
+
+            invokeOperation(provider1, rollMan.toString(), "synchronizeData",
+                    new Object[]{"hotrod"},
+                    new String[]{"java.lang.String"});
+
+            invokeOperation(provider1, rollMan.toString(), "disconnectSource",
+                    new Object[]{"hotrod"},
+                    new String[]{"java.lang.String"});
+
+            // is source (RemoteCacheStore) really disconnected?
+            c2.put("disconnected", "source");
+            assertEquals("Can't obtain value from cache1 (source node).", "source", c2.get("disconnected"));
+            assertNull("Source node entries should NOT be accessible from target node (after RCS disconnection)",
+                    c1.get("disconnected"));
+
+            // all entries migrated?
+            assertEquals("Entry was not successfully migrated.", "value1", c1.get("key1"));
+            for (int i=0; i<50; i++) {
+                assertEquals("Entry was not successfully migrated.", "valueLoad" + i, c1.get("keyLoad" + i));
+            }
+        } finally {
+            if (controller.isStarted("hotrod-rolling-upgrade-1")) {
+                controller.stop("hotrod-rolling-upgrade-1");
+            }
+            if (controller.isStarted("hotrod-rolling-upgrade-2")) {
+                controller.stop("hotrod-rolling-upgrade-2");
             }
         }
     }
@@ -640,4 +710,8 @@ public class ExampleConfigsTest {
         return RemoteInfinispanMBeans.create(serverManager, serverName, cacheName, managerName);
     }
 
+    private Object invokeOperation(MBeanServerConnectionProvider provider, String mbean, String operationName, Object[] params,
+                                   String[] signature) throws Exception {
+        return provider.getConnection().invoke(new ObjectName(mbean), operationName, params, signature);
+    }
 }
