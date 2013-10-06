@@ -99,10 +99,6 @@
         </dependency>
         <dependency>
             <groupId>org.infinispan.protostream</groupId>
-            <artifactId>sample-domain-definition</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.infinispan.protostream</groupId>
             <artifactId>sample-domain-implementation</artifactId>
         </dependency>
         <dependency>

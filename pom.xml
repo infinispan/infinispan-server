@@ -45,7 +45,7 @@
                <name>!no.tests</name>
             </property>
          </activation>
-            <modules>
+         <modules>
             <module>versions</module>
             <module>jgroups</module>
             <module>infinispan</module>
