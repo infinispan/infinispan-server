@@ -844,7 +844,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
       }
       ModelNode readOnly = store.get(ModelKeys.READ_ONLY);
       if (readOnly != null && readOnly.isDefined()) {
-         storeConfigurationBuilder.ignoreModifications(singleton.asBoolean());
+         storeConfigurationBuilder.ignoreModifications(readOnly.asBoolean());
       }
       final boolean async = store.hasDefined(ModelKeys.WRITE_BEHIND) && store.get(ModelKeys.WRITE_BEHIND, ModelKeys.WRITE_BEHIND_NAME).isDefined();
       if (async) {
