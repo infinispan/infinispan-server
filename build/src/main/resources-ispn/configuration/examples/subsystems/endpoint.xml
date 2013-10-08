@@ -23,6 +23,9 @@
       <replacement placeholder="@@default-cache-container@@" attributeValue="local"/>
       <replacement placeholder="CONNECTORS">
          <rest-connector virtual-server="default-host" cache-container="local"/>
+         <hotrod-connector socket-binding="hotrod" cache-container="local">
+            <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000" />
+         </hotrod-connector>
       </replacement>
    </supplement>
    <supplement name="hotrod-ssl">
@@ -52,7 +55,7 @@
             <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000" />
          </hotrod-connector>
          <memcached-connector socket-binding="memcached" cache-container="local" cache="default" />
-         <rest-connector virtual-server="default-host" cache-container="local" security-domain="other" auth-method="BASIC" />
+         <rest-connector virtual-server="default-host" cache-container="local" />
       </replacement>
    </supplement>
    <socket-binding name="hotrod" port="11222" />

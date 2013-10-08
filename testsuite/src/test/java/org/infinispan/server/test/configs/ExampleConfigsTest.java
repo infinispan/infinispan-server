@@ -18,16 +18,6 @@
  */
 package org.infinispan.server.test.configs;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.ObjectInputStream;
-import java.net.Inet6Address;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.management.ObjectName;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -62,21 +52,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.infinispan.server.test.client.rest.RESTHelper.KEY_A;
-import static org.infinispan.server.test.client.rest.RESTHelper.KEY_B;
-import static org.infinispan.server.test.client.rest.RESTHelper.KEY_C;
-import static org.infinispan.server.test.client.rest.RESTHelper.delete;
-import static org.infinispan.server.test.client.rest.RESTHelper.fullPathKey;
-import static org.infinispan.server.test.client.rest.RESTHelper.get;
-import static org.infinispan.server.test.client.rest.RESTHelper.head;
-import static org.infinispan.server.test.client.rest.RESTHelper.post;
-import static org.infinispan.server.test.client.rest.RESTHelper.put;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import javax.management.ObjectName;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.ObjectInputStream;
+import java.net.Inet6Address;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.infinispan.server.test.client.rest.RESTHelper.*;
+import static org.junit.Assert.*;
 
 /**
  * Tests for example configurations.
@@ -220,6 +206,74 @@ public class ExampleConfigsTest {
             }
             if (controller.isStarted("hotrod-rolling-upgrade-2")) {
                 controller.stop("hotrod-rolling-upgrade-2");
+            }
+        }
+    }
+
+    @Test
+    public void testRestRollingUpgrades() throws Exception {
+        // target node
+        final int managementPortServer1 = 9999;
+        MBeanServerConnectionProvider provider1;
+        // Source node
+        final int managementPortServer2 = 10099;
+        MBeanServerConnectionProvider provider2;
+
+        controller.start("rest-rolling-upgrade-2");
+        try {
+            RemoteInfinispanMBeans s2 = createRemotes("rest-rolling-upgrade-2", "local", DEFAULT_CACHE_NAME);
+            final RemoteCache<Object, Object> c2 = createCache(s2);
+
+            c2.put("key1", "value1");
+            assertEquals("value1", c2.get("key1"));
+
+            for (int i=0; i<50; i++) {
+                c2.put("keyLoad" + i, "valueLoad" + i);
+            }
+
+            controller.start("rest-rolling-upgrade-1");
+
+            RemoteInfinispanMBeans s1 = createRemotes("rest-rolling-upgrade-1", "local", DEFAULT_CACHE_NAME);
+            final RemoteCache<Object, Object> c1 = createCache(s1);
+
+            assertEquals("Can't access etries stored in source node (target's RestCacheStore).",
+                    "value1", c1.get("key1"));
+
+            provider1 = new MBeanServerConnectionProvider(s1.server.getRESTEndpoint().getInetAddress().getHostName(), managementPortServer1);
+            provider2 = new MBeanServerConnectionProvider(s2.server.getRESTEndpoint().getInetAddress().getHostName(), managementPortServer2);
+
+            final ObjectName rollMan = new ObjectName("jboss.infinispan:type=Cache," +
+                    "name=\"default(local)\"," +
+                    "manager=\"local\"," +
+                    "component=RollingUpgradeManager");
+
+            invokeOperation(provider2, rollMan.toString(), "recordKnownGlobalKeyset", new Object[]{}, new String[]{});
+
+            invokeOperation(provider1, rollMan.toString(), "synchronizeData",
+                    new Object[]{"rest"},
+                    new String[]{"java.lang.String"});
+
+            invokeOperation(provider1, rollMan.toString(), "disconnectSource",
+                    new Object[]{"rest"},
+                    new String[]{"java.lang.String"});
+
+            // is source (RemoteCacheStore) really disconnected?
+            c2.put("disconnected", "source");
+            assertEquals("Can't obtain value from cache1 (source node).", "source", c2.get("disconnected"));
+            assertNull("Source node entries should NOT be accessible from target node (after RCS disconnection)",
+                    c1.get("disconnected"));
+
+            // all entries migrated?
+            assertEquals("Entry was not successfully migrated.", "value1", c1.get("key1"));
+            for (int i=0; i<50; i++) {
+                assertEquals("Entry was not successfully migrated.", "valueLoad" + i, c1.get("keyLoad" + i));
+            }
+        } finally {
+            if (controller.isStarted("rest-rolling-upgrade-1")) {
+                controller.stop("rest-rolling-upgrade-1");
+            }
+            if (controller.isStarted("rest-rolling-upgrade-2")) {
+                controller.stop("rest-rolling-upgrade-2");
             }
         }
     }
