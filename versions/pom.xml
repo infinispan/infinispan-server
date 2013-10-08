@@ -23,6 +23,7 @@
       <product.name>infinispan-server</product.name>
 
       <!-- Version Info -->
+      <version.ant-contrib>1.0b3</version.ant-contrib>
       <version.com.github.relaxng.relaxngDatatype>2011.1</version.com.github.relaxng.relaxngDatatype>
       <version.commons.logging>1.1.1</version.commons.logging>
       <version.net.jcip.annotations>1.0</version.net.jcip.annotations>
@@ -32,6 +33,7 @@
       <version.junit>4.11</version.junit>
       <version.org.infinispan>${project.version}</version.org.infinispan>
       <version.org.infinispan.arquillian.container>1.1.0.Alpha1</version.org.infinispan.arquillian.container>
+      <version.org.iq80.leveldb>0.6</version.org.iq80.leveldb>
       <version.org.slf4j>1.7.2</version.org.slf4j>
       <version.org.xerial.snappy>1.0.5</version.org.xerial.snappy>
       <version.xml.maven.plugin>1.0</version.xml.maven.plugin>
@@ -334,7 +336,19 @@
              <version>${version.org.infinispan}</version>
              <scope>test</scope>
          </dependency>
-         
+
+         <dependency>
+            <groupId>org.iq80.leveldb</groupId>
+            <artifactId>leveldb</artifactId>
+            <version>${version.org.iq80.leveldb}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+            <version>${version.ant-contrib}</version>
+            <scope>test</scope>
+         </dependency>
       </dependencies>
 
    </dependencyManagement>

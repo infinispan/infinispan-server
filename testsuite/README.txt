@@ -11,9 +11,16 @@ Currently these subsets are predefined:
   -P suite.client                    (Client tests, all local/dist/repl cachemode)
   -P suite.client.{local|dist|repl}  (Client tests, only {local|dist|repl} cachemode)
   -P suite.examples                  (Example config tests)
+  -P suite.leveldb                   (LevelDB cache store tests - the whole suite.client with leveldb configs + additional custom tests)
 
   -P suite.others                    (Tests that do not belong to any of the suites above. Useful when running a single test that's outside
                                       of any pre-defined group)
+
+Runnins with specific server zip distribution
+---------------------------------------------
+
+If you specify -Dzip.dist=path/to/distro.zip the test server directories target/server/node* will be based on the contents of this zip file.
+
 
 Running specific test 
 ---------------------
@@ -52,3 +59,12 @@ The server logs will be stored in the standard location of the test distribution
   target/server/node3/standalone/log/server.log
 
 Setting of the server side loglevels comming soon (see https://issues.jboss.org/browse/JBQA-8381)
+
+LevelDB specifics
+-----------------
+properties:
+
+  leveldb.compression - sets compression type, allowed values: SNAPPY, NONE
+  leveldb.impl        - sets implementation type, allowed values: AUTO, JAVA, JNI
+  leveldb.patch       - used with -Dzip.dist. Patches the zip distribution with dependencies of leveldb cache store taken from upstream build.
+  
