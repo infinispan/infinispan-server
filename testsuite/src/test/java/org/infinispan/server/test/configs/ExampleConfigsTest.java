@@ -43,6 +43,7 @@ import org.infinispan.server.test.client.rest.RESTHelper;
 import org.infinispan.server.test.util.RemoteCacheManagerFactory;
 import org.infinispan.server.test.util.RemoteInfinispanMBeans;
 import org.infinispan.server.test.util.TestUtil;
+import org.infinispan.server.test.util.TestUtil.Condition;
 import org.jboss.arquillian.container.test.api.ContainerController;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -62,6 +63,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.infinispan.server.test.client.rest.RESTHelper.*;
+import static org.infinispan.server.test.util.TestUtil.eventually;
 import static org.junit.Assert.*;
 
 /**
@@ -82,10 +84,6 @@ public class ExampleConfigsTest {
     static final String DEFAULT_CACHE_NAME = "default";
     static final String NAMED_CACHE_NAME = "namedCache";
     static final String MEMCACHED_CACHE_NAME = "memcachedCache";
-    static final String SERVER_DATA_DIR = System.getProperty("server1.dist") + File.separator + "standalone" + File.separator
-        + "data";
-    static final String SERVER_CONFIG_DIR = System.getProperty("server1.dist") + File.separator + "standalone" + File.separator
-        + "configuration";
 
     @ArquillianResource
     ContainerController controller;
@@ -107,7 +105,7 @@ public class ExampleConfigsTest {
 
     /**
      * Create a 2 node cluster and check that state transfer does not take place.
-     *
+     * 
      */
     @Test
     public void testClusterCacheLoaderConfigExample() throws Exception {
@@ -159,7 +157,7 @@ public class ExampleConfigsTest {
             c2.put("key1", "value1");
             assertEquals("value1", c2.get("key1"));
 
-            for (int i=0; i<50; i++) {
+            for (int i = 0; i < 50; i++) {
                 c2.put("keyLoad" + i, "valueLoad" + i);
             }
 
@@ -168,36 +166,33 @@ public class ExampleConfigsTest {
             RemoteInfinispanMBeans s1 = createRemotes("hotrod-rolling-upgrade-1", "local", DEFAULT_CACHE_NAME);
             final RemoteCache<Object, Object> c1 = createCache(s1);
 
-            assertEquals("Can't access etries stored in source node (target's RemoteCacheStore).",
-                    "value1", c1.get("key1"));
+            assertEquals("Can't access etries stored in source node (target's RemoteCacheStore).", "value1", c1.get("key1"));
 
-            provider1 = new MBeanServerConnectionProvider(s1.server.getHotrodEndpoint().getInetAddress().getHostName(), managementPortServer1);
-            provider2 = new MBeanServerConnectionProvider(s2.server.getHotrodEndpoint().getInetAddress().getHostName(), managementPortServer2);
+            provider1 = new MBeanServerConnectionProvider(s1.server.getHotrodEndpoint().getInetAddress().getHostName(),
+                managementPortServer1);
+            provider2 = new MBeanServerConnectionProvider(s2.server.getHotrodEndpoint().getInetAddress().getHostName(),
+                managementPortServer2);
 
-            final ObjectName rollMan = new ObjectName("jboss.infinispan:type=Cache," +
-                    "name=\"default(local)\"," +
-                    "manager=\"local\"," +
-                    "component=RollingUpgradeManager");
+            final ObjectName rollMan = new ObjectName("jboss.infinispan:type=Cache," + "name=\"default(local)\","
+                + "manager=\"local\"," + "component=RollingUpgradeManager");
 
-            invokeOperation(provider2, rollMan.toString(), "recordKnownGlobalKeyset", new Object[]{}, new String[]{});
+            invokeOperation(provider2, rollMan.toString(), "recordKnownGlobalKeyset", new Object[] {}, new String[] {});
 
-            invokeOperation(provider1, rollMan.toString(), "synchronizeData",
-                    new Object[]{"hotrod"},
-                    new String[]{"java.lang.String"});
+            invokeOperation(provider1, rollMan.toString(), "synchronizeData", new Object[] { "hotrod" },
+                new String[] { "java.lang.String" });
 
-            invokeOperation(provider1, rollMan.toString(), "disconnectSource",
-                    new Object[]{"hotrod"},
-                    new String[]{"java.lang.String"});
+            invokeOperation(provider1, rollMan.toString(), "disconnectSource", new Object[] { "hotrod" },
+                new String[] { "java.lang.String" });
 
             // is source (RemoteCacheStore) really disconnected?
             c2.put("disconnected", "source");
             assertEquals("Can't obtain value from cache1 (source node).", "source", c2.get("disconnected"));
             assertNull("Source node entries should NOT be accessible from target node (after RCS disconnection)",
-                    c1.get("disconnected"));
+                c1.get("disconnected"));
 
             // all entries migrated?
             assertEquals("Entry was not successfully migrated.", "value1", c1.get("key1"));
-            for (int i=0; i<50; i++) {
+            for (int i = 0; i < 50; i++) {
                 assertEquals("Entry was not successfully migrated.", "valueLoad" + i, c1.get("keyLoad" + i));
             }
         } finally {
@@ -227,7 +222,7 @@ public class ExampleConfigsTest {
             c2.put("key1", "value1");
             assertEquals("value1", c2.get("key1"));
 
-            for (int i=0; i<50; i++) {
+            for (int i = 0; i < 50; i++) {
                 c2.put("keyLoad" + i, "valueLoad" + i);
             }
 
@@ -236,36 +231,33 @@ public class ExampleConfigsTest {
             RemoteInfinispanMBeans s1 = createRemotes("rest-rolling-upgrade-1", "local", DEFAULT_CACHE_NAME);
             final RemoteCache<Object, Object> c1 = createCache(s1);
 
-            assertEquals("Can't access etries stored in source node (target's RestCacheStore).",
-                    "value1", c1.get("key1"));
+            assertEquals("Can't access etries stored in source node (target's RestCacheStore).", "value1", c1.get("key1"));
 
-            provider1 = new MBeanServerConnectionProvider(s1.server.getRESTEndpoint().getInetAddress().getHostName(), managementPortServer1);
-            provider2 = new MBeanServerConnectionProvider(s2.server.getRESTEndpoint().getInetAddress().getHostName(), managementPortServer2);
+            provider1 = new MBeanServerConnectionProvider(s1.server.getRESTEndpoint().getInetAddress().getHostName(),
+                managementPortServer1);
+            provider2 = new MBeanServerConnectionProvider(s2.server.getRESTEndpoint().getInetAddress().getHostName(),
+                managementPortServer2);
 
-            final ObjectName rollMan = new ObjectName("jboss.infinispan:type=Cache," +
-                    "name=\"default(local)\"," +
-                    "manager=\"local\"," +
-                    "component=RollingUpgradeManager");
+            final ObjectName rollMan = new ObjectName("jboss.infinispan:type=Cache," + "name=\"default(local)\","
+                + "manager=\"local\"," + "component=RollingUpgradeManager");
 
-            invokeOperation(provider2, rollMan.toString(), "recordKnownGlobalKeyset", new Object[]{}, new String[]{});
+            invokeOperation(provider2, rollMan.toString(), "recordKnownGlobalKeyset", new Object[] {}, new String[] {});
 
-            invokeOperation(provider1, rollMan.toString(), "synchronizeData",
-                    new Object[]{"rest"},
-                    new String[]{"java.lang.String"});
+            invokeOperation(provider1, rollMan.toString(), "synchronizeData", new Object[] { "rest" },
+                new String[] { "java.lang.String" });
 
-            invokeOperation(provider1, rollMan.toString(), "disconnectSource",
-                    new Object[]{"rest"},
-                    new String[]{"java.lang.String"});
+            invokeOperation(provider1, rollMan.toString(), "disconnectSource", new Object[] { "rest" },
+                new String[] { "java.lang.String" });
 
             // is source (RemoteCacheStore) really disconnected?
             c2.put("disconnected", "source");
             assertEquals("Can't obtain value from cache1 (source node).", "source", c2.get("disconnected"));
             assertNull("Source node entries should NOT be accessible from target node (after RCS disconnection)",
-                    c1.get("disconnected"));
+                c1.get("disconnected"));
 
             // all entries migrated?
             assertEquals("Entry was not successfully migrated.", "value1", c1.get("key1"));
-            for (int i=0; i<50; i++) {
+            for (int i = 0; i < 50; i++) {
                 assertEquals("Entry was not successfully migrated.", "valueLoad" + i, c1.get("keyLoad" + i));
             }
         } finally {
@@ -302,7 +294,6 @@ public class ExampleConfigsTest {
             HttpResponse getResponse = restClient.execute(get);
             assertEquals(HttpServletResponse.SC_OK, getResponse.getStatusLine().getStatusCode());
             assertArrayEquals("v1".getBytes(), EntityUtils.toByteArray(getResponse.getEntity()));
-
 
             // 3. Get with Memcached
             assertArrayEquals("v1".getBytes(), readWithMemcachedAndDeserialize(key, memcachedClient));
@@ -373,12 +364,10 @@ public class ExampleConfigsTest {
     @WithRunningServer("standalone-hotrod-multiple")
     public void testHotrodMultipleConfig() throws Exception {
         RemoteInfinispanMBeans s = createRemotes("standalone-hotrod-multiple", "local", DEFAULT_CACHE_NAME);
-        RemoteCache<Object, Object> c1 = createCache(s,TestUtil.createConfigBuilder(
-                                             s.server.getHotrodEndpoint("external").getInetAddress().getHostName(),
-                                             s.server.getHotrodEndpoint("external").getPort()));
-        RemoteCache<Object, Object> c2 = createCache(s,TestUtil.createConfigBuilder(
-                                             s.server.getHotrodEndpoint("internal").getInetAddress().getHostName(),
-                                             s.server.getHotrodEndpoint("internal").getPort()));
+        RemoteCache<Object, Object> c1 = createCache(s, TestUtil.createConfigBuilder(s.server.getHotrodEndpoint("external")
+            .getInetAddress().getHostName(), s.server.getHotrodEndpoint("external").getPort()));
+        RemoteCache<Object, Object> c2 = createCache(s, TestUtil.createConfigBuilder(s.server.getHotrodEndpoint("internal")
+            .getInetAddress().getHostName(), s.server.getHotrodEndpoint("internal").getPort()));
         assertEquals(0, s.cache.getNumberOfEntries());
         for (int i = 0; i < 10; i++) {
             c1.put("k" + i, "v" + i);
@@ -632,39 +621,11 @@ public class ExampleConfigsTest {
         RemoteInfinispanServer server) {
         ConfigurationBuilder builder = TestUtil.createConfigBuilder(server.getHotrodEndpoint().getInetAddress().getHostName(),
             server.getHotrodEndpoint().getPort());
-        builder.ssl().enable().keyStoreFileName(SERVER_CONFIG_DIR + File.separator + keystoreName)
-            .keyStorePassword("secret".toCharArray()).trustStoreFileName(SERVER_CONFIG_DIR + File.separator + truststoreName)
+        builder.ssl().enable().keyStoreFileName(TestUtil.SERVER_CONFIG_DIR + File.separator + keystoreName)
+            .keyStorePassword("secret".toCharArray())
+            .trustStoreFileName(TestUtil.SERVER_CONFIG_DIR + File.separator + truststoreName)
             .trustStorePassword("secret".toCharArray());
         return builder;
-    }
-
-    protected interface Condition {
-        public boolean isSatisfied() throws Exception;
-    }
-
-    protected void eventually(Condition ec, long timeout) {
-        eventually(ec, timeout, 10);
-    }
-
-    protected void eventually(Condition ec, long timeout, int loops) {
-        if (loops <= 0) {
-            throw new IllegalArgumentException("Number of loops must be positive");
-        }
-        long sleepDuration = timeout / loops;
-        if (sleepDuration == 0) {
-            sleepDuration = 1;
-        }
-        try {
-            for (int i = 0; i < loops; i++) {
-
-                if (ec.isSatisfied())
-                    return;
-                Thread.sleep(sleepDuration);
-            }
-            assertTrue(ec.isSatisfied());
-        } catch (Exception e) {
-            throw new RuntimeException("Unexpected!", e);
-        }
     }
 
     private void doPutGetRemove(final RemoteInfinispanMBeans sMain, final RemoteInfinispanMBeans sRemoteStore) {
@@ -735,7 +696,7 @@ public class ExampleConfigsTest {
                 assertNull(sCache.get("k" + i));
             }
         }
-        File f = new File(SERVER_DATA_DIR, filePath);
+        File f = new File(TestUtil.SERVER_DATA_DIR, filePath);
         assertTrue(f.isDirectory());
     }
 
@@ -765,7 +726,7 @@ public class ExampleConfigsTest {
     }
 
     private Object invokeOperation(MBeanServerConnectionProvider provider, String mbean, String operationName, Object[] params,
-                                   String[] signature) throws Exception {
+        String[] signature) throws Exception {
         return provider.getConnection().invoke(new ObjectName(mbean), operationName, params, signature);
     }
 }

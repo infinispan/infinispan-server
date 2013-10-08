@@ -1,5 +1,9 @@
 package org.infinispan.server.test.util;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
@@ -11,6 +15,11 @@ import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
  * 
  */
 public class TestUtil {
+    public static final String SERVER_DATA_DIR = System.getProperty("server1.dist") + File.separator + "standalone"
+        + File.separator + "data";
+    public static final String SERVER_CONFIG_DIR = System.getProperty("server1.dist") + File.separator + "standalone"
+        + File.separator + "configuration";
+
     /**
      * Create {@link RemoteCacheManager} for given server.
      * 
@@ -37,6 +46,35 @@ public class TestUtil {
      */
     public static RemoteCacheManager createCacheManager(RemoteInfinispanMBeans serverBeans) {
         return createCacheManager(serverBeans.server);
+    }
+
+    public interface Condition {
+        public boolean isSatisfied() throws Exception;
+    }
+
+    public static void eventually(Condition ec, long timeout) {
+        eventually(ec, timeout, 10);
+    }
+
+    public static void eventually(Condition ec, long timeout, int loops) {
+        if (loops <= 0) {
+            throw new IllegalArgumentException("Number of loops must be positive");
+        }
+        long sleepDuration = timeout / loops;
+        if (sleepDuration == 0) {
+            sleepDuration = 1;
+        }
+        try {
+            for (int i = 0; i < loops; i++) {
+
+                if (ec.isSatisfied())
+                    return;
+                Thread.sleep(sleepDuration);
+            }
+            assertTrue(ec.isSatisfied());
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected!", e);
+        }
     }
 
 }

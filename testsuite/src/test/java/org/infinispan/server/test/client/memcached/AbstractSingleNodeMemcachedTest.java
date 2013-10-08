@@ -1,5 +1,12 @@
 package org.infinispan.server.test.client.memcached;
 
+import static org.infinispan.server.test.util.TestUtil.eventually;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -8,15 +15,10 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
+import org.infinispan.server.test.util.TestUtil.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for Memcached endpoint. Subclasses must provide a way to get the list of remote
@@ -836,16 +838,18 @@ public abstract class AbstractSingleNodeMemcachedTest {
         assertEquals("valA", mc.get(KEY_A));
         assertEquals("valB", mc.get(KEY_B));
         assertEquals("valC", mc.get(KEY_C));
-        mc.writeln("flush_all 2");
+        mc.writeln("flush_all 1");
         mc.flush();
         assertEquals("OK", mc.readln());
         assertEquals("valA", mc.get(KEY_A));
         assertEquals("valB", mc.get(KEY_B));
         assertEquals("valC", mc.get(KEY_C));
-        Thread.sleep(3000);
-        assertNull(mc.get(KEY_A));
-        assertNull(mc.get(KEY_B));
-        assertNull(mc.get(KEY_C));
+        eventually(new Condition() {
+            @Override
+            public boolean isSatisfied() throws Exception {
+                return mc.get(KEY_A) == null && mc.get(KEY_B) == null && mc.get(KEY_C) == null;
+            }
+        }, 20000, 40);
     }
 
     @Test
@@ -864,10 +868,12 @@ public abstract class AbstractSingleNodeMemcachedTest {
         assertEquals("valA", mc.get(KEY_A));
         assertEquals("valB", mc.get(KEY_B));
         assertEquals("valC", mc.get(KEY_C));
-        Thread.sleep(2100);
-        assertNull(mc.get(KEY_A));
-        assertNull(mc.get(KEY_B));
-        assertNull(mc.get(KEY_C));
+        eventually(new Condition() {
+            @Override
+            public boolean isSatisfied() throws Exception {
+                return mc.get(KEY_A) == null && mc.get(KEY_B) == null && mc.get(KEY_C) == null;
+            }
+        }, 20000, 40);
     }
 
     @Test
@@ -1046,8 +1052,12 @@ public abstract class AbstractSingleNodeMemcachedTest {
         assertEquals("END", mc.readln());
         mc.set(KEY_A, "thisWillBeFlushed");
         assertEquals("thisWillBeFlushed", mc.get(KEY_A));
-        Thread.sleep(1100);
-        assertNull(mc.get(KEY_A));
+        eventually(new Condition() {
+            @Override
+            public boolean isSatisfied() throws Exception {
+                return mc.get(KEY_A) == null;
+            }
+        }, 20000, 40);
     }
 
     @Test
@@ -1163,8 +1173,12 @@ public abstract class AbstractSingleNodeMemcachedTest {
         assertEquals("END", mc.readln());
         mc.set(KEY_A, "thisWillBeFlushed");
         assertEquals("thisWillBeFlushed", mc.get(KEY_A));
-        Thread.sleep(1100);
-        assertNull(mc.get(KEY_A));
+        eventually(new Condition() {
+            @Override
+            public boolean isSatisfied() throws Exception {
+                return mc.get(KEY_A) == null;
+            }
+        }, 20000, 40);
     }
 
     private void assertStartsWith(String str, String prefix) {
