@@ -823,7 +823,7 @@ public abstract class CacheAdd extends AbstractAddStepHandler {
       }
       ModelNode preload = store.get(ModelKeys.PRELOAD);
       if (preload != null && preload.isDefined()) {
-         storeConfigurationBuilder.shared(preload.asBoolean());
+         storeConfigurationBuilder.preload(preload.asBoolean());
       }
       ModelNode fetchState = store.get(ModelKeys.FETCH_STATE);
       if (fetchState != null && fetchState.isDefined()) {
