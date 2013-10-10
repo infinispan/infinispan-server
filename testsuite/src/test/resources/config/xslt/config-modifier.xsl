@@ -16,21 +16,21 @@
     <xsl:param name="removeRestSecurity">true</xsl:param>
     <xsl:param name="infinispanServerEndpoint">false</xsl:param>
     <xsl:param name="infinispanFile">none</xsl:param>
+    <xsl:param name="addAuth">false</xsl:param>
+    <xsl:param name="addEncrypt">false</xsl:param>
     <xsl:param name="log.level.infinispan">INFO</xsl:param>
     <xsl:param name="log.level.jgroups">INFO</xsl:param>
     <xsl:param name="log.level.console">INFO</xsl:param>
 
+    <xsl:template match="node()|@*" name="copynode">
+        <xsl:copy>
+            <xsl:apply-templates select="node()|@*"/>
+        </xsl:copy>
+    </xsl:template>
+
     <xsl:template match="core:subsystem">
         <xsl:if test="$modifyInfinispan = 'false'">
-            <xsl:copy>
-                <!-- also copy all subsystem attributes -->
-                <xsl:for-each select="@*">
-                    <xsl:attribute name="{name(.)}">
-                        <xsl:value-of select="."/>
-                    </xsl:attribute>
-                </xsl:for-each>
-                <xsl:apply-templates/>
-            </xsl:copy>
+            <xsl:call-template name="copynode"/>
         </xsl:if>
         <xsl:if test="$modifyInfinispan != 'false'">
             <xsl:copy-of select="document($modifyInfinispan)"/>
@@ -115,32 +115,36 @@
 
     <xsl:template match="jgroups:relay">
         <xsl:if test="$modifyRelay = 'false'">
-            <xsl:copy>
-                <!-- also copy all relay attributes -->
-                <xsl:for-each select="@*">
-                    <xsl:attribute name="{name(.)}">
-                        <xsl:value-of select="."/>
-                    </xsl:attribute>
-                </xsl:for-each>
-                <xsl:apply-templates/>
-            </xsl:copy>
+            <xsl:call-template name="copynode"/>
         </xsl:if>
         <xsl:if test="$modifyRelay != 'false'">
             <xsl:copy-of select="document($modifyRelay)"/>
         </xsl:if>
     </xsl:template>
 
+    <xsl:template match="jgroups:protocol[contains(@type,'GMS')]">
+        <xsl:if test="$addAuth = 'false'">
+            <xsl:call-template name="copynode"/>
+        </xsl:if>
+        <xsl:if test="$addAuth != 'false'">
+            <xsl:copy-of select="document($addAuth)"/>
+            <xsl:call-template name="copynode"/>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template match="jgroups:protocol[contains(@type,'STABLE')]">
+        <xsl:if test="$addEncrypt = 'false'">
+            <xsl:call-template name="copynode"/>
+        </xsl:if>
+        <xsl:if test="$addEncrypt != 'false'">
+            <xsl:copy-of select="document($addEncrypt)"/>
+            <xsl:call-template name="copynode"/>
+        </xsl:if>
+    </xsl:template>
+
     <xsl:template match="p:socket-binding[@name='jgroups-udp']">
         <xsl:if test="$modifyMulticastAddress = 'false'">
-            <xsl:copy>
-                <!-- also copy all attributes -->
-                <xsl:for-each select="@*">
-                    <xsl:attribute name="{name(.)}">
-                        <xsl:value-of select="."/>
-                    </xsl:attribute>
-                </xsl:for-each>
-                <xsl:apply-templates/>
-            </xsl:copy>
+            <xsl:call-template name="copynode"/>
         </xsl:if>
         <xsl:if test="$modifyMulticastAddress != 'false'">
             <xsl:copy-of select="document($modifyMulticastAddress)"/>
@@ -149,15 +153,7 @@
 
     <xsl:template match="p:remote-destination[@host='remote-host']">
         <xsl:if test="$modifyRemoteDestination = 'false'">
-            <xsl:copy>
-                <!-- also copy all attributes -->
-                <xsl:for-each select="@*">
-                    <xsl:attribute name="{name(.)}">
-                        <xsl:value-of select="."/>
-                    </xsl:attribute>
-                </xsl:for-each>
-                <xsl:apply-templates/>
-            </xsl:copy>
+            <xsl:call-template name="copynode"/>
         </xsl:if>
         <xsl:if test="$modifyRemoteDestination != 'false'">
             <xsl:copy-of select="document($modifyRemoteDestination)"/>
@@ -168,15 +164,7 @@
     <!--<xsl:template match="p:remote-destination[@host='remote-host']">-->
     <xsl:template match="p:outbound-socket-binding[@name='remote-store-hotrod-server']">
         <xsl:if test="$modifyOutboundSocketBindingHotRod = 'false'">
-            <xsl:copy>
-                <!-- also copy all attributes -->
-                <xsl:for-each select="@*">
-                    <xsl:attribute name="{name(.)}">
-                        <xsl:value-of select="."/>
-                    </xsl:attribute>
-                </xsl:for-each>
-                <xsl:apply-templates/>
-            </xsl:copy>
+            <xsl:call-template name="copynode"/>
         </xsl:if>
         <xsl:if test="$modifyOutboundSocketBindingHotRod != 'false'">
             <xsl:copy-of select="document($modifyOutboundSocketBindingHotRod)"/>
@@ -185,15 +173,7 @@
 
     <xsl:template match="endpoint:subsystem">
         <xsl:if test="$infinispanServerEndpoint = 'false'">
-            <xsl:copy>
-                <!-- also copy all subsystem attributes -->
-                <xsl:for-each select="@*">
-                    <xsl:attribute name="{name(.)}">
-                        <xsl:value-of select="."/>
-                    </xsl:attribute>
-                </xsl:for-each>
-                <xsl:apply-templates/>
-            </xsl:copy>
+            <xsl:call-template name="copynode"/>
         </xsl:if>
         <xsl:if test="$infinispanServerEndpoint != 'false'">
             <xsl:copy-of select="document($infinispanServerEndpoint)"/>
@@ -202,10 +182,7 @@
 
     <xsl:template match="endpoint:subsystem/endpoint:rest-connector">
         <xsl:if test="$removeRestSecurity != 'true'">
-            <xsl:copy>
-                <xsl:copy-of select="@*"/>
-                <xsl:apply-templates/>
-            </xsl:copy>
+            <xsl:call-template name="copynode"/>
         </xsl:if>
         <xsl:if test="$removeRestSecurity = 'true'">
             <xsl:copy>
