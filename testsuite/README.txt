@@ -58,7 +58,21 @@ The server logs will be stored in the standard location of the test distribution
   target/server/node2/standalone/log/server.log
   target/server/node3/standalone/log/server.log
 
-Setting of the server side loglevels comming soon (see https://issues.jboss.org/browse/JBQA-8381)
+Test suite allows generic logging level change via command line parameters.
+Available parameters:
+
+1. -Dlog.level.infinispan=[loggingLevel]
+2. -Dlog.level.jgroups=[loggingLevel]
+3. -Dlog.level.console=[loggingLevel]
+
+What it does:
+1 - sets subsystem/logger[@category='org.infinispan']/level[@name] to [loggingLevel], INFO by default
+2 - sets subsystem/logger[@category='org.jgroups']/level[@name] to [loggingLevel], INFO by default
+3 - sets subsystem/console-handler[@name = 'CONSOLE']/level[@name] to [loggingLevel], INFO by default
+
+When 1) or 2) is set (only one of them), it also changes subsystem/periodic-rotating-file-handler[@name = 'FILE']/level[@name]
+to [loggingLevel], INFO by default. When both 1) and 2) is provided, subsystem/periodic-rotating-file-handler[@name = 'FILE']/level[@name] is set
+to TRACE.
 
 LevelDB specifics
 -----------------

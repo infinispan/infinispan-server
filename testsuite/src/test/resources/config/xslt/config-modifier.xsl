@@ -1,9 +1,11 @@
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:logging="urn:jboss:domain:logging:1.2"
                 xmlns:p="urn:jboss:domain:1.4"
                 xmlns:jgroups="urn:jboss:domain:jgroups:1.2"
                 xmlns:core="urn:infinispan:server:core:5.3"
-                xmlns:endpoint="urn:infinispan:server:endpoint:6.0">
+                xmlns:endpoint="urn:infinispan:server:endpoint:6.0"
+                >
     <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
 
     <!-- Parameter declarations with defaults set -->
@@ -15,6 +17,9 @@
     <xsl:param name="removeRestSecurity">true</xsl:param>
     <xsl:param name="infinispanServerEndpoint">false</xsl:param>
     <xsl:param name="infinispanFile">none</xsl:param>
+    <xsl:param name="log.level.infinispan">INFO</xsl:param>
+    <xsl:param name="log.level.jgroups">INFO</xsl:param>
+    <xsl:param name="log.level.console">INFO</xsl:param>
 
     <xsl:template match="core:subsystem">
         <xsl:if test="$modifyInfinispan = 'false'">
@@ -32,6 +37,93 @@
             <xsl:copy-of select="document($modifyInfinispan)"/>
         </xsl:if>
     </xsl:template>
+
+    <!-- configure subsystem/logger[@category = 'org.infinispan']/level
+    and subsystem/logger[@category = 'org.jgroups']/level -->
+    <xsl:template match="logging:subsystem">
+        <xsl:copy>
+            <xsl:for-each select="@*">
+                <xsl:attribute name="{name(.)}">
+                    <xsl:value-of select="."/>
+                </xsl:attribute>
+            </xsl:for-each>
+
+            <xsl:apply-templates select="*[not(self::logging:logger)]"/>
+
+            <xsl:apply-templates select="*[self::logging:logger]"/>
+
+            <xsl:element name="logging:logger">
+                <xsl:attribute name="category">org.infinispan</xsl:attribute>
+                <xsl:element name="level">
+                    <xsl:attribute name="name">
+                        <xsl:value-of select="$log.level.infinispan"/>
+                    </xsl:attribute>
+                </xsl:element>
+            </xsl:element>
+
+            <xsl:element name="logging:logger" >
+                <xsl:attribute name="category">org.jgroups</xsl:attribute>
+                <xsl:element name="level">
+                    <xsl:attribute name="name">
+                        <xsl:value-of select="$log.level.jgroups"/>
+                    </xsl:attribute>
+                </xsl:element>
+            </xsl:element>
+        </xsl:copy>
+    </xsl:template>
+
+    <!-- configure subsystem/console-handler[@name = 'CONSOLE']/level -->
+    <xsl:template match="logging:subsystem/logging:console-handler[@name = 'CONSOLE']">
+        <xsl:copy>
+            <!-- copy also all attributes -->
+            <xsl:for-each select="@*">
+                <xsl:attribute name="{name(.)}">
+                    <xsl:value-of select="."/>
+                </xsl:attribute>
+            </xsl:for-each>
+
+            <xsl:apply-templates/>
+
+            <xsl:element name="level">
+                <xsl:attribute name="name">
+                    <xsl:value-of select="$log.level.console"/>
+                </xsl:attribute>
+            </xsl:element>
+        </xsl:copy>
+    </xsl:template>
+
+    <!-- configure subsystem/periodic-rotating-file-handler[@name = 'FILE']/level -->
+    <xsl:template match="logging:subsystem/logging:periodic-rotating-file-handler[@name = 'FILE']">
+        <xsl:copy>
+            <!-- copy also all attributes -->
+            <xsl:for-each select="@*">
+                <xsl:attribute name="{name(.)}">
+                    <xsl:value-of select="."/>
+                </xsl:attribute>
+            </xsl:for-each>
+
+            <xsl:apply-templates/>
+
+            <xsl:element name="level">
+                <xsl:attribute name="name">
+                    <xsl:choose>
+                        <xsl:when test="$log.level.infinispan != 'INFO' and $log.level.jgroups = 'INFO'">
+                            <xsl:value-of select="$log.level.infinispan"/>
+                        </xsl:when>
+                        <xsl:when test="$log.level.infinispan = 'INFO' and $log.level.jgroups != 'INFO'">
+                            <xsl:value-of select="$log.level.jgroups"/>
+                        </xsl:when>
+                        <xsl:otherwise>TRACE</xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
+            </xsl:element>
+        </xsl:copy>
+    </xsl:template>
+    <!-- delete existing configurations for these loggers -->
+    <xsl:template match="logging:subsystem/logging:logger[@category = 'org.infinispan']"></xsl:template>
+    <xsl:template match="logging:subsystem/logging:logger[@category = 'org.jgroups']"></xsl:template>
+    <xsl:template match="logging:subsystem/logging:console-handler[@name = 'CONSOLE']/logging:level"></xsl:template>
+    <xsl:template match="logging:subsystem/logging:periodic-rotating-file-handler[@name = 'FILE']/logging:level"></xsl:template>
 
     <xsl:template match="jgroups:relay">
         <xsl:if test="$modifyRelay = 'false'">
@@ -142,5 +234,6 @@
             <xsl:apply-templates/>
         </xsl:copy>
     </xsl:template>
+
 
 </xsl:stylesheet>
