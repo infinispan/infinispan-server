@@ -81,4 +81,13 @@ properties:
   leveldb.compression - sets compression type, allowed values: SNAPPY, NONE
   leveldb.impl        - sets implementation type, allowed values: AUTO, JAVA, JNI
   leveldb.patch       - used with -Dzip.dist. Patches the zip distribution with dependencies of leveldb cache store taken from upstream build.
+
+Runnig test in JDK 6
+--------------------
+
+When want to run testsuite on JDK 6, you have to set following profile
+
+  -P testsuite-jdk6
+
+This profile assumes that environment JAVA_HOME_16 is set properly.
   

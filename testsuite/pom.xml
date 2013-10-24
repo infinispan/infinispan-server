@@ -143,6 +143,7 @@
         <server1.dist>${basedir}/target/server/node1</server1.dist>
         <server2.dist>${basedir}/target/server/node2</server2.dist>
         <server3.dist>${basedir}/target/server/node3</server3.dist>
+        <server.jvm>${env.JAVA_HOME}</server.jvm>
         <resources.dir>${basedir}/src/test/resources</resources.dir>
         <jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m</jvm.memory.args>
         <!--jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</jvm.memory.args-->
@@ -204,6 +205,7 @@
                         <server1.dist>${server1.dist}</server1.dist>
                         <server2.dist>${server2.dist}</server2.dist>
                         <server3.dist>${server3.dist}</server3.dist>
+                        <server.jvm>${server.jvm}</server.jvm>
                         <server.jvm.args>${server.jvm.args}</server.jvm.args>
                         <log4j.configuration>${log4j.configuration}</log4j.configuration>
                         <java.util.logging.config.file>${resources.dir}/jul.properties</java.util.logging.config.file>
@@ -397,6 +399,23 @@
                 <groups.client.local>org.infinispan.server.test.category.MemcachedLocal</groups.client.local>
                 <groups.client.clustered>org.infinispan.server.test.category.MemcachedClustered</groups.client.clustered>
             </properties>
+        </profile>
+        <profile>
+            <id>testsuite-jdk6</id>
+            <properties>
+                <server.jvm>${env.JAVA_HOME_16}</server.jvm>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <jvm>${env.JAVA_HOME_16}/bin/java</jvm>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
