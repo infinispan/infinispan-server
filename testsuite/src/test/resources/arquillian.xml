@@ -5,6 +5,7 @@
     <group qualifier="suite-manual">
         <container qualifier="clustered-ccl-1" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/clustered-ccl.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
@@ -15,6 +16,7 @@
         </container>
         <container qualifier="clustered-ccl-2" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="serverConfig">examples/clustered-ccl.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
@@ -26,6 +28,7 @@
         </container>
         <container qualifier="hotrod-rolling-upgrade-1" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/standalone-hotrod-rolling-upgrade.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
@@ -36,6 +39,7 @@
         </container>
         <container qualifier="hotrod-rolling-upgrade-2" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="serverConfig">standalone.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
@@ -47,6 +51,7 @@
         </container>
         <container qualifier="rest-rolling-upgrade-1" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/standalone-rest-rolling-upgrade.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
@@ -57,6 +62,7 @@
         </container>
         <container qualifier="rest-rolling-upgrade-2" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="serverConfig">examples/standalone-compatibility-mode.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
@@ -68,6 +74,7 @@
         </container>
         <container qualifier="clustered-jdbc" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/clustered-jdbc.xml</property>
                 <property name="javaVmArguments">${server.jvm.args}</property>
@@ -75,6 +82,7 @@
         </container>
         <container qualifier="clustered-storage-only-1" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">clustered.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
@@ -85,6 +93,7 @@
         </container>
         <container qualifier="clustered-storage-only-2" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="serverConfig">examples/clustered-storage-only.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
@@ -96,6 +105,7 @@
         </container>
         <container qualifier="clustered-topology-1" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="managementPort">9999</property>
                 <property name="serverConfig">examples/clustered-topology.xml</property>
@@ -106,6 +116,7 @@
         </container>
         <container qualifier="clustered-topology-2" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="managementPort">10099</property>
                 <property name="serverConfig">examples/clustered-topology.xml</property>
@@ -121,6 +132,7 @@
         </container>
         <container qualifier="clustered-topology-3" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server3.dist}</property>
                 <property name="managementPort">10199</property>
                 <property name="serverConfig">examples/clustered-topology.xml</property>
@@ -136,6 +148,7 @@
         </container>
         <container qualifier="clustered-two-nodes-1" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/clustered-two-nodes.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
@@ -146,6 +159,7 @@
         </container>
         <container qualifier="clustered-two-nodes-2" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="serverConfig">examples/clustered-two-nodes2.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
@@ -157,6 +171,7 @@
         </container>
         <container qualifier="clustered-xsite-1" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/clustered-xsite.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
@@ -167,6 +182,7 @@
         </container>
         <container qualifier="clustered-xsite-2" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="serverConfig">examples/clustered-xsite2.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
@@ -178,6 +194,7 @@
         </container>
         <container qualifier="clustered-xsite-3" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server3.dist}</property>
                 <property name="serverConfig">examples/clustered-xsite3.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node2
@@ -189,6 +206,7 @@
         </container>
         <container qualifier="standalone-fcs-local" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/standalone-fcs-local.xml</property>
                 <property name="javaVmArguments">${server.jvm.args}</property>
@@ -197,6 +215,7 @@
         </container>
         <container qualifier="standalone-hotrod-multiple" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/standalone-hotrod-multiple.xml</property>
                 <property name="javaVmArguments">${server.jvm.args}</property>
@@ -205,6 +224,7 @@
         </container>
         <container qualifier="standalone-rcs-local-1" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="managementPort">9999</property>
                 <property name="serverConfig">examples/standalone-rcs-local.xml</property>
@@ -215,6 +235,7 @@
         </container>
         <container qualifier="standalone-rcs-local-2" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="managementPort">10099</property>
                 <property name="serverConfig">standalone.xml</property>
@@ -226,6 +247,7 @@
         </container>
         <container qualifier="standalone-hotrod-ssl" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/standalone-hotrod-ssl.xml</property>
                 <property name="javaVmArguments">${server.jvm.args}</property>
@@ -234,6 +256,7 @@
         </container>
         <container qualifier="standalone-leveldb-cs-local" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/standalone-leveldb-cs-local.xml</property>
                 <property name="javaVmArguments">${server.jvm.args}</property>
@@ -242,6 +265,7 @@
         </container>
         <container qualifier="standalone-compatibility-mode" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">examples/standalone-compatibility-mode.xml</property>
                 <property name="javaVmArguments">${server.jvm.args}</property>
@@ -250,6 +274,7 @@
         </container>
         <container qualifier="jmx-management-1" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">testsuite/clustered-jmx.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
@@ -259,6 +284,7 @@
         </container>
         <container qualifier="jmx-management-2" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="serverConfig">testsuite/clustered-jmx.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
@@ -270,6 +296,7 @@
         </container>
         <container qualifier="remote-query" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">testsuite/standalone-with-indexing.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0</property>
@@ -279,6 +306,7 @@
         </container>
         <container qualifier="leveldb" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">testsuite/standalone-leveldb-local.xml</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
@@ -292,6 +320,7 @@
     <group qualifier="suite-client-local">
         <container qualifier="container1" mode="suite">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">${suite.client.local.config}</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
@@ -303,6 +332,7 @@
         </container>
         <container qualifier="container2" mode="manual">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="serverConfig">${suite.client.local.config}</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
@@ -316,6 +346,7 @@
     <group qualifier="suite-client-dist">
         <container qualifier="container1" mode="suite">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">${suite.client.dist.config}</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
@@ -327,6 +358,7 @@
         </container>
         <container qualifier="container2" mode="suite">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="serverConfig">${suite.client.dist.config}</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
@@ -341,6 +373,7 @@
     <group qualifier="suite-client-repl">
         <container qualifier="container1" mode="suite">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server1.dist}</property>
                 <property name="serverConfig">${suite.client.repl.config}</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
@@ -352,6 +385,7 @@
         </container>
         <container qualifier="container2" mode="suite">
             <configuration>
+                <property name="javaHome">${server.jvm}</property>
                 <property name="jbossHome">${server2.dist}</property>
                 <property name="serverConfig">${suite.client.repl.config}</property>
                 <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
