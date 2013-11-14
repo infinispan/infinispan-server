@@ -12,6 +12,7 @@
     <property name="leveldb.impl" value="JAVA" />
     <property name="leveldb.patch" value="false" />
     <property name="zip.dist" value="false" />
+    <property name="zip.dist.old" value="false" />
     <property name="log.level.infinispan" value="INFO"/>
     <property name="log.level.jgroups" value="INFO"/>
     <property name="log.level.console" value="INFO"/>
@@ -76,6 +77,28 @@
         <copy todir="${server3.dist}">
             <fileset dir="${server1.dist}" />
         </copy>
+
+        <echo message="Creating old server distro at ${server.old.dist}" />
+        <if>
+            <equals arg1="${zip.dist.old}" arg2="false" />
+            <then>
+                <echo message="Zip for old server distribution was not passed. Skipping." />
+            </then>
+            <else>
+                <echo message="Using file ${zip.dist.old}" />
+                <unzip src="${zip.dist.old}" dest="${server.old.dist}-tmp" />
+                <for param="file">
+                    <path>
+                        <fileset dir="${server.old.dist}-tmp" includes="**/jboss-modules.jar" />
+                    </path>
+                    <sequential>
+                        <propertyregex override="yes" property="dir.in.zip" input="@{file}" regexp=".*/([^/]*)/jboss-modules\.jar" replace="\1" />
+                    </sequential>
+                </for>
+                <move file="${server.old.dist}-tmp/${dir.in.zip}" tofile="${server.old.dist}" />
+                <delete dir="${server.old.dist}-tmp" />
+            </else>
+        </if>
     </target>
 
     <target name="transform-distro1-configs" depends="create-distro1">
