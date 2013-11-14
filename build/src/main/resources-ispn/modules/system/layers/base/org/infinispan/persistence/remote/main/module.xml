@@ -33,6 +33,7 @@
         <module name="javax.api"/>
         <module name="javax.transaction.api"/>
         <module name="org.infinispan"/>
+        <module name="org.infinispan.adaptor52x" optional="true"/>
         <module name="org.infinispan.client.hotrod" export="true"/>
         <module name="org.infinispan.server"/>
         <module name="org.jboss.logging"/>
