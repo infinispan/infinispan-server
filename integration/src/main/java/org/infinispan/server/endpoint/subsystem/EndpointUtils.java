@@ -23,6 +23,8 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.server.endpoint.Constants;
+import org.jboss.as.clustering.infinispan.subsystem.EmbeddedCacheManagerConfiguration;
+import org.jboss.as.clustering.infinispan.subsystem.EmbeddedCacheManagerConfigurationService;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.as.domain.management.SecurityRealm;
@@ -70,6 +72,13 @@ public class EndpointUtils {
    public static void addCacheDependency(ServiceBuilder<?> builder, String cacheContainerName, String cacheName) {
       ServiceName cacheServiceName = getCacheServiceName(cacheContainerName, cacheName);
       builder.addDependency(cacheServiceName);
+   }
+
+   public static void addCacheContainerConfigurationDependency(ServiceBuilder<?> builder, String cacheContainerName,
+         InjectedValue<EmbeddedCacheManagerConfiguration> target) {
+      ServiceName cacheContainerConfigurationServiceName = EmbeddedCacheManagerConfigurationService
+            .getServiceName(cacheContainerName);
+      builder.addDependency(cacheContainerConfigurationServiceName, EmbeddedCacheManagerConfiguration.class, target);
    }
 
    public static void addCacheContainerDependency(ServiceBuilder<?> builder, String cacheContainerName, InjectedValue<EmbeddedCacheManager> target) {

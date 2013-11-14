@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.infinispan.server.hotrod.HotRodServer;
 import org.infinispan.server.hotrod.configuration.HotRodServerConfigurationBuilder;
+import org.jboss.as.clustering.infinispan.subsystem.EmbeddedCacheManagerConfigurationService;
 import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
@@ -68,6 +69,7 @@ class HotRodSubsystemAdd extends ProtocolServiceSubsystemAdd {
 
       // Setup the various dependencies with injectors and install the service
       ServiceBuilder<?> builder = context.getServiceTarget().addService(EndpointUtils.getServiceName(operation, "hotrod"), service);
+      EndpointUtils.addCacheContainerConfigurationDependency(builder, getCacheContainerName(operation), service.getCacheManagerConfiguration());
       EndpointUtils.addCacheContainerDependency(builder, getCacheContainerName(operation), service.getCacheManager());
       EndpointUtils.addSocketBindingDependency(builder, getSocketBindingName(operation), service.getSocketBinding());
       if (config.hasDefined(ModelKeys.SECURITY) && config.get(ModelKeys.SECURITY, ModelKeys.SECURITY_NAME).isDefined()) {
