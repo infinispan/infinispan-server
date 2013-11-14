@@ -37,7 +37,7 @@
       <version.org.slf4j>1.7.2</version.org.slf4j>
       <version.org.xerial.snappy>1.0.5</version.org.xerial.snappy>
       <version.xml.maven.plugin>1.0</version.xml.maven.plugin>
-      <version.org.infinispan.protostream>1.0.0.Alpha7</version.org.infinispan.protostream>
+      <version.org.infinispan.protostream>1.0.0.CR1</version.org.infinispan.protostream>
       <relocations></relocations>
    </properties>
 
