@@ -12,6 +12,7 @@ Currently these subsets are predefined:
   -P suite.client.{local|dist|repl}  (Client tests, only {local|dist|repl} cachemode)
   -P suite.examples                  (Example config tests)
   -P suite.leveldb                   (LevelDB cache store tests - the whole suite.client with leveldb configs + additional custom tests)
+  -P suite.rolling.upgrades          (Rolling upgrades specific tests, mandatory specification of: -Dzip.dist.old=path/to/old_distro.zip)
 
   -P suite.others                    (Tests that do not belong to any of the suites above. Useful when running a single test that's outside
                                       of any pre-defined group)

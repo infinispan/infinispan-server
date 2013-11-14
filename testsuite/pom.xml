@@ -139,6 +139,7 @@
         <server1.dist>${basedir}/target/server/node1</server1.dist>
         <server2.dist>${basedir}/target/server/node2</server2.dist>
         <server3.dist>${basedir}/target/server/node3</server3.dist>
+        <server.old.dist>${basedir}/target/server/node_old</server.old.dist>
         <server.jvm>${env.JAVA_HOME}</server.jvm>
         <resources.dir>${basedir}/src/test/resources</resources.dir>
         <jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m</jvm.memory.args>
@@ -147,11 +148,12 @@
         <server.jvm.args>${jvm.ip.stack} ${jvm.memory.args}</server.jvm.args>
         <log4j.configuration>log4j.xml</log4j.configuration>
         <suite.manual.phase>test</suite.manual.phase>
+        <suite.rollups.manual.phase>none</suite.rollups.manual.phase>
         <suite.client.local.phase>test</suite.client.local.phase>
         <suite.client.dist.phase>test</suite.client.dist.phase>
         <suite.client.repl.phase>test</suite.client.repl.phase>
         <suite.manual.include>**/*.java</suite.manual.include>
-        <suite.manual.exclude.groups>org.infinispan.server.test.category.ClientLocal,org.infinispan.server.test.category.ClientClustered,org.infinispan.server.test.category.CacheStore</suite.manual.exclude.groups>
+        <suite.manual.exclude.groups>org.infinispan.server.test.category.ClientLocal,org.infinispan.server.test.category.ClientClustered,org.infinispan.server.test.category.CacheStore,org.infinispan.server.test.category.RollingUpgrades</suite.manual.exclude.groups>
         <suite.client.local.config>testsuite/standalone-default-local.xml</suite.client.local.config>
         <suite.client.dist.config>testsuite/clustered-default-dist.xml</suite.client.dist.config>
         <suite.client.repl.config>testsuite/clustered-default-repl.xml</suite.client.repl.config>
@@ -201,6 +203,7 @@
                         <server1.dist>${server1.dist}</server1.dist>
                         <server2.dist>${server2.dist}</server2.dist>
                         <server3.dist>${server3.dist}</server3.dist>
+                        <server.old.dist>${server.old.dist}</server.old.dist>
                         <server.jvm>${server.jvm}</server.jvm>
                         <server.jvm.args>${server.jvm.args}</server.jvm.args>
                         <log4j.configuration>${log4j.configuration}</log4j.configuration>
@@ -240,6 +243,19 @@
                             <excludedGroups>${suite.manual.exclude.groups}</excludedGroups>
                             <systemPropertyVariables>
                                 <arquillian.launch>suite-manual</arquillian.launch>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>suite-rollups-manual</id>
+                        <phase>${suite.rollups.manual.phase}</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <groups>org.infinispan.server.test.category.RollingUpgrades</groups>
+                            <systemPropertyVariables>
+                                <arquillian.launch>suite-rollups-manual</arquillian.launch>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
@@ -361,6 +377,16 @@
                 <suite.client.local.config>testsuite/standalone-leveldb-local.xml</suite.client.local.config>
                 <suite.client.dist.config>testsuite/clustered-leveldb-dist.xml</suite.client.dist.config>
                 <suite.client.repl.config>testsuite/clustered-leveldb-repl.xml</suite.client.repl.config>
+            </properties>
+        </profile>
+        <profile>
+            <id>suite.rolling.upgrades</id>
+            <properties>
+                <suite.manual.phase>none</suite.manual.phase>
+                <suite.rollups.manual.phase>test</suite.rollups.manual.phase>
+                <suite.client.local.phase>none</suite.client.local.phase>
+                <suite.client.dist.phase>none</suite.client.dist.phase>
+                <suite.client.repl.phase>none</suite.client.repl.phase>
             </properties>
         </profile>
         <profile>

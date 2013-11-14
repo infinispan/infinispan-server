@@ -18,6 +18,16 @@
  */
 package org.infinispan.server.test.configs;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.ObjectInputStream;
+import java.net.Inet6Address;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.management.ObjectName;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -52,15 +62,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.management.ObjectName;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.ObjectInputStream;
-import java.net.Inet6Address;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.infinispan.server.test.client.rest.RESTHelper.*;
 import static org.infinispan.server.test.util.TestUtil.eventually;
@@ -142,7 +143,7 @@ public class ExampleConfigsTest {
 
     @Test
     public void testHotRodRollingUpgrades() throws Exception {
-        // target node
+        // Target node
         final int managementPortServer1 = 9999;
         MBeanServerConnectionProvider provider1;
         // Source node
@@ -151,7 +152,7 @@ public class ExampleConfigsTest {
 
         controller.start("hotrod-rolling-upgrade-2");
         try {
-            RemoteInfinispanMBeans s2 = createRemotes("hotrod-rolling-upgrade-2", "default", DEFAULT_CACHE_NAME);
+            RemoteInfinispanMBeans s2 = createRemotes("hotrod-rolling-upgrade-2", "local", DEFAULT_CACHE_NAME);
             final RemoteCache<Object, Object> c2 = createCache(s2);
 
             c2.put("key1", "value1");
