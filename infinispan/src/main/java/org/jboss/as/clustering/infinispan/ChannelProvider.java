@@ -70,19 +70,31 @@ public class ChannelProvider implements JGroupsChannelLookup {
 
     /**
      * {@inheritDoc}
-     * @see org.infinispan.remoting.transport.jgroups.JGroupsChannelLookup#shouldStartAndConnect()
+     * @see org.infinispan.remoting.transport.jgroups.JGroupsChannelLookup#shouldConnect()
      */
     @Override
-    public boolean shouldStartAndConnect() {
+    public boolean shouldConnect() {
         return true;
     }
 
     /**
      * {@inheritDoc}
-     * @see org.infinispan.remoting.transport.jgroups.JGroupsChannelLookup#shouldStopAndDisconnect()
+     * @see org.infinispan.remoting.transport.jgroups.JGroupsChannelLookup#shouldDisconnect()
      */
     @Override
-    public boolean shouldStopAndDisconnect() {
+    public boolean shouldDisconnect() {
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see org.infinispan.remoting.transport.jgroups.JGroupsChannelLookup#shouldClose()
+     */
+    @Override
+    public boolean shouldClose() {
+        // We allow Infinispan to connect and disconnect the channel itself to avoid problems with some view members
+        // not having a RpcDispatcher attached.
+        // But once closed, the channel can't be connected again, so the Channel service should close the channel itself.
+        return false;
     }
 }
