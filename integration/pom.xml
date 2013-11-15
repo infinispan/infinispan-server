@@ -55,6 +55,9 @@
                               <exclude>org.apache.xalan:xalan</exclude>
                               <exclude>org.hibernate:ejb3-persistence</exclude>
                               <exclude>org.hibernate.java-persistence:jpa-api</exclude>
+                              <exclude>org.jboss.as:jboss-as-clustering-infinispan</exclude>
+                              <exclude>org.jboss.as:jboss-as-clustering-jgroups</exclude>
+                              <exclude>org.jboss.as:jboss-as-security</exclude>
                               <exclude>org.jboss.integration:jboss-jca-spi</exclude>
                               <exclude>org.jboss.interceptor:jboss-interceptor-api</exclude>
                               <exclude>org.jboss.javaee:jboss-javaee</exclude>
@@ -108,6 +111,16 @@
          <groupId>org.jboss.as</groupId>
          <artifactId>jboss-as-server</artifactId>
       </dependency>
+      
+      <dependency>
+         <groupId>org.infinispan.server</groupId>
+         <artifactId>infinispan-server-infinispan</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan.server</groupId>
+         <artifactId>infinispan-server-security</artifactId>
+      </dependency>
 
       <dependency>
          <groupId>org.jboss.as</groupId>
@@ -115,7 +128,19 @@
          <exclusions>
             <exclusion>
                <groupId>org.jboss.as</groupId>
+               <artifactId>jboss-as-security</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.jboss.as</groupId>
                <artifactId>jboss-as-transactions</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.jboss.as</groupId>
+               <artifactId>jboss-as-clustering-registry</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.jboss.as</groupId>
+               <artifactId>jboss-as-clustering-web-spi</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -146,7 +171,7 @@
          <artifactId>junit</artifactId>
          <scope>test</scope>
       </dependency>
-
+      
       <dependency>
          <groupId>org.jboss.as</groupId>
          <artifactId>jboss-as-subsystem-test</artifactId>
