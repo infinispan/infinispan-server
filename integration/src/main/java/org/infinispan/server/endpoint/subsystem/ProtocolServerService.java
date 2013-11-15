@@ -30,6 +30,7 @@ import org.infinispan.server.core.configuration.ProtocolServerConfiguration;
 import org.infinispan.server.core.configuration.ProtocolServerConfigurationBuilder;
 import org.infinispan.server.core.transport.Transport;
 import org.infinispan.commons.util.ReflectionUtil;
+import org.jboss.as.clustering.infinispan.subsystem.EmbeddedCacheManagerConfiguration;
 import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.as.network.NetworkUtils;
 import org.jboss.as.network.SocketBinding;
@@ -48,6 +49,8 @@ class ProtocolServerService implements Service<ProtocolServer> {
    // The cacheManager that will be injected by the container (specified by the cacheContainer
    // attribute)
    private final InjectedValue<EmbeddedCacheManager> cacheManager = new InjectedValue<EmbeddedCacheManager>();
+   // The cacheManager configuration service
+   private final InjectedValue<EmbeddedCacheManagerConfiguration> cacheManagerConfiguration = new InjectedValue<EmbeddedCacheManagerConfiguration>();
    // The socketBinding that will be injected by the container
    private final InjectedValue<SocketBinding> socketBinding = new InjectedValue<SocketBinding>();
    // The securityRealm that will be injected by the container
@@ -77,6 +80,10 @@ class ProtocolServerService implements Service<ProtocolServer> {
 
       boolean done = false;
       try {
+         EmbeddedCacheManagerConfiguration embeddedCacheManagerConfiguration = cacheManagerConfiguration.getOptionalValue();
+         if (embeddedCacheManagerConfiguration != null) {
+            configurationBuilder.defaultCacheName(embeddedCacheManagerConfiguration.getDefaultCache());
+         }
          SocketBinding socketBinding = getSocketBinding().getValue();
          InetSocketAddress socketAddress = socketBinding.getSocketAddress();
          configurationBuilder.host(socketAddress.getAddress().getHostAddress());
@@ -156,6 +163,10 @@ class ProtocolServerService implements Service<ProtocolServer> {
          throw new IllegalStateException();
       }
       return protocolServer;
+   }
+
+   InjectedValue<EmbeddedCacheManagerConfiguration> getCacheManagerConfiguration() {
+      return cacheManagerConfiguration;
    }
 
    InjectedValue<EmbeddedCacheManager> getCacheManager() {
