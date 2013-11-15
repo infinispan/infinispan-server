@@ -120,10 +120,10 @@
         </xsl:copy>
     </xsl:template>
     <!-- delete existing configurations for these loggers -->
-    <xsl:template match="logging:subsystem/logging:logger[@category = 'org.infinispan']"></xsl:template>
-    <xsl:template match="logging:subsystem/logging:logger[@category = 'org.jgroups']"></xsl:template>
-    <xsl:template match="logging:subsystem/logging:console-handler[@name = 'CONSOLE']/logging:level"></xsl:template>
-    <xsl:template match="logging:subsystem/logging:periodic-rotating-file-handler[@name = 'FILE']/logging:level"></xsl:template>
+    <xsl:template match="logging:subsystem/logging:logger[@category = 'org.infinispan']" />
+    <xsl:template match="logging:subsystem/logging:logger[@category = 'org.jgroups']"/>
+    <xsl:template match="logging:subsystem/logging:console-handler[@name = 'CONSOLE']/logging:level"/>
+    <xsl:template match="logging:subsystem/logging:periodic-rotating-file-handler[@name = 'FILE']/logging:level"/>
 
     <xsl:template match="jgroups:relay">
         <xsl:if test="$modifyRelay = 'false'">

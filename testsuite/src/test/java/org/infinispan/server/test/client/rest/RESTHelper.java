@@ -1,21 +1,10 @@
 package org.infinispan.server.test.client.rest;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
@@ -23,10 +12,22 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import static junit.framework.Assert.assertEquals;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+
 
 /**
  * Utility class.
@@ -44,9 +45,11 @@ public class RESTHelper {
 
     private static int port = 8080;
     private static List<Server> servers = new ArrayList<Server>();
-    public static DefaultHttpClient client = new DefaultHttpClient();
+    private static CredentialsProvider credsProvider = new BasicCredentialsProvider();
+    public static CloseableHttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
 
-    public static void addServer(String hostname, String restServerPath) {
+
+   public static void addServer(String hostname, String restServerPath) {
         servers.add(new Server(hostname, restServerPath));
     }
 
@@ -184,12 +187,12 @@ public class RESTHelper {
 
     public static void setCredentials(String username, String password) {
         Credentials credentials = new UsernamePasswordCredentials(username, password);
-        client.getCredentialsProvider().setCredentials(
-                new AuthScope(servers.get(0).getHostname(), port), credentials);
+        credsProvider.setCredentials(
+              new AuthScope(servers.get(0).getHostname(), port), credentials);
     }
 
     public static void clearCredentials() {
-        client.getCredentialsProvider().clear();
+        credsProvider.clear();
     }
 
     public static HttpResponse post(String uri, Object data, String contentType) throws Exception {
