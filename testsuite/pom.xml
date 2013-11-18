@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.infinispan.server</groupId>
         <artifactId>infinispan-server-versions</artifactId>
-        <version>6.0.0-SNAPSHOT</version>
+        <version>6.0.1-SNAPSHOT</version>
         <relativePath>../versions/pom.xml</relativePath>
     </parent>
 
@@ -72,7 +71,7 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
-        <!--- @ThreadSafe annotation -->
+        
         <dependency>
             <groupId>net.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
@@ -133,7 +132,7 @@
     </dependencies>
 
     <properties>
-        <!--<ispnserver.ts.dir>${basedir}/..</ispnserver.ts.dir> -->
+        
         <ispnserver.project.dir>${basedir}/..</ispnserver.project.dir>
         <server.build.dist>${ispnserver.project.dir}/build/target/infinispan-server-${project.version}</server.build.dist>
         <server1.dist>${basedir}/target/server/node1</server1.dist>
@@ -143,7 +142,7 @@
         <server.jvm>${env.JAVA_HOME}</server.jvm>
         <resources.dir>${basedir}/src/test/resources</resources.dir>
         <jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m</jvm.memory.args>
-        <!--jvm.memory.args>-Xmx512m -XX:MaxPermSize=128m -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</jvm.memory.args-->
+        
         <jvm.ip.stack>-Djava.net.preferIPv4Stack=true</jvm.ip.stack>
         <server.jvm.args>${jvm.ip.stack} ${jvm.memory.args}</server.jvm.args>
         <log4j.configuration>log4j.xml</log4j.configuration>
@@ -185,7 +184,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <target>
-                                <property name="test_classpath" refid="maven.test.classpath"/>
+                                <property name="test_classpath" refid="maven.test.classpath" />
                                 <ant antfile="build-testsuite.xml" inheritRefs="true">
                                     <target name="create-all-distros" />
                                 </ant>
@@ -229,8 +228,7 @@
                         <phase>none</phase>
                     </execution>
                     <execution>
-						<!-- this suite can include all test cases that start the containers 
-							on method or class level -->
+						
                         <id>suite-manual</id>
                         <phase>${suite.manual.phase}</phase>
                         <goals>
