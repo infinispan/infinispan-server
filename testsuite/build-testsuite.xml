@@ -2,6 +2,9 @@
 
     <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${test_classpath}" />
     <property name="default.transform" value="${resources.dir}/config/xslt/config-modifier.xsl" />
+    <property name="default.transform.rest" value="${resources.dir}/config/xslt/secure-rest-endpoint.xsl" />
+    <property name="default.transform.cert.sec.domain" value="${resources.dir}/config/xslt/add-cert-sec-domain.xsl" />
+    <property name="default.transform.digest.sec.domain" value="${resources.dir}/config/xslt/add-digest-sec-domain.xsl" />
     <property name="server1.configs" value="${server1.dist}/standalone/configuration" />
     <property name="server2.configs" value="${server2.dist}/standalone/configuration" />
     <property name="server3.configs" value="${server3.dist}/standalone/configuration" />
@@ -20,6 +23,7 @@
     <filterset id="commonFilters" begintoken="${" endtoken="}">
         <filter token="leveldb.compression" value="${leveldb.compression}" />
         <filter token="leveldb.impl" value="${leveldb.impl}" />
+        <filter token="resources.dir" value="${resources.dir}" />
     </filterset>
 
     <target name="create-distro1" description="Create first distribution of Infinispan server by copying the one from build/target directory or unpacking a distro zip">
@@ -63,9 +67,11 @@
         <copy todir="${server1.dist}/standalone/configuration/examples">
             <fileset dir="${server1.dist}/docs/examples/configs" />
         </copy>
-        <copy todir="${server1.dist}/standalone/configuration">
+        <copy todir="${server1.dist}/standalone/configuration" overwrite="true">
             <fileset dir="${resources.dir}">
                 <include name="*.jks" />
+                <include name="*.properties"/>
+                <include name="*.keystore"/>
             </fileset>
         </copy>
     </target>
@@ -142,6 +148,60 @@
                    modifyInfinispan="${infinispan.parts}/asymmetric-1.xml"/>
         <transform in="clustered.xml" out="testsuite/clustered-asymmetric-2.xml"
                    modifyInfinispan="${infinispan.parts}/asymmetric-2.xml"/>
+        <!--generate basic rest security for read only entries-->
+        <transform in="standalone.xml" out="testsuite/rest-sec-basic-wr.xml"
+                   modifyInfinispan="${infinispan.parts}/rest-security.xml"
+                   filtering="true">
+            <rest-sec>
+                <transform-rest-sec securityMode="WRITE" cacheContainer="security" in="@{in}" />
+            </rest-sec>
+        </transform>
+        <!--generate basic rest security for read and write entries-->
+        <transform in="standalone.xml" out="testsuite/rest-sec-basic-rw.xml"
+                   modifyInfinispan="${infinispan.parts}/rest-security.xml"
+                   filtering="true">
+            <rest-sec>
+                <transform-rest-sec securityMode="READ_WRITE" cacheContainer="security" in="@{in}"/>
+            </rest-sec>
+        </transform>
+        <!--generate cert rest security for write entries-->
+        <transform in="standalone.xml" out="testsuite/rest-sec-cert-wr.xml"
+                   modifyInfinispan="${infinispan.parts}/rest-security.xml"
+                   filtering="true">
+            <rest-sec>
+                <transform-rest-sec securityMode="WRITE" authMethod="CLIENT-CERT" cacheContainer="security" securityDomain="client_cert_auth" in="@{in}"/>
+                <transform-domain-sec in="@{in}" domainTemplateFile="${default.transform.cert.sec.domain}"/>
+            </rest-sec>
+        </transform>
+        <!--generate cert rest security for read and write entries-->
+        <transform in="standalone.xml" out="testsuite/rest-sec-cert-rw.xml"
+                   modifyInfinispan="${infinispan.parts}/rest-security.xml"
+                   filtering="true">
+            <rest-sec>
+                <transform-rest-sec securityMode="READ_WRITE" authMethod="CLIENT-CERT" cacheContainer="security" securityDomain="client_cert_auth" in="@{in}"/>
+                <transform-domain-sec in="@{in}" domainTemplateFile="${default.transform.cert.sec.domain}"/>
+            </rest-sec>
+        </transform>
+
+        <!--generate digest rest security for write entries-->
+        <transform in="standalone.xml" out="testsuite/rest-sec-digest-wr.xml"
+                   modifyInfinispan="${infinispan.parts}/rest-security.xml"
+                   filtering="true">
+            <rest-sec>
+                <transform-rest-sec securityMode="WRITE" authMethod="DIGEST" cacheContainer="security" securityDomain="digest_auth" in="@{in}"/>
+                <transform-domain-sec in="@{in}" domainTemplateFile="${default.transform.digest.sec.domain}"/>
+            </rest-sec>
+        </transform>
+        <!--generate digest rest security for read and write entries-->
+        <transform in="standalone.xml" out="testsuite/rest-sec-digest-rw.xml"
+                   modifyInfinispan="${infinispan.parts}/rest-security.xml"
+                   filtering="true">
+            <rest-sec>
+                <transform-rest-sec securityMode="READ_WRITE" authMethod="DIGEST" cacheContainer="security" securityDomain="digest_auth" in="@{in}"/>
+                <transform-domain-sec in="@{in}" domainTemplateFile="${default.transform.digest.sec.domain}"/>
+            </rest-sec>
+        </transform>
+
     </target>
 
     <macrodef name="transform">
@@ -158,6 +218,7 @@
         <attribute name="infinispanServerEndpoint" default="false"/>
         <attribute name="infinispanFile" default="false"/>
         <attribute name="filtering" default="false"/>
+        <element name="rest-sec" optional="yes" />
 
         <sequential>
             <xslt in="@{transformDir}/@{in}" out="@{transformDir}/@{in}-transformed" style="@{templateFile}">
@@ -173,7 +234,48 @@
                 <param name="log.level.jgroups" expression="${log.level.jgroups}"/>
                 <param name="log.level.console" expression="${log.level.console}"/>
             </xslt>
+
+            <rest-sec />
+
             <move file="@{transformDir}/@{in}-transformed" tofile="@{transformDir}/@{out}" filtering="@filtering">
+                <filterset refid="commonFilters"/>
+            </move>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="transform-rest-sec" description="make xslt transformation of rest security">
+        <attribute name="transformDir" default="${server1.configs}"/>
+        <attribute name="in" />
+        <attribute name="restTemplateFile" default="${default.transform.rest}" />
+        <attribute name="securityDomain" default="other"/>
+        <attribute name="securityMode" default="WRITE"/>
+        <attribute name="authMethod" default="BASIC" />
+        <attribute name="cacheContainer" default="local"/>
+
+        <sequential>
+            <xslt in="@{transformDir}/@{in}-transformed" out="@{transformDir}/@{in}-transformed-rest"
+                  style="@{restTemplateFile}">
+                <param name="security.domain" expression="@{securityDomain}" />
+                <param name="security.mode" expression="@{securityMode}"/>
+                <param name="cache.container" expression="@{cacheContainer}"/>
+                <param name="auth.method" expression="@{authMethod}"/>
+            </xslt>
+            <move file="@{transformDir}/@{in}-transformed-rest" tofile="@{transformDir}/@{in}-transformed"
+                  filtering="@filtering">
+                <filterset refid="commonFilters"/>
+            </move>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="transform-domain-sec" description="make xslt transformation of domain security">
+        <attribute name="transformDir" default="${server1.configs}"/>
+        <attribute name="in" />
+        <attribute name="domainTemplateFile" />
+        <sequential>
+            <xslt in="@{transformDir}/@{in}-transformed" out="@{transformDir}/@{in}-transformed-domain"
+                  style="@{domainTemplateFile}" />
+            <move file="@{transformDir}/@{in}-transformed-domain" tofile="@{transformDir}/@{in}-transformed"
+                  filtering="@filtering">
                 <filterset refid="commonFilters"/>
             </move>
         </sequential>

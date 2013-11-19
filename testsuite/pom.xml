@@ -68,11 +68,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        
-        <dependency>
             <groupId>net.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
         </dependency>
@@ -128,6 +123,18 @@
                 </exclusion>
             </exclusions>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.picketbox</groupId>
+            <artifactId>jbosssx-bare</artifactId>
         </dependency>
     </dependencies>
 
@@ -438,5 +445,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>

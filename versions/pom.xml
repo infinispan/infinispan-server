@@ -38,7 +38,10 @@
       <version.org.xerial.snappy>1.0.5</version.org.xerial.snappy>
       <version.xml.maven.plugin>1.0</version.xml.maven.plugin>
       <version.org.infinispan.protostream>1.0.0.CR1</version.org.infinispan.protostream>
+      <version.http.client>4.3</version.http.client>
+      <version.org.picketbox>4.0.15.Final</version.org.picketbox>
       <relocations />
+
    </properties>
 
    <dependencyManagement>
@@ -75,7 +78,7 @@
             <artifactId>infinispan-server-infinispan</artifactId>
             <version>${project.version}</version>
          </dependency>
-         
+
          <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>infinispan-server-security</artifactId>
@@ -172,7 +175,7 @@
             <artifactId>infinispan-cachestore-remote</artifactId>
             <version>${version.org.infinispan}</version>
          </dependency>
-         
+
          <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-cachestore-rest</artifactId>
@@ -342,6 +345,28 @@
             <version>${version.ant-contrib}</version>
             <scope>test</scope>
          </dependency>
+
+         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${version.http.client}</version>
+            <scope>test</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${version.http.client}</version>
+            <scope>test</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.picketbox</groupId>
+            <artifactId>jbosssx-bare</artifactId>
+            <version>${version.org.picketbox}</version>
+            <scope>test</scope>
+         </dependency>
+
       </dependencies>
 
    </dependencyManagement>

@@ -29,12 +29,12 @@ import javax.management.ObjectName;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.infinispan.arquillian.core.InfinispanResource;
@@ -275,11 +275,11 @@ public class ExampleConfigsTest {
     @WithRunningServer("standalone-compatibility-mode")
     public void testCompatibilityModeConfig() throws Exception {
         MemcachedClient memcachedClient = null;
-        HttpClient restClient = null;
+        CloseableHttpClient restClient = null;
         try {
             RemoteInfinispanMBeans s1 = createRemotes("standalone-compatibility-mode", "local", DEFAULT_CACHE_NAME);
             RemoteCache<Object, Object> s1Cache = createCache(s1);
-            restClient = new DefaultHttpClient();
+            restClient = HttpClients.createDefault();
             String restUrl = "http://" + s1.server.getHotrodEndpoint().getInetAddress().getHostName() + ":8080"
                 + s1.server.getRESTEndpoint().getContextPath() + "/" + DEFAULT_CACHE_NAME;
             memcachedClient = new MemcachedClient(s1.server.getMemcachedEndpoint().getInetAddress().getHostName(), s1.server
@@ -314,13 +314,12 @@ public class ExampleConfigsTest {
             assertArrayEquals("<hey>ho</hey>".getBytes(), readWithMemcachedAndDeserialize(key, memcachedClient));
         } finally {
             if (restClient != null) {
-                restClient.getConnectionManager().shutdown();
+                restClient.close();
             }
             if (memcachedClient != null) {
                 memcachedClient.close();
             }
         }
-
     }
 
     @Test
