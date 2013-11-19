@@ -374,6 +374,31 @@
                 <property name="waitForPorts">11211 11222 8080</property>
             </configuration>
         </container>
+        <container qualifier="standalone-rcs-local" mode="manual">
+            <configuration>
+                <property name="javaHome">${server.jvm}</property>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">testsuite/standalone-rcs-local.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node0
+                    -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true
+                </property>
+                <property name="managementPort">9999</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
+        <container qualifier="standalone-rcs-remote" mode="manual">
+            <configuration>
+                <property name="javaHome">${server.jvm}</property>
+                <property name="jbossHome">${server2.dist}</property>
+                <property name="serverConfig">testsuite/standalone-rcs-remote.xml</property>
+                <property name="javaVmArguments">${server.jvm.args} -Djboss.node.name=node1
+                    -Djboss.socket.binding.port-offset=100
+                    -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true
+                </property>
+                <property name="managementPort">10099</property>
+                <property name="waitForPorts">11311 11322 8180</property>
+            </configuration>
+        </container>
     </group>
     <group qualifier="suite-client-local">
         <container qualifier="container1" mode="suite">
