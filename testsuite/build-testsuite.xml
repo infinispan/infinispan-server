@@ -2,9 +2,7 @@
 
     <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${test_classpath}" />
     <property name="default.transform" value="${resources.dir}/config/xslt/config-modifier.xsl" />
-    <property name="default.transform.rest" value="${resources.dir}/config/xslt/secure-rest-endpoint.xsl" />
-    <property name="default.transform.cert.sec.domain" value="${resources.dir}/config/xslt/add-cert-sec-domain.xsl" />
-    <property name="default.transform.digest.sec.domain" value="${resources.dir}/config/xslt/add-digest-sec-domain.xsl" />
+    <property name="default.transform.rest" value="${resources.dir}/config/xslt/rest-sec-config-modifier.xsl" />
     <property name="server1.configs" value="${server1.dist}/standalone/configuration" />
     <property name="server2.configs" value="${server2.dist}/standalone/configuration" />
     <property name="server3.configs" value="${server3.dist}/standalone/configuration" />
@@ -148,6 +146,13 @@
                    modifyInfinispan="${infinispan.parts}/asymmetric-1.xml"/>
         <transform in="clustered.xml" out="testsuite/clustered-asymmetric-2.xml"
                    modifyInfinispan="${infinispan.parts}/asymmetric-2.xml"/>
+        <transform in="examples/standalone-rcs-local.xml" out="testsuite/standalone-rcs-local.xml"
+                   modifyInfinispan="${infinispan.parts}/rcs-local.xml"
+                   modifyRemoteDestination="${other.parts}/rcs-remote-destination.xml"
+                   filtering="true"/>
+        <transform in="standalone.xml" out="testsuite/standalone-rcs-remote.xml"
+                   modifyInfinispan="${infinispan.parts}/rcs-remote.xml"
+                   filtering="true"/>
         <!--generate basic rest security for read only entries-->
         <transform in="standalone.xml" out="testsuite/rest-sec-basic-wr.xml"
                    modifyInfinispan="${infinispan.parts}/rest-security.xml"
@@ -169,8 +174,7 @@
                    modifyInfinispan="${infinispan.parts}/rest-security.xml"
                    filtering="true">
             <rest-sec>
-                <transform-rest-sec securityMode="WRITE" authMethod="CLIENT-CERT" cacheContainer="security" securityDomain="client_cert_auth" in="@{in}"/>
-                <transform-domain-sec in="@{in}" domainTemplateFile="${default.transform.cert.sec.domain}"/>
+                <transform-rest-sec securityMode="WRITE" authMethod="CLIENT-CERT" cacheContainer="security" securityDomain="client_cert_auth" modifyCertSecDomain="true" in="@{in}"/>
             </rest-sec>
         </transform>
         <!--generate cert rest security for read and write entries-->
@@ -178,8 +182,7 @@
                    modifyInfinispan="${infinispan.parts}/rest-security.xml"
                    filtering="true">
             <rest-sec>
-                <transform-rest-sec securityMode="READ_WRITE" authMethod="CLIENT-CERT" cacheContainer="security" securityDomain="client_cert_auth" in="@{in}"/>
-                <transform-domain-sec in="@{in}" domainTemplateFile="${default.transform.cert.sec.domain}"/>
+                <transform-rest-sec securityMode="READ_WRITE" authMethod="CLIENT-CERT" cacheContainer="security" securityDomain="client_cert_auth" modifyCertSecDomain="true" in="@{in}"/>
             </rest-sec>
         </transform>
 
@@ -188,8 +191,7 @@
                    modifyInfinispan="${infinispan.parts}/rest-security.xml"
                    filtering="true">
             <rest-sec>
-                <transform-rest-sec securityMode="WRITE" authMethod="DIGEST" cacheContainer="security" securityDomain="digest_auth" in="@{in}"/>
-                <transform-domain-sec in="@{in}" domainTemplateFile="${default.transform.digest.sec.domain}"/>
+                <transform-rest-sec securityMode="WRITE" authMethod="DIGEST" cacheContainer="security" securityDomain="digest_auth" modifyDigestSecDomain="true" in="@{in}"/>
             </rest-sec>
         </transform>
         <!--generate digest rest security for read and write entries-->
@@ -197,8 +199,7 @@
                    modifyInfinispan="${infinispan.parts}/rest-security.xml"
                    filtering="true">
             <rest-sec>
-                <transform-rest-sec securityMode="READ_WRITE" authMethod="DIGEST" cacheContainer="security" securityDomain="digest_auth" in="@{in}"/>
-                <transform-domain-sec in="@{in}" domainTemplateFile="${default.transform.digest.sec.domain}"/>
+                <transform-rest-sec securityMode="READ_WRITE" authMethod="DIGEST" cacheContainer="security" securityDomain="digest_auth" modifyDigestSecDomain="true" in="@{in}"/>
             </rest-sec>
         </transform>
 
@@ -251,6 +252,8 @@
         <attribute name="securityMode" default="WRITE"/>
         <attribute name="authMethod" default="BASIC" />
         <attribute name="cacheContainer" default="local"/>
+        <attribute name="modifyCertSecDomain" default="false" />
+        <attribute name="modifyDigestSecDomain" default="false" />
 
         <sequential>
             <xslt in="@{transformDir}/@{in}-transformed" out="@{transformDir}/@{in}-transformed-rest"
@@ -259,22 +262,11 @@
                 <param name="security.mode" expression="@{securityMode}"/>
                 <param name="cache.container" expression="@{cacheContainer}"/>
                 <param name="auth.method" expression="@{authMethod}"/>
+                <param name="modifyCertSecDomain" expression="@{modifyCertSecDomain}"/>
+                <param name="modifyDigestSecDomain" expression="@{modifyDigestSecDomain}"/>
+
             </xslt>
             <move file="@{transformDir}/@{in}-transformed-rest" tofile="@{transformDir}/@{in}-transformed"
-                  filtering="@filtering">
-                <filterset refid="commonFilters"/>
-            </move>
-        </sequential>
-    </macrodef>
-
-    <macrodef name="transform-domain-sec" description="make xslt transformation of domain security">
-        <attribute name="transformDir" default="${server1.configs}"/>
-        <attribute name="in" />
-        <attribute name="domainTemplateFile" />
-        <sequential>
-            <xslt in="@{transformDir}/@{in}-transformed" out="@{transformDir}/@{in}-transformed-domain"
-                  style="@{domainTemplateFile}" />
-            <move file="@{transformDir}/@{in}-transformed-domain" tofile="@{transformDir}/@{in}-transformed"
                   filtering="@filtering">
                 <filterset refid="commonFilters"/>
             </move>
