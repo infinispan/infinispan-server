@@ -46,7 +46,15 @@
         <priority value="INFO" />
     </category>
 
-	<!-- ======================= -->
+    <category name="org.apache.commons.httpclient.auth">
+        <priority value="INFO"/>
+    </category>
+
+    <category name="org.apache.auth">
+        <priority value="INFO"/>
+    </category>
+
+    <!-- ======================= -->
 	<!-- Setup the Root category -->
 	<!-- ======================= -->
 
