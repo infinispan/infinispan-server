@@ -129,7 +129,42 @@ public class InfinispanResourceDescriptionResolver extends StandardResourceDescr
         sharedAttributeResolver.put(BaseJDBCStoreResource.ENTRY_TABLE.getName() + "table", "jdbc-store");
         sharedAttributeResolver.put(BaseJDBCStoreResource.BUCKET_TABLE.getName() + "table", "jdbc-store");
 
-        // shared children - this avoids having to describe the children for each parent resource
+        // shared cache metrics
+        sharedAttributeResolver.put(MetricKeys.AVERAGE_READ_TIME, "cache");
+        sharedAttributeResolver.put(MetricKeys.AVERAGE_WRITE_TIME, "cache");
+        sharedAttributeResolver.put(MetricKeys.CACHE_STATUS, "cache");
+        sharedAttributeResolver.put(MetricKeys.COMMITS, "cache");
+        sharedAttributeResolver.put(MetricKeys.CONCURRENCY_LEVEL, "cache");
+        sharedAttributeResolver.put(MetricKeys.EVICTIONS, "cache");
+        sharedAttributeResolver.put(MetricKeys.ELAPSED_TIME, "cache");
+        sharedAttributeResolver.put(MetricKeys.HIT_RATIO, "cache");
+        sharedAttributeResolver.put(MetricKeys.HITS, "cache");
+        sharedAttributeResolver.put(MetricKeys.INVALIDATIONS, "cache");
+        sharedAttributeResolver.put(MetricKeys.MISSES, "cache");
+        sharedAttributeResolver.put(MetricKeys.NUMBER_OF_ENTRIES, "cache");
+        sharedAttributeResolver.put(MetricKeys.NUMBER_OF_LOCKS_AVAILABLE, "cache");
+        sharedAttributeResolver.put(MetricKeys.NUMBER_OF_LOCKS_HELD, "cache");
+        sharedAttributeResolver.put(MetricKeys.PREPARES, "cache");
+        sharedAttributeResolver.put(MetricKeys.READ_WRITE_RATIO, "cache");
+        sharedAttributeResolver.put(MetricKeys.REMOVE_HITS, "cache");
+        sharedAttributeResolver.put(MetricKeys.REMOVE_MISSES, "cache");
+        sharedAttributeResolver.put(MetricKeys.ROLLBACKS, "cache");
+        sharedAttributeResolver.put(MetricKeys.STORES, "cache");
+        sharedAttributeResolver.put(MetricKeys.TIME_SINCE_RESET, "cache");
+
+        sharedAttributeResolver.put(MetricKeys.AVERAGE_REPLICATION_TIME, "clustered-cache");
+        sharedAttributeResolver.put(MetricKeys.REPLICATION_COUNT, "clustered-cache");
+        sharedAttributeResolver.put(MetricKeys.REPLICATION_FAILURES, "clustered-cache");
+        sharedAttributeResolver.put(MetricKeys.SUCCESS_RATIO, "clustered-cache");
+
+        // shared loader attributes
+        sharedAttributeResolver.put(MetricKeys.ACTIVATIONS, "loader");
+        sharedAttributeResolver.put(MetricKeys.CACHE_LOADER_LOADS, "loader");
+        sharedAttributeResolver.put(MetricKeys.CACHE_LOADER_MISSES, "loader");
+        sharedAttributeResolver.put(MetricKeys.CACHE_LOADER_STORES, "loader");
+        sharedAttributeResolver.put(MetricKeys.PASSIVATIONS, "loader");
+
+       // shared children - this avoids having to describe the children for each parent resource
         sharedAttributeResolver.put(ModelKeys.TRANSPORT, null);
         sharedAttributeResolver.put(ModelKeys.LOCKING, null);
         sharedAttributeResolver.put(ModelKeys.TRANSACTION, null);

@@ -151,7 +151,7 @@ public class CacheContainerResource extends SimpleResourceDefinition {
             resourceRegistration.registerReadWriteAttribute(attr, CacheContainerReadAttributeHandler.INSTANCE, writeHandler);
         }
 
-        if(runtimeRegistration) {
+        if (runtimeRegistration) {
             // register runtime cache container read-only metrics (attributes and handlers)
             CacheContainerMetricsHandler.INSTANCE.registerMetrics(resourceRegistration);
         }
