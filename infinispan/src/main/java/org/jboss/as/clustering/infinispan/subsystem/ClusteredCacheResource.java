@@ -104,6 +104,10 @@ public class ClusteredCacheResource extends CacheResource  {
         for (AttributeDefinition attr : CLUSTERED_CACHE_ATTRIBUTES) {
             resourceRegistration.registerReadWriteAttribute(attr, CacheReadAttributeHandler.INSTANCE, writeHandler);
         }
+
+        if (runtimeRegistration) {
+            CacheMetricsHandler.INSTANCE.registerClusteredMetrics(resourceRegistration);
+        }
     }
 
     @Override
