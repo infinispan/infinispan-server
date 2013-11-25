@@ -150,6 +150,12 @@
         <dependency>
             <groupId>org.picketbox</groupId>
             <artifactId>jbosssx-bare</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.transaction</groupId>
+                    <artifactId>jta</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
