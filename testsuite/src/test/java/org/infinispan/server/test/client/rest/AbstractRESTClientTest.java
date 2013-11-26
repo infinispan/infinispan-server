@@ -12,6 +12,7 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 
 import static org.infinispan.server.test.client.rest.RESTHelper.*;
+import static org.infinispan.server.test.client.rest.RESTHelper.post;
 import static org.junit.Assert.*;
 
 /**
@@ -40,6 +41,10 @@ public abstract class AbstractRESTClientTest {
 
         public String getContent() {
             return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
         }
     }
 
@@ -238,6 +243,14 @@ public abstract class AbstractRESTClientTest {
         head(fullPathKey);
         delete(fullPathKey);
         head(fullPathKey, HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    @Test
+    public void testRemoveEntryNotPresent() throws Exception {
+        String fullPathKey = fullPathKey(KEY_A);
+        head(fullPathKey, HttpServletResponse.SC_NOT_FOUND); //make sure key is not present
+
+        delete(fullPathKey, HttpServletResponse.SC_NOT_FOUND);
     }
 
     @Test
@@ -468,4 +481,63 @@ public abstract class AbstractRESTClientTest {
         assertNotNull(get.getHeaders("Last-Modified")[0].getValue());
         assertEquals("application/text", get.getHeaders("Content-Type")[0].getValue());
     }
+
+    @Test
+    public void testCacheControlHeader() throws Exception {
+        String fullPathKey = fullPathKey(KEY_A);
+
+        post(fullPathKey, "data", "application/text", HttpServletResponse.SC_OK, "timeToLiveSeconds", "7");
+
+        get(fullPathKey, null, HttpServletResponse.SC_NOT_FOUND, true, "Cache-Control", "min-fresh=20");
+
+        HttpResponse get = get(fullPathKey, "data", HttpServletResponse.SC_OK, true, "Cache-Control", "min-fresh=3");
+        assertNotNull(get.getHeaders("Cache-Control"));
+        assertTrue(get.getHeaders("Cache-Control")[0].getValue().contains("max-age"));
+    }
+
+    @Test
+    public void testGetAllKeys() throws Exception {
+        String fullPathKeyA = fullPathKey(KEY_A);
+        String fullPathKeyB = fullPathKey(KEY_B);
+        String fullPathKeyC = fullPathKey(KEY_C);
+
+        post(fullPathKeyA, "valueA", "application/text");
+        post(fullPathKeyB, "valueB", "application/text");
+        post(fullPathKeyC, "valueC", "application/text");
+
+        HttpResponse allKeys = get(fullPathKey(null), null, HttpServletResponse.SC_OK, false, "Accept", "application/json");
+        String response = EntityUtils.toString(allKeys.getEntity());
+        assertTrue(response.contains("\"" + KEY_A + "\""));
+        assertTrue(response.contains("\"" + KEY_B + "\""));
+        assertTrue(response.contains("\"" + KEY_C + "\""));
+
+        allKeys = get(fullPathKey(null), null, HttpServletResponse.SC_OK, false, "Accept", "application/xml");
+        response = EntityUtils.toString(allKeys.getEntity());
+        assertTrue(response.contains("<key>" + KEY_A + "</key>"));
+        assertTrue(response.contains("<key>" + KEY_B + "</key>"));
+        assertTrue(response.contains("<key>" + KEY_C + "</key>"));
+    }
+
+    @Test
+    public void testCustomObjectGetAcceptJSONAndXML() throws Exception{
+        String fullPathKeyA = fullPathKey(KEY_A);
+        TestSerializable object = new TestSerializable("CONTENT");
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oo = new ObjectOutputStream(bout);
+        oo.writeObject(object);
+        oo.flush();
+        oo.close();
+
+        byte[] byteData = bout.toByteArray();
+        post(fullPathKeyA, byteData, "application/x-java-serialized-object");
+
+
+        HttpResponse getJson = get(fullPathKeyA, null, HttpServletResponse.SC_OK, true, "Accept", "application/json");
+        assertTrue(getJson.getHeaders("Content-type")[0].getValue().contains("application/json"));
+
+        HttpResponse getXml = get(fullPathKeyA, null, HttpServletResponse.SC_OK, true, "Accept", "application/xml");
+        assertTrue(getXml.getHeaders("Content-type")[0].getValue().contains("application/xml"));
+    }
+
 }

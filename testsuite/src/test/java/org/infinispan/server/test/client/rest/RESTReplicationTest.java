@@ -4,6 +4,8 @@ import java.net.Inet6Address;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.infinispan.arquillian.core.InfinispanResource;
 import org.infinispan.arquillian.core.RemoteInfinispanServer;
 import org.infinispan.server.test.category.RESTClustered;
@@ -23,6 +25,7 @@ import static org.infinispan.server.test.client.rest.RESTHelper.get;
 import static org.infinispan.server.test.client.rest.RESTHelper.head;
 import static org.infinispan.server.test.client.rest.RESTHelper.post;
 import static org.infinispan.server.test.client.rest.RESTHelper.put;
+import static org.junit.Assert.*;
 
 /**
  * Tests for the REST client.
@@ -112,5 +115,28 @@ public class RESTReplicationTest {
         Thread.sleep(2100);
         // should be evicted
         head(fullPathKey(1, KEY_A), HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetAllKeysInCluster() throws Exception {
+        String fullPathKeyA = fullPathKey(0, KEY_A);
+        String fullPathKeyB = fullPathKey(1, KEY_B);
+        String fullPathKeyC = fullPathKey(1, KEY_C);
+
+        post(fullPathKeyA, "valueA", "application/text");
+        post(fullPathKeyB, "valueB", "application/text");
+        post(fullPathKeyC, "valueC", "application/text");
+
+        HttpResponse allKeys = get((fullPathKey(0, null) + "?global"), null, HttpServletResponse.SC_OK, false, "Accept", "application/json");
+        String response = EntityUtils.toString(allKeys.getEntity());
+        assertTrue(response.contains("\"" + KEY_A + "\""));
+        assertTrue(response.contains("\"" + KEY_B + "\""));
+        assertTrue(response.contains("\"" + KEY_C + "\""));
+
+        allKeys = get((fullPathKey(0, null) + "?global"), null, HttpServletResponse.SC_OK, false, "Accept", "application/xml");
+        response = EntityUtils.toString(allKeys.getEntity());
+        assertTrue(response.contains("<key>" + KEY_A + "</key>"));
+        assertTrue(response.contains("<key>" + KEY_B + "</key>"));
+        assertTrue(response.contains("<key>" + KEY_C + "</key>"));
     }
 }
