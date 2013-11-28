@@ -221,6 +221,8 @@
                    filtering="true"/>
         <transform in="standalone.xml" out="testsuite/standalone-filecs.xml"
                    modifyInfinispan="${infinispan.parts}/filecachestore.xml"/>
+        <transform in="standalone.xml" out="testsuite/standalone-eviction.xml"
+                   modifyInfinispan="${infinispan.parts}/eviction.xml"/>
     </target>
 
     <macrodef name="transform">
