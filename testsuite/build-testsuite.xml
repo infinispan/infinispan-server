@@ -153,6 +153,10 @@
         <transform in="standalone.xml" out="testsuite/standalone-rcs-remote.xml"
                    modifyInfinispan="${infinispan.parts}/rcs-remote.xml"
                    filtering="true"/>
+        <transform in="clustered.xml" out="testsuite/clustered-suppress-state-transfer.xml"
+                   modifyInfinispan="${infinispan.parts}/suppress-state-transfer.xml"
+                   infinispanServerEndpoint="${other.parts}/suppress-server-endpoint.xml"
+                   filtering="true"/>
         <!--generate basic rest security for read only entries-->
         <transform in="standalone.xml" out="testsuite/rest-sec-basic-wr.xml"
                    modifyInfinispan="${infinispan.parts}/rest-security.xml"

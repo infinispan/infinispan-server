@@ -1,7 +1,5 @@
 package org.infinispan.server.test.jgroups.auth;
 
-import javax.management.ObjectName;
-
 import org.infinispan.arquillian.core.InfinispanResource;
 import org.infinispan.arquillian.core.RemoteInfinispanServers;
 import org.infinispan.arquillian.core.WithRunningServer;
@@ -14,6 +12,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.infinispan.server.test.util.TestUtil.getAttribute;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -90,9 +89,4 @@ public class AuthAndEncryptProtocolTest {
             controller.stop(JOINING_NODE_ALIEN);
         }
     }
-
-    private String getAttribute(MBeanServerConnectionProvider provider, String mbean, String attr) throws Exception {
-        return provider.getConnection().getAttribute(new ObjectName(mbean), attr).toString();
-    }
-
 }
