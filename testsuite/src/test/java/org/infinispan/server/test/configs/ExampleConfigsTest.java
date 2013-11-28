@@ -65,6 +65,7 @@ import org.junit.runner.RunWith;
 
 import static org.infinispan.server.test.client.rest.RESTHelper.*;
 import static org.infinispan.server.test.util.TestUtil.eventually;
+import static org.infinispan.server.test.util.TestUtil.invokeOperation;
 import static org.junit.Assert.*;
 
 /**
@@ -106,7 +107,7 @@ public class ExampleConfigsTest {
 
     /**
      * Create a 2 node cluster and check that state transfer does not take place.
-     * 
+     *
      */
     @Test
     public void testClusterCacheLoaderConfigExample() throws Exception {
@@ -177,13 +178,13 @@ public class ExampleConfigsTest {
             final ObjectName rollMan = new ObjectName("jboss.infinispan:type=Cache," + "name=\"default(local)\","
                 + "manager=\"local\"," + "component=RollingUpgradeManager");
 
-            invokeOperation(provider2, rollMan.toString(), "recordKnownGlobalKeyset", new Object[] {}, new String[] {});
+            invokeOperation(provider2, rollMan.toString(), "recordKnownGlobalKeyset", new Object[]{}, new String[]{});
 
-            invokeOperation(provider1, rollMan.toString(), "synchronizeData", new Object[] { "hotrod" },
-                new String[] { "java.lang.String" });
+            invokeOperation(provider1, rollMan.toString(), "synchronizeData", new Object[]{"hotrod"},
+                    new String[]{"java.lang.String"});
 
-            invokeOperation(provider1, rollMan.toString(), "disconnectSource", new Object[] { "hotrod" },
-                new String[] { "java.lang.String" });
+            invokeOperation(provider1, rollMan.toString(), "disconnectSource", new Object[]{"hotrod"},
+                    new String[]{"java.lang.String"});
 
             // is source (RemoteCacheStore) really disconnected?
             c2.put("disconnected", "source");
@@ -242,13 +243,13 @@ public class ExampleConfigsTest {
             final ObjectName rollMan = new ObjectName("jboss.infinispan:type=Cache," + "name=\"default(local)\","
                 + "manager=\"local\"," + "component=RollingUpgradeManager");
 
-            invokeOperation(provider2, rollMan.toString(), "recordKnownGlobalKeyset", new Object[] {}, new String[] {});
+            invokeOperation(provider2, rollMan.toString(), "recordKnownGlobalKeyset", new Object[]{}, new String[]{});
 
-            invokeOperation(provider1, rollMan.toString(), "synchronizeData", new Object[] { "rest" },
-                new String[] { "java.lang.String" });
+            invokeOperation(provider1, rollMan.toString(), "synchronizeData", new Object[]{"rest"},
+                    new String[]{"java.lang.String"});
 
-            invokeOperation(provider1, rollMan.toString(), "disconnectSource", new Object[] { "rest" },
-                new String[] { "java.lang.String" });
+            invokeOperation(provider1, rollMan.toString(), "disconnectSource", new Object[]{"rest"},
+                    new String[]{"java.lang.String"});
 
             // is source (RemoteCacheStore) really disconnected?
             c2.put("disconnected", "source");
@@ -723,10 +724,5 @@ public class ExampleConfigsTest {
 
     protected RemoteInfinispanMBeans createRemotes(String serverName, String managerName, String cacheName) {
         return RemoteInfinispanMBeans.create(serverManager, serverName, cacheName, managerName);
-    }
-
-    private Object invokeOperation(MBeanServerConnectionProvider provider, String mbean, String operationName, Object[] params,
-        String[] signature) throws Exception {
-        return provider.getConnection().invoke(new ObjectName(mbean), operationName, params, signature);
     }
 }

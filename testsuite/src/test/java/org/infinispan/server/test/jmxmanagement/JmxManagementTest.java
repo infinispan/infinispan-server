@@ -20,6 +20,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.infinispan.server.test.util.TestUtil.getAttribute;
+import static org.infinispan.server.test.util.TestUtil.invokeOperation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -283,14 +285,5 @@ public class JmxManagementTest {
     @Test
     public void testJGroupsChannelMBeanAvailable() throws Exception {
         assertTrue(provider.getConnection().isRegistered(new ObjectName("jgroups:type=channel,cluster=\"clustered\"")));
-    }
-
-    private Object invokeOperation(MBeanServerConnectionProvider provider, String mbean, String operationName, Object[] params,
-                                   String[] signature) throws Exception {
-        return provider.getConnection().invoke(new ObjectName(mbean), operationName, params, signature);
-    }
-
-    private String getAttribute(MBeanServerConnectionProvider provider, String mbean, String attr) throws Exception {
-        return provider.getConnection().getAttribute(new ObjectName(mbean), attr).toString();
     }
 }
