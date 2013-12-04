@@ -226,6 +226,8 @@
         <transform in="standalone.xml" out="testsuite/standalone-customcs.xml"
                    modifyInfinispan="${infinispan.parts}/customcs.xml"
                    filtering="true"/>
+        <transform in="clustered.xml" out="testsuite/clustered-expiration.xml"
+                   modifyInfinispan="${infinispan.parts}/expiration.xml"/>
     </target>
 
     <macrodef name="transform">
