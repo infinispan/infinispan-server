@@ -219,6 +219,8 @@
                    modifyInfinispan="${infinispan.parts}/default-repl.xml"
                    addAuth="${other.parts}/jgroups-auth-malicious.xml"
                    filtering="true"/>
+        <transform in="standalone.xml" out="testsuite/standalone-filecs.xml"
+                   modifyInfinispan="${infinispan.parts}/filecachestore.xml"/>
     </target>
 
     <macrodef name="transform">

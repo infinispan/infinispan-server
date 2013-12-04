@@ -476,6 +476,15 @@
                 <property name="waitForPorts">11411 11422 8280</property>
             </configuration>
         </container>
+        <container qualifier="standalone-filecs" mode="manual">
+            <configuration>
+                <property name="javaHome">${server.jvm}</property>
+                <property name="jbossHome">${server1.dist}</property>
+                <property name="serverConfig">testsuite/standalone-filecs.xml</property>
+                <property name="javaVmArguments">${server.jvm.args}</property>
+                <property name="waitForPorts">11211 11222 8080</property>
+            </configuration>
+        </container>
     </group>
     <group qualifier="suite-client-local">
         <container qualifier="container1" mode="suite">
