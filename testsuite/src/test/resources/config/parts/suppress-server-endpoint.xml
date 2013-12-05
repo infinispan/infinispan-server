@@ -4,5 +4,4 @@
     </hotrod-connector>
     <memcached-connector socket-binding="memcached" cache-container="clustered"/>
     <rest-connector virtual-server="default-host" cache-container="clustered"/>
-    <websocket-connector socket-binding="websocket" cache-container="clustered"/>
 </subsystem>

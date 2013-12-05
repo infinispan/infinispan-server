@@ -1,4 +1,4 @@
-        <subsystem xmlns="urn:infinispan:server:core:6.0" default-cache-container="security">
+        <subsystem xmlns="urn:infinispan:server:core:6.0" >
             <cache-container 
                 name="security"
                 default-cache="default">
