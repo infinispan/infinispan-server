@@ -4,6 +4,12 @@
 2) Check versions/pom.xml for the versions of the external components you want to include (AS7, Infinispan).
    Make sure you have the artifacts for those components available in your Maven repository (local or remote).
 
+   If you build from scratch you may need to build this projects first to have the appropriate components in you local repository:
+   git@github.com:infinispan/infinispan.git
+   git@github.com:infinispan/infinispan-cachestore-leveldb.git
+   git@github.com:infinispan/infinispan-cachestore-rest.git
+   
+
 3) Build Infinispan Server:
 
     $ mvn clean package
