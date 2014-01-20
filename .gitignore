@@ -1,0 +1,35 @@
+# ignore .svn metadata files
+.svn
+# ignore Maven generated target folders
+target
+# ignore eclipse files
+.project
+.classpath
+.settings
+.scala_dependencies
+.externalToolBuilders
+.factorypath
+# ignore IDEA files
+*.iml
+*.ipr
+*.iws
+.idea
+atlassian-ide-plugin.xml
+maven-ant-tasks.jar
+test-output
+classes
+# log files
+*.log
+# vim files
+*.swp
+# testsuite generated files/folders
+PutObjectStoreDirHere
+/query/person
+ObjectStore
+# generated schema
+core/src/main/resources/schema
+# Compiled python files
+*.pyc
+# Jandex generated indexes
+*.idx
+
