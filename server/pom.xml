@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ~ Copyright 2011 Red Hat, Inc. and/or its affiliates. ~ ~ This is free 
+   software; you can redistribute it and/or modify it ~ under the terms of the 
+   GNU Lesser General Public License as ~ published by the Free Software Foundation; 
+   either version 2.1 of ~ the License, or (at your option) any later version. 
+   ~ ~ This software is distributed in the hope that it will be useful, ~ but 
+   WITHOUT ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY 
+   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU ~ Lesser General Public 
+   License for more details. ~ ~ You should have received a copy of the GNU 
+   Lesser General Public ~ License along with this library; if not, write to 
+   the Free Software ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+   MA ~ 02110-1301 USA -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>com.jboss.datagrid</groupId>
+      <artifactId>jboss-datagrid-versions</artifactId>
+      <version>6.1.0-SNAPSHOT</version>
+      <relativePath>../versions/pom.xml</relativePath>
+   </parent>
+
+   <artifactId>jboss-datagrid-server</artifactId>
+
+   <name>JBoss Data Grid - Server Edition</name>
+   <description>JBoss Data Grid - Server Edition</description>
+
+   <packaging>pom</packaging>
+
+   <properties>
+      <!-- generated configs root dirs -->
+      <generated.configs>${basedir}/target/generated-configs</generated.configs>
+      <generated.configs.standalone>${generated.configs}/standalone/configuration</generated.configs.standalone>
+      <generated.configs.domain>${generated.configs}/domain/configuration</generated.configs.domain>
+      <generated.configs.examples>${generated.configs}/docs/examples/configs</generated.configs.examples>
+      <generated.configs.src.dir>${basedir}/src/main/resources</generated.configs.src.dir>
+   </properties>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.antlr</groupId>
+         <artifactId>antlr-runtime</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.fusesource.jansi</groupId>
+         <artifactId>jansi</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.as</groupId>
+         <artifactId>jboss-as-build</artifactId>
+         <type>pom</type>
+      </dependency>
+      
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jboss-datagrid-server-common</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jboss-datagrid-infinispan</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jboss-datagrid-jgroups</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.aesh</groupId>
+         <artifactId>aesh</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jgroups</groupId>
+         <artifactId>jgroups</artifactId>
+      </dependency>
+
+      <!-- dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jboss-datagrid-domain-http-error-context</artifactId>
+      </dependency -->
+
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jboss-datagrid-server-integration</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-core</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-server-core</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-server-hotrod</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-server-memcached</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-server-rest</artifactId>
+         <classifier>classes</classifier>
+      </dependency>
+
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.scala-lang</groupId>
+         <artifactId>scala-library</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-cachestore-jdbc</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-cachestore-remote</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-client-hotrod</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-upgrade-tools</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-cli-client</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-cli-server</artifactId>
+      </dependency>
+      
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>generate-configs</id>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                     <target>
+                        <ant antfile="build-configs.xml" inheritRefs="true">
+                           <target name="all" />
+                        </ant>
+                     </target>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>build-dist-dir</id>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <phase>package</phase>
+                  <configuration>
+                     <target>
+                        <ant antfile="build.xml" inheritRefs="true">
+                           <target name="all" />
+                        </ant>
+                     </target>
+                  </configuration>
+               </execution>
+            </executions>
+            <dependencies>
+               <dependency>
+                  <groupId>org.jboss</groupId>
+                  <artifactId>jandex</artifactId>
+                  <version>${version.org.jboss.jandex}</version>
+               </dependency>
+            </dependencies>
+         </plugin>
+      </plugins>
+   </build>
+
+   <profiles>
+      <profile>
+         <id>distribution</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+         <properties>
+            <maven.test.skip.exec>true</maven.test.skip.exec>
+         </properties>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-assembly-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>assemble</id>
+                        <phase>package</phase>
+                        <goals>
+                           <goal>single</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <descriptors>
+                        <descriptor>${project.basedir}/src/main/assemblies/server.xml</descriptor>
+                     </descriptors>
+                     <finalName>${product.name}-server-${product.version}</finalName>
+                     <outputDirectory>${project.build.directory}</outputDirectory>
+                     <workDirectory>${project.build.directory}/assembly/work</workDirectory>
+                     <appendAssemblyId>false</appendAssemblyId>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+</project>
