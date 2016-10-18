@@ -1,0 +1,3 @@
+[submodule "edg-quickstart"]
+	path = edg-quickstart
+	url = git://github.com/infinispan/edg-quickstart.git

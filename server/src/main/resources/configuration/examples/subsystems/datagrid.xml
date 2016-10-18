@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- See src/resources/configuration/ReadMe.txt for how the configuration assembly works -->
+<config default-supplement="default">
+   <extension-module>com.jboss.datagrid</extension-module>
+   <subsystem xmlns="urn:jboss:datagrid:endpoint:6.1">
+      <?CONNECTORS?>
+   </subsystem>
+   <supplement name="rest-auth">
+      <replacement placeholder="@@default-cache-container@@" attributeValue="local" />
+      <replacement placeholder="CONNECTORS">
+         <rest-connector virtual-server="default-host" cache-container="local" security-domain="other" auth-method="BASIC" />
+      </replacement>
+   </supplement>
+</config>

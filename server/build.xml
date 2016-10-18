@@ -1,0 +1,196 @@
+<!--
+  ~ Copyright 2011 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA
+  -->
+<project name="dist-dir" basedir="." default="clean">
+
+   <property name="output.dir" value="${project.build.directory}/${product.name}-server-${product.version}" />
+   <property name="jdg.modules.dir" value="${basedir}/src/main/resources/jdg-modules" />
+
+   <import file="lib.xml" />
+
+   <target name="clean">
+      <delete dir="${output.dir}" />
+   </target>
+
+   <target name="copy-files">
+      <!-- Copy the JDG resource files -->
+      <copy todir="${output.dir}">
+         <fileset dir="${basedir}/src/main/resources">
+            <include name="JBossEULA.txt" />
+            <include name="LICENSE.txt" />
+            <include name="bin/**" />
+            <include name="docs/**" />
+            <include name="domain/**" />
+            <include name="rest/**" />
+            <include name="standalone/configuration/**.properties" />
+            <include name="README.txt" />
+         </fileset>
+         <fileset dir="${generated.configs}">
+            <include name="standalone/configuration/**.xml" />
+            <include name="domain/**" />
+            <include name="docs/**" />
+         </fileset>
+      </copy>
+
+      <!-- Make shell scripts executable -->
+      <chmod perm="755">
+         <fileset dir="${output.dir}/bin">
+            <include name="**/*.sh" />
+         </fileset>
+      </chmod>
+
+      <mkdir dir="${output.dir}/domain/data/content"/>
+      <mkdir dir="${output.dir}/standalone/lib/ext"/>
+      <mkdir dir="${output.dir}/domain/tmp/auth"/>
+      <mkdir dir="${output.dir}/standalone/tmp/auth"/>
+      <!-- This is directory is used by the SASL transparent auth mechanism to validate local user access -->
+      <chmod perm="700" dir="${output.dir}/domain/tmp/auth"/>
+      <chmod perm="700" dir="${output.dir}/standalone/tmp/auth"/>
+
+      <!-- These files contain digested passwords, which should not be visible to external users -->
+      <chmod perm="600" file="${output.dir}/domain/configuration/mgmt-users.properties" />
+      <chmod perm="600" file="${output.dir}/standalone/configuration/mgmt-users.properties" />
+
+      <!-- Copy the client libraries -->
+      <mkdir dir="${output.dir}/client/java" />
+
+      <copy todir="${output.dir}/client/java">
+         <fileset file="${org.infinispan:infinispan-client-hotrod:jar}" />
+         <fileset file="${org.infinispan:infinispan-core:jar}" />
+         <fileset file="${org.jboss.marshalling:jboss-marshalling:jar}" />
+         <fileset file="${org.jboss.marshalling:jboss-marshalling-river:jar}" />
+         <fileset file="${org.jboss.logging:jboss-logging:jar}" />
+         <fileset file="${commons-pool:commons-pool:jar}" />
+         <mapper type="flatten" />
+      </copy>
+   </target>
+
+   <target name="jboss-modules">
+      <ant antfile="jboss-as-build.xml" inheritall="true" target="modules" />
+   </target>
+
+   <target name="jboss-bundles" if="osgi.bundles.include">
+      <ant antfile="jboss-as-build.xml" inheritall="true" target="bundles" />
+   </target>
+
+   <!-- These modules are for JDG-specific functionality -->
+   <target name="jdg-modules">
+      <module-def name="org.antlr.antlr-runtime" src="${jdg.modules.dir}">
+         <maven-resource group="org.antlr" artifact="antlr-runtime" />
+      </module-def>
+      
+      <module-def name="com.thoughtworks.xstream" src="${jdg.modules.dir}">
+         <maven-resource group="com.thoughtworks.xstream" artifact="xstream" />
+      </module-def>
+      
+      <module-def name="com.jboss.datagrid.common" src="${jdg.modules.dir}">
+         <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-server-common" />
+      </module-def>
+
+      <module-def name="com.jboss.datagrid" src="${jdg.modules.dir}">
+         <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-server-integration" />
+      </module-def>
+
+      <module-def name="javax.activation.api" src="${jdg.modules.dir}">
+         <maven-resource group="javax.activation" artifact="activation" />
+      </module-def>
+      
+      <module-def name="org.fusesource.jansi" src="${jdg.modules.dir}">
+         <maven-resource group="org.fusesource.jansi" artifact="jansi"/>
+      </module-def>
+
+      <module-def name="org.jboss.as.clustering.infinispan" src="${jdg.modules.dir}">
+         <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-infinispan" />
+      </module-def>
+      
+      <module-def name="org.jboss.as.clustering.jgroups" src="${jdg.modules.dir}">
+         <maven-resource group="com.jboss.datagrid" artifact="jboss-datagrid-jgroups" />
+      </module-def>
+
+      <module-def name="org.jboss.as.console" slot="jdg" src="${jdg.modules.dir}" />
+
+      <module-def name="org.jboss.as.domain-http-error-context" slot="jdg" src="${jdg.modules.dir}" />
+
+      <module-def name="org.jboss.as.product" slot="jdg" src="${jdg.modules.dir}" />
+
+      <module-def name="org.jboss.jreadline" src="${jdg.modules.dir}">
+         <maven-resource group="org.jboss.jreadline" artifact="jreadline"/>
+      </module-def>
+
+      <module-def name="org.jboss.jts" src="${jdg.modules.dir}">
+         <maven-resource group="org.jboss.jbossts" artifact="jbossjts" />
+      </module-def>
+
+      <module-def name="org.jboss.netty">
+         <maven-resource group="io.netty" artifact="netty" />
+      </module-def>
+      
+      <module-def name="org.infinispan" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-core" />
+      </module-def>
+      
+      <module-def name="org.infinispan.cli.client" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cli-client" />
+      </module-def>
+      
+      <module-def name="org.infinispan.cli.server" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cli-server" />
+      </module-def>
+
+      <module-def name="org.infinispan.cachestore.remote" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-cachestore-remote" />
+      </module-def>
+
+      <module-def name="org.infinispan.server" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-server-core" />
+      </module-def>
+
+      <module-def name="org.infinispan.server.hotrod" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-server-hotrod" />
+      </module-def>
+
+      <module-def name="org.infinispan.server.memcached" src="${jdg.modules.dir}">
+         <maven-resource group="org.infinispan" artifact="infinispan-server-memcached" />
+      </module-def>
+
+      <module-def name="org.infinispan.server.rest" src="${jdg.modules.dir}">
+         <maven-resource-with-classifier group="org.infinispan" artifact="infinispan-server-rest" classifier="classes" />
+      </module-def>
+
+      <module-def name="org.scala-lang.library" src="${jdg.modules.dir}">
+         <maven-resource group="org.scala-lang" artifact="scala-library" />
+      </module-def>
+   </target>
+
+   <target name="trim-modules">
+      <delete includeemptydirs="true" verbose="true">
+         <fileset dir="${output.dir}/modules" includesfile="trim-modules.txt" />
+      </delete>
+   </target>
+   
+   <target name="trim-domain">
+      <delete dir="${output.dir}/domain" verbose="true" />
+      <delete>
+         <fileset dir="${output.dir}/bin">
+            <include name="domain.*"/>
+         </fileset>
+      </delete>
+   </target>
+
+   <target name="all" depends="clean, copy-files, jboss-modules, jdg-modules, jboss-bundles, trim-modules, trim-domain" />
+</project>

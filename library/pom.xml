@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ~ Copyright 2011 Red Hat, Inc. and/or its affiliates. ~ ~ This is free 
+   software; you can redistribute it and/or modify it ~ under the terms of the 
+   GNU Lesser General Public License as ~ published by the Free Software Foundation; 
+   either version 2.1 of ~ the License, or (at your option) any later version. 
+   ~ ~ This software is distributed in the hope that it will be useful, ~ but 
+   WITHOUT ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY 
+   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU ~ Lesser General Public 
+   License for more details. ~ ~ You should have received a copy of the GNU 
+   Lesser General Public ~ License along with this library; if not, write to 
+   the Free Software ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+   MA ~ 02110-1301 USA -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>com.jboss.datagrid</groupId>
+      <artifactId>jboss-datagrid-versions</artifactId>
+      <version>6.1.0-SNAPSHOT</version>
+      <relativePath>../versions/pom.xml</relativePath>
+   </parent>
+
+   <artifactId>jboss-datagrid-library</artifactId>
+
+   <name>JBoss Data Grid - Library Edition</name>
+   <description>JBoss Data Grid - Library Edition</description>
+
+   <packaging>pom</packaging>
+
+   <dependencies>
+      <dependency>
+         <groupId>net.jcip</groupId>
+         <artifactId>jcip-annotations</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.jbossts</groupId>
+         <artifactId>jbossjts</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jgroups</groupId>
+         <artifactId>jgroups</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-core</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-cachestore-jdbc</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-cachestore-remote</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-client-hotrod</artifactId>
+      </dependency>
+      
+      <!-- dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan</artifactId>
+         <classifier>javadoc</classifier>
+      </dependency -->
+   </dependencies>
+
+   <profiles>
+      <profile>
+         <id>distribution</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+         <properties>
+            <maven.test.skip.exec>true</maven.test.skip.exec>
+         </properties>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-assembly-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>assemble</id>
+                        <phase>package</phase>
+                        <goals>
+                           <goal>single</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <descriptors>
+                        <descriptor>${project.basedir}/src/main/assemblies/library.xml</descriptor>
+                     </descriptors>
+                     <finalName>${product.name}-library-${product.version}</finalName>
+                     <outputDirectory>${project.build.directory}</outputDirectory>
+                     <workDirectory>${project.build.directory}/assembly/work</workDirectory>
+                     <appendAssemblyId>false</appendAssemblyId>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+</project>
